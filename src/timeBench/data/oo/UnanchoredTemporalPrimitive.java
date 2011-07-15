@@ -13,5 +13,11 @@ package timeBench.data.oo;
  *
  */
 public class UnanchoredTemporalPrimitive extends TemporalPrimitive {
-
+	public Instant before(Instant anchor) {
+		return anchor;
+	}
+	
+	public Instant after(Instant anchor) {
+		return anchor;
+	}
 }

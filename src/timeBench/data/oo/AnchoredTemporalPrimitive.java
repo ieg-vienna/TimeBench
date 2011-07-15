@@ -17,22 +17,61 @@ import timeBench.data.TemporalDataException;
  *
  */
 public class AnchoredTemporalPrimitive extends TemporalPrimitive implements TemporalElement {
-	private Interval lifeSpanBuffer;
+	private Instant startBuffer = null;
+    private boolean startBufferDirty = true;
+	private Instant stopBuffer = null;
+    private boolean stopBufferDirty = true;
+	private Interval lifeSpanBuffer = null;
     private boolean lifeSpanBufferDirty = true;
-	
-	public Interval lifeSpan() throws TemporalDataException {
-		if (lifeSpanBufferDirty)
-			rebuildLifeSpanBuffer();
-		
-		return lifeSpanBuffer;
+
+	public Instant start() throws TemporalDataException {
+		if (startBufferDirty) {
+			if(this instanceof Instant) {
+				startBuffer = (Instant)this;
+			}
+			else if (parts.size()<2)
+				throw new TemporalDataException("Trying to calculate start of illegal anchored temporal primitive.");
+			else {
+				int c = 0;
+				while(!(parts.get(c) instanceof AnchoredTemporalPrimitive))
+					c++;
+				startBuffer = ((AnchoredTemporalPrimitive)parts.get(c)).start();
+				for(int i=c-1; i>=0; i--) {
+					startBuffer = ((UnanchoredTemporalPrimitive)parts.get(c)).before(startBuffer);
+				}
+			}
+			startBufferDirty = false;
+		}
+		return startBuffer;
 	}
 	
-	private void rebuildLifeSpanBuffer() throws TemporalDataException {
-		Instant start = null;
-		Instant stop = null;
-		
-		if(parts.size()<2)
-			throw new TemporalDataException("");
-		lifeSpanBuffer = new Interval(start,stop);
+	public Instant stop() throws TemporalDataException {
+		if (stopBufferDirty) {
+			if(this instanceof Instant) {
+				stopBuffer = (Instant)this;
+			}
+			else if (parts.size()<2)
+				throw new TemporalDataException("Trying to calculate stop of illegal anchored temporal primitive.");
+			else {
+				int c = 0;
+				while(!(parts.get(c) instanceof AnchoredTemporalPrimitive))
+					c++;
+				stopBuffer = ((AnchoredTemporalPrimitive)parts.get(c)).start();
+				for(int i=c-1; i>=0; i--) {
+					stopBuffer = ((UnanchoredTemporalPrimitive)parts.get(c)).after(stopBuffer);
+				}
+			}
+			stopBufferDirty = false;
+		}
+		return stopBuffer;
+	}
+
+	public Interval lifeSpan() throws TemporalDataException {
+		if (lifeSpanBufferDirty) {
+			lifeSpanBuffer = new Interval(start(),stop());
+			lifeSpanBufferDirty = false;
+		}		
+				
+		return lifeSpanBuffer;
 	}
 }
