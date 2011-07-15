@@ -15,5 +15,5 @@ package timeBench.data.oo;
  *
  */
 public class AnchoredTemporalPrimitive extends TemporalPrimitive implements TemporalElement {
-
+	//public 
 }

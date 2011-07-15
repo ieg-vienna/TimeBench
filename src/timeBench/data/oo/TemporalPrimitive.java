@@ -1,5 +1,7 @@
 package timeBench.data.oo;
 
+import java.util.ArrayList;
+
 /**
  * TemporalPrimitive is the base class for Temporal Primitives.
  * (Instant, Interval, Indeterminate Instant, Indeterminate Interval,
@@ -14,5 +16,5 @@ package timeBench.data.oo;
  *
  */
 public class TemporalPrimitive {
-
+	ArrayList<TemporalPrimitive> parts = new ArrayList<TemporalPrimitive>();
 }

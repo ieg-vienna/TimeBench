@@ -12,10 +12,9 @@ package timeBench.data.oo;
  *
  */
 public class TemporalObject {
-	protected TemporalElement m_temporalAspects;
-	protected Object m_dataAspects;
+	protected TemporalElement temporalAspects;
+	protected Object dataAspects;
 	
 	protected TemporalObject() {
-		 
 	}	
 }
