@@ -12,15 +12,22 @@ package timeBench.calendar;
  *
  */
 public class JavaDateSystem {
-	static JavaDateSystem defaultSystem = null;
+	protected static JavaDateSystem defaultSystem = null;
+	protected Calendar defaultCalendar = null;
 	
-	static Calendar calendar() {
+	public static JavaDateSystem getDefaultSystem() {
 		if (defaultSystem == null)
 			defaultSystem = new JavaDateSystem();
-		return defaultSystem.calendar();
+		return defaultSystem;
+	}	
+	
+	public Calendar calendar() {
+		return new Calendar();
 	}
 	
-	Calendar calendar() {
-		return new Calendar();
+	public Calendar getDefaultCalendar() {
+		if (defaultCalendar == null)
+			defaultCalendar = calendar();
+		return defaultCalendar;
 	}
 }

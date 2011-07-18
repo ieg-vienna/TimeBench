@@ -3,6 +3,7 @@ package timeBench.data.oo;
 import java.util.ArrayList;
 
 import timeBench.calendar.Granularity;
+import timeBench.calendar.JavaDateSystem;
 
 /**
  * TemporalPrimitive is the base class for Temporal Primitives.
@@ -23,7 +24,7 @@ public class TemporalPrimitive {
 	
 	Granularity granularity() {
 		if (givenGranularity == null)
-			return JavaDateSystem.calendar().discreteTimeDomain();
+			return JavaDateSystem.getDefaultSystem().getDefaultCalendar().discreteTimeDomain();
 		else
 			return givenGranularity;
 	}
