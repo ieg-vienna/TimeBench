@@ -3,7 +3,7 @@ package timeBench.data.oo;
 import java.util.ArrayList;
 
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateSystem;
+import timeBench.calendar.JavaDateCalendarManager;
 
 /**
  * TemporalPrimitive is the base class for Temporal Primitives.
@@ -19,13 +19,13 @@ import timeBench.calendar.JavaDateSystem;
  *
  */
 public class TemporalPrimitive {
-	Granularity givenGranularity = null;	
-	ArrayList<TemporalPrimitive> parts = new ArrayList<TemporalPrimitive>();
+	Granularity granularity = null;	
+	ArrayList<TemporalPrimitive> parts = new ArrayList<TemporalPrimitive>();	// RELATIONAL: replace with reference to bipartite graph
 	
-	Granularity granularity() {
-		if (givenGranularity == null)
-			return JavaDateSystem.getDefaultSystem().getDefaultCalendar().discreteTimeDomain();
+	Granularity getGranularity() {
+		if (granularity == null)
+			return JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().discreteTimeDomain();
 		else
-			return givenGranularity;
+			return granularity;
 	}
 }

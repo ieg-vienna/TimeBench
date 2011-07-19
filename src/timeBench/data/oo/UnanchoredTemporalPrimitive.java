@@ -1,6 +1,7 @@
 package timeBench.data.oo;
 
 import timeBench.calendar.Granularity;
+import timeBench.data.TemporalDataException;
 
 /**
  * UnanchoredTemporalPrimitive is the base class for Unanchored Temporal Primitives.
@@ -15,17 +16,17 @@ import timeBench.calendar.Granularity;
  *
  */
 public class UnanchoredTemporalPrimitive extends TemporalPrimitive {
-	public Instant before(Instant anchor) {
-		return before(anchor,granularity());
+	public Instant before(Instant anchor) throws TemporalDataException {
+		return before(anchor,null);
 	}	
-	public Instant before(Instant anchor,Granularity granularity) {
-		return anchor;
+	public Instant before(Instant anchor,Granularity granularity) throws TemporalDataException {
+		throw new TemporalDataException("No general way to calculate before() for unanchored temporal primitive.");
 	}
 	
-	public Instant after(Instant anchor) {
-		return after(anchor,granularity());
+	public Instant after(Instant anchor) throws TemporalDataException {
+		return after(anchor,null);
 	}
-	public Instant after(Instant anchor,Granularity granularity) {
-		return anchor;
+	public Instant after(Instant anchor,Granularity granularity) throws TemporalDataException {
+		throw new TemporalDataException("No general way to calculate before() for unanchored temporal primitive.");
 	}
 }
