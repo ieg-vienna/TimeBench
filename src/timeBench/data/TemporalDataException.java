@@ -14,6 +14,10 @@ package timeBench.data;
 public class TemporalDataException extends Exception {
 	private static final long serialVersionUID = 0;
 	
+	/**
+	 * The default constructor.
+	 * @param message The message of the exception.
+	 */
 	public TemporalDataException(String message) {
 		super(message);
 	}

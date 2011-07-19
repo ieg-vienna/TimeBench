@@ -1,10 +1,11 @@
 package timeBench.data.oo;
 
 /**
- * 
+ * The class for an indeterminate instant. This is a stub, users have to work
+ * manually at the moment
  * 
  * <p>
- * Added:          / TL<br>
+ * Added:         2011-07-19 / TL<br>
  * Modifications: 
  * </p>
  * 

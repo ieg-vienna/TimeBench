@@ -24,6 +24,13 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive implements Temp
 	private Interval lifeSpanBuffer = null;
     private boolean lifeSpanBufferDirty = true;
 
+    
+    /**
+     * Calculates the first (earliest) instant that is part of the temporal primitive, or, in case it starts with
+     * an unanchored temporal primitive, the instant resulting from deducing that from the first instant.
+     * @return The first instant.
+     * @throws TemporalDataException
+     */
 	public Instant start() throws TemporalDataException {
 		if (startBufferDirty) {
 			if(this instanceof Instant) {
@@ -45,7 +52,13 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive implements Temp
 		return startBuffer;
 	}
 	
-	public Instant stop() throws TemporalDataException {
+	
+    /**
+     * Calculates the last (latest) instant that is part of the temporal primitive, or, in case it starts with
+     * an unanchored temporal primitive, the instant resulting from adding that to the last instant.
+     * @return The last instant.
+     * @throws TemporalDataException
+     */public Instant stop() throws TemporalDataException {
 		if (stopBufferDirty) {
 			if(this instanceof Instant) {
 				stopBuffer = (Instant)this;
@@ -66,6 +79,12 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive implements Temp
 		return stopBuffer;
 	}
 
+    
+    /**
+     * Calculates the lifespan of the temporal primitive.
+     * @return The lifespan as Interval.
+     * @throws TemporalDataException
+     */
 	public Interval lifeSpan() throws TemporalDataException {
 		if (lifeSpanBufferDirty) {
 			lifeSpanBuffer = new Interval(start(),stop());

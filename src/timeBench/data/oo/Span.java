@@ -4,10 +4,10 @@ import timeBench.calendar.Granularity;
 import timeBench.data.TemporalDataException;
 
 /**
- * 
+ *  This class represents a span.
  * 
  * <p>
- * Added:          / TL<br>
+ * Added:          2011-07-19 / TL<br>
  * Modifications: 
  * </p>
  * 
@@ -17,6 +17,7 @@ import timeBench.data.TemporalDataException;
 public class Span extends UnanchoredTemporalPrimitive {
 	private int granules = 0;	// RELATIONAL: replace with reference to relational table
 	
+	
 	public Instant before(Instant anchor,Granularity granularity) throws TemporalDataException {
 		if (granularity == null)
 			granularity = getGranularity();
@@ -24,6 +25,7 @@ public class Span extends UnanchoredTemporalPrimitive {
 		long timeStamp = granularity.before(anchor.getTimeStamp(),granules);
 		return new Instant(timeStamp,granularity);
 	}
+	
 	
 	public Instant after(Instant anchor,Granularity granularity) throws TemporalDataException {
 		if (granularity == null)
