@@ -93,7 +93,7 @@ public class JavaDateCalendarManager {
 	
 	
 	/**
-	 * Provides access to an instance of the class. This is not a generic factiory method. It
+	 * Provides access to a singleton instance of the class. This is not a generic factory method. It
 	 * does only create one instance and provides that one with every call.
 	 * @return The JavaDateCalendarManager instance.
 	 */
@@ -114,7 +114,7 @@ public class JavaDateCalendarManager {
 	
 	
 	/**
-	 * Provides access to an instance of a calendar, the only one currently provided by this class.
+	 * Provides access to a singleton instance of a calendar, the only one currently provided by this class.
 	 * It does only create one instance and provides that one with every call.
 	 * @return The calendar.
 	 */

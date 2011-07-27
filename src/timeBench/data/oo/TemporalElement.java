@@ -6,7 +6,7 @@ package timeBench.data.oo;
  * Temporal Element is an interface based on the definition as 
  * a finite union of anchored primitives (Instant, Interval,
  * Indeterminate Instant, and Indeterminate Interval).
- * Therefore, to create instances, one of those primitves has to
+ * Therefore, to create instances, one of those primitives has to
  * be used.
  * 
  * <p>
