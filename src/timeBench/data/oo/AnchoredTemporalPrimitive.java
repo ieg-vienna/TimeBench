@@ -11,6 +11,8 @@ import timeBench.data.TemporalDataException;
  * <p>
  * Added:         2011-07-13 / TL<br>
  * Modifications: 
+ * Todo: start/stop erweitern für instant
+ * sup/inf bauen und für lifespan verwenden (lifespan arbeitet auf chronons
  * </p>
  * 
  * @author Tim Lammarsch

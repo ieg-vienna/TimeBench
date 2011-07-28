@@ -12,10 +12,12 @@ package timeBench.data.oo;
  * <p>
  * Added:         2011-07-13 / TL<br>
  * Modifications:
+ * Todo: Statt als Interface als Basisklasse von TemporalPrimitive und Verwaltung von Subelements implementieren
  * </p>
  * 
  * @author Tim Lammarsch
  *
  */
 public interface TemporalElement {
+	
 }

@@ -8,6 +8,7 @@ import timeBench.data.TemporalDataException;
  * <p>
  * Added:          2011-07-19 / TL<br>
  * Modifications: 
+ * Todo: Implementiert CalendarManager Interface
  * </p>
  * 
  * @author Tim Lammarsch
