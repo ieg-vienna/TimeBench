@@ -3,7 +3,6 @@ package timeBench.test;
 import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.util.DefaultIntervalComparator;
-import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalTreeIndex;
 
 public class TestIntervalSearch {
