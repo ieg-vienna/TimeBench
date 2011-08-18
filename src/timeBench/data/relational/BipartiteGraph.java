@@ -24,12 +24,12 @@ import prefuse.util.collections.IntIterator;
  * {@link BipartiteGraph#NODES_1} and {@link BipartiteGraph#NODES_2},
  * as well as an edges-table which stores edges from the first to the second table.
  * Additionally, for performance reasons, it stores the outgoing links from the first set
- * in adjancency lists (which store the row index of the target nodes), and the incoming 
- * links in the same way (where the adjancency lists store the source nodes).
+ * in adjacency lists (which store the row index of the target nodes), and the incoming 
+ * links in the same way (where the adjacency lists store the source nodes).
  * 
  * <p> Graph specification
  * While the graph is implemented as directed (edge source always from the first tuple set
- * and edge target always from the second tuple set), but conceptually it is treated as undirected.
+ * and edge target always to the second tuple set), but conceptually it is treated as undirected.
  * Multiple edges are supported.
  * 
  * @author bilal
@@ -77,17 +77,17 @@ public class BipartiteGraph extends CompositeTupleSet {
 	/** Table containing the adjacency lists for the graph */
 	protected Table m_links1;
 	protected Table m_links2;
-	/** The node key field (for the Node table) */
+	/** The node key field (for the first Node table) */
 	protected String m_n1key;
-	/** The source node key field (for the Edge table) */
+	/** The node key field (for the second Node table) */
 	protected String m_n2key;
 	/** The source node key field (for the Edge table) */
 	protected String m_skey;
 	/** The target node key field (for the Edge table) */
 	protected String m_tkey;
-	/** Reference to an index over the node key field */
+	/** Reference to an index over the node key field in first Node table */
 	protected Index m_n1idx;
-	/** Indicates if the key values are of type long */
+	/** Reference to an index over the node key field  in second Node table */
 	protected Index m_n2idx;
 	/** Indicates if the key values are of type long */
 	protected boolean m_longKey1 = false;
