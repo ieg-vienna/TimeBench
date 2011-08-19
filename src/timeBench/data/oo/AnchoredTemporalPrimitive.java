@@ -60,7 +60,8 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive implements Temp
      * an unanchored temporal primitive, the instant resulting from adding that to the last instant.
      * @return The last instant.
      * @throws TemporalDataException
-     */public Instant stop() throws TemporalDataException {
+     */
+	public Instant stop() throws TemporalDataException {
 		if (stopBufferDirty) {
 			if(this instanceof Instant) {
 				stopBuffer = (Instant)this;

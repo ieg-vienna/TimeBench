@@ -8,13 +8,12 @@ import timeBench.data.TemporalDataException;
  * <p>
  * Added:          2011-07-19 / TL<br>
  * Modifications: 
- * Todo: Implementiert CalendarManager Interface
  * </p>
  * 
  * @author Tim Lammarsch
  *
  */
-public class JavaDateCalendarManager {
+public class JavaDateCalendarManager implements CalendarManager {
 	protected static JavaDateCalendarManager defaultSystem = null;
 	protected Calendar defaultCalendar = null;
 	protected java.util.Calendar javaCalendar = null;
@@ -98,7 +97,7 @@ public class JavaDateCalendarManager {
 	 * does only create one instance and provides that one with every call.
 	 * @return The JavaDateCalendarManager instance.
 	 */
-	public static JavaDateCalendarManager getDefaultSystem() {
+	public static CalendarManager getDefaultSystem() {
 		if (defaultSystem == null)
 			defaultSystem = new JavaDateCalendarManager();
 		return defaultSystem;
