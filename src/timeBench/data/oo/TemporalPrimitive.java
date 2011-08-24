@@ -10,6 +10,10 @@ import timeBench.calendar.JavaDateCalendarManager;
  * (Instant, Interval, Indeterminate Instant, Indeterminate Interval,
  * and Span).
  * 
+ * While a Temporal Primitive does not need to be a Temporal Element,
+ * in our code, it is derived from it as Temporal Primitives are only
+ * used as Temporal Elements here. 
+ * 
  * <p>
  * Added:         2011-07-13 / TL<br>
  * Modifications:
@@ -18,7 +22,7 @@ import timeBench.calendar.JavaDateCalendarManager;
  * @author Tim Lammarsch
  *
  */
-public class TemporalPrimitive {
+public class TemporalPrimitive extends TemporalElement {
 	Granularity granularity = null;	
 	ArrayList<TemporalPrimitive> parts = new ArrayList<TemporalPrimitive>();	// RELATIONAL: replace with reference to bipartite graph
 		
