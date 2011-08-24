@@ -51,4 +51,46 @@ public class Granularity {
 	{
 		return calendar.after(timeStamp,granules,identifier);
 	}
+     
+     
+     /**
+      * Return calendar this granularity belongs to.
+      * @return The calendar this granularity belongs to.
+      */
+     public Calendar getCalendar()
+     {
+    	 return calendar;
+     }
+
+
+	/** Converts a granule in a granularity to another granularity, but returns only one granule,
+	 * using heuristics to decide which one if more would be correct.
+	 * @param timeStamp The number of the granule in the original granularity.
+	 * @return The number of the corresponding granule in the new granularity.
+	 * @throws TemporalDataException 
+	 */
+	public long mapGranuleToGranularityAsGranule(long timeStamp, Granularity targetGranularity) throws TemporalDataException {
+		return calendar.mapGranuleToGranularityAsGranule(timeStamp,identifier,targetGranularity.getIdentifier());
+	}
+
+
+	/**
+	 * Returns identifier of this granularity.
+	 * @return Identifier of this granularity
+	 */
+	public int getIdentifier() {
+		return identifier;
+	}
+
+
+	/** Converts a granule in a granularity to another granularity and returns a list of all granules that are part of
+	 * it. Use heuristics if necessary.
+	 * @param timeStamp The number of the granule in the original granularity.
+	 * @return The list of numbers of the corresponding granules in the new granularity.
+	 * @throws TemporalDataException 
+	 */
+	public java.util.ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,
+			Granularity targetGranularity) throws TemporalDataException {
+		return calendar.mapGranuleToGranularityAsGranuleList(timeStamp,identifier,targetGranularity.getIdentifier());
+	}
 }

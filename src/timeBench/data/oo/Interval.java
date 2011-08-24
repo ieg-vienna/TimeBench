@@ -1,5 +1,7 @@
 package timeBench.data.oo;
 
+import timeBench.calendar.Granularity;
+
 /**
  *  This class represents an interval. Currently, it is part stub.
  * 
@@ -17,8 +19,9 @@ public class Interval extends AnchoredTemporalPrimitive {
 	 * @param start The start instant.
 	 * @param stop The stop instant.
 	 */
-	public Interval(Instant start,Instant stop) {
+	public Interval(Instant start,Instant stop,Granularity granularity) {
 		parts.add(start);
 		parts.add(stop);
+		this.granularity = granularity;
 	}
 }

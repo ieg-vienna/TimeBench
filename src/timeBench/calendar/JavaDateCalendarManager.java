@@ -176,4 +176,40 @@ public class JavaDateCalendarManager implements CalendarManager {
 			default: throw new TemporalDataException("Unknown Granularity");
 		}
 	}
+
+
+	/**
+	 * Converts a granule in a granularity to another granularity, but returns only
+	 * one granule, using heuristics to decide which one if more would be correct.
+	 * @param timeStamp The number of the granule in the original granularity.
+	 * @param sourceGranularity Identifier of the source granularity
+	 * @param targetGranularity Identifier of the target granularity
+	 * @return The number of the corresponding granule in the new granularity.
+	 * @throws TemporalDataException 
+	 */
+	public long mapGranuleToGranularityAsGranule(long timeStamp,
+			int sourceGranularity, int targetGranularity) throws TemporalDataException {
+		//long resultTimeStamp = 0;
+		
+		throw new TemporalDataException("No mappings defined yet.");
+		
+		//return resultTimeStamp;
+	}
+	
+	/**
+	 * Converts a granule in a granularity to another granularity and returns a list of all granules that are part of
+	 * it. Use heuristics if necessary.
+	 * @param timeStamp The number of the granule in the original granularity.
+	 * @param sourceGranularity Identifier of the source granularity
+	 * @param targetGranularity Identifier of the target granularity
+	 * @return The list of numbers of the corresponding granules in the new granularity.
+	 * @throws TemporalDataException 
+	 */
+	public java.util.ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,
+			int sourceGranularity, int targetGranularity) throws TemporalDataException {
+		
+		throw new TemporalDataException("No mappings defined yet.");
+		
+		//return resultTimeStamp;
+	}
 }

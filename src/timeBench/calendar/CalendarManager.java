@@ -1,5 +1,7 @@
 package timeBench.calendar;
 
+import java.util.ArrayList;
+
 import timeBench.data.TemporalDataException;
 
 /**
@@ -19,4 +21,6 @@ public interface CalendarManager {
 	public Calendar getDefaultCalendar();
 	public long before(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException;
 	public long after(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException;
+	public long mapGranuleToGranularityAsGranule(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
+	public ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
 }

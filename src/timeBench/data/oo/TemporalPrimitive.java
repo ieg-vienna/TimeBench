@@ -24,7 +24,7 @@ public class TemporalPrimitive {
 		
 	Granularity getGranularity() {
 		if (granularity == null)
-			return JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().discreteTimeDomain();
+			return JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain();
 		else
 			return granularity;
 	}

@@ -1,5 +1,7 @@
 package timeBench.calendar;
 
+import java.util.ArrayList;
+
 import timeBench.data.TemporalDataException;
 
 /**
@@ -16,14 +18,14 @@ import timeBench.data.TemporalDataException;
  *
  */
 public class Calendar {
-	private Object calendarManager = null;
+	private CalendarManager calendarManager = null;
 	
 	
 	/**
 	 * Default constructor.
 	 * @param calendarManager Link to calendarManager this calendar maps to.
 	 */
-	public Calendar(Object calendarManager) {
+	public Calendar(CalendarManager calendarManager) {
 		this.calendarManager = calendarManager;
 	}
 	
@@ -32,7 +34,7 @@ public class Calendar {
 	 * Provide the discrete time domain of the given calendar and calendarManager as granularity.
 	 * @return The discrete time domain as granularity.
 	 */
-	public Granularity discreteTimeDomain() {
+	public Granularity getDiscreteTimeDomain() {
 		return new Granularity(this,0);
 	}
 
@@ -64,5 +66,37 @@ public class Calendar {
 			return ((JavaDateCalendarManager)calendarManager).after(timeStamp,granules,granularityIdentifier);
 		else
 			throw new TemporalDataException("Unknown or missing calendar manager");		
+	}
+
+
+	/**
+	 * Converts a granule in a granularity to another granularity, but returns only
+	 * one granule, using heuristics to decide which one if more would be correct.
+	 * @param timeStamp The number of the granule in the original granularity.
+	 * @param sourceGranularity Identifier of the source granularity
+	 * @param targetGranularity Identifier of the target granularity
+	 * @return The number of the corresponding granule in the new granularity.
+	 * @throws TemporalDataException 
+	 */
+	public long mapGranuleToGranularityAsGranule(long timeStamp,
+			int sourceGranularity, int targetGranularity) throws TemporalDataException {
+		return calendarManager.mapGranuleToGranularityAsGranule(timeStamp,
+				sourceGranularity,targetGranularity);
+	}
+
+
+	/**
+	 *  Converts a granule in a granularity to another granularity and returns a list of all granules that are part of
+	 * it. Use heuristics if necessary.
+	 * @param timeStamp The number of the granule in the original granularity.
+	 * @param sourceGranularity Identifier of the source granularity
+	 * @param targetGranularity Identifier of the target granularity
+	 * @return The list of numbers of the corresponding granules in the new granularity.
+	 * @throws TemporalDataException 
+	 */
+	public ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,
+			int sourceGranularity, int targetGranularity) throws TemporalDataException {
+		return calendarManager.mapGranuleToGranularityAsGranuleList(timeStamp,
+				sourceGranularity,targetGranularity);
 	}
 }

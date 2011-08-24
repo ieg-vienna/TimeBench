@@ -53,7 +53,27 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive implements Temp
 		}
 		return startBuffer;
 	}
+
+    /**
+     * Calculates, on chronon level, the first (earliest) instant that is part of the temporal primitive, or, in case it starts with
+     * an unanchored temporal primitive, the instant resulting from deducing that from the first instant.
+     * @return The first instant.
+     * @throws TemporalDataException
+     */
+	public Instant sup() throws TemporalDataException {
+		return start().sup();
+	}
 	
+    /**
+     * Calculates, on chronon level, the last (latest) instant that is part of the temporal primitive, or, in case it starts with
+     * an unanchored temporal primitive, the instant resulting from deducing that from the first instant.
+     * @return The first instant.
+     * @throws TemporalDataException
+     */
+	public Instant inf() throws TemporalDataException {
+		return start().inf();
+	}
+
 	
     /**
      * Calculates the last (latest) instant that is part of the temporal primitive, or, in case it starts with
@@ -90,7 +110,7 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive implements Temp
      */
 	public Interval lifeSpan() throws TemporalDataException {
 		if (lifeSpanBufferDirty) {
-			lifeSpanBuffer = new Interval(start(),stop());
+			lifeSpanBuffer = new Interval(sup(),inf(),granularity.getCalendar().getDiscreteTimeDomain());
 			lifeSpanBufferDirty = false;
 		}		
 				
