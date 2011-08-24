@@ -23,13 +23,4 @@ import timeBench.calendar.JavaDateCalendarManager;
  *
  */
 public class TemporalPrimitive extends TemporalElement {
-	Granularity granularity = null;	
-	ArrayList<TemporalPrimitive> parts = new ArrayList<TemporalPrimitive>();	// RELATIONAL: replace with reference to bipartite graph
-		
-	Granularity getGranularity() {
-		if (granularity == null)
-			return JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain();
-		else
-			return granularity;
-	}
 }

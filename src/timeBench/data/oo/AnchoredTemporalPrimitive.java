@@ -58,6 +58,7 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive {
      * @throws TemporalDataException
      */
 	public Instant sup() throws TemporalDataException {
+		// TODO: Once Relational Temporal Element exists, take that
 		return start().sup();
 	}
 	
@@ -68,6 +69,7 @@ public class AnchoredTemporalPrimitive extends TemporalPrimitive {
      * @throws TemporalDataException
      */
 	public Instant inf() throws TemporalDataException {
+		// TODO: Once Relational Temporal Element exists, take that
 		return start().inf();
 	}
 

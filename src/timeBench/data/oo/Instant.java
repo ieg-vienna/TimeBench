@@ -46,6 +46,7 @@ public class Instant extends AnchoredTemporalPrimitive {
     * @throws TemporalDataException
     */
 	public Instant sup() throws TemporalDataException {
+		// TODO: Once Relational Temporal Element exists, take that
 		Granularity discreteTimeDomain = granularity.getCalendar().getDiscreteTimeDomain();
 		ArrayList<Long> granuleList = granularity.mapGranuleToGranularityAsGranuleList(timeStamp,discreteTimeDomain);  
 		return new Instant(granuleList.get(0),discreteTimeDomain);
@@ -58,6 +59,7 @@ public class Instant extends AnchoredTemporalPrimitive {
 	 * @throws TemporalDataException
 	 */
 	public Instant inf() throws TemporalDataException {
+		// TODO: Once Relational Temporal Element exists, take that
 		Granularity discreteTimeDomain = granularity.getCalendar().getDiscreteTimeDomain();
 		ArrayList<Long> granuleList = granularity.mapGranuleToGranularityAsGranuleList(timeStamp,discreteTimeDomain);  
 		return new Instant(granuleList.get(granuleList.size()-1),discreteTimeDomain);
