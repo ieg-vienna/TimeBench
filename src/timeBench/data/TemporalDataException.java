@@ -11,7 +11,7 @@ package timeBench.data;
  * @author Tim Lammarsch
  *
  */
-public class TemporalDataException extends Exception {
+public class TemporalDataException extends RuntimeException {
 	private static final long serialVersionUID = 0;
 	
 	/**
