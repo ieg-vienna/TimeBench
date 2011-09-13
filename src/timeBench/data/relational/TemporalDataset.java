@@ -5,6 +5,6 @@ package timeBench.data.relational;
  * 
  * @author Alexander Rind
  */
-public class TemporalDataSetDummy {
+public class TemporalDataset {
 
 }

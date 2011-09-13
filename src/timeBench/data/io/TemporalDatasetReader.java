@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import prefuse.data.io.DataIOException;
-import timeBench.data.relational.TemporalDataSetDummy;
+import timeBench.data.relational.TemporalDataset;
 
 /**
  * interface for classes that read in a temporal dataset from a particular file
@@ -32,7 +32,7 @@ public interface TemporalDatasetReader {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public TemporalDataSetDummy readData(String location)
+    public TemporalDataset readData(String location)
             throws DataIOException;
 
     /**
@@ -43,7 +43,7 @@ public interface TemporalDatasetReader {
      * @return the loaded temporal dataset
      * @throws IOException
      */
-    public TemporalDataSetDummy readData(URL url) throws DataIOException;
+    public TemporalDataset readData(URL url) throws DataIOException;
 
     /**
      * Read in a temporal dataset from the given File.
@@ -54,7 +54,7 @@ public interface TemporalDatasetReader {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public TemporalDataSetDummy readData(File f) throws DataIOException;
+    public TemporalDataset readData(File f) throws DataIOException;
 
     /**
      * Read in a temporal dataset from the given InputStream.
@@ -64,6 +64,6 @@ public interface TemporalDatasetReader {
      * @return the loaded temporal dataset
      * @throws IOException
      */
-    public TemporalDataSetDummy readData(InputStream is) throws DataIOException;
+    public TemporalDataset readData(InputStream is) throws DataIOException;
 
 }

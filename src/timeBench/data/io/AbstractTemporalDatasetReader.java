@@ -9,7 +9,7 @@ import java.net.URL;
 
 import prefuse.data.io.DataIOException;
 import prefuse.util.io.IOLib;
-import timeBench.data.relational.TemporalDataSetDummy;
+import timeBench.data.relational.TemporalDataset;
 
 /**
  * Abstract base class implementation of the GraphReader interface. Provides
@@ -24,7 +24,7 @@ public abstract class AbstractTemporalDatasetReader implements
 	TemporalDatasetReader {
 
     @Override
-    public TemporalDataSetDummy readData(String location)
+    public TemporalDataset readData(String location)
 	    throws DataIOException {
 	try {
 	    InputStream is = IOLib.streamFromString(location);
@@ -38,7 +38,7 @@ public abstract class AbstractTemporalDatasetReader implements
     }
 
     @Override
-    public TemporalDataSetDummy readData(URL url) throws DataIOException {
+    public TemporalDataset readData(URL url) throws DataIOException {
 	try {
 	    return readData(url.openStream());
 	} catch (IOException e) {
@@ -47,7 +47,7 @@ public abstract class AbstractTemporalDatasetReader implements
     }
 
     @Override
-    public TemporalDataSetDummy readData(File f) throws DataIOException {
+    public TemporalDataset readData(File f) throws DataIOException {
 	try {
 	    return readData(new FileInputStream(f));
 	} catch (FileNotFoundException e) {
@@ -56,7 +56,7 @@ public abstract class AbstractTemporalDatasetReader implements
     }
 
     @Override
-    public abstract TemporalDataSetDummy readData(InputStream is)
+    public abstract TemporalDataset readData(InputStream is)
 	    throws DataIOException;
 
 }

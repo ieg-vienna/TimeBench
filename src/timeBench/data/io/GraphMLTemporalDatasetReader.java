@@ -3,7 +3,7 @@ package timeBench.data.io;
 import java.io.InputStream;
 
 import prefuse.data.io.DataIOException;
-import timeBench.data.relational.TemporalDataSetDummy;
+import timeBench.data.relational.TemporalDataset;
 
 /**
  * TemporalDatasetReader implementation that reads in temporal data formatted
@@ -19,7 +19,7 @@ import timeBench.data.relational.TemporalDataSetDummy;
 public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader {
 
     @Override
-    public TemporalDataSetDummy readData(InputStream is) throws DataIOException {
+    public TemporalDataset readData(InputStream is) throws DataIOException {
         // TODO Auto-generated method stub
         return null;
     }
