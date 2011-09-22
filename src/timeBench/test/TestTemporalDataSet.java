@@ -4,6 +4,8 @@ import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.util.DefaultIntervalComparator;
+import timeBench.data.util.IntervalComparator;
+import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
 
 public class TestTemporalDataSet {
@@ -40,6 +42,13 @@ public class TestTemporalDataSet {
 		dataset.addOccurrence(3, 3);
 		dataset.addOccurrence(4, 4);
 		dataset.addOccurrence(5, 5);
+		
+		IntervalIndex index = dataset.createTemporalIndex(new DefaultIntervalComparator());
+		
+		IntIterator rows5 = index.rows(5);
+		while (rows5.hasNext()) {
+			System.out.println(rows5.next());
+		}
 		
 	}
 
