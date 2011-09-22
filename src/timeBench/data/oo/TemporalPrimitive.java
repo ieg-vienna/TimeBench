@@ -1,9 +1,5 @@
 package timeBench.data.oo;
 
-import java.util.ArrayList;
-
-import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
 
 /**
  * TemporalPrimitive is the base class for Temporal Primitives.
