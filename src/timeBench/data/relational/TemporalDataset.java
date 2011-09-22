@@ -121,4 +121,22 @@ public class TemporalDataset {
 		Column colHi = elements.getColumn(SUP);
 		return new IntervalTreeIndex(elements, elements.rows(), colLo, colHi, comparator);
 	}
+
+	/**
+	 * Adds a new temporal element to the dataset
+	 * @param inf the lower end of the temporal element
+	 * @param sup the upper end of the temporal element
+	 * @param granularityId the granularityID of the temporal element
+	 * @param kind the kind of the temporal element
+	 * @return the index of the created element in the table of temporal elements
+	 */
+	public int addTemporalElement(long inf, long sup, int granularityId, int kind) {
+		Table nodeTable = temporalElements.getNodeTable();
+		int row = nodeTable.addRow();
+		nodeTable.set(row, INF, inf);
+		nodeTable.set(row, SUP, sup);
+		nodeTable.set(row, GRANULARITY_ID, granularityId);
+		nodeTable.set(row, KIND, kind);
+		return row;
+	}
 }
