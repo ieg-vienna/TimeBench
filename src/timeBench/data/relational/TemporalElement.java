@@ -1,5 +1,7 @@
 package timeBench.data.relational;
 
+import java.util.Iterator;
+
 import prefuse.data.tuple.TableNode;
 
 /**
@@ -25,6 +27,9 @@ public class TemporalElement extends TableNode {
      * Set the infimum (begin of lifespan for anchored time primitives or
      * granule count for spans).
      * 
+     * <p>
+     * However, this does not affect parent temporal elements.
+     * 
      * @param infimum
      *            the infimum
      */
@@ -45,6 +50,9 @@ public class TemporalElement extends TableNode {
     /**
      * Set the supremum (end of lifespan for anchored time primitives or granule
      * count for spans).
+     * 
+     * <p>
+     * However, this does not affect parent temporal elements.
      * 
      * @param supremum
      *            the supremum
@@ -90,6 +98,44 @@ public class TemporalElement extends TableNode {
      */
     public void setKind(int kind) {
         super.setInt(TemporalDataset.KIND, kind);
+    }
+
+    /**
+     * Get an iterator over all temporal elements that are parents of this
+     * temporal element.
+     * 
+     * @return an iterator over parents
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalElement> parentElements() {
+        return super.outNeighbors();
+    }
+    
+    /**
+     * Gets the number of parent temporal elements
+     * @return the number of parent temporal elements
+     */
+    public int getParentElementCount() {
+        return super.getOutDegree();
+    }
+
+    /**
+     * Get an iterator over all temporal elements that are children of this
+     * temporal element.
+     * 
+     * @return an iterator over children
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalElement> childElements() {
+        return super.inNeighbors();
+    }
+
+    /**
+     * Gets the number of child temporal elements
+     * @return the number of child temporal elements
+     */
+    public int getChildElementCount() {
+        return super.getInDegree();
     }
 
     /**
