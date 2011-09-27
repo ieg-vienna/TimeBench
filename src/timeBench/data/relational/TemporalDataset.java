@@ -14,9 +14,14 @@ import timeBench.data.util.IntervalTreeIndex;
 
 /**
  * This class maintains data structures that encompass a temporal dataset.
- * It consists of a {@link Table} of DataElements and a {@link Table} of temporal elements.
+ * It consists of a {@link Table} of DataElements and a {@link Graph} of temporal elements.
  * Temporal occurrences of data elements are saved in an additional {@link Table}.
  * Furthermore, the class provides utility methods to index and query the dataset.
+ * 
+ * <p><b>Warning:</b> If a pre-existing temporal elements table is used, 
+ * it needs to provide four columns for inf, sup, kind, and granularity id. 
+ * Furthermore, it needs to have {@link TemporalElement} as its tuple type. 
+ *  
  * @author bilal
  *
  */
@@ -103,13 +108,36 @@ public class TemporalDataset {
 		return temporalElements;
 	}
 	
+    /**
+     * Get the TemporalElement instance corresponding to its id.
+     * @param n element id (temporal element table row number)
+     * @return the TemporalElement instance corresponding to the node id
+     */
 	public TemporalElement getTemporalElement(int n) {
 	    return (TemporalElement) temporalElements.getNode(n);
 	}
 
+    /**
+     * Get an iterator over all temporal elements in the temporal dataset.
+     * @return an iterator over TemporalElement instances
+     */
     @SuppressWarnings("unchecked")
     public Iterator<TemporalElement> temporalElements() {
         return temporalElements.nodes();
+    }
+
+    /**
+     * allows iteration over all temporal elements. 
+     * @return an object, which provides an iterator
+     */
+    public Iterable<TemporalElement> temporalElementsIterable() {
+        return new Iterable<TemporalElement>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public Iterator<TemporalElement> iterator() {
+                return temporalElements.nodes();
+            }
+        };
     }
 
 	/**

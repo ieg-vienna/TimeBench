@@ -1,7 +1,5 @@
 package timeBench.test;
 
-import java.util.Iterator;
-
 import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.relational.TemporalDataset;
@@ -52,10 +50,11 @@ public class TestTemporalDataSet {
 		}
 		
 		System.out.println("Test iterator & tuplemanager");
-		Iterator<TemporalElement> teIterator = dataset.temporalElements(); 
         System.out.println(dataset.getTemporalElement(0));
-		while (teIterator.hasNext()) {
-		    TemporalElement te = teIterator.next();
+//        Iterator<TemporalElement> teIterator = dataset.temporalElements(); 
+//		while (teIterator.hasNext()) {
+//      TemporalElement te = teIterator.next();
+        for (TemporalElement te : dataset.temporalElementsIterable()) {
             System.out.println(te);
 		}
 	}
