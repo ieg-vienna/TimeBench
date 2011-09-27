@@ -1,8 +1,12 @@
 package timeBench.data.relational;
 
+import java.util.Iterator;
+
 import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.column.Column;
+import prefuse.data.tuple.TableEdge;
+import prefuse.data.tuple.TupleManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
@@ -41,6 +45,14 @@ public class TemporalDataset {
 		temporalElements.addColumn(SUP, long.class);
 		temporalElements.addColumn(GRANULARITY_ID, int.class);
 		temporalElements.addColumn(KIND, int.class);
+
+		// create specific tuple managers and set them to underlying structures
+		// invalidates existing tuples
+		TupleManager temporalTuples = new TupleManager(temporalElements.getNodeTable(), temporalElements, TemporalElement.class);
+		TupleManager edgeTuples = new TupleManager(temporalElements.getEdgeTable(), temporalElements, TableEdge.class);
+		temporalElements.setTupleManagers(temporalTuples, edgeTuples);
+		temporalElements.getNodeTable().setTupleManager(temporalTuples);
+		temporalElements.getEdgeTable().setTupleManager(edgeTuples);
 	}
 	
 	/**
@@ -91,6 +103,14 @@ public class TemporalDataset {
 		return temporalElements;
 	}
 	
+	public TemporalElement getTemporalElement(int n) {
+	    return (TemporalElement) temporalElements.getNode(n);
+	}
+
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalElement> temporalElements() {
+        return temporalElements.nodes();
+    }
 
 	/**
 	 * Gets all (temporal) occurrences of data elements

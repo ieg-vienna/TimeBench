@@ -1,12 +1,13 @@
 package timeBench.test;
 
+import java.util.Iterator;
+
 import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.relational.TemporalDataset;
+import timeBench.data.relational.TemporalElement;
 import timeBench.data.util.DefaultIntervalComparator;
-import timeBench.data.util.IntervalComparator;
-import timeBench.data.util.IntervalIndex;
-import timeBench.data.util.IntervalTreeIndex;
+import timeBench.data.util.*;
 
 public class TestTemporalDataSet {
 	/**
@@ -50,7 +51,12 @@ public class TestTemporalDataSet {
 			System.out.println(rows5.next());
 		}
 		
+		System.out.println("Test iterator & tuplemanager");
+		Iterator<TemporalElement> teIterator = dataset.temporalElements(); 
+        System.out.println(dataset.getTemporalElement(0));
+		while (teIterator.hasNext()) {
+		    TemporalElement te = teIterator.next();
+            System.out.println(te);
+		}
 	}
-
-
 }
