@@ -3,22 +3,23 @@ package timeBench.data.relational;
 import java.util.Iterator;
 
 import prefuse.data.tuple.TableNode;
+import timeBench.data.Lifespan;
 
 /**
  * Relational view of the temporal element. Following the <em>proxy tuple</em>
  * pattern [Heer & Agrawala, 2006] it provides an object oriented proxy for
  * accessing a row of the temporal elements table.
  * 
+ * TODO distinguish spans so that {@link Lifespan} is implemented correctly
+ * 
  * @author Rind
  */
-public class TemporalElement extends TableNode {
+public class TemporalElement extends TableNode implements Lifespan {
 
-    /**
-     * Get the infimum (begin of lifespan for anchored time primitives or
-     * granule count for spans).
-     * 
-     * @return the infimum
+    /* (non-Javadoc)
+     * @see timeBench.data.relational.Lifespan#getInf()
      */
+    @Override
     public long getInf() {
         return super.getLong(TemporalDataset.INF);
     }
@@ -37,12 +38,10 @@ public class TemporalElement extends TableNode {
         super.setLong(TemporalDataset.INF, infimum);
     }
 
-    /**
-     * Get the supremum (end of lifespan for anchored time primitives or granule
-     * count for spans).
-     * 
-     * @return the supremum
+    /* (non-Javadoc)
+     * @see timeBench.data.relational.Lifespan#getSup()
      */
+    @Override
     public long getSup() {
         return super.getLong(TemporalDataset.SUP);
     }
