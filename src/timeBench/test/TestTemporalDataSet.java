@@ -6,11 +6,15 @@ import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.relational.TemporalElement;
-import timeBench.data.util.*;
+import timeBench.data.relational.TemporalObject;
+import timeBench.data.util.DefaultIntervalComparator;
+import timeBench.data.util.IntervalIndex;
 
 public class TestTemporalDataSet {
 	/**
 	 * Test
+	 * 
+	 * TODO convert to a junit test
 	 * 
 	 * @param args
 	 *            system arguments
@@ -67,24 +71,34 @@ public class TestTemporalDataSet {
         TemporalElement te = dataset.getTemporalElement(interval);
         System.out.println("Children of interval   count="
                 + te.getChildElementCount());
-        Iterator<TemporalElement> iterator = te.childElements();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
+        Iterator<TemporalElement> teIterator = te.childElements();
+        while (teIterator.hasNext()) {
+            System.out.println(teIterator.next());
         }
         te = dataset.getTemporalElement(begin);
         System.out.println("Children of instant   count="
                 + te.getChildElementCount());
-        iterator = te.childElements();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
+        teIterator = te.childElements();
+        while (teIterator.hasNext()) {
+            System.out.println(teIterator.next());
         }
 
         te = dataset.getTemporalElement(begin);
         System.out.println("Parents of begin instant   count="
                 + te.getParentElementCount());
-        iterator = te.parentElements();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
+        teIterator = te.parentElements();
+        while (teIterator.hasNext()) {
+            System.out.println(teIterator.next());
+        }
+        
+        System.out.println("\nTest tuplemanager for TemporalObject");
+
+        Iterator<TemporalObject> toIterator = dataset.temporalObjects();
+        while (toIterator.hasNext()) {
+            TemporalObject to = toIterator.next(); 
+            System.out.println(to);
+            System.out.println(" " + to.getDataElement());
+            System.out.println(" " + to.getTemporalElement());
         }
     }
 }

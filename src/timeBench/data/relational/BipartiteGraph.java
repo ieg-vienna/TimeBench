@@ -259,6 +259,12 @@ public class BipartiteGraph extends CompositeTupleSet {
 		m_n2key = node2Key;
 		m_skey = sourceKey;
 		m_tkey = targetKey;
+		
+        // set a tuple manager for the edge table 
+		// so that its tuples are instances of BipartiteEdge
+        this.getEdgeTable().setTupleManager(
+                new BipartiteEdgeManager(this.getEdgeTable(), this,
+                        BipartiteEdge.class));
 
 		// set up indices
 		if (node1Key != null) {

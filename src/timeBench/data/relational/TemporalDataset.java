@@ -82,6 +82,12 @@ public class TemporalDataset {
 		this.dataElements = dataElements;
 		this.temporalElements = temporalElements;		
 		graph = new BipartiteGraph(dataElements, getTemporalElements());
+		
+        // set a tuple manager for the edge table of the bipartite graph 
+        // so that its tuples are instances of TemporalObject
+        graph.getEdgeTable().setTupleManager(
+                new BipartiteEdgeManager(graph.getEdgeTable(), graph,
+                        TemporalObject.class));
 	}
 	
 	/**
@@ -138,6 +144,16 @@ public class TemporalDataset {
                 return temporalElements.nodes();
             }
         };
+    }
+    
+    /**
+     * Get an iterator over all temporal objects in the temporal dataset.
+     * The temporal object is a proxy tuple for a row in the occurrences table.
+     * @return an iterator over TemporalObject instances
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalObject> temporalObjects() {
+        return graph.getEdgeTable().tuples();
     }
 
 	/**
