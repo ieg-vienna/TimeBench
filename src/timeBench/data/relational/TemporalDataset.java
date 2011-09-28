@@ -159,6 +159,7 @@ public class TemporalDataset {
 	/**
 	 * Gets all (temporal) occurrences of data elements
 	 * @return a {@link Table} containing all temporal occurrences
+	 * @deprecated
 	 */
 	public Table getOccurrences() {
 		return graph.getEdgeTable();
@@ -202,5 +203,19 @@ public class TemporalDataset {
 		nodeTable.set(row, GRANULARITY_ID, granularityId);
 		nodeTable.set(row, KIND, kind);
 		return row;
+	}
+	
+	// TODO move this enumeration to a separate file 
+	public enum Primitives {
+	    SPAN(0),
+	    SET(1),
+	    INSTANT(2),
+	    INTERVAL(3);
+	    
+	    public final int kind;
+	    
+	    private Primitives(int kind) {
+            this.kind = kind;
+        }
 	}
 }
