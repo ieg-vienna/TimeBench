@@ -99,6 +99,7 @@ public class TestTemporalDataSet {
             System.out.println(to);
             System.out.println(" " + to.getDataElement());
             System.out.println(" " + to.getTemporalElement());
+            System.out.println("  anchored=" + to.getTemporalElement().isAnchored() + ", length=" + to.getTemporalElement().getLength());
         }
     }
 }
