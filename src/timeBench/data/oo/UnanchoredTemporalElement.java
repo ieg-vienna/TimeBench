@@ -15,7 +15,12 @@ import timeBench.data.TemporalDataException;
  * @author Tim Lammarsch
  *
  */
-public class UnanchoredTemporalPrimitive extends TemporalPrimitive {
+public class UnanchoredTemporalElement extends TemporalElement {
+	
+	protected UnanchoredTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
+		super(relationalTemporalElement);
+	}
+	
 	/** 
 	 * The Instant which happens this temporal primitive before a given instant.
 	 * Always throws an exception in base class. 	

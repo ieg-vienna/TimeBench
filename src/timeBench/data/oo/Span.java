@@ -14,9 +14,14 @@ import timeBench.data.TemporalDataException;
  * @author Tim Lammarsch
  *
  */
-public class Span extends UnanchoredTemporalPrimitive {
+public class Span extends UnanchoredTemporalElement {
 	private int granules = 0;	// RELATIONAL: replace with reference to relational table
 	
+	protected Span(timeBench.data.relational.TemporalElement relationalTemporalElement)  throws TemporalDataException {
+		super(relationalTemporalElement);
+		if (relationalTemporalElement.getKind() != 0)
+			throw new TemporalDataException("Cannot generate an Span object from a temporal element that is not a span.");	}
+	}
 	
 	public Instant before(Instant anchor,Granularity granularity) throws TemporalDataException {
 		if (granularity == null)

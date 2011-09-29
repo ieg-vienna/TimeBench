@@ -1,6 +1,6 @@
 package timeBench.data.oo;
 
-import timeBench.calendar.Granularity;
+import timeBench.data.TemporalDataException;
 
 /**
  *  This class represents an interval. Currently, it is part stub.
@@ -13,15 +13,9 @@ import timeBench.calendar.Granularity;
  * @author Tim Lammarsch
  *
  */
-public class Interval extends AnchoredTemporalPrimitive {
-	/**
-	 * The constructor for forming an interval of two instants.
-	 * @param start The start instant.
-	 * @param stop The stop instant.
-	 */
-	public Interval(Instant start,Instant stop,Granularity granularity) {
-		parts.add(start);
-		parts.add(stop);
-		this.granularity = granularity;
-	}
+public class Interval extends AnchoredTemporalElement {
+	protected Interval(timeBench.data.relational.TemporalElement relationalTemporalElement) throws TemporalDataException  {
+		super(relationalTemporalElement);
+		if (relationalTemporalElement.getKind() != 3)
+			throw new TemporalDataException("Cannot generate an Interval object from a temporal element that is not an interval.");	}
 }

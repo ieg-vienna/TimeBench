@@ -22,7 +22,7 @@ public class Granularity {
 	 * @param calendar The calendar the granularity belongs to.
 	 * @param identifier The identifier of the granularity whose meaning depends on the calendar.
 	 */
-	Granularity(Calendar calendar, int identifier){
+	public Granularity(Calendar calendar, int identifier){
 		this.calendar = calendar;
 		this.identifier = identifier;
 	}

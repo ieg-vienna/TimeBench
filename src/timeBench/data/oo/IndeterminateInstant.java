@@ -12,6 +12,6 @@ package timeBench.data.oo;
  * @author Tim Lammarsch
  *
  */
-public class IndeterminateInstant extends AnchoredTemporalPrimitive {
+public class IndeterminateInstant extends AnchoredTemporalElement {
 
 }
