@@ -55,7 +55,8 @@ public class TestTemporalDataSet {
 		
 		IntIterator rows5 = index.rows(5);
 		while (rows5.hasNext()) {
-			System.out.println(rows5.next());
+		    int row = rows5.nextInt(); 
+			System.out.println(row + " " + dataset.getTemporalElement(row));
 		}
 		
         System.out.println("Test iterator & tuplemanager");

@@ -117,7 +117,7 @@ public class TemporalDataset {
     /**
      * Get the TemporalElement instance corresponding to its id.
      * @param n element id (temporal element table row number)
-     * @return the TemporalElement instance corresponding to the node id
+     * @return the TemporalElement instance corresponding to the element id
      */
 	public TemporalElement getTemporalElement(int n) {
 	    return (TemporalElement) temporalElements.getNode(n);
@@ -154,6 +154,15 @@ public class TemporalDataset {
     @SuppressWarnings("unchecked")
     public Iterator<TemporalObject> temporalObjects() {
         return graph.getEdgeTable().tuples();
+    }
+
+    /**
+     * Get the TemporalObject instance corresponding to its id.
+     * @param n object id (occurrences table row number)
+     * @return the TemporalObject instance corresponding to the object id
+     */
+    public TemporalObject getTemporalObject(int n) {
+        return (TemporalObject) graph.getEdgeTable().getTuple(n);
     }
 
 	/**
@@ -206,6 +215,7 @@ public class TemporalDataset {
 	}
 	
 	// TODO move this enumeration to a separate file 
+	// TODO use constants instead of enumeration?
 	public enum Primitives {
 	    SPAN(0),
 	    SET(1),
