@@ -39,6 +39,6 @@ public class TemporalObject {
 	 * @param relationalTemporalObject
 	 */
 	public TemporalObject(timeBench.data.relational.TemporalObject relationalTemporalObject) {
-		super(new TemporalElement(relationalTemporalObject.getTemporalElement()),relationalTemporalObject.getDataElement());
+		this(new TemporalElement(relationalTemporalObject.getTemporalElement()),relationalTemporalObject.getDataElement());
 	}
 }
