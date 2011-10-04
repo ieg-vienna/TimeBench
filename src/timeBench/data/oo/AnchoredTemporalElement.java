@@ -1,5 +1,7 @@
 package timeBench.data.oo;
 
+import timeBench.calendar.Granularity;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 
 /**
@@ -20,11 +22,25 @@ public class AnchoredTemporalElement extends TemporalElement {
 //    private boolean startBufferDirty = true;
 //	private Instant stopBuffer = null;
 //    private boolean stopBufferDirty = true;
-//	private Interval lifeSpanBuffer = null;
-//    private boolean lifeSpanBufferDirty = true;
+	
+	private Interval lifeSpanBuffer = null;
+    private boolean lifeSpanBufferDirty = true;
 
+	long infWhenDynamic;
+	long supWhenDynamic;
+	
 	protected AnchoredTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
 		super(relationalTemporalElement);
+	}
+	
+	public AnchoredTemporalElement(long inf,long sup) {
+		this(inf,sup,JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain());
+	}
+	
+	public AnchoredTemporalElement(long inf,long sup,Granularity granularity) {
+		super(granularity);
+		infWhenDynamic = inf;
+		supWhenDynamic = sup;
 	}
     
 //    /**
@@ -53,22 +69,19 @@ public class AnchoredTemporalElement extends TemporalElement {
 //		}
 //		return startBuffer;
 //	}
+	
+	public boolean isDynamic() {
+		return relationalTemporalElement == null;
+	}
 
 	public Instant getSup() {
-		return relationalTemporalElement.getSup();
+		return new Instant(relationalTemporalElement == null ? supWhenDynamic : relationalTemporalElement.getSup());
 	}
 	
-    /**
-     * Calculates, on chronon level, the last (latest) instant that is part of the temporal primitive, or, in case it starts with
-     * an unanchored temporal primitive, the instant resulting from deducing that from the first instant.
-     * @return The first instant.
-     * @throws TemporalDataException
-     */
 	public Instant getInf() throws TemporalDataException {
-		// TODO: Once Relational Temporal Element exists, take that
-		return start().inf();
+		return new Instant(relationalTemporalElement == null ? infWhenDynamic : relationalTemporalElement.getInf());
 	}
-
+	
 	
 //    /**
 //     * Calculates the last (latest) instant that is part of the temporal primitive, or, in case it starts with
@@ -105,7 +118,7 @@ public class AnchoredTemporalElement extends TemporalElement {
      */
 	public Interval lifeSpan() throws TemporalDataException {
 		if (lifeSpanBufferDirty) {
-			lifeSpanBuffer = new Interval(sup(),inf(),granularity.getCalendar().getDiscreteTimeDomain());
+			lifeSpanBuffer = new Interval(getSup(),getInf());
 			lifeSpanBufferDirty = false;
 		}		
 				

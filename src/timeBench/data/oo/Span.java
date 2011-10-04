@@ -20,14 +20,14 @@ public class Span extends UnanchoredTemporalElement {
 	protected Span(timeBench.data.relational.TemporalElement relationalTemporalElement)  throws TemporalDataException {
 		super(relationalTemporalElement);
 		if (relationalTemporalElement.getKind() != 0)
-			throw new TemporalDataException("Cannot generate an Span object from a temporal element that is not a span.");	}
+			throw new TemporalDataException("Cannot generate an Span object from a temporal element that is not a span.");
 	}
 	
 	public Instant before(Instant anchor,Granularity granularity) throws TemporalDataException {
 		if (granularity == null)
 			granularity = getGranularity();
 		
-		long timeStamp = granularity.before(anchor.getTimeStamp(),granules);
+		long timeStamp = granularity.before(anchor.getChronon(),granules);
 		return new Instant(timeStamp,granularity);
 	}
 	
@@ -36,7 +36,7 @@ public class Span extends UnanchoredTemporalElement {
 		if (granularity == null)
 			granularity = getGranularity();
 		
-		long timeStamp = granularity.after(anchor.getTimeStamp(),granules);
+		long timeStamp = granularity.after(anchor.getChronon(),granules);
 		return new Instant(timeStamp,granularity);
 	}
 }

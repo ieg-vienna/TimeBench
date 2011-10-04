@@ -1,5 +1,6 @@
 package timeBench.data.oo;
 
+import timeBench.calendar.Granularity;
 import timeBench.data.TemporalDataException;
 
 /**
@@ -20,5 +21,17 @@ public class Instant extends AnchoredTemporalElement {
 		super(relationalTemporalElement);
 		if (relationalTemporalElement.getKind() != 2)
 			throw new TemporalDataException("Cannot generate an Instant object from a temporal element that is not an instant.");
+	}
+	
+	protected Instant(long chronon) {
+		super(chronon,chronon);
+	}
+	
+	protected Instant(long chronon, Granularity granularity) {
+		super(chronon,chronon,granularity);
+	}
+	
+	public long getChronon() {
+		return relationalTemporalElement == null ? infWhenDynamic : relationalTemporalElement.getInf();
 	}
 }

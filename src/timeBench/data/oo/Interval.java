@@ -1,5 +1,7 @@
 package timeBench.data.oo;
 
+import timeBench.calendar.Granularity;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 
 /**
@@ -18,4 +20,24 @@ public class Interval extends AnchoredTemporalElement {
 		super(relationalTemporalElement);
 		if (relationalTemporalElement.getKind() != 3)
 			throw new TemporalDataException("Cannot generate an Interval object from a temporal element that is not an interval.");	}
+	
+	protected Interval(long inf,long sup) {
+		this(inf,sup,JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain());
+	}
+	
+	protected Interval(long inf, long sup, Granularity granularity) {
+		super(inf,sup,granularity);
+		parts.add(new Instant(inf,granularity));
+		parts.add(new Instant(sup,granularity));
+	}
+
+	protected Interval(Instant inf, Instant sup) {
+		this(inf,sup,JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain());
+	}
+	
+	protected Interval(Instant inf, Instant sup, Granularity granularity) {
+		super(inf.getChronon(),sup.getChronon(),granularity);
+		parts.add(inf);
+		parts.add(sup);
+	}
 }

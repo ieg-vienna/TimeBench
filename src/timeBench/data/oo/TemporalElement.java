@@ -23,8 +23,8 @@ import timeBench.calendar.JavaDateCalendarManager;
  */
 public class TemporalElement {
 	private Granularity granularity = null;	
-	private ArrayList<TemporalElement> parts = new ArrayList<TemporalElement>();
-	protected timeBench.data.relational.TemporalElement relationalTemporalElement;
+	protected ArrayList<TemporalElement> parts = new ArrayList<TemporalElement>();
+	protected timeBench.data.relational.TemporalElement relationalTemporalElement = null;
 		
 	/**
 	 * Generates a TemporalElement from a relational TemporalElement.
@@ -58,9 +58,19 @@ public class TemporalElement {
 		return result;
 	}
 	
+	/**
+	 * Constructor of TemporalElement. Protected for a reason: TemporalElement objects should have a class based on their
+	 * kind. The Factory can do this and the constructors of derived classes come back to this constructor.
+	 * 
+	 * @param relationalTemporalElement
+	 */
 	protected TemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
 		granularity = new Granularity(JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar(),relationalTemporalElement.getGranularityId());
 		this.relationalTemporalElement = relationalTemporalElement;
+	}
+	
+	protected TemporalElement(Granularity granularity) {
+		this.granularity = granularity;
 	}
 
 	Granularity getGranularity() {
