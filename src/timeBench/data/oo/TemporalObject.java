@@ -2,8 +2,6 @@ package timeBench.data.oo;
 
 import java.util.ArrayList;
 
-import prefuse.data.Tuple;
-
 /**
  * Base class for general Temporal Object.
  * 

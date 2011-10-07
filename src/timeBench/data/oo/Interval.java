@@ -18,7 +18,7 @@ import timeBench.data.TemporalDataException;
 public class Interval extends AnchoredTemporalElement {
 	protected Interval(timeBench.data.relational.TemporalElement relationalTemporalElement) throws TemporalDataException  {
 		super(relationalTemporalElement);
-		if (relationalTemporalElement.getKind() != 3)
+		if (relationalTemporalElement.getKind() != timeBench.data.relational.TemporalDataset.PRIMITIVE_INTERVAL)
 			throw new TemporalDataException("Cannot generate an Interval object from a temporal element that is not an interval.");	}
 	
 	protected Interval(long inf,long sup) {

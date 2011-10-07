@@ -19,7 +19,7 @@ public class Instant extends AnchoredTemporalElement {
 	
 	protected Instant(timeBench.data.relational.TemporalElement relationalTemporalElement) throws TemporalDataException {
 		super(relationalTemporalElement);
-		if (relationalTemporalElement.getKind() != 2)
+		if (relationalTemporalElement.getKind() != timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT)
 			throw new TemporalDataException("Cannot generate an Instant object from a temporal element that is not an instant.");
 	}
 	
@@ -28,6 +28,7 @@ public class Instant extends AnchoredTemporalElement {
 	}
 	
 	protected Instant(long chronon, Granularity granularity) {
+	    // XXX this is only correct for bottom granularity (other granularity => inf < sup)   
 		super(chronon,chronon,granularity);
 	}
 	

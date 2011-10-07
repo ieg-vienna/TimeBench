@@ -19,7 +19,7 @@ public class Span extends UnanchoredTemporalElement {
 	
 	protected Span(timeBench.data.relational.TemporalElement relationalTemporalElement)  throws TemporalDataException {
 		super(relationalTemporalElement);
-		if (relationalTemporalElement.getKind() != 0)
+		if (relationalTemporalElement.getKind() != timeBench.data.relational.TemporalDataset.PRIMITIVE_SPAN)
 			throw new TemporalDataException("Cannot generate an Span object from a temporal element that is not a span.");
 	}
 	

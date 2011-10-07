@@ -34,10 +34,10 @@ public class TemporalElement {
 	public static TemporalElement createFromRelationalTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
 		TemporalElement result = null;
 		switch(relationalTemporalElement.getKind()) {
-			case 0: 
+			case timeBench.data.relational.TemporalDataset.PRIMITIVE_SPAN: 
 				result = new Span(relationalTemporalElement);
 				break;
-			case 1: 
+			case timeBench.data.relational.TemporalDataset.PRIMITIVE_SET: 
 				if (relationalTemporalElement.isAnchored())
 					result = new AnchoredTemporalElement(relationalTemporalElement);
 				else
@@ -48,10 +48,10 @@ public class TemporalElement {
 					result.parts.add(TemporalElement.createFromRelationalTemporalElement(iChilds.next()));
 				}
 				break;
-			case 2:
+			case timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT:
 				result = new Instant(relationalTemporalElement);
 				break;
-			case 3:
+			case timeBench.data.relational.TemporalDataset.PRIMITIVE_INTERVAL:
 				result = new Interval(relationalTemporalElement);
 		}
 		
