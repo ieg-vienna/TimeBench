@@ -3,31 +3,98 @@ package timeBench.data.relational;
 import java.util.Iterator;
 
 import prefuse.data.tuple.TableNode;
-import timeBench.data.Lifespan;
-import timeBench.data.TemporalDataException;
+import prefuse.util.collections.IntIterator;
 
 /**
  * Relational view of the temporal element. Following the <em>proxy tuple</em>
  * pattern [Heer & Agrawala, 2006] it provides an object oriented proxy for
  * accessing a row of the temporal elements table.
  * 
+ * <p>
+ * This class makes no assumptions on the type of temporal element and allows
+ * direct read write access to the underlying table.
+ * 
  * @author Rind
  */
-public class TemporalElement extends TableNode implements Lifespan {
-    
+public class TemporalElement extends TableNode {
+
+    // if this implemented Lifespan, it should handle unanchored primitives
+    // differently (e.g., exception)
+
+    /**
+     * keeps track if the temporal element is anchored or not. The value of this
+     * variable will only be determined, when the {@link #isAnchored()} method
+     * is called; before that it is set to dirty (lazy).
+     */
+    // alternatives: 2 boolean, int with constants, enum
+    private Boolean anchoredCache = null;
+
+    /**
+     * This constructor should only be called by the {@link TupleManager}.
+     */
+    protected TemporalElement() {
+
+    }
+
     /**
      * Indicates if the temporal element is anchored in time.
      * 
-     * <p>Anchored temporal elements represent one or more granules on an 
-     * underlying granularity. They have an infimum and an supremum in the 
-     * discrete time domain. 
+     * <p>
+     * Anchored temporal elements represent one or more granules on an
+     * underlying granularity. They have an infimum and an supremum in the
+     * discrete time domain.
+     * 
+     * <p>
+     * <b>Warning:</b> The method returns a cached value (see
+     * {@link #resetAnchored()})
+     * 
      * @return true if the element is anchored
      */
     public boolean isAnchored() {
-        // TODO what if we have a set with only spans
-        return (this.getKind() != TemporalDataset.Primitives.SPAN.kind); 
+        if (this.anchoredCache == null) {
+            // recursive search for an anchor (if we have a set with only spans)
+            this.anchoredCache = Boolean.valueOf(isAnchored(super.m_row));
+        }
+        return (this.anchoredCache.booleanValue());
     }
-    
+
+    /**
+     * recursive helper method to find out if a temporal element is anchored.
+     * 
+     * <p>
+     * A temporal element is anchored iff its kind is instant or interval or its
+     * kind is set and at least one child is anchored.
+     * 
+     * @param row
+     *            row number in the node table.
+     * @return true if the temporal element is anchored.
+     */
+    private boolean isAnchored(int row) {
+        // use low level functions, though here tuple functions could also be
+        // used here
+        int kind = super.m_graph.getNodeTable().getInt(row,
+                TemporalDataset.KIND);
+        if (kind == TemporalDataset.PRIMITIVE_INSTANT
+                || kind == TemporalDataset.PRIMITIVE_INTERVAL)
+            return true;
+        else if (kind == TemporalDataset.PRIMITIVE_SET) {
+            IntIterator iter = m_graph.inEdgeRows(row);
+            while (iter.hasNext())
+                if (isAnchored(m_graph.getSourceNode(iter.nextInt())))
+                    return true;
+        }
+        return false;
+    }
+
+    /**
+     * informs this object that its cached anchoredness state may be out-dated.
+     * This method should be called after child temporal elements have been
+     * added, removed, or changed their anchoredness.
+     */
+    public void resetAnchored() {
+        this.anchoredCache = null;
+    }
+
     /**
      * Gets the length of the temporal element.
      * 
@@ -37,67 +104,59 @@ public class TemporalElement extends TableNode implements Lifespan {
      * 
      * @return the length of the temporal element
      */
+    @Deprecated
     public long getLength() {
         if (isAnchored())
-            // TODO +1? E.g., does a single chronon have length 1 or zero?  
             return getSup() - getInf() + 1;
         else
             return getSup();
     }
-    
-    // TODO do we need setLength 
 
-    /* (non-Javadoc)
-     * @see timeBench.data.relational.Lifespan#getInf()
+    /**
+     * Get the value of the inf attribute (begin of lifespan for anchored time
+     * primitives or granule count for spans).
+     * 
+     * @return value of the inf attribute
      */
-    @Override
     public long getInf() {
-        if (isAnchored())
-            return super.getLong(TemporalDataset.INF);
-        else 
-            // TODO alternative: return Long.MIN_VALUE; 
-            throw new TemporalDataException("unanchored temporal element have no lifespan");
+        return super.getLong(TemporalDataset.INF);
     }
 
     /**
-     * Set the infimum (begin of lifespan for anchored time primitives or
-     * granule count for spans).
+     * Set the value of the inf attribute (begin of lifespan for anchored time
+     * primitives or granule count for spans).
      * 
      * <p>
      * However, this does not affect parent temporal elements.
      * 
      * @param infimum
-     *            the infimum
+     *            the value of the inf attribute
      */
     public void setInf(long infimum) {
-        // TODO should this be prohibited for spans? or should we rename this method to setInfColumn? do we need setters at all?
         super.setLong(TemporalDataset.INF, infimum);
     }
 
-    /* (non-Javadoc)
-     * @see timeBench.data.relational.Lifespan#getSup()
+    /**
+     * get the value of the sup attribute (end of lifespan for anchored time
+     * primitives or granule count for spans).
+     * 
+     * @return value of the sup attribute
      */
-    @Override
     public long getSup() {
-        if (isAnchored())
-            return super.getLong(TemporalDataset.SUP);
-        else 
-            // TODO alternative: return Long.MAX_VALUE; 
-            throw new TemporalDataException("unanchored temporal element have no lifespan");
+        return super.getLong(TemporalDataset.SUP);
     }
 
     /**
-     * Set the supremum (end of lifespan for anchored time primitives or granule
-     * count for spans).
+     * Set the value of the sup attribute (end of lifespan for anchored time
+     * primitives or granule count for spans).
      * 
      * <p>
      * However, this does not affect parent temporal elements.
      * 
      * @param supremum
-     *            the supremum
+     *            the value of the sup attribute
      */
     public void setSup(long supremum) {
-        // TODO should this be prohibited for spans? or should we rename this method? 
         super.setLong(TemporalDataset.SUP, supremum);
     }
 
@@ -133,10 +192,11 @@ public class TemporalElement extends TableNode implements Lifespan {
     /**
      * Set the kind of temporal element.
      * 
-     * @param granularityId
+     * @param kind
      *            the kind of temporal element
      */
     public void setKind(int kind) {
+        this.anchoredCache = null;
         super.setInt(TemporalDataset.KIND, kind);
     }
 

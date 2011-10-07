@@ -33,6 +33,7 @@ public class TemporalDataset {
 	
 	private Table dataElements;
 	
+	// predefined column names for temporal elements 
 	public static final String INF = "inf";
 
 	public static final String SUP = "sup";
@@ -189,6 +190,7 @@ public class TemporalDataset {
 	 * the elements based on intervals.
 	 * @param comparator an {@link IntervalComparator} to compare intervals for indexing any querying purposes.
 	 */
+	// XXX this method does not yet exclude spans
 	public IntervalIndex createTemporalIndex(IntervalComparator comparator) {
 		Table elements = getTemporalElements();
 		Column colLo = elements.getColumn(INF);
@@ -214,8 +216,34 @@ public class TemporalDataset {
 		return row;
 	}
 	
-	// TODO move this enumeration to a separate file 
+	// TODO do we want/need methods like this
+    /**
+     * Add a new instant to the dataset. This method returns a proxy tuple this
+     * instant, which is of class {@link TemporalElement}.
+     * 
+     * @param inf
+     *            the lower end of the temporal element
+     * @param sup
+     *            the upper end of the temporal element
+     * @param granularityId
+     *            the granularityID of the temporal element
+     * @return a proxy tuple of the created temporal element
+     */
+    public TemporalElement addInstant(long inf, long sup, int granularityId) {
+        int row = this.addTemporalElement(inf, sup, granularityId,
+                TemporalDataset.PRIMITIVE_INSTANT);
+        return this.getTemporalElement(row);
+    }
+
+	// predefined kinds of temporal elements
+	public static final int PRIMITIVE_SPAN = 0;
+    public static final int PRIMITIVE_SET = 1;
+    public static final int PRIMITIVE_INSTANT = 2;
+    public static final int PRIMITIVE_INTERVAL = 3;
+	
+	// TODO move this enumeration to a separate file???
 	// TODO use constants instead of enumeration?
+    @Deprecated
 	public enum Primitives {
 	    SPAN(0),
 	    SET(1),
