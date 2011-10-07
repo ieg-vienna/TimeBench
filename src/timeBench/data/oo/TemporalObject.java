@@ -1,5 +1,7 @@
 package timeBench.data.oo;
 
+import java.util.ArrayList;
+
 import prefuse.data.Tuple;
 
 /**
@@ -15,7 +17,7 @@ import prefuse.data.Tuple;
  */
 public class TemporalObject {
 	protected TemporalElement temporalElement;
-	protected Tuple dataAspects;
+	protected ArrayList<Object> dataAspects = new ArrayList<Object>();
 	
 	/**
 	 * The parameterless constructor may only be used by classes that inherit from this class but explicitely
@@ -29,7 +31,7 @@ public class TemporalObject {
 	 * @param temporalAspects
 	 * @param dataAspects
 	 */
-	public TemporalObject(TemporalElement temporalElement,Tuple dataAspects) {
+	public TemporalObject(TemporalElement temporalElement,ArrayList<Object> dataAspects) {
 		this.temporalElement = temporalElement;
 		this.dataAspects = dataAspects;
 	}
@@ -39,6 +41,10 @@ public class TemporalObject {
 	 * @param relationalTemporalObject
 	 */
 	public TemporalObject(timeBench.data.relational.TemporalObject relationalTemporalObject) {
-		this(new TemporalElement(relationalTemporalObject.getTemporalElement()),relationalTemporalObject.getDataElement());
+		this(new TemporalElement(relationalTemporalObject.getTemporalElement()),new ArrayList<Object>());
+		for(int i=0; i<relationalTemporalObject.getDataElement().getColumnCount();i++)
+		{
+			dataAspects.add(relationalTemporalObject.getDataElement().get(i));
+		}
 	}
 }

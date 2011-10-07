@@ -2,10 +2,6 @@ package timeBench.data.oo;
 
 import java.util.Iterator;
 
-import prefuse.data.Tuple;
-import timeBench.data.relational.TemporalElement;
-import timeBench.data.relational.TemporalObject;
-
 /**
  * 
  * 
@@ -22,12 +18,14 @@ public class TemporalDataset extends TemporalObject {
 	{
 		long totalInf = Long.MAX_VALUE;
 		long totalSup = Long.MIN_VALUE;
-        Iterator<TemporalObject> iTemporalObject = data.temporalObjects();
+        Iterator<timeBench.data.relational.TemporalObject> iTemporalObject = data.temporalObjects();
         while (iTemporalObject.hasNext()) {
         	timeBench.data.relational.TemporalObject relationalTemporalObject = iTemporalObject.next();
-        	timeBench.data.oo.TemporalObject ooTemporalObject = new timeBench.data.oo.TemporalObject(relationalTemporalObject); 
+        	timeBench.data.oo.TemporalObject ooTemporalObject = new timeBench.data.oo.TemporalObject(relationalTemporalObject);
+        	dataAspects.add(ooTemporalObject);
         	totalInf = Math.min(totalInf, relationalTemporalObject.getInf());
-        	totalSup = Math.max(totalInf, relationalTemporalObject.getSup());
+        	totalSup = Math.max(totalInf, relationalTemporalObject.getSup());        	
 	    }
+        temporalElement = new Interval(totalInf,totalSup);
 	}
 }
