@@ -29,12 +29,9 @@ public class TemporalElement extends TableNode {
     // alternatives: 2 boolean, int with constants, enum
     private Boolean anchoredCache = null;
 
-    /**
-     * This constructor should only be called by the {@link TupleManager}.
-     */
-    protected TemporalElement() {
-
-    }
+    // The default constructor needs to stay public so that it can be called by
+    // the {@link TupleManager}. However, it is inadvisable to create it
+    // yourself.
 
     /**
      * Indicates if the temporal element is anchored in time.
