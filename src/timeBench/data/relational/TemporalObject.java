@@ -1,7 +1,6 @@
 package timeBench.data.relational;
 
 import prefuse.data.Tuple;
-import timeBench.data.Lifespan;
 
 /**
  * Relational view of the temporal object. Following the <em>proxy tuple</em>
@@ -11,7 +10,7 @@ import timeBench.data.Lifespan;
  * @author Rind
  *
  */
-public class TemporalObject extends BipartiteEdge implements Lifespan {
+public class TemporalObject extends BipartiteEdge {
     
     /**
      * @return the data element
@@ -28,20 +27,10 @@ public class TemporalObject extends BipartiteEdge implements Lifespan {
                 bGraph.getTargetNode(getRow()));
     }
 
-    @Override
-    public long getInf() {
-        return getTemporalElement().getInf();
-    }
-
-    @Override
-    public long getSup() {
-        return getTemporalElement().getSup();
-    }
-    
     /**
      * creates a human-readable string from a {@link TemporalObject}.
      * <p>
-     * Example:  + ", data#=" + bGraph.getSourceNode(getRow())
+     * Example: TemporalObject[occ#=5, data#=5, temporal#=6]
      * 
      * @return a string representation
      */
