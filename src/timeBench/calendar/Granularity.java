@@ -1,5 +1,7 @@
 package timeBench.calendar;
 
+import java.text.ParseException;
+
 import timeBench.data.TemporalDataException;
 
 /**
@@ -92,5 +94,10 @@ public class Granularity {
 	public java.util.ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,
 			Granularity targetGranularity) throws TemporalDataException {
 		return calendar.mapGranuleToGranularityAsGranuleList(timeStamp,identifier,targetGranularity.getIdentifier());
+	}
+	
+	
+	public long parseStringToGranule(String input) throws ParseException {
+		return calendar.parseStringToGranule(input,identifier);
 	}
 }

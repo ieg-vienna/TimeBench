@@ -34,7 +34,7 @@ public class AnchoredTemporalElement extends TemporalElement {
 	}
 	
 	public AnchoredTemporalElement(long inf,long sup) {
-		this(inf,sup,JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain());
+		this(inf,sup,JavaDateCalendarManager.getSingleton().getDefaultCalendar().getDiscreteTimeDomain());
 	}
 	
 	public AnchoredTemporalElement(long inf,long sup,Granularity granularity) {

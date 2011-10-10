@@ -1,5 +1,8 @@
 package timeBench.calendar;
 
+import java.text.ParseException;
+import java.util.Locale;
+
 import timeBench.data.TemporalDataException;
 
 /**
@@ -14,7 +17,7 @@ import timeBench.data.TemporalDataException;
  *
  */
 public class JavaDateCalendarManager implements CalendarManager {
-	protected static JavaDateCalendarManager defaultSystem = null;
+	protected static JavaDateCalendarManager singleton = null;
 	protected Calendar defaultCalendar = null;
 	protected java.util.Calendar javaCalendar = null;
 	
@@ -97,10 +100,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * does only create one instance and provides that one with every call.
 	 * @return The JavaDateCalendarManager instance.
 	 */
-	public static CalendarManager getDefaultSystem() {
-		if (defaultSystem == null)
-			defaultSystem = new JavaDateCalendarManager();
-		return defaultSystem;
+	public static CalendarManager getSingleton() {
+		if (singleton == null)
+			singleton = new JavaDateCalendarManager();
+		return singleton;
 	}	
 	
 	
@@ -211,5 +214,28 @@ public class JavaDateCalendarManager implements CalendarManager {
 		throw new TemporalDataException("No mappings defined yet.");
 		
 		//return resultTimeStamp;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#parseStringToGranule(java.lang.String, int)
+	 */
+	@Override
+	public long parseStringToGranule(String input, int granularity) throws ParseException {
+		long result;
+		java.text.DateFormat format = java.text.DateFormat.getDateInstance(0, Locale.US);
+		
+		switch(Granularities.fromInt(granularity)) {
+			case Millisecond:
+				result = format.parse(input).getTime();
+				break;
+			case Day:
+				//result = format.parse(input)
+				result = 0;
+				break;
+			default: throw new TemporalDataException("Granularity not implemented yet");
+		}
+		
+		return result;
 	}
 }

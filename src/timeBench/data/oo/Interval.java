@@ -22,7 +22,7 @@ public class Interval extends AnchoredTemporalElement {
 			throw new TemporalDataException("Cannot generate an Interval object from a temporal element that is not an interval.");	}
 	
 	protected Interval(long inf,long sup) {
-		this(inf,sup,JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain());
+		this(inf,sup,JavaDateCalendarManager.getSingleton().getDefaultCalendar().getDiscreteTimeDomain());
 	}
 	
 	protected Interval(long inf, long sup, Granularity granularity) {
@@ -32,7 +32,7 @@ public class Interval extends AnchoredTemporalElement {
 	}
 
 	protected Interval(Instant inf, Instant sup) {
-		this(inf,sup,JavaDateCalendarManager.getDefaultSystem().getDefaultCalendar().getDiscreteTimeDomain());
+		this(inf,sup,JavaDateCalendarManager.getSingleton().getDefaultCalendar().getDiscreteTimeDomain());
 	}
 	
 	protected Interval(Instant inf, Instant sup, Granularity granularity) {

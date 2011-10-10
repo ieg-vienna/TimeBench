@@ -1,5 +1,6 @@
 package timeBench.calendar;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import timeBench.data.TemporalDataException;
@@ -98,5 +99,16 @@ public class Calendar {
 			int sourceGranularity, int targetGranularity) throws TemporalDataException {
 		return calendarManager.mapGranuleToGranularityAsGranuleList(timeStamp,
 				sourceGranularity,targetGranularity);
+	}
+
+
+	/**
+	 * @param input
+	 * @param identifier
+	 * @return
+	 * @throws ParseException 
+	 */
+	public long parseStringToGranule(String input, int granularity) throws ParseException {
+		return calendarManager.parseStringToGranule(input,granularity);
 	}
 }
