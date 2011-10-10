@@ -252,7 +252,7 @@ public class TemporalDataset {
         return s;
     }
 
-	// predefined kinds of temporal elements
+    // predefined kinds of temporal elements
 	public static final int PRIMITIVE_SPAN = 0;
     public static final int PRIMITIVE_SET = 1;
     public static final int PRIMITIVE_INSTANT = 2;
@@ -273,4 +273,20 @@ public class TemporalDataset {
             this.kind = kind;
         }
 	}
+    
+    /**
+     * creates a human-readable string from a {@link TemporalDataset}.
+     * <p>
+     * Example:TemporalDataset [7 temporal elements, 6 data elements, 6 temporal
+     * objects]
+     * 
+     * @return a string representation
+     */
+    @Override
+    public String toString() {
+        return "TemporalDataset [" + this.getTemporalElements().getRowCount()
+                + " temporal elements, " + this.getDataElements().getRowCount()
+                + " data elements, " + this.graph.getEdgeCount()
+                + " temporal objects]";
+    }
 }

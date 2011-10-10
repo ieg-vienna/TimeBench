@@ -2,8 +2,11 @@ package timeBench.test;
 
 import java.util.Iterator;
 
+import prefuse.Visualization;
+import prefuse.data.Node;
 import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
+import prefuse.visual.VisualGraph;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.relational.TemporalElement;
 import timeBench.data.relational.TemporalObject;
@@ -19,7 +22,8 @@ public class TestTemporalDataSet {
 	 * @param args
 	 *            system arguments
 	 */
-	public static void main(String[] args) {
+	@SuppressWarnings("deprecation")
+    public static void main(String[] args) {
 		
 		TemporalDataset dataset = new TemporalDataset();
 		dataset.addTemporalElement(1, 10, 1, 1);
@@ -49,6 +53,8 @@ public class TestTemporalDataSet {
 		dataset.addOccurrence(3, 3);
 		dataset.addOccurrence(4, 4);
         dataset.addOccurrence(5, interval);
+
+        System.out.println(dataset);
 
         System.out.println("Test interval index");
 		IntervalIndex index = dataset.createTemporalIndex(new DefaultIntervalComparator());
@@ -102,5 +108,27 @@ public class TestTemporalDataSet {
             System.out.println(" " + to.getTemporalElement());
             System.out.println("  anchored=" + to.getTemporalElement().isAnchored() + ", length=" + to.getTemporalElement().getLength());
         }
+/*        
+        Iterator iter = dataset.getTemporalElement(interval).inEdges();
+        while (iter.hasNext()) {
+            prefuse.data.Edge edge = (prefuse.data.Edge) iter.next();
+            System.out.println("c" + edge.getColumnName(2));
+        }
+*/
+        // check that adding a tuple set to a visualization does not affect existing tuples 
+        TemporalElement t2 = dataset.getTemporalElement(2);
+        System.out.println(t2);
+        Visualization viz = new Visualization();
+        viz.addTable("aex", dataElements);
+        System.out.println(t2);
+        VisualGraph vg = viz.addGraph("bex", dataset.getTemporalElementsGraph());
+        Node v2 = vg.getNode(2); 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println(t2 + " " + v2);
     }
 }
