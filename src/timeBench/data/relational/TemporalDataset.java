@@ -3,6 +3,7 @@ package timeBench.data.relational;
 import java.util.Iterator;
 
 import prefuse.data.Graph;
+import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.column.Column;
 import prefuse.data.tuple.TableEdge;
@@ -47,10 +48,8 @@ public class TemporalDataset {
 	 */
 	public TemporalDataset() {
 		this(new Table(), new Table());
-		temporalElements.addColumn(INF, long.class);
-		temporalElements.addColumn(SUP, long.class);
-		temporalElements.addColumn(GRANULARITY_ID, int.class);
-		temporalElements.addColumn(KIND, int.class);
+		// define temporal element columns for nodes of the temporal e. graph
+		this.getTemporalElements().addColumns(this.getTemporalElementSchema());
 
 		// create specific tuple managers and set them to underlying structures
 		// invalidates existing tuples
@@ -233,6 +232,24 @@ public class TemporalDataset {
         int row = this.addTemporalElement(inf, sup, granularityId,
                 TemporalDataset.PRIMITIVE_INSTANT);
         return this.getTemporalElement(row);
+    }
+    
+    /**
+     * Get an instance of the default {@link Schema} used for
+     * {@link TemporalElement} instances. Contains the data members internally
+     * used to model a temporal element, i.e. inf, sup, granularity, and kind.
+     * 
+     * @return the TemporalElement data Schema
+     */
+    public Schema getTemporalElementSchema() {
+        Schema s = new Schema();
+
+        s.addColumn(INF, long.class, Long.MIN_VALUE);
+        s.addColumn(SUP, long.class, Long.MAX_VALUE);
+        s.addColumn(GRANULARITY_ID, int.class, -1);
+        s.addColumn(KIND, int.class, -1);
+
+        return s;
     }
 
 	// predefined kinds of temporal elements
