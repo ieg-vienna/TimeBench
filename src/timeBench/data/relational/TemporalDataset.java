@@ -45,8 +45,9 @@ public class TemporalDataset {
 	
 	/**
 	 * Constructs an empty {@link TemporalDataset}
+	 * @throws TemporalDataException 
 	 */
-	public TemporalDataset() {
+	public TemporalDataset() throws TemporalDataException {
 		this(new Table(), new Table());
 		// define temporal element columns for nodes of the temporal e. graph
 		this.getTemporalElements().addColumns(this.getTemporalElementSchema());
@@ -64,8 +65,9 @@ public class TemporalDataset {
 	 * Constructs a {@link TemporalDataset} with the given data- and temporal-elements 
 	 * @param dataElements a {@link Table} containing the data elements
 	 * @param temporalElements a {@link Table} containing the temporal elements 
+	 * @throws TemporalDataException 
 	 */
-	public TemporalDataset(Table dataElements, Table temporalElements) {
+	public TemporalDataset(Table dataElements, Table temporalElements) throws TemporalDataException {
 		this(dataElements , new Graph(temporalElements, true));
 	}
 		
@@ -74,8 +76,9 @@ public class TemporalDataset {
 	 * @param dataElements a {@link Table} containing the data elements
 	 * @param temporalElements a directed {@link Graph} containing the temporal elements   
 	 * and how they are related
+	 * @throws TemporalDataException 
 	 */
-	public TemporalDataset(Table dataElements, Graph temporalElements) {
+	public TemporalDataset(Table dataElements, Graph temporalElements) throws TemporalDataException {
 		if (!temporalElements.isDirected()) {
 			throw new TemporalDataException("The graph of the temporal elements must be directed");
 		}
