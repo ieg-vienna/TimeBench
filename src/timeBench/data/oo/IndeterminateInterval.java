@@ -1,6 +1,7 @@
 package timeBench.data.oo;
 
 import timeBench.calendar.Granularity;
+import timeBench.data.TemporalDataException;
 
 
 /**
@@ -16,7 +17,7 @@ import timeBench.calendar.Granularity;
  *
  */
 public class IndeterminateInterval extends AnchoredTemporalElement {
-	protected IndeterminateInterval(Interval start, Interval end, Span min, Span max, Granularity granularity) {
+	protected IndeterminateInterval(Interval start, Interval end, Span min, Span max, Granularity granularity) throws TemporalDataException {
 		
 		// TODO Validity check
 		

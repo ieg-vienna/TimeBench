@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.data.TemporalDataException;
 
 /**
  * Class for Temporal Element.
@@ -30,8 +31,9 @@ public class TemporalElement {
 	 * Generates a TemporalElement from a relational TemporalElement.
 	 * 
 	 * @param temporalElement
+	 * @throws TemporalDataException 
 	 */
-	public static TemporalElement createFromRelationalTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
+	public static TemporalElement createFromRelationalTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) throws TemporalDataException {
 		TemporalElement result = null;
 		switch(relationalTemporalElement.getKind()) {
 			case timeBench.data.relational.TemporalDataset.PRIMITIVE_SPAN: 
