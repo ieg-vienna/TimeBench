@@ -1,6 +1,8 @@
 package timeBench.calendar;
 
 import java.text.ParseException;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import timeBench.data.TemporalDataException;
@@ -190,7 +192,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @return The number of the corresponding granule in the new granularity.
 	 * @throws TemporalDataException 
 	 */
-	public long mapGranuleToGranularityAsGranule(long timeStamp,
+	public Granule mapGranuleToGranularityAsGranule(long timeStamp,
 			int sourceGranularity, int targetGranularity) throws TemporalDataException {
 		//long resultTimeStamp = 0;
 		
@@ -208,7 +210,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @return The list of numbers of the corresponding granules in the new granularity.
 	 * @throws TemporalDataException 
 	 */
-	public java.util.ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,
+	public java.util.ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,
 			int sourceGranularity, int targetGranularity) throws TemporalDataException {
 		
 		throw new TemporalDataException("No mappings defined yet.");
@@ -221,21 +223,38 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @see timeBench.calendar.CalendarManager#parseStringToGranule(java.lang.String, int)
 	 */
 	@Override
-	public long parseStringToGranule(String input, int granularity) throws ParseException {
-		long result;
-		java.text.DateFormat format = java.text.DateFormat.getDateInstance(0, Locale.US);
+	public Granule parseStringToGranule(String input, Granularity granularity) throws ParseException, TemporalDataException {
+		Granule result;
+		java.text.DateFormat format = java.text.DateFormat.getDateInstance(java.text.DateFormat.DEFAULT, Locale.US);
+		Date date = format.parse(input);
 		
-		switch(Granularities.fromInt(granularity)) {
+		switch(Granularities.fromInt(granularity.getIdentifier())) {
 			case Millisecond:
-				result = format.parse(input).getTime();
+				result = createGranule(date, granularity, new int[0] );
 				break;
 			case Day:
 				//result = format.parse(input)
-				result = 0;
+				result = createGranule(date, granularity, new int[] { java.util.Calendar.AM_PM, java.util.Calendar.HOUR, java.util.Calendar.HOUR_OF_DAY,
+						java.util.Calendar.MINUTE, java.util.Calendar.SECOND,java.util. Calendar.MILLISECOND });
 				break;
 			default: throw new TemporalDataException("Granularity not implemented yet");
 		}
 		
 		return result;
+	}
+
+
+	private Granule createGranule(Date date, Granularity granularity, int[] fields) {
+		GregorianCalendar calInf = new GregorianCalendar();
+		GregorianCalendar calSup = new GregorianCalendar();
+		calInf.setTime(date);
+		calSup.setTime(date);
+
+		for (int field : fields) {
+			calInf.set(field, calInf.getActualMinimum(field));
+			calSup.set(field, calSup.getActualMaximum(field));		
+		}
+		
+		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),granularity);
 	}
 }

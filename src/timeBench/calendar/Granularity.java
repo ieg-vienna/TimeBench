@@ -71,7 +71,7 @@ public class Granularity {
 	 * @return The number of the corresponding granule in the new granularity.
 	 * @throws TemporalDataException 
 	 */
-	public long mapGranuleToGranularityAsGranule(long timeStamp, Granularity targetGranularity) throws TemporalDataException {
+	public Granule mapGranuleToGranularityAsGranule(long timeStamp, Granularity targetGranularity) throws TemporalDataException {
 		return calendar.mapGranuleToGranularityAsGranule(timeStamp,identifier,targetGranularity.getIdentifier());
 	}
 
@@ -91,13 +91,13 @@ public class Granularity {
 	 * @return The list of numbers of the corresponding granules in the new granularity.
 	 * @throws TemporalDataException 
 	 */
-	public java.util.ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,
+	public java.util.ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,
 			Granularity targetGranularity) throws TemporalDataException {
 		return calendar.mapGranuleToGranularityAsGranuleList(timeStamp,identifier,targetGranularity.getIdentifier());
 	}
 	
 	
-	public long parseStringToGranule(String input) throws ParseException {
-		return calendar.parseStringToGranule(input,identifier);
+	public Granule parseStringToGranule(String input) throws ParseException, TemporalDataException {
+		return calendar.parseStringToGranule(input,this);
 	}
 }

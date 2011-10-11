@@ -22,7 +22,9 @@ public interface CalendarManager {
 	public Calendar getDefaultCalendar();
 	public long before(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException;
 	public long after(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException;
-	public long mapGranuleToGranularityAsGranule(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
-	public ArrayList<Long> mapGranuleToGranularityAsGranuleList(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
-	public long parseStringToGranule(String input, int granularity) throws ParseException;
+	public Granule mapGranuleToGranularityAsGranule(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
+	public ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,int sourceGranularity, int targetGranularity)
+			throws TemporalDataException, TemporalDataException;
+	Granule parseStringToGranule(String input, Granularity granularity)
+			throws ParseException, TemporalDataException;
 }
