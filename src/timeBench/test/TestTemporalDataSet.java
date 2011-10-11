@@ -6,6 +6,7 @@ import prefuse.Visualization;
 import prefuse.data.Node;
 import prefuse.data.Table;
 import prefuse.util.collections.IntIterator;
+import timeBench.data.TemporalDataException;
 import prefuse.visual.VisualGraph;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.relational.TemporalElement;
@@ -21,10 +22,9 @@ public class TestTemporalDataSet {
 	 * 
 	 * @param args
 	 *            system arguments
+	 * @throws TemporalDataException 
 	 */
-	@SuppressWarnings("deprecation")
-    public static void main(String[] args) {
-		
+	public static void main(String[] args) throws TemporalDataException {
 		TemporalDataset dataset = new TemporalDataset();
 		dataset.addTemporalElement(1, 10, 1, 1);
 		dataset.addTemporalElement(4, 12, 1, 1);
