@@ -45,9 +45,8 @@ public class TemporalDataset {
 	
 	/**
 	 * Constructs an empty {@link TemporalDataset}
-	 * @throws TemporalDataException 
 	 */
-	public TemporalDataset() throws TemporalDataException {
+	public TemporalDataset() {
 		this(new Table(), new Table());
 		// define temporal element columns for nodes of the temporal e. graph
 		this.getTemporalElements().addColumns(this.getTemporalElementSchema());
@@ -65,18 +64,27 @@ public class TemporalDataset {
 	 * Constructs a {@link TemporalDataset} with the given data- and temporal-elements 
 	 * @param dataElements a {@link Table} containing the data elements
 	 * @param temporalElements a {@link Table} containing the temporal elements 
-	 * @throws TemporalDataException 
 	 */
-	public TemporalDataset(Table dataElements, Table temporalElements) throws TemporalDataException {
-		this(dataElements , new Graph(temporalElements, true));
-	}
+    public TemporalDataset(Table dataElements, Table temporalElements) {
+        // here we cannot call the other constructor, because that would throw
+        // an exception that is impossible to catch
+        this.dataElements = dataElements;
+        this.temporalElements = new Graph(temporalElements, true);
+        graph = new BipartiteGraph(dataElements, getTemporalElements());
+
+        // set a tuple manager for the edge table of the bipartite graph
+        // so that its tuples are instances of TemporalObject
+        graph.getEdgeTable().setTupleManager(
+                new BipartiteEdgeManager(graph.getEdgeTable(), graph,
+                        TemporalObject.class));
+    }
 		
 	/**
 	 * Constructs a {@link TemporalDataset} with the given data- and temporal-elements 
 	 * @param dataElements a {@link Table} containing the data elements
 	 * @param temporalElements a directed {@link Graph} containing the temporal elements   
 	 * and how they are related
-	 * @throws TemporalDataException 
+	 * @throws TemporalDataException if the temporal element Graph is not directed
 	 */
 	public TemporalDataset(Table dataElements, Graph temporalElements) throws TemporalDataException {
 		if (!temporalElements.isDirected()) {
