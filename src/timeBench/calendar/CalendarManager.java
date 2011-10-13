@@ -27,4 +27,5 @@ public interface CalendarManager {
 			throws TemporalDataException, TemporalDataException;
 	Granule parseStringToGranule(String input, Granularity granularity)
 			throws ParseException, TemporalDataException;
+	public int[] getGranularityIdentifiers();
 }

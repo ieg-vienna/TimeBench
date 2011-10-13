@@ -257,4 +257,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 		
 		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),granularity);
 	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#getGranularityIdentifiers()
+	 */
+	@Override
+	public int[] getGranularityIdentifiers() {
+		return new int[] {0,1,2,3,4,5,6,7,8};
+	}
 }

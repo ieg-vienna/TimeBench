@@ -45,4 +45,13 @@ public class TemporalObject {
 			dataAspects.add(relationalTemporalObject.getDataElement().get(i));
 		}
 	}
+	
+	protected ArrayList<TemporalObject> getSubObjects() {
+		ArrayList<TemporalObject> result = new ArrayList<TemporalObject>();
+		for(Object o : dataAspects) {
+			if (o instanceof TemporalObject)
+				result.add((TemporalObject)o);
+		}
+		return result;
+	}
 }

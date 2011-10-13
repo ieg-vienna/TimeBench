@@ -1,5 +1,6 @@
 package timeBench.data.oo;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -30,5 +31,9 @@ public class TemporalDataset extends TemporalObject {
         	}
 	    }
         temporalElement = new Interval(totalInf,totalSup);
+	}
+	
+	public ArrayList<TemporalObject> getTemporalObjects() {
+		return getSubObjects();
 	}
 }
