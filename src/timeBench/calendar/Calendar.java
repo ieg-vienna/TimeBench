@@ -113,6 +113,12 @@ public class Calendar {
 		return calendarManager.parseStringToGranule(input,granularity);
 	}
 
+    public Granule parseStringToGranule(String input, Granularity granularity,
+            String dateTimePattern) throws ParseException,
+            TemporalDataException {
+        return calendarManager.parseStringToGranule(input, granularity,
+                dateTimePattern);
+    }
 
 	/**
 	 * @return
