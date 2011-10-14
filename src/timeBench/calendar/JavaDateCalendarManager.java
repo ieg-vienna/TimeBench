@@ -239,21 +239,26 @@ public class JavaDateCalendarManager implements CalendarManager {
     public Granule parseStringToGranule(String input, Granularity granularity,
             String dateTimePattern) throws ParseException,
             TemporalDataException {
+        // TODO allow specification of Locale via encoding (e.g. needed for month names)
         return parseStringToGranule(input, granularity,
-                new java.text.SimpleDateFormat(dateTimePattern));
+                new java.text.SimpleDateFormat(dateTimePattern, Locale.US));
     }
 
     private Granule parseStringToGranule(String input, Granularity granularity,
             DateFormat format) throws ParseException, TemporalDataException {
+        return parseDateToGranule(format.parse(input), granularity);
+    }
+
+    @Override
+    public Granule parseDateToGranule(Date date, Granularity granularity)
+            throws TemporalDataException {
         Granule result;
-        Date date = format.parse(input);
 
         switch (Granularities.fromInt(granularity.getIdentifier())) {
         case Millisecond:
             result = createGranule(date, granularity, new int[0]);
             break;
         case Day:
-            // result = format.parse(input)
             result = createGranule(date, granularity, new int[] {
                     java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
                     java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,

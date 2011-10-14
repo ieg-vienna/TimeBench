@@ -2,6 +2,7 @@ package timeBench.calendar;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import timeBench.data.TemporalDataException;
 
@@ -32,5 +33,8 @@ public interface CalendarManager {
             String dateTimePattern) throws ParseException,
             TemporalDataException;
 
+    Granule parseDateToGranule(Date input, Granularity granularity)
+            throws TemporalDataException;
+    
 	public int[] getGranularityIdentifiers();
 }
