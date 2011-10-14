@@ -31,14 +31,14 @@ public class Granule {
 		this.granularity = granularity;
 		}
 	
-	long getInf() throws TemporalDataException {
+	public long getInf() throws TemporalDataException {
 		if (inf == null)
 			throw new TemporalDataException("Conversion of granule count to inf not implemented yet.");
 		else
 			return inf;
 	}
 	
-	long getSup() throws TemporalDataException {
+	public long getSup() throws TemporalDataException {
 		if (sup == null)
 			throw new TemporalDataException("Conversion of granule count to sup not implemented yet.");
 		else
