@@ -98,13 +98,13 @@ public class Granularity {
 	}
 	
 	
-	public Granule parseStringToGranule(String input) throws ParseException, TemporalDataException {
-		return calendar.parseStringToGranule(input,this);
-	}
-
-    public Granule parseStringToGranule(String input, String dateTimePattern) throws ParseException, TemporalDataException {
-        return calendar.parseStringToGranule(input,this, dateTimePattern);
-    }
+//	public Granule parseStringToGranule(String input) throws ParseException, TemporalDataException {
+//		return calendar.parseStringToGranule(input,this);
+//	}
+//
+//    public Granule parseStringToGranule(String input, String dateTimePattern) throws ParseException, TemporalDataException {
+//        return calendar.parseStringToGranule(input,this, dateTimePattern);
+//    }
     
     public Granule parseDateToGranule(Date input) throws TemporalDataException {
         return calendar.parseDateToGranule(input, this);

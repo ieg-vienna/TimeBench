@@ -220,29 +220,29 @@ public class JavaDateCalendarManager implements CalendarManager {
 	}
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * timeBench.calendar.CalendarManager#parseStringToGranule(java.lang.String,
-     * int)
-     */
-    @Override
-    public Granule parseStringToGranule(String input, Granularity granularity)
-            throws ParseException, TemporalDataException {
-        return parseStringToGranule(input, granularity,
-                DateFormat.getDateInstance(java.text.DateFormat.DEFAULT,
-                        Locale.US));
-    }
-
-    @Override
-    public Granule parseStringToGranule(String input, Granularity granularity,
-            String dateTimePattern) throws ParseException,
-            TemporalDataException {
-        // TODO allow specification of Locale via encoding (e.g. needed for month names)
-        return parseStringToGranule(input, granularity,
-                new java.text.SimpleDateFormat(dateTimePattern, Locale.US));
-    }
+//    /*
+//     * (non-Javadoc)
+//     * 
+//     * @see
+//     * timeBench.calendar.CalendarManager#parseStringToGranule(java.lang.String,
+//     * int)
+//     */
+//    @Override
+//    public Granule parseStringToGranule(String input, Granularity granularity)
+//            throws ParseException, TemporalDataException {
+//        return parseStringToGranule(input, granularity,
+//                DateFormat.getDateInstance(java.text.DateFormat.DEFAULT,
+//                        Locale.US));
+//    }
+//
+//    @Override
+//    public Granule parseStringToGranule(String input, Granularity granularity,
+//            String dateTimePattern) throws ParseException,
+//            TemporalDataException {
+//        // TODO allow specification of Locale via encoding (e.g. needed for month names)
+//        return parseStringToGranule(input, granularity,
+//                new java.text.SimpleDateFormat(dateTimePattern, Locale.US));
+//    }
 
     private Granule parseStringToGranule(String input, Granularity granularity,
             DateFormat format) throws ParseException, TemporalDataException {

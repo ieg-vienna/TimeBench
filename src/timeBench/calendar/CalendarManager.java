@@ -26,12 +26,12 @@ public interface CalendarManager {
 	public Granule mapGranuleToGranularityAsGranule(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
 	public ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,int sourceGranularity, int targetGranularity)
 			throws TemporalDataException, TemporalDataException;
-	Granule parseStringToGranule(String input, Granularity granularity)
-			throws ParseException, TemporalDataException;
-
-    Granule parseStringToGranule(String input, Granularity granularity,
-            String dateTimePattern) throws ParseException,
-            TemporalDataException;
+//	Granule parseStringToGranule(String input, Granularity granularity)
+//			throws ParseException, TemporalDataException;
+//
+//    Granule parseStringToGranule(String input, Granularity granularity,
+//            String dateTimePattern) throws ParseException,
+//            TemporalDataException;
 
     Granule parseDateToGranule(Date input, Granularity granularity)
             throws TemporalDataException;

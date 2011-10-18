@@ -107,23 +107,23 @@ public class Calendar {
 	}
 
 
-	/**
-	 * @param input
-	 * @param identifier
-	 * @return
-	 * @throws ParseException 
-	 * @throws TemporalDataException 
-	 */
-	public Granule parseStringToGranule(String input, Granularity granularity) throws ParseException, TemporalDataException {
-		return calendarManager.parseStringToGranule(input,granularity);
-	}
-
-    public Granule parseStringToGranule(String input, Granularity granularity,
-            String dateTimePattern) throws ParseException,
-            TemporalDataException {
-        return calendarManager.parseStringToGranule(input, granularity,
-                dateTimePattern);
-    }
+//	/**
+//	 * @param input
+//	 * @param identifier
+//	 * @return
+//	 * @throws ParseException 
+//	 * @throws TemporalDataException 
+//	 */
+//	public Granule parseStringToGranule(String input, Granularity granularity) throws ParseException, TemporalDataException {
+//		return calendarManager.parseStringToGranule(input,granularity);
+//	}
+//
+//    public Granule parseStringToGranule(String input, Granularity granularity,
+//            String dateTimePattern) throws ParseException,
+//            TemporalDataException {
+//        return calendarManager.parseStringToGranule(input, granularity,
+//                dateTimePattern);
+//    }
 
     public Granule parseDateToGranule(Date input, Granularity granularity)
             throws TemporalDataException {
