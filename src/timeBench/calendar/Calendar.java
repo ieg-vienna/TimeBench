@@ -126,10 +126,16 @@ public class Calendar {
         return calendarManager.parseDateToGranule(input, granularity);
     }
     
-	/**
-	 * @return
-	 */
 	public int[] getGranularityIdentifiers() {
 		return calendarManager.getGranularityIdentifiers();
+	}
+	
+	public Granularity getGranularityFromIdentifier(int identifier) {
+		return new Granularity(this,identifier);
+	}
+
+
+	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException {
+		return calendarManager.parseInfToGranule(inf,granularity);
 	}
 }

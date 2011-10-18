@@ -21,7 +21,7 @@ public class IndeterminateInterval extends AnchoredTemporalElement {
 		
 		// TODO Validity check
 		
-		super(start.getInf().getChronon(),end.getSup().getChronon(),granularity);
+		super(start.getInf(),end.getSup(),granularity);
 		parts.add(start);
 		parts.add(end);
 		parts.add(min);

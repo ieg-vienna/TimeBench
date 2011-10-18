@@ -75,7 +75,7 @@ public class TemporalElement {
 		this.granularity = granularity;
 	}
 
-	Granularity getGranularity() {
+	public Granularity getGranularity() {
 		if (granularity == null)
 			return JavaDateCalendarManager.getSingleton().getDefaultCalendar().getDiscreteTimeDomain();
 		else

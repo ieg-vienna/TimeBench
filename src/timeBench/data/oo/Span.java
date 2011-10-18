@@ -27,8 +27,8 @@ public class Span extends UnanchoredTemporalElement {
 		if (granularity == null)
 			granularity = getGranularity();
 		
-		long timeStamp = granularity.before(anchor.getChronon(),granules);
-		return new Instant(timeStamp,granularity);
+		long timeStamp = granularity.before(anchor.getInf(),granules);
+		return new Instant(timeStamp,timeStamp,granularity);
 	}
 	
 	
@@ -36,7 +36,7 @@ public class Span extends UnanchoredTemporalElement {
 		if (granularity == null)
 			granularity = getGranularity();
 		
-		long timeStamp = granularity.after(anchor.getChronon(),granules);
-		return new Instant(timeStamp,granularity);
+		long timeStamp = granularity.after(anchor.getSup(),granules);
+		return new Instant(timeStamp,timeStamp,granularity);
 	}
 }

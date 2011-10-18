@@ -37,4 +37,5 @@ public interface CalendarManager {
             throws TemporalDataException;
     
 	public int[] getGranularityIdentifiers();
+	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException;
 }

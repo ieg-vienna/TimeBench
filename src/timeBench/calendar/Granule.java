@@ -1,6 +1,7 @@
 package timeBench.calendar;
 
 import timeBench.data.TemporalDataException;
+import timeBench.data.oo.Interval;
 
 /**
  * 
@@ -20,13 +21,28 @@ public class Granule {
 	private String label = null;
 	private Granularity granularity = null;
 	
-	Granule(long inf,long sup,Granularity granularity) {
-		this.inf = inf;
-		this.sup = sup;
-		this.granularity = granularity;
+	public Granule(long inf,long sup,Granularity granularity) throws TemporalDataException {
+		this(inf,sup,granularity,false);
+	}
+
+	public Granule(long inf,long sup,Granularity granularity, boolean forceNoCleaning) throws TemporalDataException {
+		if(forceNoCleaning) {
+			this.inf = inf;
+			this.sup = sup;
+			this.granularity = granularity;
+		} else {
+			Granule g2 = granularity.parseInfToGranule(inf);
+			this.inf = g2.getInf();
+			this.sup = g2.getInf();
+			this.granularity = granularity;
+		}
 	}
 	
-	Granule(long count,Granularity granularity) {
+	public Granule(Interval interval) throws TemporalDataException {
+		this(interval.getInf(),interval.getSup(),interval.getGranularity());
+	}
+	
+	public Granule(long count,Granularity granularity) {
 		this.count = count;
 		this.granularity = granularity;
 		}
@@ -43,5 +59,13 @@ public class Granule {
 			throw new TemporalDataException("Conversion of granule count to sup not implemented yet.");
 		else
 			return sup;
+	}
+
+	public Granule mapToGranularityAsGranule(int targetGranularityIdentifier) throws TemporalDataException {
+		return new Granule(inf,sup,new Granularity(granularity.getCalendar(), targetGranularityIdentifier));
+	}
+
+	public Granularity getGranularity() {
+		return granularity;
 	}
 }

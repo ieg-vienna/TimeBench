@@ -1,6 +1,7 @@
 package timeBench.data.oo;
 
 import timeBench.calendar.Granularity;
+import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 
@@ -74,12 +75,12 @@ public class AnchoredTemporalElement extends TemporalElement {
 		return relationalTemporalElement == null;
 	}
 
-	public Instant getSup() {
-		return new Instant(relationalTemporalElement == null ? supWhenDynamic : relationalTemporalElement.getSup());
+	public long getSup() {
+		return relationalTemporalElement == null ? supWhenDynamic : relationalTemporalElement.getSup();
 	}
-	
-	public Instant getInf() throws TemporalDataException {
-		return new Instant(relationalTemporalElement == null ? infWhenDynamic : relationalTemporalElement.getInf());
+		
+	public long getInf() {
+		return relationalTemporalElement == null ? infWhenDynamic : relationalTemporalElement.getInf();
 	}
 	
 	

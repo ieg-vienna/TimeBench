@@ -102,7 +102,6 @@ public class Granularity {
 		return calendar.parseStringToGranule(input,this);
 	}
 
-    // TODO do we need the 2 parseString methods? Alex needs only parseDate
     public Granule parseStringToGranule(String input, String dateTimePattern) throws ParseException, TemporalDataException {
         return calendar.parseStringToGranule(input,this, dateTimePattern);
     }
@@ -110,4 +109,8 @@ public class Granularity {
     public Granule parseDateToGranule(Date input) throws TemporalDataException {
         return calendar.parseDateToGranule(input, this);
     }
+
+	public Granule parseInfToGranule(long inf) throws TemporalDataException {
+		return calendar.parseInfToGranule(inf,this);
+	}
 }

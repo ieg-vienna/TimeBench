@@ -3,6 +3,8 @@ package timeBench.data.oo;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import timeBench.data.TemporalDataException;
+
 /**
  * 
  * 
@@ -15,7 +17,7 @@ import java.util.Iterator;
  *
  */
 public class TemporalDataset extends TemporalObject {
-	public TemporalDataset(timeBench.data.relational.TemporalDataset data)
+	public TemporalDataset(timeBench.data.relational.TemporalDataset data) throws TemporalDataException
 	{
 		long totalInf = Long.MAX_VALUE;
 		long totalSup = Long.MIN_VALUE;

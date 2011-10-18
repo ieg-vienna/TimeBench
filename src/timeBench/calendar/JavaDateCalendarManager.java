@@ -252,37 +252,54 @@ public class JavaDateCalendarManager implements CalendarManager {
     @Override
     public Granule parseDateToGranule(Date date, Granularity granularity)
             throws TemporalDataException {
-        Granule result;
+    	return createGranule(date, granularity);
+    }
+    
+    private int[] buildGranularityListForCreateGranule(Granularity granularity) throws TemporalDataException {
+        int[] result;
 
         switch (Granularities.fromInt(granularity.getIdentifier())) {
-        case Millisecond:
-            result = createGranule(date, granularity, new int[0]);
-            break;
-        case Day:
-            result = createGranule(date, granularity, new int[] {
-                    java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
-                    java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
-                    java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND });
-            break;
-        default:
-            throw new TemporalDataException("Granularity not implemented yet");
+        	case Millisecond:
+        		result = new int[0];
+        		break;
+        	case Day:
+        		result = new int[] {
+        				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
+        				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
+        	default:
+        		throw new TemporalDataException("Granularity not implemented yet");
         }
 
-        return result;
+        return result;    	
     }
 
-	private Granule createGranule(Date date, Granularity granularity, int[] fields) {
+	private Granule createGranule(long chronon, Granularity granularity) throws TemporalDataException {
+		GregorianCalendar calInf = new GregorianCalendar();
+		GregorianCalendar calSup = new GregorianCalendar();
+		calInf.setTimeInMillis(chronon);
+		calSup.setTimeInMillis(chronon);
+
+		return createGranule(calInf,calSup,granularity);
+	}
+	
+	private Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
 		calInf.setTime(date);
 		calSup.setTime(date);
 
-		for (int field : fields) {
+		return createGranule(calInf,calSup,granularity);
+	}
+	
+	private Granule createGranule(GregorianCalendar calInf, GregorianCalendar calSup, Granularity granularity) throws TemporalDataException {
+		for (int field : buildGranularityListForCreateGranule(granularity)) {
 			calInf.set(field, calInf.getActualMinimum(field));
 			calSup.set(field, calSup.getActualMaximum(field));		
 		}
 		
-		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),granularity);
+		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),granularity,true);
 	}
 
 
@@ -292,5 +309,14 @@ public class JavaDateCalendarManager implements CalendarManager {
 	@Override
 	public int[] getGranularityIdentifiers() {
 		return new int[] {0,1,2,3,4,5,6,7,8};
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#parseInfToGranule(long)
+	 */
+	@Override
+	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException {
+		return createGranule(inf,granularity);
 	}
 }

@@ -1,6 +1,7 @@
 package timeBench.data.oo;
 
 import timeBench.calendar.Granularity;
+import timeBench.data.TemporalDataException;
 
 /**
  * The class for an indeterminate instant. This is a stub, users have to work
@@ -15,11 +16,11 @@ import timeBench.calendar.Granularity;
  *
  */
 public class IndeterminateInstant extends Interval {
-	protected IndeterminateInstant(long inf,long sup) {
+	protected IndeterminateInstant(long inf,long sup) throws TemporalDataException {
 		super(inf,sup);
 	}
 	
-	protected IndeterminateInstant(long inf, long sup, Granularity granularity) {
+	protected IndeterminateInstant(long inf, long sup, Granularity granularity) throws TemporalDataException {
 		super(inf,sup,granularity);
 	}
 

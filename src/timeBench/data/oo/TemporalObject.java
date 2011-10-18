@@ -54,4 +54,8 @@ public class TemporalObject {
 		}
 		return result;
 	}
+	
+	public TemporalElement getTemporalElement() {
+		return temporalElement;
+	}
 }
