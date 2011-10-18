@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import timeBench.data.TemporalDataException;
 
 /**
@@ -19,6 +22,7 @@ import timeBench.data.TemporalDataException;
  * @author Tim Lammarsch
  *
  */
+@XmlJavaTypeAdapter(Calendar.CalendarAdapter.class) 
 public class Calendar {
 	private CalendarManager calendarManager = null;
 	
@@ -138,4 +142,21 @@ public class Calendar {
 	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException {
 		return calendarManager.parseInfToGranule(inf,granularity);
 	}
+	
+    static class CalendarAdapter extends XmlAdapter<Integer, Calendar> {
+        // TODO think of a better way to marshal calendars 
+        // TODO handle different calendars of a calendar manager
+
+        @Override
+        public Integer marshal(Calendar arg0) throws Exception {
+            // TODO get Integer value of a calendar manager for XML marshaling
+            return 0; // arg0.calendarManager;
+        }
+
+        @Override
+        public Calendar unmarshal(Integer arg0) throws Exception {
+            return CalendarManagerFactory.getSingleton(CalendarManagers.fromInt(arg0)).getDefaultCalendar();
+        }
+        
+    }
 }

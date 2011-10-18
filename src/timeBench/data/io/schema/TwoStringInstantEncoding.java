@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import prefuse.data.Tuple;
@@ -21,22 +23,35 @@ import timeBench.data.TemporalDataException;
  * 
  */
 @SuppressWarnings("unused")
+@XmlRootElement(name = "two-string-instant")
 public class TwoStringInstantEncoding extends InstantEncoding {
 
+    @XmlElement(name = "date-column", required = true)
     private String dateColumn;
+
+    @XmlElement(name = "time-column", required = true)
     private String timeColumn;
+
+    @XmlElement(name = "date-pattern", required = false)
     private String datePattern = "yyyy-MM-dd";
+
+    @XmlElement(name = "time-pattern", required = false)
     private String timePattern = "HH:mm:ss";
 
     // allow specification of Locale via encoding (e.g. May vs. Mai)
+    @XmlElement(required = false)
     private String language = "en";
 
     @XmlTransient
     private SimpleDateFormat format = null;
 
+    TwoStringInstantEncoding() {
+        super();
+    }
+
     public TwoStringInstantEncoding(String key, String dateColumn,
             String timeColumn, String datePattern, String timePattern) {
-        super(key);
+        super.setKey(key);
         this.dateColumn = dateColumn;
         this.timeColumn = timeColumn;
         this.datePattern = datePattern;

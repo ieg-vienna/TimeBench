@@ -1,0 +1,78 @@
+package timeBench.data.io.schema;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
+import timeBench.calendar.Calendar;
+import timeBench.data.TemporalDataException;
+
+@XmlRootElement(name = "temporal-data-column-specifaction")
+@XmlSeeAlso({ InstantEncoding.class, DateInstantEncoding.class,
+        StringInstantEncoding.class, IntervalEncoding.class })
+@XmlAccessorType(XmlAccessType.NONE)
+public class TemporalDataColumnSpecification {
+
+    @XmlElement(required = true)
+    private Calendar calendar;
+
+    // TODO use failOnIllegalRows in conversion
+    @XmlElement(name = "fail-on-illegal-rows", required = false)
+    private boolean failOnIllegalRows = false;
+
+    // cp. http://jaxb.java.net/guide/Mapping_interfaces.html
+    @XmlElementWrapper
+    @XmlAnyElement
+    private List<TemporalObjectEncoding> encodings = new LinkedList<TemporalObjectEncoding>();
+
+    public void init() throws TemporalDataException {
+        Set<String> keys = new TreeSet<String>();
+        for (TemporalObjectEncoding enc : encodings) {
+            // check for duplicate keys
+            if (!keys.add(enc.getKey()))
+                throw new TemporalDataException(
+                        "Duplicate key in specification: " + enc.getKey());
+
+            // initialize encodings with granularities and some validity checks
+            enc.init(calendar);
+
+        }
+
+    }
+
+    @Deprecated
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
+    }
+
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    @Deprecated
+    public void setFailOnIllegalRows(boolean failOnIllegalRows) {
+        this.failOnIllegalRows = failOnIllegalRows;
+    }
+
+    public boolean isFailOnIllegalRows() {
+        return failOnIllegalRows;
+    }
+
+    @Deprecated
+    public void addEncoding(TemporalObjectEncoding encoding) {
+        this.encodings.add(encoding);
+    }
+
+    public Iterable<TemporalObjectEncoding> getEncodings() {
+        return encodings;
+    }
+}

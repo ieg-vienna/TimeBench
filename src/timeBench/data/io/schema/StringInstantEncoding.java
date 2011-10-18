@@ -6,9 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import prefuse.data.Tuple;
+import timeBench.calendar.Calendar;
 import timeBench.data.TemporalDataException;
 
 /**
@@ -20,21 +23,36 @@ import timeBench.data.TemporalDataException;
  * @author Rind
  * 
  */
+@XmlRootElement(name = "string-instant")
 public class StringInstantEncoding extends InstantEncoding {
 
+    @XmlElement(name = "temporal-column", required = true)
     private String temporalColumn;
+
+    @XmlElement(name = "date-time-pattern", required = false)
     private String dateTimePattern = "yyyy-MM-dd";
+
     // allow specification of Locale via encoding (e.g. May vs. Mai)
+    @XmlElement(required = false)
     private String language = "en";
 
     @XmlTransient
     private DateFormat format = null;
 
+    public StringInstantEncoding() {
+    }
+
     public StringInstantEncoding(String key, String temporalColumn,
             String dateTimePattern) {
-        super(key);
+        super.setKey(key);
         this.temporalColumn = temporalColumn;
         this.dateTimePattern = dateTimePattern;
+    }
+
+    @Override
+    void init(Calendar calendar) throws TemporalDataException {
+        super.init(calendar);
+        prepareFormat();
     }
 
     // lazy

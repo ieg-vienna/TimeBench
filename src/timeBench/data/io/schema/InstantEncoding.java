@@ -11,8 +11,7 @@ import timeBench.data.relational.TemporalDataset;
 
 public abstract class InstantEncoding extends TemporalObjectEncoding {
 
-    public InstantEncoding(String key) {
-        super(key);
+    InstantEncoding() {
     }
 
     protected abstract Date buildDate(Tuple tuple) throws TemporalDataException;
@@ -36,5 +35,4 @@ public abstract class InstantEncoding extends TemporalObjectEncoding {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
-
 }

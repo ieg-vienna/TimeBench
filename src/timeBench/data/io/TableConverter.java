@@ -1,6 +1,5 @@
 package timeBench.data.io;
 
-import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -9,6 +8,7 @@ import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.TemporalDataException;
+import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.data.io.schema.TemporalObjectEncoding;
 import timeBench.data.relational.TemporalDataset;
 
@@ -16,19 +16,18 @@ public class TableConverter {
 
     private static final Logger logger = Logger.getLogger(TableConverter.class);
 
-    // TODO support for multiple schemata (e.g., 2 instants, interval) in a list
-
     public TemporalDataset importTable(Table table,
-            List<TemporalObjectEncoding> encodings) {
+            TemporalDataColumnSpecification spec) throws TemporalDataException {
         TemporalDataset tmpds = new TemporalDataset();
 
         // 1. analyze & prepare schemata
         // 1.1. auto-detect schema (optional)
+        spec.init();
 
         TreeMap<String, Integer> elements = new TreeMap<String, Integer>();
 
         // 1.2. prepare table for data elements
-        for (TemporalObjectEncoding encoding : encodings) {
+        for (TemporalObjectEncoding encoding : spec.getEncodings()) {
             try {
                 prepareDataColumns(tmpds, table, encoding);
             } catch (TemporalDataException e) {
@@ -45,7 +44,7 @@ public class TableConverter {
 
             try {
                 // 2.1. for each schema
-                for (TemporalObjectEncoding encoding : encodings) {
+                for (TemporalObjectEncoding encoding : spec.getEncodings()) {
 
                     // 2.1.1. extract temporal element & append to TempDS
                     encoding.buildTemporalElement(tmpds, tuple, elements);
@@ -108,7 +107,7 @@ public class TableConverter {
                 logger.trace("add data item " + col + " value "
                         + tuple.get(col));
             // TODO insert switch (columnType) and call setInt(getInt())
-            // if we are more serious about performance 
+            // if we are more serious about performance
             dataElements.set(rowNumber, col, tuple.get(col));
         }
         return rowNumber;
