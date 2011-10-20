@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import prefuse.data.io.DataIOException;
+import timeBench.data.TemporalDataException;
 import timeBench.data.relational.TemporalDataset;
 
 /**
@@ -29,11 +30,12 @@ public interface TemporalDatasetReader {
      * @param location
      *            the location to read the temporal dataset from
      * @return the loaded temporal dataset
+     * @throws TemporalDataException
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public TemporalDataset readData(String location)
-            throws DataIOException;
+    public TemporalDataset readData(String location) throws DataIOException,
+            TemporalDataException;
 
     /**
      * Read in a temporal dataset from the given URL.
@@ -41,9 +43,11 @@ public interface TemporalDatasetReader {
      * @param url
      *            the url to read the temporal dataset from
      * @return the loaded temporal dataset
+     * @throws TemporalDataException
      * @throws IOException
      */
-    public TemporalDataset readData(URL url) throws DataIOException;
+    public TemporalDataset readData(URL url) throws DataIOException,
+            TemporalDataException;
 
     /**
      * Read in a temporal dataset from the given File.
@@ -51,10 +55,12 @@ public interface TemporalDatasetReader {
      * @param f
      *            the file to read the temporal dataset from
      * @return the loaded temporal dataset
+     * @throws TemporalDataException
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public TemporalDataset readData(File f) throws DataIOException;
+    public TemporalDataset readData(File f) throws DataIOException,
+            TemporalDataException;
 
     /**
      * Read in a temporal dataset from the given InputStream.
@@ -62,8 +68,10 @@ public interface TemporalDatasetReader {
      * @param is
      *            the InputStream to read the temporal dataset from
      * @return the loaded temporal dataset
+     * @throws TemporalDataException
      * @throws IOException
      */
-    public TemporalDataset readData(InputStream is) throws DataIOException;
+    public TemporalDataset readData(InputStream is) throws DataIOException,
+            TemporalDataException;
 
 }

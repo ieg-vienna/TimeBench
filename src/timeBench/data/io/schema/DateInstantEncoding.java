@@ -3,12 +3,10 @@ package timeBench.data.io.schema;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import prefuse.data.Tuple;
 import timeBench.data.TemporalDataException;
 
-@XmlRootElement(name = "date-instant")
 public class DateInstantEncoding extends InstantEncoding {
 
     @XmlElement(name = "temporal-column", required = true)

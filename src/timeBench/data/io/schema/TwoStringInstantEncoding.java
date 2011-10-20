@@ -1,13 +1,11 @@
 package timeBench.data.io.schema;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import prefuse.data.Tuple;
@@ -22,8 +20,6 @@ import timeBench.data.TemporalDataException;
  * @author Rind
  * 
  */
-@SuppressWarnings("unused")
-@XmlRootElement(name = "two-string-instant")
 public class TwoStringInstantEncoding extends InstantEncoding {
 
     @XmlElement(name = "date-column", required = true)

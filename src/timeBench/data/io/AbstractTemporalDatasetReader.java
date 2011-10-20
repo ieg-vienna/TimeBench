@@ -9,6 +9,7 @@ import java.net.URL;
 
 import prefuse.data.io.DataIOException;
 import prefuse.util.io.IOLib;
+import timeBench.data.TemporalDataException;
 import timeBench.data.relational.TemporalDataset;
 
 /**
@@ -21,42 +22,44 @@ import timeBench.data.relational.TemporalDataset;
  * @author Alexander Rind
  */
 public abstract class AbstractTemporalDatasetReader implements
-	TemporalDatasetReader {
+        TemporalDatasetReader {
 
     @Override
-    public TemporalDataset readData(String location)
-	    throws DataIOException {
-	try {
-	    InputStream is = IOLib.streamFromString(location);
-	    if (is == null)
-		throw new DataIOException("Couldn't find " + location
-			+ ". Not a valid file, URL, or resource locator.");
-	    return readData(is);
-	} catch (IOException e) {
-	    throw new DataIOException(e);
-	}
+    public TemporalDataset readData(String location) throws DataIOException,
+            TemporalDataException {
+        try {
+            InputStream is = IOLib.streamFromString(location);
+            if (is == null)
+                throw new DataIOException("Couldn't find " + location
+                        + ". Not a valid file, URL, or resource locator.");
+            return readData(is);
+        } catch (IOException e) {
+            throw new DataIOException(e);
+        }
     }
 
     @Override
-    public TemporalDataset readData(URL url) throws DataIOException {
-	try {
-	    return readData(url.openStream());
-	} catch (IOException e) {
-	    throw new DataIOException(e);
-	}
+    public TemporalDataset readData(URL url) throws DataIOException,
+            TemporalDataException {
+        try {
+            return readData(url.openStream());
+        } catch (IOException e) {
+            throw new DataIOException(e);
+        }
     }
 
     @Override
-    public TemporalDataset readData(File f) throws DataIOException {
-	try {
-	    return readData(new FileInputStream(f));
-	} catch (FileNotFoundException e) {
-	    throw new DataIOException(e);
-	}
+    public TemporalDataset readData(File f) throws DataIOException,
+            TemporalDataException {
+        try {
+            return readData(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            throw new DataIOException(e);
+        }
     }
 
     @Override
     public abstract TemporalDataset readData(InputStream is)
-	    throws DataIOException;
+            throws DataIOException, TemporalDataException;
 
 }

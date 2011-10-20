@@ -3,7 +3,6 @@ package timeBench.data.io.schema;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import prefuse.data.Tuple;
 import timeBench.calendar.Calendar;
@@ -11,7 +10,6 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.oo.TemporalElement;
 import timeBench.data.relational.TemporalDataset;
 
-@XmlRootElement(name = "interval")
 public class IntervalEncoding extends TemporalObjectEncoding {
 
     @XmlElement(name = "begin", required = false)

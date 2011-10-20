@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import prefuse.data.Tuple;
@@ -23,7 +22,6 @@ import timeBench.data.TemporalDataException;
  * @author Rind
  * 
  */
-@XmlRootElement(name = "string-instant")
 public class StringInstantEncoding extends InstantEncoding {
 
     @XmlElement(name = "temporal-column", required = true)

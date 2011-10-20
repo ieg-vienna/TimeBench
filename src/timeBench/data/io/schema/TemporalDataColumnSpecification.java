@@ -1,5 +1,7 @@
 package timeBench.data.io.schema;
 
+import ieg.util.xml.TextTableFormat;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -7,33 +9,39 @@ import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 
 import timeBench.calendar.Calendar;
 import timeBench.data.TemporalDataException;
 
 @XmlRootElement(name = "temporal-data-column-specifaction")
-@XmlSeeAlso({ InstantEncoding.class, DateInstantEncoding.class,
-        StringInstantEncoding.class, IntervalEncoding.class })
 @XmlAccessorType(XmlAccessType.NONE)
 public class TemporalDataColumnSpecification {
-
+    
+    // TODO handle different calendars
     @XmlElement(required = true)
     private Calendar calendar;
 
-    // TODO use failOnIllegalRows in conversion
     @XmlElement(name = "fail-on-illegal-rows", required = false)
     private boolean failOnIllegalRows = false;
 
+    // there might be some better solution with @XmlAnyElement(lax = true)
     // cp. http://jaxb.java.net/guide/Mapping_interfaces.html
+    // but unmarshalling did not work (see TestXmlAny.java) 
     @XmlElementWrapper
-    @XmlAnyElement
+    @XmlElements( {
+        @XmlElement(name = "date-instant", type = DateInstantEncoding.class),
+        @XmlElement(name = "string-instant", type = StringInstantEncoding.class),
+        @XmlElement(name = "two-string-instant", type = TwoStringInstantEncoding.class),
+        @XmlElement(name = "interval", type = IntervalEncoding.class) })
     private List<TemporalObjectEncoding> encodings = new LinkedList<TemporalObjectEncoding>();
 
+    @XmlElement(name = "text-table")
+    private TextTableFormat textTableSpec = new TextTableFormat();
+    
     public void init() throws TemporalDataException {
         Set<String> keys = new TreeSet<String>();
         for (TemporalObjectEncoding enc : encodings) {
@@ -44,9 +52,7 @@ public class TemporalDataColumnSpecification {
 
             // initialize encodings with granularities and some validity checks
             enc.init(calendar);
-
         }
-
     }
 
     @Deprecated
@@ -74,5 +80,14 @@ public class TemporalDataColumnSpecification {
 
     public Iterable<TemporalObjectEncoding> getEncodings() {
         return encodings;
+    }
+    
+    public TextTableFormat getTableFormat() {
+        return this.textTableSpec;
+    }
+    
+    @Deprecated
+    public void setTableFormat(TextTableFormat format) {
+        this.textTableSpec = format;
     }
 }
