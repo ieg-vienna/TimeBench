@@ -15,13 +15,13 @@ import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.data.io.schema.TemporalObjectEncoding;
 import timeBench.data.relational.TemporalDataset;
 
-public class TableConverter extends AbstractTemporalDatasetReader {
+public class TextTableTemporalDatasetReader extends AbstractTemporalDatasetReader {
 
-    private static final Logger logger = Logger.getLogger(TableConverter.class);
+    private static final Logger logger = Logger.getLogger(TextTableTemporalDatasetReader.class);
 
     private TemporalDataColumnSpecification spec;
 
-    public TableConverter(TemporalDataColumnSpecification spec) {
+    public TextTableTemporalDatasetReader(TemporalDataColumnSpecification spec) {
         super();
         this.spec = spec;
     }
