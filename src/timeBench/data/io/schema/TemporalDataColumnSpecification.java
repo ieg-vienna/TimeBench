@@ -55,7 +55,6 @@ public class TemporalDataColumnSpecification {
         }
     }
 
-    @Deprecated
     public void setCalendar(Calendar calendar) {
         this.calendar = calendar;
     }
@@ -64,7 +63,6 @@ public class TemporalDataColumnSpecification {
         return calendar;
     }
 
-    @Deprecated
     public void setFailOnIllegalRows(boolean failOnIllegalRows) {
         this.failOnIllegalRows = failOnIllegalRows;
     }
@@ -73,7 +71,6 @@ public class TemporalDataColumnSpecification {
         return failOnIllegalRows;
     }
 
-    @Deprecated
     public void addEncoding(TemporalObjectEncoding encoding) {
         this.encodings.add(encoding);
     }
@@ -86,7 +83,6 @@ public class TemporalDataColumnSpecification {
         return this.textTableSpec;
     }
     
-    @Deprecated
     public void setTableFormat(TextTableFormat format) {
         this.textTableSpec = format;
     }

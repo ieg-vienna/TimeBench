@@ -1,6 +1,7 @@
 package timeBench.data.io;
 
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -10,17 +11,27 @@ import prefuse.data.Tuple;
 import prefuse.data.io.DataIOException;
 import prefuse.data.io.TableReader;
 import prefuse.util.collections.IntIterator;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarManagerFactory;
+import timeBench.calendar.CalendarManagers;
 import timeBench.data.TemporalDataException;
+import timeBench.data.io.schema.DateInstantEncoding;
 import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.data.io.schema.TemporalObjectEncoding;
 import timeBench.data.relational.TemporalDataset;
 
-public class TextTableTemporalDatasetReader extends AbstractTemporalDatasetReader {
+public class TextTableTemporalDatasetReader extends
+        AbstractTemporalDatasetReader {
 
-    private static final Logger logger = Logger.getLogger(TextTableTemporalDatasetReader.class);
+    private static final Logger logger = Logger
+            .getLogger(TextTableTemporalDatasetReader.class);
 
-    private TemporalDataColumnSpecification spec;
+    private TemporalDataColumnSpecification spec = null;
 
+    public TextTableTemporalDatasetReader() {
+        this.spec = null;
+    }
+    
     public TextTableTemporalDatasetReader(TemporalDataColumnSpecification spec) {
         super();
         this.spec = spec;
@@ -29,16 +40,53 @@ public class TextTableTemporalDatasetReader extends AbstractTemporalDatasetReade
     @Override
     public TemporalDataset readData(InputStream is) throws DataIOException,
             TemporalDataException {
-        TemporalDataset tmpds = new TemporalDataset();
+
+        TemporalDataColumnSpecification spec = (this.spec != null) ? this.spec
+                : new TemporalDataColumnSpecification();
+
         TableReader tableReader = spec.getTableFormat().getTableReader();
         Table table = tableReader.readTable(is);
-        importTable(table, tmpds);
+
+        if (this.spec == null)
+            scanTableForSpecification(table, spec);
+
+        TemporalDataset tmpds = new TemporalDataset();
+        importTable(table, tmpds, spec);
         table = null;
         return tmpds;
     }
 
-    public void importTable(Table table, TemporalDataset tmpds)
-            throws TemporalDataException {
+    // TODO should the class remember the spec or stay in auto-detection mode  
+    private static void scanTableForSpecification(Table table,
+            TemporalDataColumnSpecification spec) throws TemporalDataException {
+
+        Calendar calendar = CalendarManagerFactory.getSingleton(
+                CalendarManagers.JavaDate).getDefaultCalendar();
+        spec.setCalendar(calendar);
+
+        String temporalColumn = null;
+        LinkedList<String> dataColumns = new LinkedList<String>();
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            String col = table.getColumnName(i);
+            if (table.canGetDate(col) && temporalColumn == null)
+                temporalColumn = col;
+            else
+                dataColumns.add(col);
+        }
+
+        if (temporalColumn == null)
+            throw new TemporalDataException(
+                    "Imported data table does not have a recognized temporal column.");
+
+        DateInstantEncoding enc = new DateInstantEncoding("default",
+                temporalColumn);
+        enc.setDataColumns(dataColumns.toArray(new String[0]));
+        enc.setGranularity(calendar.getDiscreteTimeDomain());
+        spec.addEncoding(enc);
+    }
+
+    public static void importTable(Table table, TemporalDataset tmpds,
+            TemporalDataColumnSpecification spec) throws TemporalDataException {
 
         // 1. analyze & prepare schemata
         if (logger.isDebugEnabled())
@@ -97,7 +145,7 @@ public class TextTableTemporalDatasetReader extends AbstractTemporalDatasetReade
         }
     }
 
-    private void prepareDataColumns(TemporalDataset tmpds, Table table,
+    private static void prepareDataColumns(TemporalDataset tmpds, Table table,
             TemporalObjectEncoding schema) throws TemporalDataException {
         Table dataElements = tmpds.getDataElements();
 
@@ -120,7 +168,7 @@ public class TextTableTemporalDatasetReader extends AbstractTemporalDatasetReade
         }
     }
 
-    private int addDataElement(TemporalDataset tmpds, Tuple tuple,
+    private static int addDataElement(TemporalDataset tmpds, Tuple tuple,
             TemporalObjectEncoding schema) {
         Table dataElements = tmpds.getDataElements();
 
@@ -134,5 +182,13 @@ public class TextTableTemporalDatasetReader extends AbstractTemporalDatasetReade
             dataElements.set(rowNumber, col, tuple.get(col));
         }
         return rowNumber;
+    }
+    
+    public TemporalDataColumnSpecification getSpecification() {
+        return spec;
+    }
+
+    public void setSpecification(TemporalDataColumnSpecification spec) {
+        this.spec = spec;
     }
 }
