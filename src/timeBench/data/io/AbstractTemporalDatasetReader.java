@@ -13,7 +13,7 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.relational.TemporalDataset;
 
 /**
- * Abstract base class implementation of the GraphReader interface. Provides
+ * Abstract base class implementation of the TemporalDatasetReader interface. Provides
  * implementations for all but the
  * {@link timeBench.data.io.TemporalDatasetReader#readData(InputStream)} method.
  * 
