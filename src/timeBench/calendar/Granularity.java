@@ -113,4 +113,9 @@ public class Granularity {
 	public Granule parseInfToGranule(long inf) throws TemporalDataException {
 		return calendar.parseInfToGranule(inf,this);
 	}
+
+
+	public long getGranuleIdentifier(Granule granule) {
+		return calendar.getGranuleIdentifier(granule);		
+	}
 }

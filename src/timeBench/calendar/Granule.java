@@ -68,4 +68,8 @@ public class Granule {
 	public Granularity getGranularity() {
 		return granularity;
 	}
+
+	public long getIdentifier() {
+		return granularity.getGranuleIdentifier(this);
+	}
 }

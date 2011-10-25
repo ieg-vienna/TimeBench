@@ -319,4 +319,11 @@ public class JavaDateCalendarManager implements CalendarManager {
 	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException {
 		return createGranule(inf,granularity);
 	}
+
+
+	@Override
+	public long getGranuleIdentifier(Granule granule) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

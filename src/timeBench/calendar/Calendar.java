@@ -159,4 +159,8 @@ public class Calendar {
         }
         
     }
+
+	public long getGranuleIdentifier(Granule granule) {
+		return calendarManager.getGranuleIdentifier(granule);
+	}
 }
