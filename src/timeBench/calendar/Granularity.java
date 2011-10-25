@@ -115,7 +115,7 @@ public class Granularity {
 	}
 
 
-	public long getGranuleIdentifier(Granule granule) {
+	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendar.getGranuleIdentifier(granule);		
 	}
 }

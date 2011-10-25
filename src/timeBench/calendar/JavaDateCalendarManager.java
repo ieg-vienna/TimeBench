@@ -322,8 +322,44 @@ public class JavaDateCalendarManager implements CalendarManager {
 
 
 	@Override
-	public long getGranuleIdentifier(Granule granule) {
-		// TODO Auto-generated method stub
-		return 0;
+	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
+		long result = 0;
+		
+		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
+			case Millisecond:
+				result = granule.getInf();
+				break;
+			case Second:
+				result = granule.getInf()/1000;
+				break;
+			case Minute:
+				result = granule.getInf()/60000;
+				break;
+			case Hour:
+				result = granule.getInf()/360000;
+				break;
+			case Day:
+				result = granule.getInf()/8640000;
+				break;
+			case Week:
+				result = granule.getInf()/60480000;
+				break;
+			case Month:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(granule.getInf());
+				result = (cal.get(GregorianCalendar.YEAR)-1970)*12+(cal.get(GregorianCalendar.MONTH)-1);
+				break;}
+			case Quarter:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(granule.getInf());
+				result = (cal.get(GregorianCalendar.YEAR)-1970)*4+(cal.get(GregorianCalendar.MONTH)-1)/3;
+				break;}
+			case Year:{
+				GregorianCalendar cal = new GregorianCalendar();
+				result = cal.get(GregorianCalendar.YEAR)-1970;
+				break;}
+		}
+		
+		return result;
 	}
 }

@@ -17,7 +17,7 @@ import timeBench.data.oo.Interval;
 public class Granule {
 	private Long inf = null;
 	private Long sup = null;
-	private Long count = null;
+	private Long identifier = null;
 	private String label = null;
 	private Granularity granularity = null;
 	
@@ -42,21 +42,21 @@ public class Granule {
 		this(interval.getInf(),interval.getSup(),interval.getGranularity());
 	}
 	
-	public Granule(long count,Granularity granularity) {
-		this.count = count;
+	public Granule(long identifier,Granularity granularity) {
+		this.identifier = identifier;
 		this.granularity = granularity;
 		}
 	
 	public long getInf() throws TemporalDataException {
 		if (inf == null)
-			throw new TemporalDataException("Conversion of granule count to inf not implemented yet.");
+			throw new TemporalDataException("Conversion of granule identifier to inf not implemented yet.");
 		else
 			return inf;
 	}
 	
 	public long getSup() throws TemporalDataException {
 		if (sup == null)
-			throw new TemporalDataException("Conversion of granule count to sup not implemented yet.");
+			throw new TemporalDataException("Conversion of granule identifier to sup not implemented yet.");
 		else
 			return sup;
 	}
@@ -69,7 +69,9 @@ public class Granule {
 		return granularity;
 	}
 
-	public long getIdentifier() {
-		return granularity.getGranuleIdentifier(this);
+	public long getIdentifier() throws TemporalDataException {
+		if (identifier == null)
+			identifier = granularity.getGranuleIdentifier(this);
+		return identifier;
 	}
 }

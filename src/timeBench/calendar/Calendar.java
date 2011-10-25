@@ -160,7 +160,7 @@ public class Calendar {
         
     }
 
-	public long getGranuleIdentifier(Granule granule) {
+	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendarManager.getGranuleIdentifier(granule);
 	}
 }
