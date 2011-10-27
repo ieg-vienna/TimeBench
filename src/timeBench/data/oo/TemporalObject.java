@@ -2,6 +2,8 @@ package timeBench.data.oo;
 
 import java.util.ArrayList;
 
+import timeBench.data.TemporalDataException;
+
 /**
  * Base class for general Temporal Object.
  * 
@@ -15,7 +17,7 @@ import java.util.ArrayList;
  */
 public class TemporalObject {
 	protected TemporalElement temporalElement;
-	protected ArrayList<Object> dataAspects = new ArrayList<Object>();
+	protected Object dataAspects = null;
 	
 	/**
 	 * The parameterless constructor may only be used by classes that inherit from this class but explicitely
@@ -29,7 +31,7 @@ public class TemporalObject {
 	 * @param temporalAspects
 	 * @param dataAspects
 	 */
-	public TemporalObject(TemporalElement temporalElement,ArrayList<Object> dataAspects) {
+	public TemporalObject(TemporalElement temporalElement,Object dataAspects) {
 		this.temporalElement = temporalElement;
 		this.dataAspects = dataAspects;
 	}
@@ -37,25 +39,34 @@ public class TemporalObject {
 	/**
 	 * An object-oriented TemporalObject can be constructed from a relational TemporalObject
 	 * @param relationalTemporalObject
+	 * @throws TemporalDataException 
 	 */
-	public TemporalObject(timeBench.data.relational.TemporalObject relationalTemporalObject) {
-		this(new TemporalElement(relationalTemporalObject.getTemporalElement()),new ArrayList<Object>());
+	public TemporalObject(timeBench.data.relational.TemporalObject relationalTemporalObject) throws TemporalDataException {
+		this(TemporalElement.createFromRelationalTemporalElement(relationalTemporalObject.getTemporalElement()),new ArrayList<Object>());
+		ArrayList<Object> data = new ArrayList<Object>();
 		for(int i=0; i<relationalTemporalObject.getDataElement().getColumnCount();i++)
 		{
-			dataAspects.add(relationalTemporalObject.getDataElement().get(i));
+			data.add(relationalTemporalObject.getDataElement().get(i));
 		}
+		dataAspects = data;
 	}
 	
 	protected ArrayList<TemporalObject> getSubObjects() {
 		ArrayList<TemporalObject> result = new ArrayList<TemporalObject>();
-		for(Object o : dataAspects) {
-			if (o instanceof TemporalObject)
-				result.add((TemporalObject)o);
+		if (dataAspects instanceof ArrayList) {
+			for(Object o : (ArrayList<Object>)dataAspects) {
+				if (o instanceof TemporalObject)
+					result.add((TemporalObject)o);
+			}
 		}
 		return result;
 	}
 	
 	public TemporalElement getTemporalElement() {
 		return temporalElement;
+	}
+	
+	public Object getDataAspects() {
+		return dataAspects;
 	}
 }

@@ -262,8 +262,42 @@ public class JavaDateCalendarManager implements CalendarManager {
         	case Millisecond:
         		result = new int[0];
         		break;
+        	case Second:
+        		result = new int[] { java.util.Calendar.MILLISECOND };
+        		break;
+        	case Minute:
+        		result = new int[] { java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
+        	case Hour:
+        		result = new int[] { java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
         	case Day:
         		result = new int[] {
+        				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
+        				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
+        	case Week:
+        		result = new int[] { java.util.Calendar.DAY_OF_WEEK,
+        				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
+        				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
+        	case Month:
+        		result = new int[] { java.util.Calendar.DAY_OF_MONTH,
+        				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
+        				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
+        	case Quarter:
+        		result = new int[] { java.util.Calendar.DAY_OF_MONTH,
+        				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
+        				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
+        		break;
+        	case Year:
+        		result = new int[] { java.util.Calendar.DAY_OF_YEAR,
         				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
         				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
         				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
@@ -297,6 +331,35 @@ public class JavaDateCalendarManager implements CalendarManager {
 		for (int field : buildGranularityListForCreateGranule(granularity)) {
 			calInf.set(field, calInf.getActualMinimum(field));
 			calSup.set(field, calSup.getActualMaximum(field));		
+		}
+		
+		if(granularity.getIdentifier() == Granularities.Quarter.intValue) {
+			switch(calInf.get(GregorianCalendar.MONTH)) {
+				case GregorianCalendar.JANUARY:
+				case GregorianCalendar.FEBRUARY:
+				case GregorianCalendar.MARCH:
+					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.JANUARY);
+					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.MARCH);
+					break;
+				case GregorianCalendar.APRIL:
+				case GregorianCalendar.MAY:
+				case GregorianCalendar.JUNE:
+					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.APRIL);
+					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.JUNE);
+					break;
+				case GregorianCalendar.JULY:
+				case GregorianCalendar.AUGUST:
+				case GregorianCalendar.SEPTEMBER:
+					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.JULY);
+					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.SEPTEMBER);
+					break;
+				case GregorianCalendar.OCTOBER:
+				case GregorianCalendar.NOVEMBER:
+				case GregorianCalendar.DECEMBER:
+					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.OCTOBER);
+					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.DECEMBER);
+					break;
+			}
 		}
 		
 		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),granularity,true);
@@ -357,6 +420,108 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Year:{
 				GregorianCalendar cal = new GregorianCalendar();
 				result = cal.get(GregorianCalendar.YEAR)-1970;
+				break;}
+		}
+		
+		return result;
+	}
+
+
+	@Override
+	public Long getInf(Granule granule) throws TemporalDataException {
+		long result = 0;
+		
+		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
+			case Millisecond:
+				result = granule.getIdentifier();
+				break;
+			case Second:
+				result = granule.getIdentifier()*1000;
+				break;
+			case Minute:
+				result = granule.getIdentifier()*60000;
+				break;
+			case Hour:
+				result = granule.getIdentifier()*360000;
+				break;
+			case Day:
+				result = granule.getIdentifier()*8640000;
+				break;
+			case Week:
+				result = granule.getIdentifier()*60480000;
+				break;
+			case Month:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
+				result = cal.getTimeInMillis();
+				break;}
+			case Quarter:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
+				result = cal.getTimeInMillis();
+				break;}
+			case Year:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()+1970));
+				result = cal.getTimeInMillis();
+				break;}
+		}
+		
+		return result;
+	}
+
+
+	@Override
+	public Long getSup(Granule granule) throws TemporalDataException {
+		long result = 0;
+		
+		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
+			case Millisecond:
+				result = granule.getIdentifier();
+				break;
+			case Second:
+				result = granule.getIdentifier()*1000+999;
+				break;
+			case Minute:
+				result = granule.getIdentifier()*60000+59999;
+				break;
+			case Hour:
+				result = granule.getIdentifier()*360000+359999;
+				break;
+			case Day:
+				result = granule.getIdentifier()*8640000+8639999;
+				break;
+			case Week:
+				result = granule.getIdentifier()*60480000+60479999;
+				break;
+			case Month:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000-1;
+				break;}
+			case Quarter:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000-1;
+				cal.add(GregorianCalendar.MONTH, 1);
+				result += cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000;
+				cal.add(GregorianCalendar.MONTH, 1);
+				result += cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000;
+				break;}
+			case Year:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()+1970));
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_YEAR)*8640000-1;
 				break;}
 		}
 		

@@ -118,4 +118,14 @@ public class Granularity {
 	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendar.getGranuleIdentifier(granule);		
 	}
+
+
+	public Long getInf(Granule granule) throws TemporalDataException {
+		return calendar.getInf(granule);
+	}
+
+
+	public Long getSup(Granule granule) throws TemporalDataException {
+		return calendar.getSup(granule);
+	}
 }

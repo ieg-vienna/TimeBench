@@ -163,4 +163,14 @@ public class Calendar {
 	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendarManager.getGranuleIdentifier(granule);
 	}
+
+
+	public Long getInf(Granule granule) throws TemporalDataException {
+		return calendarManager.getInf(granule);
+	}
+
+
+	public Long getSup(Granule granule) throws TemporalDataException {
+		return calendarManager.getSup(granule);
+	}
 }

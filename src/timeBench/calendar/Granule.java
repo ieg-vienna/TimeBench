@@ -49,16 +49,14 @@ public class Granule {
 	
 	public long getInf() throws TemporalDataException {
 		if (inf == null)
-			throw new TemporalDataException("Conversion of granule identifier to inf not implemented yet.");
-		else
-			return inf;
+			inf = granularity.getInf(this);
+		return inf;
 	}
 	
 	public long getSup() throws TemporalDataException {
 		if (sup == null)
-			throw new TemporalDataException("Conversion of granule identifier to sup not implemented yet.");
-		else
-			return sup;
+			sup = granularity.getSup(this);
+		return sup;
 	}
 
 	public Granule mapToGranularityAsGranule(int targetGranularityIdentifier) throws TemporalDataException {
@@ -73,5 +71,10 @@ public class Granule {
 		if (identifier == null)
 			identifier = granularity.getGranuleIdentifier(this);
 		return identifier;
+	}
+	
+	public Interval getLifespan() throws TemporalDataException
+	{
+		return new Interval(getInf(),getSup(),granularity);
 	}
 }

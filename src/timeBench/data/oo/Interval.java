@@ -26,7 +26,7 @@ public class Interval extends AnchoredTemporalElement {
 		this(inf,sup,JavaDateCalendarManager.getSingleton().getDefaultCalendar().getDiscreteTimeDomain());
 	}
 	
-	protected Interval(long inf, long sup, Granularity granularity) throws TemporalDataException {
+	public Interval(long inf, long sup, Granularity granularity) throws TemporalDataException {
 		super(inf,sup,granularity);
 		parts.add(new Instant(new Granule(inf,inf,granularity)));
 		parts.add(new Instant(new Granule(sup,sup,granularity)));
