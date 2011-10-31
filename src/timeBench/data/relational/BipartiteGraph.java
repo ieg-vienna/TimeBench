@@ -103,9 +103,6 @@ public class BipartiteGraph extends CompositeTupleSet {
 
 	/**
 	 * Creates a new, empty Graph.
-	 * 
-	 * @param directed
-	 *            true for directed edges, false for undirected
 	 */
 	public BipartiteGraph() {
 		this(new Table(), new Table());
@@ -962,10 +959,6 @@ public class BipartiteGraph extends CompositeTupleSet {
 	// ------------------------------------------------------------------------
 	// Table and Column Listener
 
-	/**
-	 * Listener class for tracking updates from node and edge tables, and their
-	 * columns that determine the graph linkage structure.
-	 */
 	/**
 	 * Listener class for tracking updates from node and edge tables, and their
 	 * columns that determine the graph linkage structure.
