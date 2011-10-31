@@ -29,7 +29,7 @@ public class TemporalDataset extends TemporalObject {
         	timeBench.data.oo.TemporalObject ooTemporalObject = new timeBench.data.oo.TemporalObject(relationalTemporalObject);
         	aspects.add(ooTemporalObject);
         	if (relationalTemporalObject.getTemporalElement().isAnchored()) {
-        	    timeBench.data.relational.TemporalElement relationalTemporalElement = relationalTemporalObject.getTemporalElement();
+        	    timeBench.data.relational.GenericTemporalElement relationalTemporalElement = relationalTemporalObject.getTemporalElement().asGeneric();
                 totalInf = Math.min(totalInf, relationalTemporalElement.getInf());
                 totalSup = Math.max(totalInf, relationalTemporalElement.getSup());          
         	}

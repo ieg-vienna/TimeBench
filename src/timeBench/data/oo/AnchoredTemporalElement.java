@@ -1,7 +1,6 @@
 package timeBench.data.oo;
 
 import timeBench.calendar.Granularity;
-import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 
@@ -30,8 +29,10 @@ public class AnchoredTemporalElement extends TemporalElement {
 	long infWhenDynamic;
 	long supWhenDynamic;
 	
-	protected AnchoredTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
+	protected AnchoredTemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) throws TemporalDataException {
 		super(relationalTemporalElement);
+		if (! (super.relationalTemporalElement instanceof timeBench.data.relational.AnchoredTemporalElement))
+		    throw new TemporalDataException("not anchored");
 	}
 	
 	public AnchoredTemporalElement(long inf,long sup) {
@@ -76,11 +77,11 @@ public class AnchoredTemporalElement extends TemporalElement {
 	}
 
 	public long getSup() {
-		return relationalTemporalElement == null ? supWhenDynamic : relationalTemporalElement.getSup();
+		return relationalTemporalElement == null ? supWhenDynamic : ((timeBench.data.relational.AnchoredTemporalElement) relationalTemporalElement).getSup();
 	}
 		
 	public long getInf() {
-		return relationalTemporalElement == null ? infWhenDynamic : relationalTemporalElement.getInf();
+		return relationalTemporalElement == null ? infWhenDynamic : ((timeBench.data.relational.AnchoredTemporalElement) relationalTemporalElement).getInf();
 	}
 	
 	

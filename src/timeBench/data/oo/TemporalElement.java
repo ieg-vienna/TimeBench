@@ -68,7 +68,7 @@ public class TemporalElement {
 	 */
 	protected TemporalElement(timeBench.data.relational.TemporalElement relationalTemporalElement) {
 		granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),relationalTemporalElement.getGranularityId());
-		this.relationalTemporalElement = relationalTemporalElement;
+		this.relationalTemporalElement = relationalTemporalElement.asPrimitive();
 	}
 	
 	protected TemporalElement(Granularity granularity) {

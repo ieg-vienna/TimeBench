@@ -49,9 +49,9 @@ public class IntervalEncoding extends TemporalObjectEncoding {
     public void buildTemporalElement(TemporalDataset tmpds, Tuple tuple,
             Map<String, Integer> elements) throws TemporalDataException {
         if (beginKey != null && endKey != null) {
-            timeBench.data.relational.TemporalElement begin = tmpds
+            timeBench.data.relational.GenericTemporalElement begin = tmpds
                     .getTemporalElement(elements.get(beginKey));
-            timeBench.data.relational.TemporalElement end = tmpds
+            timeBench.data.relational.GenericTemporalElement end = tmpds
                     .getTemporalElement(elements.get(endKey));
 
             // XXX make this more correct using Tim's classes (e.g., check &
