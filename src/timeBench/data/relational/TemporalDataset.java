@@ -14,17 +14,20 @@ import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
 
 /**
- * This class maintains data structures that encompass a temporal dataset.
- * It consists of a {@link Table} of DataElements and a {@link Graph} of temporal elements.
- * Temporal occurrences of data elements are saved in an additional {@link Table}.
- * Furthermore, the class provides utility methods to index and query the dataset.
+ * This class maintains data structures that encompass a temporal dataset. It
+ * consists of a {@link Table} of DataElements and a {@link Graph} of temporal
+ * elements. Temporal occurrences of data elements are saved in an additional
+ * {@link Table}. Furthermore, the class provides utility methods to index and
+ * query the dataset.
  * 
- * <p><b>Warning:</b> If a pre-existing temporal elements table is used, 
- * it needs to provide four columns for inf, sup, kind, and granularity id. 
- * Furthermore, it needs to have {@link TemporalElement} as its tuple type. 
- *  
- * @author bilal
- *
+ * <p>
+ * <b>Warning:</b> If a pre-existing temporal elements table is used, it needs
+ * to provide four columns for inf, sup, kind, and granularity id. Furthermore,
+ * the temporal elements table should yield tuples of class
+ * {@link GenericTemporalElement}.
+ * 
+ * @author bilal, Alex
+ * 
  */
 public class TemporalDataset {
 	
@@ -33,7 +36,9 @@ public class TemporalDataset {
 	private Graph temporalElements;
 	
 	private Table dataElements;
-	
+
+    private TemporalElementManager temporalPrimitives;
+
 	// predefined column names for temporal elements 
 	public static final String INF = "inf";
 
@@ -51,13 +56,7 @@ public class TemporalDataset {
 		// define temporal element columns for nodes of the temporal e. graph
 		this.getTemporalElements().addColumns(this.getTemporalElementSchema());
 
-		// create specific tuple managers and set them to underlying structures
-		// invalidates existing tuples
-		TupleManager temporalTuples = new TupleManager(temporalElements.getNodeTable(), temporalElements, TemporalElement.class);
-		TupleManager edgeTuples = new TupleManager(temporalElements.getEdgeTable(), temporalElements, TableEdge.class);
-		temporalElements.setTupleManagers(temporalTuples, edgeTuples);
-		temporalElements.getNodeTable().setTupleManager(temporalTuples);
-		temporalElements.getEdgeTable().setTupleManager(edgeTuples);
+		this.setTemporalElementManager(new TemporalElementManager(this, true));
 	}
 	
 	/**
@@ -77,6 +76,9 @@ public class TemporalDataset {
         graph.getEdgeTable().setTupleManager(
                 new BipartiteEdgeManager(graph.getEdgeTable(), graph,
                         TemporalObject.class));
+
+        this.temporalPrimitives = new TemporalElementManager(this, false);
+        this.temporalPrimitives.invalidateAutomatically();
     }
 		
 	/**
@@ -99,8 +101,11 @@ public class TemporalDataset {
         graph.getEdgeTable().setTupleManager(
                 new BipartiteEdgeManager(graph.getEdgeTable(), graph,
                         TemporalObject.class));
-	}
-	
+
+        this.temporalPrimitives = new TemporalElementManager(this, false);
+        this.temporalPrimitives.invalidateAutomatically();
+    }
+
 	/**
 	 * Gets the data elements in the dataset
 	 * @return a {@link Table} containing the data elements
@@ -130,16 +135,25 @@ public class TemporalDataset {
      * @param n element id (temporal element table row number)
      * @return the TemporalElement instance corresponding to the element id
      */
-	public TemporalElement getTemporalElement(int n) {
-	    return (TemporalElement) temporalElements.getNode(n);
+	public GenericTemporalElement getTemporalElement(int n) {
+	    return (GenericTemporalElement) temporalElements.getNode(n);
 	}
+
+    /**
+     * Get the temporal primitive corresponding to its id.
+     * @param n element id (temporal element table row number)
+     * @return the temporal primitive corresponding to the element id
+     */
+    public TemporalElement getTemporalPrimitive(int n) {
+        return (TemporalElement) this.temporalPrimitives.getTuple(n);
+    }
 
     /**
      * Get an iterator over all temporal elements in the temporal dataset.
      * @return an iterator over TemporalElement instances
      */
     @SuppressWarnings("unchecked")
-    public Iterator<TemporalElement> temporalElements() {
+    public Iterator<GenericTemporalElement> temporalElements() {
         return temporalElements.nodes();
     }
 
@@ -157,6 +171,15 @@ public class TemporalDataset {
         };
     }
     
+    /**
+     * Get an iterator over all temporal primitives in the temporal dataset.
+     * @return an iterator over TemporalElement instances
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalElement> temporalPrimitives() {
+        return this.temporalPrimitives.iterator(temporalElements.nodeRows());
+    }
+
     /**
      * Get an iterator over all temporal objects in the temporal dataset.
      * The temporal object is a proxy tuple for a row in the occurrences table.
@@ -223,13 +246,19 @@ public class TemporalDataset {
 		nodeTable.set(row, SUP, sup);
 		nodeTable.set(row, GRANULARITY_ID, granularityId);
 		nodeTable.set(row, KIND, kind);
+
+        // enforce that class of proxy tuple is reconsidered
+        // this is safe because the object is not known outside of this method
+        // (exception are tuple listeners)
+        // this.temporalTuples.invalidate(row);
+
 		return row;
 	}
 	
-	// TODO do we want/need methods like this
+   // TODO do we want/need methods like this
     /**
-     * Add a new instant to the dataset. This method returns a proxy tuple this
-     * instant, which is of class {@link TemporalElement}.
+     * Add a new instant to the dataset. This method returns a proxy tuple of
+     * this instant, which is of class {@link Instant}.
      * 
      * @param inf
      *            the lower end of the temporal element
@@ -239,10 +268,38 @@ public class TemporalDataset {
      *            the granularityID of the temporal element
      * @return a proxy tuple of the created temporal element
      */
-    public TemporalElement addInstant(long inf, long sup, int granularityId) {
+    public Instant addInstant(long inf, long sup, int granularityId) {
         int row = this.addTemporalElement(inf, sup, granularityId,
                 TemporalDataset.PRIMITIVE_INSTANT);
-        return this.getTemporalElement(row);
+        Instant result = (Instant) this.temporalPrimitives.getTuple(row);
+        return result;
+    }
+    
+    /**
+     * Set a tuple manager for temporal elements and use it in the underlying
+     * data structures.
+     * 
+     * <p>
+     * Use this method carefully, as it will cause all existing Tuples retrieved
+     * from this dataset to be invalidated.
+     * 
+     * @param manager
+     *            tuple manager for temporal elements
+     */
+    private void setTemporalElementManager(TemporalElementManager manager) {
+//        TupleManager temporalTuples = new TupleManager(
+//                temporalElements.getNodeTable(), temporalElements,
+//                GenericTemporalElement.class);
+        TupleManager temporalTuples = manager;
+
+        // we also need to set a manager for edge tuples
+        TupleManager edgeTuples = new TupleManager(
+                temporalElements.getEdgeTable(), temporalElements,
+                TableEdge.class);
+
+        temporalElements.setTupleManagers(temporalTuples, edgeTuples);
+        temporalElements.getNodeTable().setTupleManager(temporalTuples);
+        temporalElements.getEdgeTable().setTupleManager(edgeTuples);
     }
     
     /**
@@ -263,7 +320,7 @@ public class TemporalDataset {
         return s;
     }
 
-    // predefined kinds of temporal elements
+	// predefined kinds of temporal elements
 	public static final int PRIMITIVE_SPAN = 0;
     public static final int PRIMITIVE_SET = 1;
     public static final int PRIMITIVE_INSTANT = 2;

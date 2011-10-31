@@ -15,27 +15,36 @@ import timeBench.data.util.DefaultIntervalComparator;
 import timeBench.data.util.IntervalIndex;
 
 public class TestTemporalDataSet {
+    
+    public static void evilStuff() {
+//        TemporalElement instant = new timeBench.data.relational.Instant();
+//        instant.setLong(TemporalDataset.KIND, TemporalDataset.PRIMITIVE_INSTANT);
+    }
+    
 	/**
 	 * Test
 	 * 
-	 * TODO convert to a junit test
 	 * 
 	 * @param args
 	 *            system arguments
 	 * @throws TemporalDataException 
 	 */
-	public static void main(String[] args) throws TemporalDataException {
+    public static void main(String[] args) throws TemporalDataException {
+	    
+	    evilStuff();
+		
 		TemporalDataset dataset = new TemporalDataset();
-		dataset.addTemporalElement(1, 10, 1, 1);
-		dataset.addTemporalElement(4, 12, 1, 1);
-		dataset.addTemporalElement(6, 8, 1, 1);
-		dataset.addTemporalElement(3, 14, 1, 1);
-        int begin = dataset.addTemporalElement(2, 6, 1, 1);
-        int end = dataset.addTemporalElement(5, 13, 1, 1);
+		dataset.addTemporalElement(1, 10, 1, 2);
+		dataset.addTemporalElement(4, 12, 1, 2);
+		dataset.addTemporalElement(6, 8, 1, 2);
+		dataset.addTemporalElement(3, 14, 1, 2);
+        int begin = dataset.addTemporalElement(2, 6, 1, 2);
+        int end = dataset.addTemporalElement(5, 13, 1, 2);
         int interval = dataset.addTemporalElement(2, 13, 1, 3);
         dataset.getTemporalElementsGraph().addEdge(begin, interval);
         dataset.getTemporalElementsGraph().addEdge(end, interval);
 		
+        
 		Table dataElements = dataset.getDataElements();
 		dataElements.addColumn("ID", String.class);
 		dataElements.addColumn("Age", int.class);
@@ -73,12 +82,16 @@ public class TestTemporalDataSet {
         for (TemporalElement te : dataset.temporalElementsIterable()) {
             System.out.println(te);
         }
+        Iterator<TemporalElement> teIterator = dataset.temporalPrimitives();
+        while (teIterator.hasNext()) {
+            System.out.println(teIterator.next());
+        }
 
         System.out.println("Test temporal elements graph");
         TemporalElement te = dataset.getTemporalElement(interval);
         System.out.println("Children of interval   count="
                 + te.getChildElementCount());
-        Iterator<TemporalElement> teIterator = te.childElements();
+        teIterator = te.childElements();
         while (teIterator.hasNext()) {
             System.out.println(teIterator.next());
         }

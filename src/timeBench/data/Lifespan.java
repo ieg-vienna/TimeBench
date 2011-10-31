@@ -11,7 +11,6 @@ package timeBench.data;
  * @author Rind
  * 
  */
-@Deprecated
 public interface Lifespan {
 
     /**
