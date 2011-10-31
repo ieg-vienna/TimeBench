@@ -68,4 +68,20 @@ public class UnanchoredTemporalElement extends TemporalElement {
 	 */	public Instant after(Instant anchor,Granularity granularity) throws TemporalDataException {
 		throw new TemporalDataException("No general way to calculate before() for unanchored temporal primitive.");
 	}
+	 
+	 
+	public long getDuration() throws TemporalDataException {
+		long duration = 0;
+		
+		for(TemporalElement iElement : parts ) {
+			if (iElement instanceof Span)
+				duration += ((Span)iElement).getDuration();
+			else if (iElement instanceof UnanchoredTemporalElement)
+				duration += ((UnanchoredTemporalElement)iElement).getDuration();
+			else 
+				throw new TemporalDataException("Illegal parts in Unanchored Temporal element while calculating total duration.");
+		}
+		
+		return duration;
+	}
 }

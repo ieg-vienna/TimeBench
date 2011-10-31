@@ -62,6 +62,18 @@ public class TemporalObject {
 		return result;
 	}
 	
+	public void anchorRelational(timeBench.data.relational.TemporalDataset dataset) throws TemporalDataException {
+		long inf = 0, sup = 0;
+		if (temporalElement instanceof AnchoredTemporalElement) {
+			inf = ((AnchoredTemporalElement)temporalElement).getInf();
+			sup = ((AnchoredTemporalElement)temporalElement).getSup();
+		} else if(temporalElement instanceof UnanchoredTemporalElement) {
+			inf = ((UnanchoredTemporalElement)temporalElement).getDuration();
+			sup = ((UnanchoredTemporalElement)temporalElement).getDuration();
+		}
+		dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), 0); //TODO kind festlegen 
+	}
+	
 	public TemporalElement getTemporalElement() {
 		return temporalElement;
 	}
