@@ -157,13 +157,8 @@ public class GenericTemporalElement extends TemporalElement {
         super.setInt(TemporalDataset.KIND, kind);
     }
 
-    /**
-     * converts to a temporal primitive. As a side effect the generic temporal
-     * element is invalidated.
-     * 
-     * @return a temporal primitive of the same underlying data row.
-     */
-    public TemporalElement asPrimitive() {
-        return super.getTemporalDataset().getTemporalPrimitive(super.m_row);
+    @Override
+    public GenericTemporalElement asGeneric() {
+        return this;
     }
 }

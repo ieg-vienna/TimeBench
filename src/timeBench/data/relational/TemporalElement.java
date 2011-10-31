@@ -103,8 +103,7 @@ public abstract class TemporalElement extends TableNode {
     }
     
     /**
-     * converts to a generic temporal element. As a side effect the current
-     * temporal element is invalidated.
+     * converts to a generic temporal element.
      * 
      * @return a generic temporal element of the same underlying data row.
      */
@@ -112,6 +111,15 @@ public abstract class TemporalElement extends TableNode {
         return this.tmpds.getTemporalElement(this.m_row);
     }
 
+    /**
+     * converts to a temporal primitive.
+     * 
+     * @return a temporal primitive of the same underlying data row.
+     */
+    public TemporalElement asPrimitive() {
+        return this.tmpds.getTemporalPrimitive(this.m_row);
+    }
+    
     /**
      * Get an iterator over all temporal elements that are parents of this
      * temporal element.
