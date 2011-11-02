@@ -21,8 +21,8 @@ public interface CalendarManager {
 
 	public Calendar calendar();
 	public Calendar getDefaultCalendar();
-	public long before(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException;
-	public long after(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException;
+	public long before(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException;
+	public long after(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException;
 	public Granule mapGranuleToGranularityAsGranule(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
 	public ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,int sourceGranularity, int targetGranularity)
 			throws TemporalDataException, TemporalDataException;

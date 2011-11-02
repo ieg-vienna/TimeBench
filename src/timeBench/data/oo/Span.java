@@ -15,7 +15,7 @@ import timeBench.data.TemporalDataException;
  *
  */
 public class Span extends UnanchoredTemporalElement {
-	private int granules = 0;	// RELATIONAL: replace with reference to relational table
+	private int granulesWhenDynamic = 0;
 	
 	protected Span(timeBench.data.relational.TemporalElement relationalTemporalElement)  throws TemporalDataException {
 		super(relationalTemporalElement);
@@ -27,7 +27,7 @@ public class Span extends UnanchoredTemporalElement {
 		if (granularity == null)
 			granularity = getGranularity();
 		
-		long timeStamp = granularity.before(anchor.getInf(),granules);
+		long timeStamp = granularity.before(anchor.getInf(),getDuration());
 		return new Instant(timeStamp,timeStamp,granularity);
 	}
 	
@@ -36,12 +36,12 @@ public class Span extends UnanchoredTemporalElement {
 		if (granularity == null)
 			granularity = getGranularity();
 		
-		long timeStamp = granularity.after(anchor.getSup(),granules);
+		long timeStamp = granularity.after(anchor.getSup(),getDuration());
 		return new Instant(timeStamp,timeStamp,granularity);
 	}
 	
 	
 	public long getDuration() {
-		return 0;
+		return relationalTemporalElement == null ? granulesWhenDynamic : ((timeBench.data.relational.AnchoredTemporalElement) relationalTemporalElement).getInf();
 	}
 }

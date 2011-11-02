@@ -17,6 +17,16 @@ import timeBench.data.TemporalDataException;
  *
  */
 public class TemporalDataset extends TemporalObject {
+	private timeBench.data.relational.TemporalDataset sourceData = null;
+	
+	public timeBench.data.relational.TemporalDataset getSourceData() {
+		return sourceData;
+	}
+
+	public void setSourceData(timeBench.data.relational.TemporalDataset sourceData) {
+		this.sourceData = sourceData;
+	}
+
 	public TemporalDataset(timeBench.data.relational.TemporalDataset data) throws TemporalDataException
 	{
 		long totalInf = Long.MAX_VALUE;

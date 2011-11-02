@@ -138,9 +138,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
 	 * @return The resulting timeStamp.
 	 */
-	public long before(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException {
+	public long before(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
 		javaCalendar.setTimeInMillis(timeStamp);
-		javaCalendar.add(beforeAfterSwitch(granularityIdentifier), -granules * (Granularities.fromInt(granularityIdentifier) == Granularities.Quarter ? 3 : 1));
+		javaCalendar.add(beforeAfterSwitch(granularityIdentifier), (int) (-granules * (Granularities.fromInt(granularityIdentifier) == Granularities.Quarter ? 3 : 1)));
 		return javaCalendar.getTimeInMillis();
 	}
 	
@@ -152,9 +152,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
 	 * @return The resulting timeStamp.
 	 */
-	public long after(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException {
+	public long after(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
 		javaCalendar.setTimeInMillis(timeStamp);
-		javaCalendar.add(beforeAfterSwitch(granularityIdentifier), granules * (Granularities.fromInt(granularityIdentifier) == Granularities.Quarter ? 3 : 1));
+		javaCalendar.add(beforeAfterSwitch(granularityIdentifier), (int) (granules * (Granularities.fromInt(granularityIdentifier) == Granularities.Quarter ? 3 : 1)));
 		return javaCalendar.getTimeInMillis();
 	}	
 	

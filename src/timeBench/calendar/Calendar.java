@@ -52,7 +52,7 @@ public class Calendar {
 	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
 	 * @return The resulting timeStamp.
 	 */
-	public long before(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException {
+	public long before(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
 		if (calendarManager instanceof JavaDateCalendarManager)
 			return ((JavaDateCalendarManager)calendarManager).before(timeStamp,granules,granularityIdentifier);
 		else
@@ -67,7 +67,7 @@ public class Calendar {
 	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
 	 * @return The resulting timeStamp.
 	 */
-	public long after(long timeStamp, int granules, int granularityIdentifier) throws TemporalDataException {
+	public long after(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
 		if (calendarManager instanceof JavaDateCalendarManager)
 			return ((JavaDateCalendarManager)calendarManager).after(timeStamp,granules,granularityIdentifier);
 		else

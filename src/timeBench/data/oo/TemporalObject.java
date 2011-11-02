@@ -64,14 +64,24 @@ public class TemporalObject {
 	
 	public void anchorRelational(timeBench.data.relational.TemporalDataset dataset) throws TemporalDataException {
 		long inf = 0, sup = 0;
+		int kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_SET;
 		if (temporalElement instanceof AnchoredTemporalElement) {
 			inf = ((AnchoredTemporalElement)temporalElement).getInf();
 			sup = ((AnchoredTemporalElement)temporalElement).getSup();
+			if (temporalElement instanceof Instant)
+				kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT;
+			else if (temporalElement instanceof Interval)
+				kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_INTERVAL;
 		} else if(temporalElement instanceof UnanchoredTemporalElement) {
 			inf = ((UnanchoredTemporalElement)temporalElement).getDuration();
 			sup = ((UnanchoredTemporalElement)temporalElement).getDuration();
+			if (temporalElement instanceof Span)
+				kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_SPAN;
 		}
-		dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), 0); //TODO kind festlegen 
+		int temporalIndex = dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), kind);
+		int objectIndex = dataset.getDataElements().addRow();
+		dataset.getDataElements().set(objectIndex, 0, dataAspects);
+		dataset.addOccurrence(objectIndex, temporalIndex);
 	}
 	
 	public TemporalElement getTemporalElement() {

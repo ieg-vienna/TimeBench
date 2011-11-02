@@ -38,7 +38,7 @@ public class Granularity {
      * @return The resulting timeStamp.
      * @throws TemporalDataException
      */
-	public long before(long timeStamp,int granules) throws TemporalDataException
+	public long before(long timeStamp,long granules) throws TemporalDataException
 	{
 		return calendar.before(timeStamp,granules,identifier);
 	}
@@ -50,7 +50,7 @@ public class Granularity {
      * @param granules The number of granules.
      * @return The resulting timeStamp.
      * @throws TemporalDataException
-     */	public long after(long timeStamp,int granules) throws TemporalDataException
+     */	public long after(long timeStamp,long granules) throws TemporalDataException
 	{
 		return calendar.after(timeStamp,granules,identifier);
 	}
