@@ -26,7 +26,7 @@ import timeBench.data.util.IntervalTreeIndex;
  * the temporal elements table should yield tuples of class
  * {@link GenericTemporalElement}.
  * 
- * @author bilal, Alex
+ * @author BA, AR, TL
  * 
  */
 public class TemporalDataset {
@@ -202,7 +202,8 @@ public class TemporalDataset {
 	/**
 	 * Gets all (temporal) occurrences of data elements
 	 * @return a {@link Table} containing all temporal occurrences
-	 * @deprecated
+	 * 
+	 * TL 2011-11-07: not deprecated because needed to generate VisualTable 
 	 */
 	public Table getOccurrences() {
 		return graph.getEdgeTable();
