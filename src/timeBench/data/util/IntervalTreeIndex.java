@@ -27,6 +27,8 @@
 package timeBench.data.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import prefuse.data.Table;
@@ -253,6 +255,7 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	public IntIterator rows(long value) {
 		final List<Node> result = new ArrayList<Node>();
 		search(value, (Node) root, result);
+		Collections.sort(result);		
 		return new NodesIntIterator(result);
 	}
 
@@ -280,6 +283,7 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	public IntIterator rows(long low, long high) {
 		final List<Node> result = new ArrayList<Node>();
 		search(low, high, (Node) root, result);
+		Collections.sort(result);
 		return new NodesIntIterator(result);
 	}
 
