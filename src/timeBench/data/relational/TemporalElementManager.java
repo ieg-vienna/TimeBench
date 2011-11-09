@@ -90,8 +90,13 @@ public class TemporalElementManager extends TupleManager {
         return t;
     }
     
+    // temporarily store if an existing element should be added
     private TemporalElement existingElement = null;
 
+    // Alternative 0: no constructor, use factory method instead
+    // Alternative 1: change TupleManager and make array protected
+    // Alternative 2: replicate array and many methods of TupleManager
+    
     protected int addTemporalElement(TemporalElement element, int row) {
         Tuple result;
 
