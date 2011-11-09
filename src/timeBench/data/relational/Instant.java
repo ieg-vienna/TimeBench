@@ -21,6 +21,11 @@ public class Instant extends AnchoredTemporalElement {
     protected Instant() {
     }
 
+    public Instant(TemporalDataset tmpds, long inf, long sup, int granularityId) {
+        int row = tmpds.addTemporalElement(inf, sup, granularityId, TemporalDataset.PRIMITIVE_INSTANT);
+        tmpds.getTemporalPrimitiveManager().addTemporalElement(this, row);
+    }
+
     @Override
     public Iterator<TemporalElement> childElements() {
         // an instant should not have children (speedup?)

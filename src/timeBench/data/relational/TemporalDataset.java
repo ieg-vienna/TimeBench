@@ -303,6 +303,10 @@ public class TemporalDataset {
         temporalElements.getEdgeTable().setTupleManager(edgeTuples);
     }
     
+    protected TemporalElementManager getTemporalPrimitiveManager() {
+        return this.temporalPrimitives;
+    }
+    
     /**
      * Get an instance of the default {@link Schema} used for
      * {@link TemporalElement} instances. Contains the data members internally

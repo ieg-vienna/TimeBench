@@ -62,7 +62,11 @@ public class TemporalElementManager extends TupleManager {
     protected TemporalElement newTuple(int row) {
         int kind = m_table.getInt(row, TemporalDataset.KIND);
         TemporalElement t;
-        if (generic || kind == -1)
+        if (this.existingElement != null) {
+            t = this.existingElement;
+            this.existingElement = null;
+        }
+        else if (generic || kind == -1)
             t = new GenericTemporalElement();
         else
             switch (kind) {
@@ -84,6 +88,30 @@ public class TemporalElementManager extends TupleManager {
 
         t.init(m_table, m_graph, tmpds, row);
         return t;
+    }
+    
+    private TemporalElement existingElement = null;
+
+    protected int addTemporalElement(TemporalElement element, int row) {
+        Tuple result;
+
+        // XXX check for multi thread issues
+        synchronized (this) {
+            // make sure there is no tuple for this row
+            // (typically the table listener produces a tuple on row add)
+            super.invalidate(row);
+
+            // keep track of this temporal element object
+            this.existingElement = element;
+            // this will call TemporalElementManager.newTuple(int)
+            result = super.getTuple(row);
+        }
+        
+        // check if it worked as expected (e.g. multi thread issue)
+        if (element != result)
+            throw new RuntimeException("added temporal element not identical");
+        
+        return row;
     }
 
     /**
