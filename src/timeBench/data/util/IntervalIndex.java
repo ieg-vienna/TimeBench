@@ -43,7 +43,7 @@ public interface IntervalIndex {
     
 
     /**
-     * Get an iterator over a range of rows.
+     * Get an iterator over all rows whose ranges overlap with the given interval
      * @param lo the minimum data value
      * @param hi the maximum data value
      * @return an iterator over a range of rows

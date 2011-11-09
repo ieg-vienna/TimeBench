@@ -60,6 +60,7 @@ public class TestTemporalDataSet {
 		dataset.addOccurrence(1, 1);
 		dataset.addOccurrence(2, 2);
 		dataset.addOccurrence(3, 3);
+		
 		dataset.addOccurrence(4, 4);
         dataset.addOccurrence(5, interval);
 
@@ -68,7 +69,7 @@ public class TestTemporalDataSet {
         System.out.println("Test interval index");
 		IntervalIndex index = dataset.createTemporalIndex(new DefaultIntervalComparator());
 		
-		IntIterator rows5 = index.rows(5);
+		IntIterator rows5 = index.rows(7, 8);
 		while (rows5.hasNext()) {
 		    int row = rows5.nextInt(); 
 			System.out.println(row + " " + dataset.getTemporalElement(row));

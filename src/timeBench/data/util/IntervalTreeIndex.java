@@ -242,8 +242,8 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	}
 
 	/**
-	 * Finds an interval that overlaps with a given interval.
-	 * 
+	 * Finds the intervals that overlap with a given value. 
+	 * The intervals are returned in a sorted order (using the provided {@link IntervalComparator}).
 	 * @param value
 	 *            The value to search with.
 	 * @return A handle to a node that overlaps with <code>k</code>, or the
@@ -270,7 +270,8 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	}
 
 	/**
-	 * Finds an interval that overlaps with a given interval.
+	 * Finds the intervals that overlaps with a given interval.
+	 * The intervals are returned in a sorted order (using the provided {@link IntervalComparator}).
 	 * 
 	 * @param interval
 	 *            The interval to overlap with.
