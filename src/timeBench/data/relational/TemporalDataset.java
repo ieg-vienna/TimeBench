@@ -5,9 +5,12 @@ import java.util.Iterator;
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.column.Column;
+import prefuse.data.expression.AbstractPredicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
+import prefuse.util.collections.IntIterator;
 import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
@@ -228,8 +231,14 @@ public class TemporalDataset {
 	public IntervalIndex createTemporalIndex(IntervalComparator comparator) {
 		Table elements = getTemporalElements();
 		Column colLo = elements.getColumn(INF);
-		Column colHi = elements.getColumn(SUP);
-		return new IntervalTreeIndex(elements, elements.rows(), colLo, colHi, comparator);
+		Column colHi = elements.getColumn(SUP);	
+		IntIterator rows = elements.rows(new AbstractPredicate() {
+			@Override
+			public boolean getBoolean(Tuple t) {
+				return t.getInt(KIND) != PRIMITIVE_SPAN;
+			}
+		});
+		return new IntervalTreeIndex(elements, rows, colLo, colHi, comparator);
 	}
 
 	/**
