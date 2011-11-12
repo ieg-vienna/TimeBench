@@ -38,6 +38,8 @@ public class TemporalDataset {
 	
 	private Graph temporalElements;
 	
+	private Graph occurrences;
+	
 	private Table dataElements;
 
     private TemporalElementManager temporalPrimitives;
@@ -73,7 +75,7 @@ public class TemporalDataset {
         this.dataElements = dataElements;
         this.temporalElements = new Graph(temporalElements, true);
         graph = new BipartiteGraph(dataElements, getTemporalElements());
-
+        occurrences = new Graph(graph.getEdgeTable(), true);
         // set a tuple manager for the edge table of the bipartite graph
         // so that its tuples are instances of TemporalObject
         graph.getEdgeTable().setTupleManager(
@@ -98,7 +100,7 @@ public class TemporalDataset {
 		this.dataElements = dataElements;
 		this.temporalElements = temporalElements;		
 		graph = new BipartiteGraph(dataElements, getTemporalElements());
-		
+        occurrences = new Graph(graph.getEdgeTable(), true);
         // set a tuple manager for the edge table of the bipartite graph 
         // so that its tuples are instances of TemporalObject
         graph.getEdgeTable().setTupleManager(
@@ -108,6 +110,7 @@ public class TemporalDataset {
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();
     }
+
 
 	/**
 	 * Gets the data elements in the dataset
@@ -209,7 +212,16 @@ public class TemporalDataset {
 	 * TL 2011-11-07: not deprecated because needed to generate VisualTable 
 	 */
 	public Table getOccurrences() {
-		return graph.getEdgeTable();
+		return occurrences.getNodeTable();
+	}
+
+	/**
+	 * Gets the graph that contains all (temporal) occurrences of data elements,
+	 * and the relations between these occurrences.
+	 * @return a {@link Graph} containing all occurrences and relations between them
+	 */
+	public Graph getOccurrencesGraph() {
+		return occurrences;
 	}
 	
 	/**
