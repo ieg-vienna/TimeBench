@@ -3,8 +3,10 @@ package timeBench.test;
 import java.util.Iterator;
 
 import prefuse.Visualization;
+import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Table;
+import prefuse.data.tuple.TableEdge;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.TemporalDataException;
 import prefuse.visual.VisualGraph;
@@ -56,13 +58,27 @@ public class TestTemporalDataSet {
 		dataElements.set(4, "ID", "Sha"); dataElements.set(4, "Age", 25);
 		dataElements.set(5, "ID", "Tra"); dataElements.set(5, "Age", 29);
 		
-		dataset.addOccurrence(0, 0);
-		dataset.addOccurrence(1, 1);
-		dataset.addOccurrence(2, 2);
-		dataset.addOccurrence(3, 3);
+		int occ0 = dataset.addOccurrence(0, 0);
+		int occ1 = dataset.addOccurrence(1, 1);
+		int occ2 = dataset.addOccurrence(2, 2);
+		int occ3 = dataset.addOccurrence(3, 3);
 		
-		dataset.addOccurrence(4, 4);
-        dataset.addOccurrence(5, interval);
+		int occ4 = dataset.addOccurrence(4, 4);
+		int occ5 = dataset.addOccurrence(5, interval);
+		
+		Graph occurrencesGraph = dataset.getOccurrencesGraph();
+		occurrencesGraph.addEdge(occ0, occ1);
+		occurrencesGraph.addEdge(occ0, occ2);
+		occurrencesGraph.addEdge(occ0, occ4);
+		occurrencesGraph.addEdge(occ3, occ4);
+		occurrencesGraph.addEdge(occ3, occ5);
+
+        System.out.println("Test relations between occurrences");
+
+		Iterator<?> neighbors = occurrencesGraph.getNode(occ0).neighbors();
+		while (neighbors.hasNext()) {
+			System.out.println(neighbors.next());
+		}
 
         System.out.println(dataset);
 
