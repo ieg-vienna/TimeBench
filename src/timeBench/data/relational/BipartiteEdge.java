@@ -1,7 +1,8 @@
 package timeBench.data.relational;
 
+import prefuse.data.Graph;
 import prefuse.data.Table;
-import prefuse.data.tuple.TableTuple;
+import prefuse.data.tuple.TableNode;
 
 /**
  * Edge implementation for a bi-partite graph.
@@ -14,7 +15,7 @@ import prefuse.data.tuple.TableTuple;
  * @author Rind
  * 
  */
-public class BipartiteEdge extends TableTuple {
+public class BipartiteEdge extends TableNode {
 
     // TODO handle bipartite edges that are also part of a graph (if needed?)
 
@@ -23,8 +24,14 @@ public class BipartiteEdge extends TableTuple {
      */
     protected BipartiteGraph bGraph;
 
+    @Deprecated
     protected void init(Table table, BipartiteGraph bGraph, int row) {
         super.init(table, null, row);
+        this.bGraph = bGraph;
+    }
+
+    protected void init(Table table, Graph graph, BipartiteGraph bGraph, int row) {
+        super.init(table, graph, row);
         this.bGraph = bGraph;
     }
 

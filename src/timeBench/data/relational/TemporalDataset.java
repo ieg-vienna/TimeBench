@@ -79,8 +79,8 @@ public class TemporalDataset {
         // set a tuple manager for the edge table of the bipartite graph
         // so that its tuples are instances of TemporalObject
         graph.getEdgeTable().setTupleManager(
-                new BipartiteEdgeManager(graph.getEdgeTable(), graph,
-                        TemporalObject.class));
+                new BipartiteEdgeManager(graph.getEdgeTable(), occurrences, 
+                        graph, TemporalObject.class));
 
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();
@@ -104,8 +104,8 @@ public class TemporalDataset {
         // set a tuple manager for the edge table of the bipartite graph 
         // so that its tuples are instances of TemporalObject
         graph.getEdgeTable().setTupleManager(
-                new BipartiteEdgeManager(graph.getEdgeTable(), graph,
-                        TemporalObject.class));
+                new BipartiteEdgeManager(graph.getEdgeTable(), occurrences, 
+                        graph, TemporalObject.class));
 
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();

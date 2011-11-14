@@ -1,5 +1,7 @@
 package timeBench.data.relational;
 
+import java.util.Iterator;
+
 import prefuse.data.Tuple;
 
 /**
@@ -25,6 +27,26 @@ public class TemporalObject extends BipartiteEdge {
     public TemporalElement getTemporalElement() {
         return (TemporalElement) bGraph.getNode2Table().getTuple(
                 bGraph.getTargetNode(getRow()));
+    }
+
+    /**
+     * Get an iterator over all temporal elements that are children of this
+     * temporal element.
+     * 
+     * @return an iterator over children
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalObject> childElements() {
+        return super.inNeighbors();
+    }
+
+    /**
+     * Gets the number of child temporal elements
+     * 
+     * @return the number of child temporal elements
+     */
+    public int getChildElementCount() {
+        return super.getInDegree();
     }
 
     /**
