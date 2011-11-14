@@ -81,23 +81,7 @@ public class TemporalObject {
 			if (relationalTemporalObject != null) {
 				if(subObject.getRelationalTemporalObject() == null)
 					throw new TemporalDataException("Cannot add a temporal object that is not anchored in relational model to temporal object that is anchored in relational model.");
-				//relationalTemporalObject
-				Tuple relationalDataElement = relationalTemporalObject.getDataElement();				
-				Table relationalDataTable = relationalDataElement.getTable();
-				Column relationalDataSubObjectsColumn = relationalDataTable.getColumn("timeBench.TemporalObject.subObjects");
-				if (relationalDataSubObjectsColumn == null) {
-					relationalDataTable.addColumn("timeBench.TemporalObject.subObjects", ArrayList.class);
-					relationalDataSubObjectsColumn = relationalDataTable.getColumn("timeBench.TemporalObject.subObjects");
-				}
-				if (relationalDataElement.get("timeBench.TemporalObject.subObjects") == null)
-					relationalDataElement.set("timeBench.TemporalObject.subObjects", new ArrayList());
-				Object listOfSubObjectsRaw = relationalDataElement.get("timeBench.TemporalObject.subObjects");
-				if (listOfSubObjectsRaw instanceof ArrayList) {
-					ArrayList listOfSubObjects = (ArrayList)listOfSubObjectsRaw;
-					listOfSubObjects.add(subObject.getRelationalTemporalObject());
-				}
-				else
-					throw new TemporalDataException("Trying to add a sub object to a temporal object where the relational model has a mismatching timeBench.TemporalObject.subObjects column.");
+				relationalTemporalObject.linkWithChild(subObject.getRelationalTemporalObject());
 			}
 			((ArrayList<Object>)dataAspects).add(subObject);
 		} else {

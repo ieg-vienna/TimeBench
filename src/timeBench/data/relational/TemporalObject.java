@@ -48,6 +48,15 @@ public class TemporalObject extends BipartiteEdge {
     public int getChildElementCount() {
         return super.getInDegree();
     }
+    
+    /**
+     * Links a TemporalObject as child to this Temporalobject.
+     * 
+     * @param child The Temporal Object that will be added as child.
+     */
+    public void linkWithChild(TemporalObject child) {
+        super.m_graph.addEdge(this, child);
+    } 
 
     /**
      * creates a human-readable string from a {@link TemporalObject}.
