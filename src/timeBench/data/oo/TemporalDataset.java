@@ -45,6 +45,7 @@ public class TemporalDataset extends TemporalObject {
         	}
 	    }
         temporalElement = new Interval(totalInf,totalSup);
+        sourceData = data;
 	}
 	
 	public ArrayList<TemporalObject> getTemporalObjects() {
