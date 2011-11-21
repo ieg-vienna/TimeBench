@@ -21,8 +21,9 @@ import timeBench.data.TemporalDataException;
  */
 public class TemporalObject {
 	protected TemporalElement temporalElement;
-	protected Object dataAspects = null;
+	protected ArrayList<Object> dataAspects = null;
 	protected timeBench.data.relational.TemporalObject relationalTemporalObject = null;
+	protected ArrayList<TemporalObject> subObjects = new ArrayList<TemporalObject>();
 	
 	/**
 	 * @return the relationalTemporalObject
@@ -43,7 +44,7 @@ public class TemporalObject {
 	 * @param temporalAspects
 	 * @param dataAspects
 	 */
-	public TemporalObject(TemporalElement temporalElement,Object dataAspects) {
+	public TemporalObject(TemporalElement temporalElement,ArrayList<Object> dataAspects) {
 		this.temporalElement = temporalElement;
 		this.dataAspects = dataAspects;
 	}
@@ -66,27 +67,16 @@ public class TemporalObject {
 	}
 	
 	protected ArrayList<TemporalObject> getSubObjects() {
-		ArrayList<TemporalObject> result = new ArrayList<TemporalObject>();
-		if (dataAspects instanceof ArrayList) {
-			for(Object o : (ArrayList<Object>)dataAspects) {
-				if (o instanceof TemporalObject)
-					result.add((TemporalObject)o);
-			}
-		}
-		return result;
+		return subObjects;
 	}
 	
 	public void addSubObject(TemporalObject subObject) throws TemporalDataException {
-		if (dataAspects instanceof ArrayList) {
-			if (relationalTemporalObject != null) {
-				if(subObject.getRelationalTemporalObject() == null)
-					throw new TemporalDataException("Cannot add a temporal object that is not anchored in relational model to temporal object that is anchored in relational model.");
-				relationalTemporalObject.linkWithChild(subObject.getRelationalTemporalObject());
-			}
-			((ArrayList<Object>)dataAspects).add(subObject);
-		} else {
-			throw new TemporalDataException("Trying to add a sub object to a temporal object that is not designed for that.");
+		if (relationalTemporalObject != null) {
+			if(subObject.getRelationalTemporalObject() == null)
+				throw new TemporalDataException("Cannot add a temporal object that is not anchored in relational model to temporal object that is anchored in relational model.");
+			relationalTemporalObject.linkWithChild(subObject.getRelationalTemporalObject());
 		}
+		subObjects.add(subObject);
 	}
 	
 	public void anchorRelational(timeBench.data.relational.TemporalDataset dataset) throws TemporalDataException {
@@ -107,7 +97,9 @@ public class TemporalObject {
 		}
 		int temporalIndex = dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), kind);
 		int objectIndex = dataset.getDataElements().addRow();
-		dataset.getDataElements().set(objectIndex, 0, dataAspects);
+		for(int i=0; i<dataAspects.size(); i++) {
+			dataset.getDataElements().set(objectIndex, i, dataAspects.get(i));
+		}
 		dataset.addOccurrence(objectIndex, temporalIndex);
 	}
 	
