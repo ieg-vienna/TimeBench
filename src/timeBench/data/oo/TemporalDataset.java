@@ -32,12 +32,10 @@ public class TemporalDataset extends TemporalObject {
 		long totalInf = Long.MAX_VALUE;
 		long totalSup = Long.MIN_VALUE;
         Iterator<timeBench.data.relational.TemporalObject> iTemporalObject = data.temporalObjects();
-        ArrayList<Object> aspects = new ArrayList<Object>();
-        dataAspects = aspects;
         while (iTemporalObject.hasNext()) {
         	timeBench.data.relational.TemporalObject relationalTemporalObject = iTemporalObject.next();
         	timeBench.data.oo.TemporalObject ooTemporalObject = new timeBench.data.oo.TemporalObject(relationalTemporalObject);
-        	aspects.add(ooTemporalObject);
+        	subObjects.add(ooTemporalObject);
         	if (relationalTemporalObject.getTemporalElement().isAnchored()) {
         	    timeBench.data.relational.GenericTemporalElement relationalTemporalElement = relationalTemporalObject.getTemporalElement().asGeneric();
                 totalInf = Math.min(totalInf, relationalTemporalElement.getInf());

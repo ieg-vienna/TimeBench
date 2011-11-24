@@ -50,7 +50,9 @@ public class TemporalObject {
 	}
 	
 	/**
-	 * An object-oriented TemporalObject can be constructed from a relational TemporalObject
+	 * An object-oriented TemporalObject can be constructed from a relational TemporalObject. Currently, this is
+	 * not a deep implementation in the sense of subobjects. Temporal objects that are related to this temporal
+	 * object are not constructed or linked.
 	 * @param relationalTemporalObject
 	 * @throws TemporalDataException 
 	 */
@@ -80,6 +82,7 @@ public class TemporalObject {
 	}
 	
 	public void anchorRelational(timeBench.data.relational.TemporalDataset dataset) throws TemporalDataException {
+
 		long inf = 0, sup = 0;
 		int kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_SET;
 		if (temporalElement instanceof AnchoredTemporalElement) {
@@ -101,6 +104,13 @@ public class TemporalObject {
 			dataset.getDataElements().set(objectIndex, i, dataAspects.get(i));
 		}
 		dataset.addOccurrence(objectIndex, temporalIndex);
+		
+		for(TemporalObject iO : subObjects) {
+			if(!dataset.getOccurrences().containsTuple(iO.getRelationalTemporalObject())) {
+				iO.anchorRelational(dataset);
+			}
+			relationalTemporalObject.linkWithChild(iO.getRelationalTemporalObject());
+		}
 	}
 	
 	public TemporalElement getTemporalElement() {
