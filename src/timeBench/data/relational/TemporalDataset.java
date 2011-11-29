@@ -32,7 +32,7 @@ import timeBench.data.util.IntervalTreeIndex;
  * @author BA, AR, TL
  * 
  */
-public class TemporalDataset {
+public class TemporalDataset implements Cloneable {
 	
 	private BipartiteGraph graph;
 	
@@ -110,6 +110,42 @@ public class TemporalDataset {
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();
     }
+	
+	
+	/**
+	 * Performs a semi-deep clone of the {@link TemporalDataset}, cloning the containing tables,
+	 * but not the data in den tables.
+	 */
+	public Object clone() {
+		TemporalDataset result = new TemporalDataset();
+		
+		result.dataElements = new Table();
+		result.dataElements.addColumns(this.dataElements.getSchema());
+		for(int i=0; i<this.dataElements.getRowCount(); i++ )
+			result.dataElements.addTuple(this.dataElements.getTuple(i));
+
+		result.temporalElements = new Graph();
+		result.temporalElements.getNodeTable().addColumns(this.temporalElements.getNodeTable().getSchema());
+		for(int i=0; i<this.temporalElements.getNodeTable().getRowCount(); i++ )
+			result.temporalElements.getNodeTable().addTuple(this.temporalElements.getNodeTable().getTuple(i));
+		result.temporalElements.getEdgeTable().addColumns(this.temporalElements.getEdgeTable().getSchema());
+		for(int i=0; i<this.temporalElements.getEdgeTable().getRowCount(); i++ )
+			result.temporalElements.getEdgeTable().addTuple(this.temporalElements.getEdgeTable().getTuple(i));
+		
+		result.graph = new BipartiteGraph(this.graph.getNode1Table(),this.graph.getNode2Table());
+		
+		result.occurrences = new Graph();
+		result.occurrences.getNodeTable().addColumns(this.occurrences.getNodeTable().getSchema());
+		for(int i=0; i<this.occurrences.getNodeTable().getRowCount(); i++ )
+			result.occurrences.getNodeTable().addTuple(this.occurrences.getNodeTable().getTuple(i));
+		result.occurrences.getEdgeTable().addColumns(this.occurrences.getEdgeTable().getSchema());
+		for(int i=0; i<this.occurrences.getEdgeTable().getRowCount(); i++ )
+			result.occurrences.getEdgeTable().addTuple(this.occurrences.getEdgeTable().getTuple(i));
+		
+		result.temporalPrimitives = this.temporalPrimitives;
+		
+		return result;
+	}
 
 
 	/**
