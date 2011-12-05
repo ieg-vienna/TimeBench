@@ -34,6 +34,9 @@ public abstract class TemporalObjectEncoding {
     @XmlElement(name = "granularity-id", required = true)
     private int granularityId;
 
+    @XmlElement(name = "granularity-context-id", required = true)
+    private int granularityContextId;
+    
     @XmlTransient
     private Granularity granularity = null;
 
@@ -54,7 +57,7 @@ public abstract class TemporalObjectEncoding {
 
     void init(Calendar calendar) throws TemporalDataException {
         if (granularity == null)
-            this.granularity = new Granularity(calendar, granularityId);
+            this.granularity = new Granularity(calendar, granularityId, granularityContextId);
     }
 
     public abstract void buildTemporalElement(TemporalDataset tmpds,

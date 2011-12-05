@@ -91,6 +91,15 @@ public abstract class TemporalElement extends TableNode {
     public int getGranularityId() {
         return super.getInt(TemporalDataset.GRANULARITY_ID);
     }
+    
+    /**
+     * Get the granularity context id.
+     * 
+     * @return the granularity context id
+     */
+    public int getGranularityContextId() {
+        return super.getInt(TemporalDataset.GRANULARITY_CONTEXT_ID);
+    }
 
     /**
      * Get the kind of temporal element (0 = span, 1 = set/temporal element, 2 =

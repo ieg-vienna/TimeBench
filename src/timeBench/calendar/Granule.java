@@ -59,8 +59,8 @@ public class Granule {
 		return sup;
 	}
 
-	public Granule mapToGranularityAsGranule(int targetGranularityIdentifier) throws TemporalDataException {
-		return new Granule(inf,sup,new Granularity(granularity.getCalendar(), targetGranularityIdentifier));
+	public Granule mapToGranularityAsGranule(int targetGranularityIdentifier, int targetContextIdentifier) throws TemporalDataException {
+		return new Granule(inf,sup,new Granularity(granularity.getCalendar(), targetGranularityIdentifier, targetContextIdentifier));
 	}
 
 	public Granularity getGranularity() {

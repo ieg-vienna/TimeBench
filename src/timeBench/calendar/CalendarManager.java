@@ -41,4 +41,6 @@ public interface CalendarManager {
 	public long getGranuleIdentifier(Granule granule) throws TemporalDataException;
 	public Long getInf(Granule granule) throws TemporalDataException;
 	public Long getSup(Granule granule) throws TemporalDataException;
+	public int getBottomGranularityIdentifier();
+	public int getTopGranularityIdentifier();
 }

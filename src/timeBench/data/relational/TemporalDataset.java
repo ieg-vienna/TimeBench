@@ -51,6 +51,8 @@ public class TemporalDataset implements Cloneable {
 
 	public static final String GRANULARITY_ID = "granularityID";
 
+	public static final String GRANULARITY_CONTEXT_ID = "granularityContextID";
+	
 	public static final String KIND = "kind";
 	
 	/**
@@ -294,15 +296,17 @@ public class TemporalDataset implements Cloneable {
 	 * @param inf the lower end of the temporal element
 	 * @param sup the upper end of the temporal element
 	 * @param granularityId the granularityID of the temporal element
+	 * @param granularityContextId the granularityContextID of the temporal element
 	 * @param kind the kind of the temporal element
 	 * @return the index of the created element in the table of temporal elements
 	 */
-	public int addTemporalElement(long inf, long sup, int granularityId, int kind) {
+	public int addTemporalElement(long inf, long sup, int granularityId, int granularityContextId, int kind) {
 		Table nodeTable = temporalElements.getNodeTable();
 		int row = nodeTable.addRow();
 		nodeTable.set(row, INF, inf);
 		nodeTable.set(row, SUP, sup);
 		nodeTable.set(row, GRANULARITY_ID, granularityId);
+		nodeTable.set(row, GRANULARITY_CONTEXT_ID, granularityContextId);
 		nodeTable.set(row, KIND, kind);
 
         // enforce that class of proxy tuple is reconsidered
@@ -324,10 +328,12 @@ public class TemporalDataset implements Cloneable {
      *            the upper end of the temporal element
      * @param granularityId
      *            the granularityID of the temporal element
+     * @param granularityContextId
+     *            the granularityContextID of the temporal element
      * @return a proxy tuple of the created temporal element
      */
-    public Instant addInstant(long inf, long sup, int granularityId) {
-        int row = this.addTemporalElement(inf, sup, granularityId,
+    public Instant addInstant(long inf, long sup, int granularityId,int granularityContextId) {
+        int row = this.addTemporalElement(inf, sup, granularityId, granularityContextId,
                 TemporalDataset.PRIMITIVE_INSTANT);
         Instant result = (Instant) this.temporalPrimitives.getTuple(row);
         return result;
@@ -373,6 +379,7 @@ public class TemporalDataset implements Cloneable {
         s.addColumn(INF, long.class, Long.MIN_VALUE);
         s.addColumn(SUP, long.class, Long.MAX_VALUE);
         s.addColumn(GRANULARITY_ID, int.class, -1);
+        s.addColumn(GRANULARITY_CONTEXT_ID, int.class, -1);
         s.addColumn(KIND, int.class, -1);
 
         return s;

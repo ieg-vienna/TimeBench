@@ -53,7 +53,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 		Week (5),
 		Month (6),
 		Quarter (7),
-		Year (8);
+		Year (8),
+		Calendar (16383),	// Calendar has one granule from start to end of the calendar
+		Top (32767);	// Top has one granule from start to end of time
 
 		
 		private int intValue;
@@ -371,7 +373,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 */
 	@Override
 	public int[] getGranularityIdentifiers() {
-		return new int[] {0,1,2,3,4,5,6,7,8};
+		return new int[] {0,1,2,3,4,5,6,7,8,32767};
 	}
 
 
@@ -526,5 +528,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 		}
 		
 		return result;
+	}
+	
+	public int getBottomGranularityIdentifier() {
+		return 0;
+	}
+	
+	public int getTopGranularityIdentifier() {
+		return 16383;
 	}
 }

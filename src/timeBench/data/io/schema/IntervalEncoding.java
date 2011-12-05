@@ -57,7 +57,7 @@ public class IntervalEncoding extends TemporalObjectEncoding {
             // XXX make this more correct using Tim's classes (e.g., check &
             // handle different granularities)
             int row = tmpds.addTemporalElement(begin.getInf(), end.getSup(),
-                    super.getGranularity().getIdentifier(),
+                    super.getGranularity().getIdentifier(), super.getGranularity().getGranularityContextIdentifier(),
                     TemporalDataset.PRIMITIVE_INTERVAL);
 
             // add edges to temporal element graph

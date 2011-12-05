@@ -17,7 +17,8 @@ import timeBench.data.TemporalDataException;
  */
 public class Granularity {
 	private Calendar calendar = null;
-	private int identifier;	
+	private int identifier;
+	private int contextIdentifier;
 	
 	
 	/**
@@ -25,9 +26,10 @@ public class Granularity {
 	 * @param calendar The calendar the granularity belongs to.
 	 * @param identifier The identifier of the granularity whose meaning depends on the calendar.
 	 */
-	public Granularity(Calendar calendar, int identifier){
+	public Granularity(Calendar calendar, int identifier, int contextIdentifier){
 		this.calendar = calendar;
 		this.identifier = identifier;
+		this.contextIdentifier = identifier;
 	}
 	
 	
@@ -85,6 +87,10 @@ public class Granularity {
 		return identifier;
 	}
 
+	public int getGranularityContextIdentifier() {
+		return contextIdentifier;
+	}
+	
 
 	/** Converts a granule in a granularity to another granularity and returns a list of all granules that are part of
 	 * it. Use heuristics if necessary.
@@ -127,5 +133,9 @@ public class Granularity {
 
 	public Long getSup(Granule granule) throws TemporalDataException {
 		return calendar.getSup(granule);
+	}
+
+    public long getContext(Granule granule)  throws TemporalDataException {
+		return calendar.getGranuleContextIdentifier(granule);
 	}
 }

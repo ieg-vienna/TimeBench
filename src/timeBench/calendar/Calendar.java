@@ -41,7 +41,7 @@ public class Calendar {
 	 * @return The discrete time domain as granularity.
 	 */
 	public Granularity getDiscreteTimeDomain() {
-		return new Granularity(this,0);
+		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
 	}
 
 	
@@ -134,8 +134,8 @@ public class Calendar {
 		return calendarManager.getGranularityIdentifiers();
 	}
 	
-	public Granularity getGranularityFromIdentifier(int identifier) {
-		return new Granularity(this,identifier);
+	public Granularity getGranularityFromIdentifier(int identifier,int contextIdentifier) {
+		return new Granularity(this,identifier,contextIdentifier);
 	}
 
 
@@ -163,7 +163,10 @@ public class Calendar {
 	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendarManager.getGranuleIdentifier(granule);
 	}
-
+	
+	public long getGranuleContextIdentifier(Granule granule) throws TemporalDataException {
+		return calendarManager.getGranuleIdentifier(granule);
+	}
 
 	public Long getInf(Granule granule) throws TemporalDataException {
 		return calendarManager.getInf(granule);

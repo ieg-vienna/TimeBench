@@ -23,7 +23,7 @@ public abstract class InstantEncoding extends TemporalObjectEncoding {
                 buildDate(tuple));
 
         int row = tmpds.addTemporalElement(granule.getInf(), granule.getSup(),
-                super.getGranularity().getIdentifier(),
+                super.getGranularity().getIdentifier(), super.getGranularity().getGranularityContextIdentifier(),
                 TemporalDataset.PRIMITIVE_INSTANT);
 
         elements.put(super.getKey(), row);

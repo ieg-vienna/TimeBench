@@ -98,7 +98,8 @@ public class TemporalObject {
 			if (temporalElement instanceof Span)
 				kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_SPAN;
 		}
-		int temporalIndex = dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), kind);
+		int temporalIndex = dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), 
+				temporalElement.getGranularity().getGranularityContextIdentifier() ,kind);
 		int objectIndex = dataset.getDataElements().addRow();
 		for(int i=0; i<dataAspects.size(); i++) {
 			dataset.getDataElements().set(objectIndex, i, dataAspects.get(i));

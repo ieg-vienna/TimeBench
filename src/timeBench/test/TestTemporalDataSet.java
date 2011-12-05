@@ -35,13 +35,13 @@ public class TestTemporalDataSet {
 	    evilStuff();
 		
 		TemporalDataset dataset = new TemporalDataset();
-		dataset.addTemporalElement(1, 10, 1, 2);
-		dataset.addTemporalElement(4, 12, 1, 2);
-		dataset.addTemporalElement(6, 8, 1, 2);
-		dataset.addTemporalElement(3, 14, 1, 2);
-        int begin = dataset.addTemporalElement(2, 6, 1, 2);
-        int end = dataset.addTemporalElement(5, 13, 1, 2);
-        int interval = dataset.addTemporalElement(2, 13, 1, 3);
+		dataset.addTemporalElement(1, 10, 1, 2, 2);
+		dataset.addTemporalElement(4, 12, 1, 2, 2);
+		dataset.addTemporalElement(6, 8, 1, 2, 2);
+		dataset.addTemporalElement(3, 14, 1, 2, 2);
+        int begin = dataset.addTemporalElement(2, 6, 1, 2, 2);
+        int end = dataset.addTemporalElement(5, 13, 1, 2, 2);
+        int interval = dataset.addTemporalElement(2, 13, 1, 2, 3);
         dataset.getTemporalElementsGraph().addEdge(begin, interval);
         dataset.getTemporalElementsGraph().addEdge(end, interval);
 		
