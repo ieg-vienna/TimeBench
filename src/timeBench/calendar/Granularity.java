@@ -29,7 +29,7 @@ public class Granularity {
 	public Granularity(Calendar calendar, int identifier, int contextIdentifier){
 		this.calendar = calendar;
 		this.identifier = identifier;
-		this.contextIdentifier = identifier;
+		this.contextIdentifier = contextIdentifier;
 	}
 	
 	
