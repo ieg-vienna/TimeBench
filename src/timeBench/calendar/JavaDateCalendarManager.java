@@ -404,7 +404,15 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getInf()/360000;
 				break;
 			case Day:
-				result = granule.getInf()/8640000;
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Week:
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK);
+						break;
+					default:
+						result = granule.getInf()/8640000;
+				}
 				break;
 			case Week:
 				result = granule.getInf()/60480000;

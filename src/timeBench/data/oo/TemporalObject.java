@@ -68,7 +68,7 @@ public class TemporalObject {
 		this.relationalTemporalObject = relationalTemporalObject;
 	}
 	
-	protected ArrayList<TemporalObject> getSubObjects() {
+	public ArrayList<TemporalObject> getSubObjects() {
 		return subObjects;
 	}
 	
@@ -103,8 +103,8 @@ public class TemporalObject {
 		int objectIndex = dataset.getDataElements().addRow();
 		for(int i=0; i<dataAspects.size(); i++) {
 			dataset.getDataElements().set(objectIndex, i, dataAspects.get(i));
-		}
-		dataset.addOccurrence(objectIndex, temporalIndex);
+		}		
+		relationalTemporalObject = dataset.getTemporalObject(dataset.addOccurrence(objectIndex, temporalIndex));
 		
 		for(TemporalObject iO : subObjects) {
 			if(!dataset.getOccurrences().containsTuple(iO.getRelationalTemporalObject())) {
@@ -118,7 +118,17 @@ public class TemporalObject {
 		return temporalElement;
 	}
 	
-	public Object getDataAspects() {
-		return dataAspects;
+	//public ArrayList<Object> getDataAspects() {
+	//	return dataAspects;
+	//}
+	
+	public Object setDataAspect(int index,Object element) {
+		if (relationalTemporalObject != null)
+			relationalTemporalObject.getDataElement().set(index, element);
+		return dataAspects.set(index, element);
+	}
+	
+	public Object getDataAspect(int index) {
+		return dataAspects.get(index);
 	}
 }
