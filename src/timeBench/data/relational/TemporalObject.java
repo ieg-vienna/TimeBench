@@ -2,6 +2,8 @@ package timeBench.data.relational;
 
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+
 import prefuse.data.Tuple;
 
 /**
@@ -13,6 +15,8 @@ import prefuse.data.Tuple;
  *
  */
 public class TemporalObject extends BipartiteEdge {
+    
+    static Logger logger = Logger.getLogger(TemporalObject.class); 
     
     /**
      * @return the data element
@@ -46,7 +50,7 @@ public class TemporalObject extends BipartiteEdge {
      * @return the number of child temporal elements
      */
     public int getChildElementCount() {
-        return super.getInDegree();
+        return super.m_graph.getInDegree(this);
     }
     
     /**
@@ -55,7 +59,11 @@ public class TemporalObject extends BipartiteEdge {
      * @param child The Temporal Object that will be added as child.
      */
     public void linkWithChild(TemporalObject child) {
-        super.m_graph.addEdge(this, child);
+        super.m_graph.addEdge(child, this);
+        logger.trace("link with child: " + this.getRow() + " <- " + child.getRow() 
+                + " my childs: " + this.getChildElementCount() 
+                + " total childs: " + super.m_graph.getEdgeCount() 
+                + " total nodes: " + super.m_graph.getNodeCount());
     } 
 
     /**
