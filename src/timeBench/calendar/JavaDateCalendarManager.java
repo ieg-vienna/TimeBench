@@ -94,6 +94,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 				case 6: return Granularities.Month;
 				case 7: return Granularities.Quarter;
 				case 8: return Granularities.Year;
+				case 16383: return Granularities.Calendar; 
+				case 32767: return Granularities.Top; 
 				default: throw new TemporalDataException("Unknown Granularity");
 			}
 		}
@@ -428,17 +430,24 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(granule.getInf());
-				result = (cal.get(GregorianCalendar.YEAR)-1970)*12+(cal.get(GregorianCalendar.MONTH)-1);
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Year:
+						result = cal.get(GregorianCalendar.MONTH)-1;
+						break;
+					default:
+						result = (cal.get(GregorianCalendar.YEAR)-1970)*12+(cal.get(GregorianCalendar.MONTH)-1);
+						break;
+					}
 				break;}
 			case Quarter:{
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(granule.getInf());
 				result = (cal.get(GregorianCalendar.YEAR)-1970)*4+(cal.get(GregorianCalendar.MONTH)-1)/3;
 				break;}
-			case Year:{
+			case Year:
 				GregorianCalendar cal = new GregorianCalendar();
 				result = cal.get(GregorianCalendar.YEAR)-1970;
-				break;}
+				break;
 		}
 		
 		return result;
