@@ -80,10 +80,18 @@ public class TemporalDataset implements Cloneable {
         occurrences = new Graph(graph.getEdgeTable(), true);
         // set a tuple manager for the edge table of the bipartite graph
         // so that its tuples are instances of TemporalObject
-        graph.getEdgeTable().setTupleManager(
+        TupleManager tempObjectManager = 
                 new BipartiteEdgeManager(graph.getEdgeTable(), occurrences, 
-                        graph, TemporalObject.class));
-
+                        graph, TemporalObject.class);
+        graph.getEdgeTable().setTupleManager(tempObjectManager);
+        
+        TupleManager tempObjectEdgeManager = new TupleManager(
+                occurrences.getEdgeTable(), occurrences,
+                TableEdge.class);
+        occurrences.setTupleManagers(tempObjectManager, tempObjectEdgeManager);
+        occurrences.getNodeTable().setTupleManager(tempObjectManager);
+        occurrences.getEdgeTable().setTupleManager(tempObjectEdgeManager);
+        
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();
     }
@@ -105,9 +113,11 @@ public class TemporalDataset implements Cloneable {
         occurrences = new Graph(graph.getEdgeTable(), true);
         // set a tuple manager for the edge table of the bipartite graph 
         // so that its tuples are instances of TemporalObject
-        graph.getEdgeTable().setTupleManager(
-                new BipartiteEdgeManager(graph.getEdgeTable(), occurrences, 
-                        graph, TemporalObject.class));
+        TupleManager tempObjectManager = 
+            new BipartiteEdgeManager(graph.getEdgeTable(), occurrences, 
+                    graph, TemporalObject.class);
+        graph.getEdgeTable().setTupleManager(tempObjectManager);
+        occurrences.getNodeTable().setTupleManager(tempObjectManager);
 
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();
