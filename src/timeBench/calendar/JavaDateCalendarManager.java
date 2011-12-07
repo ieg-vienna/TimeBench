@@ -408,7 +408,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week:
 						GregorianCalendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)-2)%7;
+						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7;
 						break;
 					default:
 						result = granule.getInf()/8640000;
