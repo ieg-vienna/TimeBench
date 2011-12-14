@@ -40,6 +40,8 @@ public class TemporalDataset implements Cloneable {
 	
 	private Graph occurrences;
 	
+	private int[] roots = null;	// If we have a forest or tree of occurences, null for tables
+	
 	private Table dataElements;
 
     private TemporalElementManager temporalPrimitives;
@@ -175,6 +177,24 @@ public class TemporalDataset implements Cloneable {
 		return result;
 	}
 
+
+	/**
+	 * Gets the roots if the TemporalObjects form a wood, the root, if they form a tree, or null for tables
+	 * 
+	 * @return the roots
+	 */
+	public int[] getRoots() {
+		return roots;
+	}
+
+	/**
+	 * Sets the roots: If the TemporalObjects form a wood use the roots, if they form a tree, use the root, for tables set null
+	 * 
+	 * @param roots the roots to set
+	 */
+	public void setRoots(int[] roots) {
+		this.roots = roots;
+	}
 
 	/**
 	 * Gets the data elements in the dataset

@@ -131,4 +131,8 @@ public class TemporalObject {
 	public Object getDataAspect(int index) {
 		return dataAspects.get(index);
 	}
+	
+	public int getDataAspectsSize() {
+		return dataAspects.size();
+	}
 }
