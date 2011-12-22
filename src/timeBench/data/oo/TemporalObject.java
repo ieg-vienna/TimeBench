@@ -81,10 +81,11 @@ public class TemporalObject {
 		subObjects.add(subObject);
 	}
 	
-	public void anchorRelational(timeBench.data.relational.TemporalDataset dataset) throws TemporalDataException {
-
+	public int anchorRelational(timeBench.data.relational.TemporalDataset dataset) throws TemporalDataException {			
 		long inf = 0, sup = 0;
 		int kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_SET;
+		int index = 0;
+		
 		if (temporalElement instanceof AnchoredTemporalElement) {
 			inf = ((AnchoredTemporalElement)temporalElement).getInf();
 			sup = ((AnchoredTemporalElement)temporalElement).getSup();
@@ -104,7 +105,8 @@ public class TemporalObject {
 		for(int i=0; i<dataAspects.size(); i++) {
 			dataset.getDataElements().set(objectIndex, i, dataAspects.get(i));
 		}		
-		relationalTemporalObject = dataset.getTemporalObject(dataset.addOccurrence(objectIndex, temporalIndex));
+		index = dataset.addOccurrence(objectIndex, temporalIndex);
+		relationalTemporalObject = dataset.getTemporalObject(index);
 		
 		for(TemporalObject iO : subObjects) {
 			if(!dataset.getOccurrences().containsTuple(iO.getRelationalTemporalObject())) {
@@ -112,6 +114,8 @@ public class TemporalObject {
 			}
 			relationalTemporalObject.linkWithChild(iO.getRelationalTemporalObject());
 		}
+		
+		return index;
 	}
 	
 	public TemporalElement getTemporalElement() {

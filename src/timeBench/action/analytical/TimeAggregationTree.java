@@ -10,6 +10,7 @@ import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.TemporalDataException;
 import timeBench.data.oo.AnchoredTemporalElement;
+import timeBench.data.oo.Interval;
 import timeBench.data.oo.TemporalDataset;
 import timeBench.data.oo.TemporalElement;
 import timeBench.data.oo.TemporalObject;
@@ -101,12 +102,13 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			lastBin++;
 		}
 		ArrayList<HashMap<Long,TemporalObject>> aggregatedObjects = new ArrayList<HashMap<Long,TemporalObject>>();
+		int lastRelationalIndex = 0;
 		int aggregatedObjectsLevel = 0;
 		for(int i=bins.size()-1; i>=0;i--) {
 			aggregatedObjects.add(new HashMap<Long,TemporalObject>());
 			for(long iKey : bins.get(i).keySet()) {
 				double[] numObjects = new double[temporalDataset.getTemporalObjects().get(0).getDataAspectsSize()];
-				double[] totalValue = new double[temporalDataset.getTemporalObjects().get(0).getDataAspectsSize()];
+				ArrayList<Object> totalValue = new ArrayList<Object>(temporalDataset.getTemporalObjects().get(0).getDataAspectsSize());
 				for(TemporalObject iObject : bins.get(i).get(iKey) ) {
 					double[] values = new double[iObject.getDataAspectsSize()];
 					for (int j=0; j<iObject.getDataAspectsSize(); j++)
@@ -127,32 +129,38 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 						}
 						if(missingValueIdentifier != null && missingValueIdentifier != values[j]) { 
 							numObjects[j]++;
-							totalValue[j]+=values[j];
+							totalValue.set(j, (Double)totalValue.get(j)+values[j]);
 						}
 					}
 				}
-				for(int j=0;j<totalValue.length;j++) {
+				for(int j=0;j<totalValue.size();j++) {
 					if (numObjects[j] != 0) {
-					totalValue[j] /= numObjects[j];
+						totalValue.set(j, (Double)totalValue.get(j)/numObjects[j]);
 					} else {
-						
+						if (missingValueIdentifier != null )
+							totalValue.set(j,  missingValueIdentifier);
+						else
+							totalValue.set(j,  Double.NaN);
 					}
-				}
+				}				
 				try {
-					AggregationTreeTemporalObject newObject = null;
+					ArrayList<TemporalObject> childObjects = null;
 					if (aggregatedObjectsLevel == 0)
-						newObject =	new AggregationTreeTemporalObject(iKey,granularities[bins.size()-i-1],totalValue,bins.get(i).get(iKey));
+						childObjects = bins.get(i).get(iKey);
 					else {
-						ArrayList<TemporalObject> childObjects = new ArrayList<TemporalObject>();
+						childObjects = new ArrayList<TemporalObject>();
 						for(TemporalObject iObject : aggregatedObjects.get(aggregatedObjectsLevel-1).values()) {
 							Granule granule = new Granule(((AnchoredTemporalElement)iObject.getTemporalElement()).lifeSpan().getInf(),
 									((AnchoredTemporalElement)iObject.getTemporalElement()).lifeSpan().getSup(),granularities[bins.size()-i-1]);
 							if (granule.getIdentifier() == iKey)
 								childObjects.add(iObject);
 						}
-						newObject =	new AggregationTreeTemporalObject(iKey,granularities[bins.size()-i-1],totalValue, childObjects);
 					}
-					newObject.anchorRelational(datasetContainer.getWorkingDataset().getSourceData());
+					AnchoredTemporalElement start = (AnchoredTemporalElement)childObjects.get(0).getTemporalElement();
+					AnchoredTemporalElement stop = (AnchoredTemporalElement)childObjects.get(childObjects.size()-1).getTemporalElement();
+					Interval interval = new Interval(start.getInf(),stop.getSup(),granularities[bins.size()-i-1]);
+					TemporalObject newObject =	new TemporalObject(interval,totalValue);
+					lastRelationalIndex = newObject.anchorRelational(workingDataset);
 					aggregatedObjects.get(aggregatedObjectsLevel).put(iKey,newObject);
 				} catch (TemporalDataException e) {
 					// TODO Auto-generated catch block
@@ -162,7 +170,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			aggregatedObjectsLevel++;
 		}
 
-		datasetContainer.setRoot(aggregatedObjects.get(aggregatedObjectsLevel).get(0).getRelationalTemporalObject());
+		
+		workingDataset.setRoots(new int[]{lastRelationalIndex});
 	}
 
 	/* (non-Javadoc)
@@ -170,6 +179,6 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	 */
 	@Override
 	public timeBench.data.relational.TemporalDataset getTemporalDataset() {
-		return temporalDataset;
+		return workingDataset;
 	}
 }
