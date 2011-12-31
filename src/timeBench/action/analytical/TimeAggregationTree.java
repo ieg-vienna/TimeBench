@@ -130,6 +130,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 						if(missingValueIdentifier != null && missingValueIdentifier != values[j]) { 
 							numObjects[j]++;
 							totalValue.set(j, (Double)totalValue.get(j)+values[j]);
+							minValue[j] = Math.min(minValue[j], values[j]);
+							maxValue[j] = Math.max(maxValue[j], values[j]);
 						}
 					}
 				}

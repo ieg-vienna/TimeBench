@@ -31,13 +31,23 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	int[] hotPalette;
 	String group = "GROOVE";
 	TemporalDatasetProvider datasetProvider;
+	boolean[] granularityVisible;
+	int[] granularityColorCalculation;
 
-	public GROOVELayout(String group,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider) {
-		
+	public static final int ORIENTATION_HORIZONTAL = 0;
+	public static final int ORIENTATION_VERTICAL = 1;
+	public static final int COLOR_CALCULATION_GLOWING_METAL = 0;
+	public static final int COLOR_CALCULATION_H_BLUE_RED = 1;
+	public static final int COLOR_CALCULATION_L = 2;
+	
+	public GROOVELayout(String group,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider, boolean[] granularityVisible,
+			int[] granularityColorCalculation) {		
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		hotPalette = prefuse.util.ColorLib.getHotPalette(768);
 		this.group = group;
 		this.datasetProvider = datasetProvider;
+		this.granularityVisible = granularityVisible;
+		this.granularityColorCalculation = granularityColorCalculation;
 	}
 	
 	@Override
@@ -67,19 +77,19 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
 		node.setEndY(position.getMaxY());
-		node.setVisible(granularitySettings[granularityLevel].isVisible());
+		node.setVisible(granularityVisible[granularityLevel]);
 
 		double value = node.getDouble(0);
-		switch(granularitySettings[granularityLevel].getColorCalculation()) {
-			case GranularitySettings.COLOR_CALCULATION_GLOWING_METAL:
-				node.setFillColor(hotPalette[(int)Math.round((value-datasetContainer.getMinValue())/
+		switch(granularityColorCalculation[granularityLevel]) {
+			case COLOR_CALCULATION_GLOWING_METAL:
+				node.setFillColor(hotPalette[(int)Math.round((value- datasetProvider.getTemporalDataset() .getMinValue())/
 						(datasetContainer.getMaxValue()-datasetContainer.getMinValue()))]);
 				break;
-			case GranularitySettings.COLOR_CALCULATION_H_BLUE_RED:
+			case COLOR_CALCULATION_H_BLUE_RED:
 			    node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-datasetContainer.getMinValue())/
 						(datasetContainer.getMaxValue()-datasetContainer.getMinValue())/3.0+(2.0/3.0)), 1.0f, 0.5f));
 				break;
-			case GranularitySettings.COLOR_CALCULATION_L:
+			case COLOR_CALCULATION_L:
 				if (granularitySettings[granularityLevel].isColorOverlay()) {
 				    node.setFillColor(prefuse.util.ColorLib.hsb((float)((parentValue-datasetContainer.getMinValue())/
 							(datasetContainer.getMaxValue()-datasetContainer.getMinValue())/3.0+(2.0/3.0)),
