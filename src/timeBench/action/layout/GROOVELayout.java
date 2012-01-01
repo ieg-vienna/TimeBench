@@ -33,6 +33,9 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	TemporalDatasetProvider datasetProvider;
 	boolean[] granularityVisible;
 	int[] granularityColorCalculation;
+	int columnUsed;
+	boolean[] granularityColorOverlay;
+	int[] granularityOrientation;
 
 	public static final int ORIENTATION_HORIZONTAL = 0;
 	public static final int ORIENTATION_VERTICAL = 1;
@@ -41,13 +44,16 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	public static final int COLOR_CALCULATION_L = 2;
 	
 	public GROOVELayout(String group,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider, boolean[] granularityVisible,
-			int[] granularityColorCalculation) {		
+			int[] granularityColorCalculation, int columnUsed,boolean[] granularityColorOverlay,int[] granularityOrientation) {		
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		hotPalette = prefuse.util.ColorLib.getHotPalette(768);
 		this.group = group;
 		this.datasetProvider = datasetProvider;
 		this.granularityVisible = granularityVisible;
 		this.granularityColorCalculation = granularityColorCalculation;
+		this.columnUsed = columnUsed;
+		this.granularityColorOverlay = granularityColorOverlay;
+		this.granularityOrientation = granularityOrientation;
 	}
 	
 	@Override
@@ -79,25 +85,26 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setEndY(position.getMaxY());
 		node.setVisible(granularityVisible[granularityLevel]);
 
-		double value = node.getDouble(0);
+		double value = node.getDouble(columnUsed);
+		String columnName = datasetProvider.getTemporalDataset().getDataElements().getColumnName(columnUsed);
+		double min = datasetProvider.getTemporalDataset().getDataElements().getDouble(
+				datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMinimumRow(), columnUsed);
+		double max = datasetProvider.getTemporalDataset().getDataElements().getDouble(
+				datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMaximumRow(), columnUsed);
+				
 		switch(granularityColorCalculation[granularityLevel]) {
 			case COLOR_CALCULATION_GLOWING_METAL:
-				node.setFillColor(hotPalette[(int)Math.round((value- datasetProvider.getTemporalDataset() .getMinValue())/
-						(datasetContainer.getMaxValue()-datasetContainer.getMinValue()))]);
+				node.setFillColor(hotPalette[(int)Math.round((value-min)/(max-min))]);
 				break;
 			case COLOR_CALCULATION_H_BLUE_RED:
-			    node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-datasetContainer.getMinValue())/
-						(datasetContainer.getMaxValue()-datasetContainer.getMinValue())/3.0+(2.0/3.0)), 1.0f, 0.5f));
+			    node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-min)/(max-min)/3.0+(2.0/3.0)), 1.0f, 0.5f));
 				break;
 			case COLOR_CALCULATION_L:
-				if (granularitySettings[granularityLevel].isColorOverlay()) {
-				    node.setFillColor(prefuse.util.ColorLib.hsb((float)((parentValue-datasetContainer.getMinValue())/
-							(datasetContainer.getMaxValue()-datasetContainer.getMinValue())/3.0+(2.0/3.0)),
-				    		1.0f,(float)((value-datasetContainer.getMinValue())/
-							(datasetContainer.getMaxValue()-datasetContainer.getMinValue()))));				
+				if (granularityColorOverlay[granularityLevel]) {
+				    node.setFillColor(prefuse.util.ColorLib.hsb((float)((parentValue-min)/(max-min)/3.0+(2.0/3.0)),
+				    		1.0f,(float)((value-min)/(max-min))));				
 				} else {
-				    node.setFillColor(prefuse.util.ColorLib.hsb(0.0f,0.0f,(float)((value-datasetContainer.getMinValue())/
-							(datasetContainer.getMaxValue()-datasetContainer.getMinValue()))));
+				    node.setFillColor(prefuse.util.ColorLib.hsb(0.0f,0.0f,(float)((value-min)/(max-min))));
 				}
 				break;
 			default:
@@ -113,10 +120,10 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			{
 				TemporalObject iChild = iter.next();
 				Rectangle subPosition = (Rectangle)position.clone();
-				if (granularitySettings[granularityLevel].getOrientation() == GranularitySettings.ORIENTATION_HORIZONTAL) {
+				if (granularityOrientation[granularityLevel] == ORIENTATION_HORIZONTAL) {
 					subPosition.x = position.width/numberOfSubElements*i;
 					subPosition.width = position.width/numberOfSubElements;
-				} else if (granularitySettings[granularityLevel].getOrientation() == GranularitySettings.ORIENTATION_VERTICAL) {
+				} else if (granularityOrientation[granularityLevel] == ORIENTATION_VERTICAL) {
 						subPosition.y = position.height/numberOfSubElements*i;
 						subPosition.height = position.height/numberOfSubElements;					
 				}				
