@@ -83,7 +83,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setEndY(position.getMaxY());
 		node.setVisible(settings[granularityLevel].isVisible());
 
-		double value = node.getDouble(columnUsed);
+		double value = datasetProvider.getTemporalDataset().getDataElements().getDouble(m_vis.getSourceTuple(node).getInt(1), columnUsed);
 		String columnName = datasetProvider.getTemporalDataset().getDataElements().getColumnName(columnUsed);
 		double min = datasetProvider.getTemporalDataset().getDataElements().getDouble(
 				datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMinimumRow(), columnUsed);
