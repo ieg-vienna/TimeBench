@@ -22,7 +22,7 @@ public class GranularityAggregationSettings implements java.io.Serializable {
 	 */
 	public @Deprecated GranularityAggregationSettings() {		
 	}
-	
+
 	/**
 	 * The constructor has to provide the granularity information.
 	 * 
