@@ -163,6 +163,7 @@ public class TemporalDataset implements Cloneable {
 			result.temporalElements.getEdgeTable().addTuple(this.temporalElements.getEdgeTable().getTuple(i));
 		
 		result.graph = new BipartiteGraph(this.graph.getNode1Table(),this.graph.getNode2Table());
+		result.graph.setEdgeTable(this.graph.getEdgeTable());
 		
 		result.occurrences = new Graph();
 		result.occurrences.getNodeTable().addColumns(this.occurrences.getNodeTable().getSchema());
