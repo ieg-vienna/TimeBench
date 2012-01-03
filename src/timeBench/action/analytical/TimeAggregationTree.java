@@ -2,6 +2,7 @@ package timeBench.action.analytical;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
@@ -58,125 +59,107 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	@Override
 	public void run(double frac) {
 		try {
-			//workingDataset = (timeBench.data.relational.TemporalDataset)sourceDataset.clone();
 			workingDataset = sourceDataset;
 			temporalDataset = new TemporalDataset(workingDataset);
+		
+			AnchoredTemporalElement te = (AnchoredTemporalElement)temporalDataset.getTemporalElement();
+			TemporalObject root = new TemporalObject(new Interval(te.getInf(),te.getSup(),te.getGranularity()),new ArrayList<Object>());
+			root.getSubObjects().addAll(temporalDataset.getSubObjects());	// only works because we are not relationally anchored yet
+
+			ArrayList<TemporalObject> workingList = new ArrayList<TemporalObject>();
+			workingList.add(root);
+			for(int i=granularities.length-1; i>=0;i--) {
+				ArrayList<TemporalObject> futureWorkingList = new ArrayList<TemporalObject>(); 
+				for(TemporalObject iWorkingObject : workingList) {
+					Hashtable<Long,ArrayList<TemporalObject>> hashtable = new Hashtable<Long,ArrayList<TemporalObject>>(); 
+					while(iWorkingObject.getSubObjects().size() > 0) {
+						TemporalElement temporalElement = iWorkingObject.getSubObjects().get(0).getTemporalElement();
+						if (temporalElement instanceof AnchoredTemporalElement) {
+							Granule granule = null;
+							try {
+								granule = new Granule(((AnchoredTemporalElement)temporalElement).lifeSpan().getInf(),
+										((AnchoredTemporalElement)temporalElement).lifeSpan().getSup(),granularities[i]);
+								long granuleIdentifier = granule.getIdentifier();
+								if(!hashtable.containsKey(granuleIdentifier))
+									hashtable.put(granuleIdentifier,new ArrayList<TemporalObject>());
+								hashtable.get(granuleIdentifier).add(iWorkingObject.getSubObjects().get(0));
+							} catch (TemporalDataException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							iWorkingObject.getSubObjects().remove(0);
+						}
+					}
+					for(long iKey : hashtable.keySet()) {
+						Granule g = new Granule(iKey,granularities[i]);
+						TemporalObject newObject = new TemporalObject(new Interval(g.getInf(),g.getSup(),granularities[i]),new ArrayList<Object>());
+						newObject.getSubObjects().addAll(hashtable.get(iKey));
+						futureWorkingList.add(newObject);
+						iWorkingObject.addSubObject(newObject);
+					}
+				}
+				workingList = futureWorkingList;
+			}
+
+			aggregate(root);
+		
+			int rootIndex = root.anchorRelational(workingDataset);
+			workingDataset.setRoots(new int[]{rootIndex});
+			
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		// Levels: Granularity / Granules of this Granularity / TemporalObjects in this Granule
-		ArrayList<HashMap<Long,ArrayList<TemporalObject>>> bins = new ArrayList<HashMap<Long,ArrayList<TemporalObject>>>();		
-		bins.add(new HashMap<Long,ArrayList<TemporalObject>>());
-		bins.get(0).put(new Long(0),temporalDataset.getTemporalObjects());
-		int lastBin = 0;
-
-		minValue = new double[temporalDataset.getSourceData().getDataElements().getColumnCount()];
-		maxValue = new double[minValue.length];
-		for(int i=0; i<minValue.length;i++) {
-			minValue[i] = Double.MAX_VALUE;
-			maxValue[i] = Double.MIN_VALUE;
-		}
-
-		for(int i=granularities.length-1; i>=0;i--) {
-			bins.add(new HashMap<Long,ArrayList<TemporalObject>>());
-			for(ArrayList<TemporalObject> iGranuleBin : bins.get(lastBin).values()) {
-				for(TemporalObject iTemporalObject : iGranuleBin) {
-					TemporalElement temporalElement = iTemporalObject.getTemporalElement();
-					if (temporalElement instanceof AnchoredTemporalElement) {
-						Granule granule = null;
-						try {
-							granule = new Granule(((AnchoredTemporalElement)temporalElement).lifeSpan().getInf(),
-									((AnchoredTemporalElement)temporalElement).lifeSpan().getSup(),granularities[i]);
-							long granuleIdentifier = granule.getIdentifier();
-							if(!bins.get(lastBin+1).containsKey(granuleIdentifier))
-								bins.get(lastBin+1).put(granuleIdentifier,new ArrayList<TemporalObject>());
-							bins.get(lastBin+1).get(granuleIdentifier).add(iTemporalObject);
-						} catch (TemporalDataException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}				
-			}
-			lastBin++;
-		}
-		ArrayList<HashMap<Long,TemporalObject>> aggregatedObjects = new ArrayList<HashMap<Long,TemporalObject>>();
-		int lastRelationalIndex = 0;
-		int aggregatedObjectsLevel = 0;
-		for(int i=bins.size()-1; i>=0;i--) {
-			aggregatedObjects.add(new HashMap<Long,TemporalObject>());
-			for(long iKey : bins.get(i).keySet()) {
-				double[] numObjects = new double[temporalDataset.getTemporalObjects().get(0).getDataAspectsSize()];
-				ArrayList<Object> totalValue = new ArrayList<Object>();
-				for(int k=0; k<temporalDataset.getTemporalObjects().get(0).getDataAspectsSize(); k++)
-					totalValue.add(0.0);
-				for(TemporalObject iObject : bins.get(i).get(iKey) ) {
-					double[] values = new double[iObject.getDataAspectsSize()];
-					for (int j=0; j<iObject.getDataAspectsSize(); j++)
-					{
-						Object value = iObject.getDataAspect(j);
-						if(value instanceof Double)
-							values[j] = (Double)value;
-						else if(value instanceof Integer)
-							values[j] = ((Integer)value).doubleValue();
-						else if(value instanceof Long)
-							values[j] = ((Long)value).doubleValue();
-						else {							
-							try {
-								values[j] = Double.parseDouble(value.toString());
-							} finally {
-								values[j] = 0;
-							}
-						}
-						if(missingValueIdentifier != null && missingValueIdentifier != values[j]) { 
-							numObjects[j]++;
-							totalValue.set(j, (Double)totalValue.get(j)+values[j]);
-							minValue[j] = Math.min(minValue[j], values[j]);
-							maxValue[j] = Math.max(maxValue[j], values[j]);
-						}
-					}
-				}
-				for(int j=0;j<totalValue.size();j++) {
-					if (numObjects[j] != 0) {
-						totalValue.set(j, (Double)totalValue.get(j)/numObjects[j]);
-					} else {
-						if (missingValueIdentifier != null )
-							totalValue.set(j,  missingValueIdentifier);
-						else
-							totalValue.set(j,  Double.NaN);
-					}
-				}				
-				try {
-					ArrayList<TemporalObject> childObjects = null;
-					if (aggregatedObjectsLevel == 0)
-						childObjects = bins.get(i).get(iKey);
-					else {
-						childObjects = new ArrayList<TemporalObject>();
-						for(TemporalObject iObject : aggregatedObjects.get(aggregatedObjectsLevel-1).values()) {
-							Granule granule = new Granule(((AnchoredTemporalElement)iObject.getTemporalElement()).lifeSpan().getInf(),
-									((AnchoredTemporalElement)iObject.getTemporalElement()).lifeSpan().getSup(),granularities[bins.size()-i-1]);
-							if (granule.getIdentifier() == iKey)
-								childObjects.add(iObject);
-						}
-					}
-					AnchoredTemporalElement start = (AnchoredTemporalElement)childObjects.get(0).getTemporalElement();
-					AnchoredTemporalElement stop = (AnchoredTemporalElement)childObjects.get(childObjects.size()-1).getTemporalElement();
-					Interval interval = new Interval(start.getInf(),stop.getSup(),granularities[bins.size()-i-1]);
-					TemporalObject newObject =	new TemporalObject(interval,totalValue);
-					lastRelationalIndex = newObject.anchorRelational(workingDataset);
-					aggregatedObjects.get(aggregatedObjectsLevel).put(iKey,newObject);
-				} catch (TemporalDataException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			aggregatedObjectsLevel++;
-		}
-
+	}
+	
+	private void aggregate(TemporalObject fromHere)
+	{		
+		double[] numObjects = null; 
+		double[] totalValue = null; 
 		
-		workingDataset.setRoots(new int[]{lastRelationalIndex});
+		if(fromHere.getSubObjects().size() > 0) {
+			for(TemporalObject iObject : fromHere.getSubObjects()) {
+				aggregate(iObject);
+				double[] values = new double[iObject.getDataAspectsSize()];
+				if (numObjects == null)
+					numObjects = new double[iObject.getDataAspectsSize()];
+				if (totalValue == null)
+					totalValue = new double[iObject.getDataAspectsSize()];
+				for (int j=0; j<iObject.getDataAspectsSize(); j++)
+				{
+					Object value = iObject.getDataAspect(j);
+					if(value instanceof Double)
+						values[j] = (Double)value;
+					else if(value instanceof Integer)
+						values[j] = ((Integer)value).doubleValue();
+					else if(value instanceof Long)
+						values[j] = ((Long)value).doubleValue();
+					else {							
+						try {
+							values[j] = Double.parseDouble(value.toString());
+						} finally {
+							values[j] = 0;
+						}
+					}
+					if(missingValueIdentifier != null && missingValueIdentifier != values[j]) { 
+						numObjects[j]++;
+						totalValue[j]+=values[j];
+					}
+				}
+			}
+
+			for(int j=0;j<totalValue.length;j++) {
+				if (numObjects[j] != 0) {
+					totalValue[j]/=numObjects[j];
+				} else {
+					if (missingValueIdentifier != null )
+						totalValue[j] = missingValueIdentifier;
+					else
+						totalValue[j] = Double.NaN;
+				}
+				fromHere.setDataAspect(j, totalValue[j]);
+			}		
+		}
 	}
 
 	/* (non-Javadoc)

@@ -109,7 +109,7 @@ public class TemporalObject {
 		relationalTemporalObject = dataset.getTemporalObject(index);
 		
 		for(TemporalObject iO : subObjects) {
-			if(!dataset.getOccurrences().containsTuple(iO.getRelationalTemporalObject())) {
+			if(iO.getRelationalTemporalObject() == null || !dataset.getOccurrences().containsTuple(iO.getRelationalTemporalObject())) {
 				iO.anchorRelational(dataset);
 			}
 			relationalTemporalObject.linkWithChild(iO.getRelationalTemporalObject());
@@ -127,8 +127,12 @@ public class TemporalObject {
 	//}
 	
 	public Object setDataAspect(int index,Object element) {
-		if (relationalTemporalObject != null)
+		if (relationalTemporalObject != null) {
 			relationalTemporalObject.getDataElement().set(index, element);
+		} else {
+			while (dataAspects.size()-1 < index)
+				dataAspects.add(new Object());
+		}
 		return dataAspects.set(index, element);
 	}
 	
