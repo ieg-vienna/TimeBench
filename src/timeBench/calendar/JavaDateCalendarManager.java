@@ -425,12 +425,24 @@ public class JavaDateCalendarManager implements CalendarManager {
 				}
 				break;
 			case Week:
-				result = granule.getInf()/60480000;
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Month:
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.WEEK_OF_MONTH);
+						break;
+					default:
+						result = granule.getInf()/60480000;
+						break;
+				}
 				break;
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(granule.getInf());
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Quarter:
+						result = (cal.get(GregorianCalendar.MONTH)-1)%4;
+						break;
 					case Year:
 						result = cal.get(GregorianCalendar.MONTH)-1;
 						break;
@@ -439,11 +451,20 @@ public class JavaDateCalendarManager implements CalendarManager {
 						break;
 					}
 				break;}
-			case Quarter:{
-				GregorianCalendar cal = new GregorianCalendar();
-				cal.setTimeInMillis(granule.getInf());
-				result = (cal.get(GregorianCalendar.YEAR)-1970)*4+(cal.get(GregorianCalendar.MONTH)-1)/3;
-				break;}
+			case Quarter:
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Year:{
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = (cal.get(GregorianCalendar.MONTH)-1)/3;
+						break;}
+					default:{
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = (cal.get(GregorianCalendar.YEAR)-1970)*4+(cal.get(GregorianCalendar.MONTH)-1)/3;
+					break;}
+				}
+				break;
 			case Year:
 				GregorianCalendar cal = new GregorianCalendar();
 				result = cal.get(GregorianCalendar.YEAR)-1970;
