@@ -58,7 +58,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	@Override
 	public void run(double frac) {
 		try {
-			workingDataset = (timeBench.data.relational.TemporalDataset)sourceDataset.clone();
+			//workingDataset = (timeBench.data.relational.TemporalDataset)sourceDataset.clone();
+			workingDataset = sourceDataset;
 			temporalDataset = new TemporalDataset(workingDataset);
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
@@ -108,7 +109,9 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			aggregatedObjects.add(new HashMap<Long,TemporalObject>());
 			for(long iKey : bins.get(i).keySet()) {
 				double[] numObjects = new double[temporalDataset.getTemporalObjects().get(0).getDataAspectsSize()];
-				ArrayList<Object> totalValue = new ArrayList<Object>(temporalDataset.getTemporalObjects().get(0).getDataAspectsSize());
+				ArrayList<Object> totalValue = new ArrayList<Object>();
+				for(int k=0; k<temporalDataset.getTemporalObjects().get(0).getDataAspectsSize(); k++)
+					totalValue.add(0.0);
 				for(TemporalObject iObject : bins.get(i).get(iKey) ) {
 					double[] values = new double[iObject.getDataAspectsSize()];
 					for (int j=0; j<iObject.getDataAspectsSize(); j++)
