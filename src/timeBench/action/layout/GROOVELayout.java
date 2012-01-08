@@ -2,7 +2,9 @@ package timeBench.action.layout;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 import prefuse.Display;
 import prefuse.data.Tuple;
@@ -111,7 +113,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 				if (value == -1)
 					node.setFillColor(prefuse.util.ColorLib.gray(127));
 				else
-					node.setFillColor(hotPalette[(int)Math.round((value-min)/(max-min)*768.0)]);
+					node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-min)/(max-min)*1280.0))]);
 				
 				//node.setFillColor(prefuse.util.ColorLib.gray((int)Math.round((value-min)/(max-min)*255.0)));
 				break;
@@ -135,20 +137,27 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			Tuple sourceTuple = m_vis.getSourceTuple(node);
 			if (sourceTuple instanceof TemporalObject) {
 				TemporalObject temporalObject = (TemporalObject)sourceTuple;
-				if (granularityLevel < 3)
-					System.err.println("");			
-				if (granularityLevel > -1)
-					System.err.print("  ");
-				if (granularityLevel > 0)
-					System.err.print("  ");
-				if (granularityLevel > 1)
-					System.err.print("  ");
-				System.err.print(temporalObject.getChildElementCount());
+//				if (granularityLevel < 3)
+//					System.err.println("");			
+//				if (granularityLevel > -1)
+//					System.err.print("  ");
+//				if (granularityLevel > 0)
+//					System.err.print("  ");
+//				if (granularityLevel > 1)
+//					System.err.print("  ");
+//				System.err.print(temporalObject.getChildElementCount());
+				TreeMap<Long,TemporalObject> orderedChilds = new TreeMap<Long, TemporalObject>();
 				Iterator<TemporalObject> iter = temporalObject.childElements();
-				int numberOfSubElements = temporalObject.getChildElementCount();
-				for(int i=0; i<numberOfSubElements && iter.hasNext(); i++)
-				{
+				while(iter.hasNext()) {
 					TemporalObject iChild = iter.next();
+					orderedChilds.put(iChild.getTemporalElement().asGeneric().getInf(), iChild);
+				}
+				int numberOfSubElements = orderedChilds.size();
+				Long iKey = orderedChilds.firstKey();
+				for(int i=0; iKey != null; i++)
+				{
+					TemporalObject iChild = orderedChilds.get(iKey);
+					iKey = orderedChilds.higherKey(iKey);
 					Rectangle subPosition = (Rectangle)position.clone();
 					if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
 						subPosition.x += position.width/numberOfSubElements*i;
@@ -163,7 +172,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 						subPosition.x += borderWidth[0];
 						subPosition.y += borderWidth[1];
 						subPosition.width -= (borderWidth[0] + borderWidth[2]);
-						subPosition.width -= (borderWidth[1] + borderWidth[3]);
+						subPosition.height -= (borderWidth[1] + borderWidth[3]);
 					}
 					layoutGranularity(vt,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
 				}
