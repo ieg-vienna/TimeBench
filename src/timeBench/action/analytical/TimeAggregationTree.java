@@ -28,14 +28,14 @@ import timeBench.data.relational.TemporalDatasetProvider;
  * @author Tim Lammarsch
  *
  */
-public class TimeAggregationTree extends prefuse.action.Action implements TemporalDatasetProvider {
+public class TimeAggregationTree extends prefuse.action.Action implements TemporalDatasetProvider, MinMaxValuesProvider {
 	timeBench.data.relational.TemporalDataset sourceDataset;
 	timeBench.data.relational.TemporalDataset workingDataset;
 	timeBench.data.oo.TemporalDataset temporalDataset;
 	CalendarManager calendarManager;
 	Granularity[] granularities;	
-	double[] minValue;
-	double[] maxValue;
+	double[] minValues;
+	double[] maxValues;
 	Double missingValueIdentifier;
 
 	/**
@@ -50,7 +50,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		for(int i=0; i<granularities.length; i++) {
 			this.granularities[i] = new Granularity(this.calendarManager.getDefaultCalendar(),granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
 		}
-		this.missingValueIdentifier = missingValueIdentifier;
+		this.missingValueIdentifier = missingValueIdentifier;	
 	}
 
 	/* (non-Javadoc)
@@ -62,6 +62,14 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			workingDataset = sourceDataset;
 			temporalDataset = new TemporalDataset(workingDataset);
 		
+			int columnCount = sourceDataset.getDataElements().getColumnCount();
+			minValues = new double[columnCount];
+			maxValues = new double[columnCount];
+			for(int i=0; i<columnCount; i++) {
+				minValues[i] = Double.MAX_VALUE;
+				maxValues[i] = Double.MIN_VALUE;
+			}
+			
 			AnchoredTemporalElement te = (AnchoredTemporalElement)temporalDataset.getTemporalElement();
 			TemporalObject root = new TemporalObject(new Interval(te.getInf(),te.getSup(),te.getGranularity()),new ArrayList<Object>());
 			root.getSubObjects().addAll(temporalDataset.getSubObjects());	// only works because we are not relationally anchored yet
@@ -69,7 +77,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			ArrayList<TemporalObject> workingList = new ArrayList<TemporalObject>();
 			workingList.add(root);
 			for(int i=granularities.length-1; i>=0;i--) {
-				ArrayList<TemporalObject> futureWorkingList = new ArrayList<TemporalObject>(); 
+				ArrayList<TemporalObject> futureWorkingList = new ArrayList<TemporalObject>();
 				for(TemporalObject iWorkingObject : workingList) {
 					Hashtable<Long,ArrayList<TemporalObject>> hashtable = new Hashtable<Long,ArrayList<TemporalObject>>(); 
 					while(iWorkingObject.getSubObjects().size() > 0) {
@@ -116,7 +124,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	{		
 		double[] numObjects = null; 
 		double[] totalValue = null; 
-		
+			
 		if(fromHere.getSubObjects().size() > 0) {
 			for(TemporalObject iObject : fromHere.getSubObjects()) {
 				aggregate(iObject);
@@ -142,9 +150,11 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 						}
 					}
 					if(missingValueIdentifier != null && missingValueIdentifier != values[j]) { 
+						minValues[j] = Math.min(minValues[j], values[j]);
+						maxValues[j] = Math.max(minValues[j], values[j]);
 						numObjects[j]++;
 						totalValue[j]+=values[j];
-					}
+					}					
 				}
 			}
 
@@ -169,4 +179,19 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	public timeBench.data.relational.TemporalDataset getTemporalDataset() {
 		return workingDataset;
 	}
+
+	@Override
+	public Double getMinValue(int index) {
+		if(minValues == null || minValues.length <= index)
+			return null;
+		else
+			return minValues[index];
+	}
+
+	@Override
+	public Double getMaxValue(int index) {
+		if(maxValues == null || maxValues.length <= index)
+			return null;
+		else
+			return maxValues[index];	}
 }

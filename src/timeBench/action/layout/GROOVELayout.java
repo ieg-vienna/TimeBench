@@ -8,6 +8,7 @@ import prefuse.Display;
 import prefuse.data.Tuple;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
+import timeBench.action.analytical.MinMaxValuesProvider;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
@@ -64,7 +65,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
 		try {
 			layoutGranularity(vt,m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getOccurrences().getTuple(
-					datasetProvider.getTemporalDataset().getRoots()[0])),position,0,0.0);
+					datasetProvider.getTemporalDataset().getRoots()[0])),position,-1,0.0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,55 +82,84 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
 		node.setEndY(position.getMaxY());
-		node.setVisible(settings[granularityLevel].isVisible());
-
+		node.setDOI(granularityLevel);
+	
 		double value = datasetProvider.getTemporalDataset().getDataElements().getDouble(m_vis.getSourceTuple(node).getInt(1), columnUsed);
-		String columnName = datasetProvider.getTemporalDataset().getDataElements().getColumnName(columnUsed);
-		double min = datasetProvider.getTemporalDataset().getDataElements().getDouble(
-				datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMinimumRow(), columnUsed);
-		double max = datasetProvider.getTemporalDataset().getDataElements().getDouble(
-				datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMaximumRow(), columnUsed);
-				
-		switch(settings[granularityLevel].getColorCalculation()) {
+
+		if (granularityLevel < 0)
+			node.setVisible(false);
+		else {
+			node.setVisible(settings[granularityLevel].isVisible());
+
+			String columnName = datasetProvider.getTemporalDataset().getDataElements().getColumnName(columnUsed);
+			Double min = null;
+			Double max = null;
+			if (datasetProvider instanceof MinMaxValuesProvider) {
+				min = ((MinMaxValuesProvider)datasetProvider).getMinValue(columnUsed);
+				max = ((MinMaxValuesProvider)datasetProvider).getMaxValue(columnUsed);
+			}
+			if (min == null)
+				min = datasetProvider.getTemporalDataset().getDataElements().getDouble(
+						datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMinimumRow(), columnUsed);
+			if (max == null)
+			 	max = datasetProvider.getTemporalDataset().getDataElements().getDouble(
+			 			datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMaximumRow(), columnUsed);
+
+			switch(settings[granularityLevel].getColorCalculation()) {
 			case COLOR_CALCULATION_GLOWING_METAL:
-				node.setFillColor(hotPalette[(int)Math.round((value-min)/(max-min))]);
+				//node.setFillColor(hotPalette[(int)Math.round((value-min)/(max-min))]);
+				node.setFillColor(prefuse.util.ColorLib.gray((int)Math.round((value-min)/(max-min)*255.0)));
 				break;
 			case COLOR_CALCULATION_H_BLUE_RED:
-			    node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-min)/(max-min)/3.0+(2.0/3.0)), 1.0f, 0.5f));
+				node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-min)/(max-min)/3.0+(2.0/3.0)), 1.0f, 0.5f));
 				break;
 			case COLOR_CALCULATION_L:
 				if (settings[granularityLevel].isColorOverlay()) {
-				    node.setFillColor(prefuse.util.ColorLib.hsb((float)((parentValue-min)/(max-min)/3.0+(2.0/3.0)),
-				    		1.0f,(float)((value-min)/(max-min))));				
+					node.setFillColor(prefuse.util.ColorLib.hsb((float)((parentValue-min)/(max-min)/3.0+(2.0/3.0)),
+							1.0f,(float)((value-min)/(max-min))));				
 				} else {
-				    node.setFillColor(prefuse.util.ColorLib.hsb(0.0f,0.0f,(float)((value-min)/(max-min))));
+					node.setFillColor(prefuse.util.ColorLib.hsb(0.0f,0.0f,(float)((value-min)/(max-min))));
 				}
 				break;
 			default:
 				node.setFillColor(0);
-		}
-		
-		Tuple sourceTuple = m_vis.getSourceTuple(node);
-		if (sourceTuple instanceof TemporalObject) {
-			TemporalObject temporalObject = (TemporalObject)sourceTuple;
-			Iterator<TemporalObject> iter = temporalObject.childElements();
-			int numberOfSubElements = temporalObject.getChildElementCount();
-			for(int i=0; i<numberOfSubElements && iter.hasNext(); i++)
-			{
-				TemporalObject iChild = iter.next();
-				Rectangle subPosition = (Rectangle)position.clone();
-				if (settings[granularityLevel].getOrientation() == ORIENTATION_HORIZONTAL) {
-					subPosition.x = position.width/numberOfSubElements*i;
-					subPosition.width = position.width/numberOfSubElements;
-				} else if (settings[granularityLevel].getOrientation() == ORIENTATION_VERTICAL) {
-						subPosition.y = position.height/numberOfSubElements*i;
-						subPosition.height = position.height/numberOfSubElements;					
-				}				
-				layoutGranularity(vt,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
 			}
 		}
-		else
-			throw new Exception("VisualTable not built off TemporalObject instances");
+		
+		if(granularityLevel+1 < settings.length) {		
+			Tuple sourceTuple = m_vis.getSourceTuple(node);
+			if (sourceTuple instanceof TemporalObject) {
+				TemporalObject temporalObject = (TemporalObject)sourceTuple;
+//				if (granularityLevel == 0)
+//					System.err.print("   ");
+//				else if (granularityLevel == 1)
+//					System.err.print("   ");
+//				else if (granularityLevel == 2)
+//					System.err.print("      ");
+//				else if (granularityLevel == 3)
+//					System.err.print(" ");
+//				System.err.print(temporalObject.getTemporalElement().asGeneric().getInf()/36000);
+//				if (granularityLevel < 3)
+//					System.err.println("");			
+				Iterator<TemporalObject> iter = temporalObject.childElements();
+				int numberOfSubElements = temporalObject.getChildElementCount();
+				for(int i=0; i<numberOfSubElements && iter.hasNext(); i++)
+				{
+					TemporalObject iChild = iter.next();
+					Rectangle subPosition = (Rectangle)position.clone();
+					if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
+						subPosition.x = position.width/numberOfSubElements*i;
+						subPosition.width = position.width/numberOfSubElements;
+					} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
+						subPosition.y = position.height/numberOfSubElements*i;
+						subPosition.height = position.height/numberOfSubElements;					
+					}				
+					layoutGranularity(vt,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
+				}
+			}
+			else
+				throw new Exception("VisualTable not built off TemporalObject instances");
+		}
 	}
 
 

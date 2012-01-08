@@ -108,12 +108,16 @@ public class TemporalObject {
 		index = dataset.addOccurrence(objectIndex, temporalIndex);
 		relationalTemporalObject = dataset.getTemporalObject(index);
 		
+		//int anchored = 0;
 		for(TemporalObject iO : subObjects) {
 			if(iO.getRelationalTemporalObject() == null || !dataset.getOccurrences().containsTuple(iO.getRelationalTemporalObject())) {
 				iO.anchorRelational(dataset);
+				//anchored++;
 			}
 			relationalTemporalObject.linkWithChild(iO.getRelationalTemporalObject());
 		}
+		
+		//System.err.print(anchored+"/");
 		
 		return index;
 	}
