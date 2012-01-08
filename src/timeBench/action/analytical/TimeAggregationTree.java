@@ -107,12 +107,20 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					}
 				}
 				workingList = futureWorkingList;
+				//System.err.print(i+": " );
+				//for(int j=0; j<workingList.size();j++)
+					//System.err.print(workingList.get(j).getSubObjects().size()+"/");
+				//System.err.println();
 			}
-
+			
 			aggregate(root);
-		
+	
+			//System.err.println();
+			
 			int rootIndex = root.anchorRelational(workingDataset);
 			workingDataset.setRoots(new int[]{rootIndex});
+			
+			//System.err.println();
 			
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
@@ -124,7 +132,11 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	{		
 		double[] numObjects = null; 
 		double[] totalValue = null; 
-			
+
+		//if(fromHere.getTemporalElement().getGranularity().getIdentifier() > 4)
+//			System.err.print(fromHere.getTemporalElement().getGranularity().getIdentifier() + "-" + 
+					//fromHere.getSubObjects().size() + " / ");
+		
 		if(fromHere.getSubObjects().size() > 0) {
 			for(TemporalObject iObject : fromHere.getSubObjects()) {
 				aggregate(iObject);
@@ -151,7 +163,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					}
 					if(missingValueIdentifier != null && missingValueIdentifier != values[j]) { 
 						minValues[j] = Math.min(minValues[j], values[j]);
-						maxValues[j] = Math.max(minValues[j], values[j]);
+						maxValues[j] = Math.max(maxValues[j], values[j]);
 						numObjects[j]++;
 						totalValue[j]+=values[j];
 					}					

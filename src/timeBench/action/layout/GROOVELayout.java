@@ -107,8 +107,13 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 
 			switch(settings[granularityLevel].getColorCalculation()) {
 			case COLOR_CALCULATION_GLOWING_METAL:
-				//node.setFillColor(hotPalette[(int)Math.round((value-min)/(max-min))]);
-				node.setFillColor(prefuse.util.ColorLib.gray((int)Math.round((value-min)/(max-min)*255.0)));
+				
+				if (value == -1)
+					node.setFillColor(prefuse.util.ColorLib.gray(127));
+				else
+					node.setFillColor(hotPalette[(int)Math.round((value-min)/(max-min)*768.0)]);
+				
+				//node.setFillColor(prefuse.util.ColorLib.gray((int)Math.round((value-min)/(max-min)*255.0)));
 				break;
 			case COLOR_CALCULATION_H_BLUE_RED:
 				node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-min)/(max-min)/3.0+(2.0/3.0)), 1.0f, 0.5f));
@@ -130,17 +135,15 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			Tuple sourceTuple = m_vis.getSourceTuple(node);
 			if (sourceTuple instanceof TemporalObject) {
 				TemporalObject temporalObject = (TemporalObject)sourceTuple;
-//				if (granularityLevel == 0)
-//					System.err.print("   ");
-//				else if (granularityLevel == 1)
-//					System.err.print("   ");
-//				else if (granularityLevel == 2)
-//					System.err.print("      ");
-//				else if (granularityLevel == 3)
-//					System.err.print(" ");
-//				System.err.print(temporalObject.getTemporalElement().asGeneric().getInf()/36000);
-//				if (granularityLevel < 3)
-//					System.err.println("");			
+				if (granularityLevel < 3)
+					System.err.println("");			
+				if (granularityLevel > -1)
+					System.err.print("  ");
+				if (granularityLevel > 0)
+					System.err.print("  ");
+				if (granularityLevel > 1)
+					System.err.print("  ");
+				System.err.print(temporalObject.getChildElementCount());
 				Iterator<TemporalObject> iter = temporalObject.childElements();
 				int numberOfSubElements = temporalObject.getChildElementCount();
 				for(int i=0; i<numberOfSubElements && iter.hasNext(); i++)
@@ -148,12 +151,20 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					TemporalObject iChild = iter.next();
 					Rectangle subPosition = (Rectangle)position.clone();
 					if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
-						subPosition.x = position.width/numberOfSubElements*i;
+						subPosition.x += position.width/numberOfSubElements*i;
 						subPosition.width = position.width/numberOfSubElements;
 					} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
-						subPosition.y = position.height/numberOfSubElements*i;
+						subPosition.y += position.height/numberOfSubElements*i;
 						subPosition.height = position.height/numberOfSubElements;					
-					}				
+					}			
+					if (granularityLevel >= 0)
+					{
+						int[] borderWidth = settings[granularityLevel+1].getBorderWith();
+						subPosition.x += borderWidth[0];
+						subPosition.y += borderWidth[1];
+						subPosition.width -= (borderWidth[0] + borderWidth[2]);
+						subPosition.width -= (borderWidth[1] + borderWidth[3]);
+					}
 					layoutGranularity(vt,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
 				}
 			}
