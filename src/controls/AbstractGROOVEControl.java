@@ -27,9 +27,9 @@ public class AbstractGROOVEControl extends prefuse.controls.ControlAdapter {
     }
 	
 	private void addTemporalObject(VisualItem item) {
-		Tuple sourceTuple = m_vis.getSourceTuple(node);
-		if (sourceTuple instanceof TemporalObject) {
-			TemporalObject temporalObject = (TemporalObject)sourceTuple;
+		//Tuple sourceTuple = m_vis.getSourceTuple(node);
+		//if (sourceTuple instanceof TemporalObject) {
+			//TemporalObject temporalObject = (TemporalObject)sourceTuple;
 	}
 	
 	public void temporalObjectsBrushed(ArrayList<TemporalObject> brushedObjects) {
