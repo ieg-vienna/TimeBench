@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.rosuda.REngine.REXP;
+import org.rosuda.REngine.REXPDouble;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.REngineException;
@@ -109,7 +111,8 @@ public class RConnector {
                         "Unknown granularity. frequency: " + frequency);
 
             // prepare a calendar
-            GregorianCalendar cal = new GregorianCalendar();
+            GregorianCalendar cal = new GregorianCalendar(
+                    TimeZone.getTimeZone("UTC"));
             cal.setTimeInMillis(0);
             cal.set(GregorianCalendar.MONTH, 0);
             cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
@@ -257,6 +260,54 @@ public class RConnector {
         // ".time, origin=\"1970-01-01 GMT\")");
         this.exec("time(" + name + ") <- as.POSIXct(as.POSIXlt(" + name
                 + ".time, origin=\"1970-01-01\"))");
+    }
+
+    public void putTemporalDataset(String name,
+            timeBench.data.relational.TemporalDataset tmpds, int startYear,
+            int startMonth, double frequency, int length)
+            throws REngineException {
+        double[] data = new double[length];
+        Arrays.fill(data, REXPDouble.NA);
+
+        if (frequency != 12.0)
+            throw new RuntimeException("only months supported");
+
+        int granularityContextId = JavaDateCalendarManager.Granularities.Top
+                .toInt();
+        int granularityId = JavaDateCalendarManager.Granularities.Month.toInt();
+
+        for (Iterator<TemporalObject> iter = tmpds.temporalObjects(); iter
+                .hasNext();) {
+            TemporalObject cur = iter.next();
+            if (!cur.getTemporalElement().isAnchored()) {
+                logger.debug("skip temp.o. with unanchored temp.el. "
+                        + cur.getTemporalElement());
+            } else if (cur.getTemporalElement().getGranularityId() != granularityId
+                    || cur.getTemporalElement().getGranularityContextId() != granularityContextId) {
+                logger.debug("skip temp.o. with wrong granularity "
+                        + cur.getTemporalElement());
+            } else {
+                long inf = cur.getTemporalElement().asGeneric().getInf();
+
+                GregorianCalendar cal = new GregorianCalendar(
+                        TimeZone.getTimeZone("UTC"));
+                cal.setTimeInMillis(inf);
+                int year = cal.get(GregorianCalendar.YEAR);
+                int month = cal.get(GregorianCalendar.MONTH) + 1;
+                int index = (year - startYear) * 12 + month - startMonth;
+
+                if (index >= 0 && index < length)
+                    data[index] = cur.getDataElement().getDouble(0);
+                else
+                    logger.debug("skip temp.o. out of temporal bounds " + index
+                            + " " + cur.getTemporalElement());
+            }
+        }
+
+        // copy data to R and build ts object
+        engine.assign(name + ".data", data);
+        this.exec(name + " <- ts(" + name + ".data, start = c(" + startYear
+                + ", " + startMonth + "), frequency = " + frequency + ")");
     }
 
     public void exec(String command) throws REngineException {
