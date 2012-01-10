@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.rosuda.REngine.REXP;
@@ -18,8 +19,7 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
-import timeBench.data.oo.TemporalDataset;
-
+import timeBench.data.relational.TemporalObject;
 
 /**
  * XXX Should we (a) encapsulate REngine or (b) provide some static helper methods?
@@ -38,7 +38,7 @@ public class RConnector {
     // could be replaced by REngine.getLastEngine()
     private REngine engine;
 
-    RConnector() {
+    private RConnector() {
         try {
             if (logger.isInfoEnabled())
                 // show R console output in System.out
@@ -213,12 +213,55 @@ public class RConnector {
                     + x.asString());
     }
 
-    public void putTemporalDataset(String name, TemporalDataset tmpds) {
-        throw new RuntimeException("not yet implemented");
+    public void putTemporalDataset(String name,
+            timeBench.data.relational.TemporalDataset tmpds)
+            throws TemporalDataException, REngineException {
+        double[] time = new double[tmpds.getOccurrences().getRowCount()];
+        double[] data = new double[tmpds.getOccurrences().getRowCount()];
+        int i = 0;
+
+        for (Iterator<TemporalObject> iter = tmpds.temporalObjects(); iter
+                .hasNext();) {
+            TemporalObject cur = iter.next();
+            if (cur.getTemporalElement().isAnchored()) {
+                time[i] = ((double) cur.getTemporalElement().asGeneric()
+                        .getInf()) / 1000.0d;
+                data[i] = cur.getDataElement().getDouble(0);
+                i++;
+            } else {
+                logger.debug("skip temp.o. with temp.el. "
+                        + cur.getTemporalElement());
+            }
+        }
+        logger.trace(i);
+
+        if (i == 0)
+            throw new TemporalDataException(
+                    "TemporalDataSet did not contain any anchored objects.");
+
+        // shorten arrays, if some temp.obj. were skipped
+        if (i < time.length || i < data.length) {
+            double[] temp = new double[i];
+            System.arraycopy(time, 0, temp, 0, i);
+            time = temp;
+            System.arraycopy(data, 0, temp, 0, i);
+            data = temp;
+        }
+
+        engine.assign(name + ".time", time);
+        engine.assign(name + ".data", data);
+        this.exec(name + " <- zoo(" + name + ".data)");
+        // work around a possible timezone bug in as.POSIXct.numeric
+        // cp. http://stackoverflow.com/questions/2457129/converting-unix-seconds-in-milliseconds-to-posixct-posixlt
+        // this.exec("time(" + name + ") <- as.POSIXct(" + name +
+        // ".time, origin=\"1970-01-01 GMT\")");
+        this.exec("time(" + name + ") <- as.POSIXct(as.POSIXlt(" + name
+                + ".time, origin=\"1970-01-01\"))");
     }
 
     public void exec(String command) throws REngineException {
         try {
+            logger.debug("R> " + command);
             engine.parseAndEval(command, null, false);
         } catch (REXPMismatchException e) {
             logger.error("unexpected exception", e);
