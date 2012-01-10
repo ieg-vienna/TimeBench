@@ -13,6 +13,9 @@ import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.REngineStdOutput;
 
+import timeBench.calendar.CalendarManager;
+import timeBench.calendar.CalendarManagerFactory;
+import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.oo.TemporalDataset;
@@ -157,6 +160,51 @@ public class RConnector {
                 int dataRow = tmpds.getDataElements().addRow();
                 tmpds.getDataElements().set(dataRow, name, data[i]);
                 tmpds.addOccurrence(dataRow, te);
+            }
+
+            return tmpds;
+        } else if ("zoo".equals(x.asString())) {
+            // zoo ... feature-rich R time series class
+            double start = engine.parseAndEval(
+                    "as.numeric(start(" + name + "))", null, true).asDouble();
+            double[] data = engine.parseAndEval("coredata(" + name + ")", null,
+                    true).asDoubles();
+            double[] time = engine.parseAndEval(
+                    "as.numeric(time(" + name + "))", null, true).asDoubles();
+            logger.debug("ts with start: " + start + ", obs: " + data.length);
+
+            // get calendar and granularity
+            CalendarManager calM = CalendarManagerFactory
+                    .getSingleton(CalendarManagers.JavaDate);
+            int granularityContextId = calM.getTopGranularityIdentifier();
+            int granularityId = calM.getBottomGranularityIdentifier();
+
+            // relational
+            timeBench.data.relational.TemporalDataset tmpds = new timeBench.data.relational.TemporalDataset();
+            tmpds.getDataElements().addColumn(name, double.class);
+
+            // time indices are only used in log file to check our code
+            DateFormat df = null;
+            if (logger.isTraceEnabled()) {
+                df = DateFormat.getDateTimeInstance();
+            }
+
+            for (int i = 0; i < data.length; i++) {
+                long inf = Math.round(time[i] * 1000);
+                if (logger.isTraceEnabled())
+                    logger.trace("time from R: " + time[i] + " inf: "
+                            + df.format(new Date(inf)) + " data: " + data[i]);
+
+                int timeRow = tmpds
+                        .addTemporalElement(
+                                inf,
+                                inf,
+                                granularityId,
+                                granularityContextId,
+                                timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT);
+                int dataRow = tmpds.getDataElements().addRow();
+                tmpds.getDataElements().set(dataRow, name, data[i]);
+                tmpds.addOccurrence(dataRow, timeRow);
             }
 
             return tmpds;
