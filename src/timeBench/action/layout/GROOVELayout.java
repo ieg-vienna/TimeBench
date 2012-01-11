@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import prefuse.Display;
 import prefuse.data.Tuple;
+import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import timeBench.action.analytical.MinMaxValuesProvider;
@@ -85,6 +86,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setEndX(position.getMaxX());
 		node.setEndY(position.getMaxY());
 		node.setDOI(granularityLevel);
+		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));
 	
 		double value = datasetProvider.getTemporalDataset().getDataElements().getDouble(m_vis.getSourceTuple(node).getInt(1), columnUsed);
 

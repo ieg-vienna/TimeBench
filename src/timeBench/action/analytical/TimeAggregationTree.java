@@ -59,6 +59,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	@Override
 	public void run(double frac) {
 		try {
+			//workingDataset = (timeBench.data.relational.TemporalDataset)sourceDataset.clone();
 			workingDataset = sourceDataset;
 			temporalDataset = new TemporalDataset(workingDataset);
 		

@@ -1,5 +1,6 @@
 package render;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
@@ -15,6 +16,10 @@ public class RectangleRenderer implements prefuse.render.Renderer {
 		//System.err.println("["+(int)item.getStartX()+","+(int)item.getStartY()+"]["+(int)item.getEndX()+","+(int)item.getEndY()+"]: "+ColorLib.getColor(item.getStrokeColor()));
 		g.setColor(ColorLib.getColor(item.getFillColor()));
 		g.fillRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
+		if (ColorLib.alpha(item.getStrokeColor()) > 0) {		
+			g.setColor(ColorLib.getColor(item.getStrokeColor()));
+			g.drawRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
+		}
 	}
 
 	/**

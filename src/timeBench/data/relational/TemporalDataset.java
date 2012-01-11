@@ -147,35 +147,43 @@ public class TemporalDataset implements Cloneable {
 	 * but not the data in den tables.
 	 */
 	public Object clone() {
-		TemporalDataset result = new TemporalDataset();
 		
-		result.dataElements = new Table();
-		result.dataElements.addColumns(this.dataElements.getSchema());
+		Table resultDataElements = new Table();
+		resultDataElements.addColumns(this.dataElements.getSchema());
 		for(int i=0; i<this.dataElements.getRowCount(); i++ )
-			result.dataElements.addTuple(this.dataElements.getTuple(i));
+			resultDataElements.addTuple(this.dataElements.getTuple(i));
 
-		result.temporalElements = new Graph();
-		result.temporalElements.getNodeTable().addColumns(this.temporalElements.getNodeTable().getSchema());
+		Graph resultTemporalElements = new Graph(true);
+		resultTemporalElements.getNodeTable().addColumns(this.temporalElements.getNodeTable().getSchema());
 		for(int i=0; i<this.temporalElements.getNodeTable().getRowCount(); i++ )
-			result.temporalElements.getNodeTable().addTuple(this.temporalElements.getNodeTable().getTuple(i));
-		result.temporalElements.getEdgeTable().addColumns(this.temporalElements.getEdgeTable().getSchema());
+			resultTemporalElements.getNodeTable().addTuple(this.temporalElements.getNodeTable().getTuple(i));
+		resultTemporalElements.getEdgeTable().addColumns(this.temporalElements.getEdgeTable().getSchema());
 		for(int i=0; i<this.temporalElements.getEdgeTable().getRowCount(); i++ )
-			result.temporalElements.getEdgeTable().addTuple(this.temporalElements.getEdgeTable().getTuple(i));
+			resultTemporalElements.addEdge(this.temporalElements.getEdge(i).getSourceNode(), this.temporalElements.getEdge(i).getTargetNode());
+//		resultTemporalElements.addEdge(this.temporalElements.getEdgeTable().getTuple(i).getInt(0),this.temporalElements.getEdgeTable().getTuple(i).getInt(1));
+
+		TemporalDataset result;
+		try {
+			result = new TemporalDataset(resultDataElements,resultTemporalElements);
 		
-		result.graph = new BipartiteGraph(this.graph.getNode1Table(),this.graph.getNode2Table());
-		result.graph.setEdgeTable(this.graph.getEdgeTable());
+			result.occurrences = new Graph();
+			result.occurrences.getNodeTable().addColumns(this.occurrences.getNodeTable().getSchema());
+			for(int i=0; i<this.occurrences.getNodeTable().getRowCount(); i++ )
+				result.occurrences.getNodeTable().addTuple(this.occurrences.getNodeTable().getTuple(i));
+			result.occurrences.getEdgeTable().addColumns(this.occurrences.getEdgeTable().getSchema());
+			for(int i=0; i<this.occurrences.getEdgeTable().getRowCount(); i++ )
+				result.occurrences.addEdge(this.occurrences.getEdge(i).getSourceNode(),this.occurrences.getEdge(i).getTargetNode());
+				
+			result.graph = new BipartiteGraph(dataElements, getTemporalElements(), result.occurrences.getNodeTable());
 		
-		result.occurrences = new Graph();
-		result.occurrences.getNodeTable().addColumns(this.occurrences.getNodeTable().getSchema());
-		for(int i=0; i<this.occurrences.getNodeTable().getRowCount(); i++ )
-			result.occurrences.getNodeTable().addTuple(this.occurrences.getNodeTable().getTuple(i));
-		result.occurrences.getEdgeTable().addColumns(this.occurrences.getEdgeTable().getSchema());
-		for(int i=0; i<this.occurrences.getEdgeTable().getRowCount(); i++ )
-			result.occurrences.getEdgeTable().addTuple(this.occurrences.getEdgeTable().getTuple(i));
-		
-		result.temporalPrimitives = this.temporalPrimitives;
-		
-		return result;
+			result.initTupleManagers();
+			
+			return result;
+		} catch (TemporalDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
