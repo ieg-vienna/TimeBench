@@ -1,6 +1,6 @@
 package timeBench.data.io.schema;
 
-import ieg.util.xml.TextTableFormat;
+import ieg.prefuse.data.io.TextTableFormat;
 
 import java.util.LinkedList;
 import java.util.List;
