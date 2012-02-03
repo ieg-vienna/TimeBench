@@ -6,5 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/external"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ieg-prefuse"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/prefuse-vienna"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
