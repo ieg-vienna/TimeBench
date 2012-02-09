@@ -19,6 +19,8 @@ import timeBench.data.io.schema.DateInstantEncoding;
 import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.data.io.schema.TemporalObjectEncoding;
 import timeBench.data.relational.TemporalDataset;
+import timeBench.data.relational.GenericTemporalElement;
+import timeBench.data.relational.TemporalObject;
 
 public class TextTableTemporalDatasetReader extends
         AbstractTemporalDatasetReader {
@@ -92,7 +94,6 @@ public class TextTableTemporalDatasetReader extends
         if (logger.isDebugEnabled())
             logger.debug("start import " + table);
         spec.init();
-        TreeMap<String, Integer> elements = new TreeMap<String, Integer>();
 
         // 1.2. prepare table for data elements
         for (TemporalObjectEncoding encoding : spec.getEncodings()) {
@@ -106,6 +107,9 @@ public class TextTableTemporalDatasetReader extends
         }
 
         // 2. for each data row
+        // map of temporal elements extracted from 1 row: specKey -> row 
+        TreeMap<String, GenericTemporalElement> elements = new TreeMap<String, GenericTemporalElement>();
+        long temporalObjectId = 1;
         IntIterator rows = table.rows();
         while (rows.hasNext()) {
             Tuple tuple = (Tuple) table.getTuple(rows.nextInt());
@@ -120,15 +124,20 @@ public class TextTableTemporalDatasetReader extends
 
                     // 2.1.2. if it has data columns
                     if (encoding.getDataColumns().length > 0) {
-                        // 2.1.2.1. extract data element & append to TempDS
-                        // (optional)
-                        int dataRow = addDataElement(tmpds, tuple, encoding);
-                        logger.debug("data row " + dataRow);
-
-                        // 2.1.2.2. link temporal element with data element in
-                        // TempDS
-                        tmpds.addOccurrence(dataRow,
-                                elements.get(encoding.getKey()));
+                        if (encoding.isTemporalObjectIdIncluded()) { 
+                            temporalObjectId = tuple.getLong(TemporalDataset.TEMPORAL_OBJECT_ID);
+                        } else {
+                            temporalObjectId++;
+                        }
+                        logger.debug("temporal object id " + temporalObjectId);
+                            
+                        // 2.1.2.1. link temporal element with data element in TempDS
+                        TemporalObject obj = tmpds.addTemporalObject(
+                                temporalObjectId,
+                                elements.get(encoding.getKey()).getId());
+                        
+                        // 2.1.2.2. extract data element & append to TempDS
+                        copyDataElements(obj, tuple, encoding);
                     }
                 }
             } catch (TemporalDataException e) {
@@ -147,7 +156,7 @@ public class TextTableTemporalDatasetReader extends
 
     private static void prepareDataColumns(TemporalDataset tmpds, Table table,
             TemporalObjectEncoding schema) throws TemporalDataException {
-        Table dataElements = tmpds.getDataElements();
+        Table dataElements = tmpds.getNodeTable();
 
         for (String col : schema.getDataColumns()) {
             if (dataElements.getColumnNumber(col) == -1) {
@@ -158,30 +167,31 @@ public class TextTableTemporalDatasetReader extends
                 dataElements.addColumn(col, table.getColumnType(col));
             } else if (dataElements.getColumnType(col) != table
                     .getColumnType(col)) {
+                // column exists but wrong data type
                 throw new TemporalDataException("Data column " + col
                         + " already exists with a different type: is "
                         + dataElements.getColumnType(col) + " expected "
                         + table.getColumnType(col));
+            } else if (col.equals(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID)) {
+                // try to put data in foreign key column
+                throw new TemporalDataException("Data column " + col
+                        + " is reserved for TimeBench.");
             } else if (logger.isDebugEnabled())
                 logger.debug("skip data col \"" + col + "\" type "
                         + table.getColumnType(col));
         }
     }
 
-    private static int addDataElement(TemporalDataset tmpds, Tuple tuple,
+    private static void copyDataElements(TemporalObject obj, Tuple tuple,
             TemporalObjectEncoding schema) {
-        Table dataElements = tmpds.getDataElements();
-
-        int rowNumber = dataElements.addRow();
         for (String col : schema.getDataColumns()) {
             if (logger.isTraceEnabled())
                 logger.trace("add data item " + col + " value "
                         + tuple.get(col));
             // TODO insert switch (columnType) and call setInt(getInt())
             // if we are more serious about performance
-            dataElements.set(rowNumber, col, tuple.get(col));
+            obj.set(col, tuple.get(col));
         }
-        return rowNumber;
     }
     
     public TemporalDataColumnSpecification getSpecification() {

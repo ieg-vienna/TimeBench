@@ -9,13 +9,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 
 import prefuse.data.Tuple;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.Granularity;
 import timeBench.data.TemporalDataException;
-import timeBench.data.oo.TemporalElement;
+import timeBench.data.relational.GenericTemporalElement;
 import timeBench.data.relational.TemporalDataset;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -39,6 +40,9 @@ public abstract class TemporalObjectEncoding {
     
     @XmlTransient
     private Granularity granularity = null;
+    
+    @XmlTransient
+    private boolean temporalObjectIdIncluded = false;
 
     // TODO declare optional encodings that can safely be skipped vs. required
     // encodings that are needed (e.g. for an interval)
@@ -58,15 +62,14 @@ public abstract class TemporalObjectEncoding {
     void init(Calendar calendar) throws TemporalDataException {
         if (granularity == null)
             this.granularity = new Granularity(calendar, granularityId, granularityContextId);
+        
+        this.temporalObjectIdIncluded = ArrayUtils.contains(this.dataColumns, 
+                TemporalDataset.TEMPORAL_OBJECT_ID);
     }
 
     public abstract void buildTemporalElement(TemporalDataset tmpds,
-            Tuple tuple, Map<String, Integer> elements)
+            Tuple tuple, Map<String, GenericTemporalElement> elements)
             throws TemporalDataException;
-
-    @Deprecated
-    public abstract void buildTemporalElement(Tuple tuple,
-            Map<String, TemporalElement> elements);
 
     public String[] getDataColumns() {
         return dataColumns;
@@ -91,5 +94,9 @@ public abstract class TemporalObjectEncoding {
     public void setGranularity(Granularity granularity) {
         this.granularity = granularity;
         this.granularityId = granularity.getIdentifier();
+    }
+
+    public boolean isTemporalObjectIdIncluded() {
+        return temporalObjectIdIncluded;
     }
 }

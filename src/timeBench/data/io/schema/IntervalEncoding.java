@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import prefuse.data.Tuple;
 import timeBench.calendar.Calendar;
 import timeBench.data.TemporalDataException;
-import timeBench.data.oo.TemporalElement;
+import timeBench.data.relational.GenericTemporalElement;
 import timeBench.data.relational.TemporalDataset;
 
 public class IntervalEncoding extends TemporalObjectEncoding {
@@ -47,12 +47,10 @@ public class IntervalEncoding extends TemporalObjectEncoding {
 
     @Override
     public void buildTemporalElement(TemporalDataset tmpds, Tuple tuple,
-            Map<String, Integer> elements) throws TemporalDataException {
+            Map<String, GenericTemporalElement> elements) throws TemporalDataException {
         if (beginKey != null && endKey != null) {
-            timeBench.data.relational.GenericTemporalElement begin = tmpds
-                    .getTemporalElementByRow(elements.get(beginKey));
-            timeBench.data.relational.GenericTemporalElement end = tmpds
-                    .getTemporalElementByRow(elements.get(endKey));
+            GenericTemporalElement begin = elements.get(beginKey);
+            GenericTemporalElement end = elements.get(endKey);
 
             // XXX make this more correct using Tim's classes (e.g., check &
             // handle different granularities)
@@ -66,16 +64,9 @@ public class IntervalEncoding extends TemporalObjectEncoding {
             tmpds.getTemporalElements().addEdge(begin, interval);
             tmpds.getTemporalElements().addEdge(end, interval);
 
-            elements.put(super.getKey(), row);
+            elements.put(this.getKey(), tmpds.getTemporalElementByRow(row));
         } else
             throw new TemporalDataException(
                     "import interval with span not supported yet");
-    }
-
-    @Override
-    public void buildTemporalElement(Tuple tuple,
-            Map<String, TemporalElement> elements) {
-        // TODO Auto-generated method stub
-
     }
 }

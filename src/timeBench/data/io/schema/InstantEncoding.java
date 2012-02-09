@@ -6,7 +6,7 @@ import java.util.Map;
 import prefuse.data.Tuple;
 import timeBench.calendar.Granule;
 import timeBench.data.TemporalDataException;
-import timeBench.data.oo.TemporalElement;
+import timeBench.data.relational.GenericTemporalElement;
 import timeBench.data.relational.TemporalDataset;
 
 public abstract class InstantEncoding extends TemporalObjectEncoding {
@@ -18,21 +18,15 @@ public abstract class InstantEncoding extends TemporalObjectEncoding {
 
     @Override
     public void buildTemporalElement(TemporalDataset tmpds, Tuple tuple,
-            Map<String, Integer> elements) throws TemporalDataException {
+            Map<String, GenericTemporalElement> elements) throws TemporalDataException {
         Granule granule = super.getGranularity().parseDateToGranule(
                 buildDate(tuple));
 
+        // TODO efficient way to remember last added ID
         int row = tmpds.addTemporalElement(granule.getInf(), granule.getSup(),
                 super.getGranularity().getIdentifier(), super.getGranularity().getGranularityContextIdentifier(),
                 TemporalDataset.PRIMITIVE_INSTANT);
 
-        elements.put(super.getKey(), row);
-    }
-
-    @Override
-    public void buildTemporalElement(Tuple tuple,
-            Map<String, TemporalElement> elements) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        elements.put(this.getKey(), tmpds.getTemporalElementByRow(row));
     }
 }

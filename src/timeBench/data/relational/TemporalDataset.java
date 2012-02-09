@@ -12,6 +12,7 @@ import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
+import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
@@ -306,7 +307,11 @@ public class TemporalDataset extends Graph implements Cloneable {
 	 */
     @Deprecated
 	public int addOccurrence(int dataElementInd, int temporalElementInd) {
-        addTemporalObject(dataElementInd, temporalElementInd);
+        try {
+            addTemporalObject(dataElementInd, temporalElementInd);
+        } catch (TemporalDataException e) {
+            e.printStackTrace();
+        }
 	    return this.indexObjects.get(temporalElementInd);
 	}
 	
@@ -314,12 +319,22 @@ public class TemporalDataset extends Graph implements Cloneable {
      * Adds a temporal object.
      * @param temporalObjectId the id of the temporal object 
      * @param temporalElementId the id of the temporal element 
+     * @throws TemporalDataException 
      */
-	public void addTemporalObject(long temporalObjectId, long temporalElementId) {
-		int row = super.addNodeRow();
-		super.getNodeTable().set(row, TEMPORAL_OBJECT_ID, temporalObjectId);
-        super.getNodeTable().set(row, TEMPORAL_OBJECT_TEMPORAL_ID, temporalElementId);
-	}
+    public TemporalObject addTemporalObject(long temporalObjectId,
+            long temporalElementId) throws TemporalDataException {
+        // TODO make integrity checks optional
+        if (this.indexObjects.get(temporalObjectId) != Integer.MIN_VALUE)
+            throw new TemporalDataException("Duplicate temporal object id");
+        if (this.indexElements.get(temporalElementId) == Integer.MIN_VALUE)
+            throw new TemporalDataException(
+                    "Temporal element id does not exist");
+
+        TemporalObject object = (TemporalObject) super.addNode();
+        object.set(TEMPORAL_OBJECT_ID, temporalObjectId);
+        object.set(TEMPORAL_OBJECT_TEMPORAL_ID, temporalElementId);
+        return object;
+    }
 	
 	/**
 	 * Creates an {@link IntervalIndex} for the temporal elements. It helps in querying
