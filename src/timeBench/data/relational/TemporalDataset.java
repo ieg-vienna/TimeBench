@@ -10,6 +10,7 @@ import prefuse.data.column.Column;
 import prefuse.data.expression.AbstractPredicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
+import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
@@ -36,12 +37,25 @@ public class TemporalDataset extends Graph implements Cloneable {
 	
 	private Graph temporalElements;
 	
-	private int[] roots = null;	// if we have a forest or tree of temporal objects, null for tables
+	private long[] roots = null;	// if we have a forest or tree of temporal objects, null for tables
 	
     private TemporalElementManager temporalPrimitives;
+    
+    private Index indexObjects;
 
-	// predefined column names for temporal elements 
-	public static final String INF = "inf";
+    private Index indexElements;
+
+    private Index indexObjectsByElements;
+    
+    // predefined column names for temporal objects 
+    public static final String TEMPORAL_OBJECT_ID = "id";
+
+    public static final String TEMPORAL_OBJECT_TEMPORAL_ID = "temporal_id";
+
+    // predefined column names for temporal elements 
+    public static final String TEMPORAL_ELEMENT_ID = "id";
+
+    public static final String INF = "inf";
 
 	public static final String SUP = "sup";
 
@@ -62,7 +76,14 @@ public class TemporalDataset extends Graph implements Cloneable {
         // define temporal element columns for nodes of the temporal e. graph
         this.temporalElements.getNodeTable().addColumns(this.getTemporalElementSchema());
         
-        // TODO add foreign key column to temporal objects
+        // add temporal objects columns (primary and foreign key) 
+        super.addColumn(TEMPORAL_OBJECT_ID, long.class, -1);
+        super.addColumn(TEMPORAL_OBJECT_TEMPORAL_ID, long.class, -1);
+        
+        // add indices
+        this.indexObjects = super.getNodeTable().index(TEMPORAL_OBJECT_ID);
+        this.indexObjectsByElements = super.getNodeTable().index(TEMPORAL_OBJECT_TEMPORAL_ID);
+        this.indexElements = this.temporalElements.getNodeTable().index(TEMPORAL_ELEMENT_ID);
         
         // TODO initTupleManagers();
 
@@ -75,7 +96,7 @@ public class TemporalDataset extends Graph implements Cloneable {
     public TemporalDataset(Schema dataColumns) {
         this();
         
-        // TODO check that it does not interfere with foreign key 
+        // TODO check that it does not interfere with primary and foreign key 
         super.getNodeTable().addColumns(dataColumns);
     }
 		
@@ -118,13 +139,17 @@ public class TemporalDataset extends Graph implements Cloneable {
 //        this.temporalPrimitives = new TemporalElementManager(this, false);
 //        this.temporalPrimitives.invalidateAutomatically();
 //    }
-	
+
+    public Object clone() {
+        throw new UnsupportedOperationException("clone no longer needed");
+    }
+    
 	/**
 	 * Gets the roots if the TemporalObjects form a wood, the root, if they form a tree, or null for tables
 	 * 
 	 * @return the roots
 	 */
-	public int[] getRoots() {
+	public long[] getRoots() {
 		return roots;
 	}
 
@@ -133,7 +158,7 @@ public class TemporalDataset extends Graph implements Cloneable {
 	 * 
 	 * @param roots the roots to set
 	 */
-	public void setRoots(int[] roots) {
+	public void setRoots(long[] roots) {
 		this.roots = roots;
 	}
 
@@ -155,21 +180,39 @@ public class TemporalDataset extends Graph implements Cloneable {
 	}
 	
     /**
-     * Get the TemporalElement instance corresponding to its id.
-     * @param n element id (temporal element table row number)
-     * @return the TemporalElement instance corresponding to the element id
+     * Get the TemporalElement instance corresponding to its row number.
+     * @param row temporal element table row number
+     * @return the TemporalElement instance corresponding to the row number
      */
-	public GenericTemporalElement getTemporalElement(int n) {
-	    return (GenericTemporalElement) temporalElements.getNode(n);
+	public GenericTemporalElement getTemporalElementByRow(int row) {
+	    return (GenericTemporalElement) temporalElements.getNode(row);
 	}
 
     /**
+     * Get the TemporalElement instance corresponding to its id.
+     * @param id element id 
+     * @return the TemporalElement instance corresponding to the element id
+     */
+	public GenericTemporalElement getTemporalElement(long id) {
+	    return getTemporalElementByRow(this.indexElements.get(id));
+	}
+
+    /**
+     * Get the temporal primitive corresponding to its row number.
+     * @param row temporal element table row number
+     * @return the temporal primitive corresponding to the row number
+     */
+	public TemporalElement getTemporalPrimitiveByRow(int row) {
+        return (TemporalElement) this.temporalPrimitives.getTuple(row);
+    }
+
+    /**
      * Get the temporal primitive corresponding to its id.
-     * @param n element id (temporal element table row number)
+     * @param n element id
      * @return the temporal primitive corresponding to the element id
      */
-    public TemporalElement getTemporalPrimitive(int n) {
-        return (TemporalElement) this.temporalPrimitives.getTuple(n);
+    public TemporalElement getTemporalPrimitive(long id) {
+        return getTemporalPrimitiveByRow(this.indexElements.get(id));
     }
 
     /**
@@ -217,11 +260,12 @@ public class TemporalDataset extends Graph implements Cloneable {
 
     /**
      * Get the TemporalObject instance corresponding to its id.
-     * @param n object id (occurrences table row number)
+     * @param id object id 
      * @return the TemporalObject instance corresponding to the object id
      */
-    public TemporalObject getTemporalObject(int n) {
-        return (TemporalObject) super.getNode(n); 
+    public TemporalObject getTemporalObject(long id) {
+        int row = this.indexObjects.get(id);
+        return (TemporalObject) super.getNode(row); 
     }
 
 	/**
@@ -253,19 +297,19 @@ public class TemporalDataset extends Graph implements Cloneable {
 	 */
     @Deprecated
 	public int addOccurrence(int dataElementInd, int temporalElementInd) {
-	    return addTemporalObject(temporalElementInd);
+        addTemporalObject(dataElementInd, temporalElementInd);
+	    return this.indexObjects.get(temporalElementInd);
 	}
 	
     /**
      * Adds a temporal object.
-     * @param temporalElementId the id of the temporal element in the {@link Table} of temporal elements
-     * @return the index of the added occurrence in the {@link Table} of occurrences
+     * @param temporalObjectId the id of the temporal object 
+     * @param temporalElementId the id of the temporal element 
      */
-	public int addTemporalObject(int temporalElementId) {
-	    // TODO use keys instead of row numbers
+	public void addTemporalObject(long temporalObjectId, long temporalElementId) {
 		int row = super.addNodeRow();
-		// TODO set temporal elemement id
-		return row;
+		super.getNodeTable().set(row, TEMPORAL_OBJECT_ID, temporalObjectId);
+        super.getNodeTable().set(row, TEMPORAL_OBJECT_TEMPORAL_ID, temporalElementId);
 	}
 	
 	/**
@@ -297,8 +341,25 @@ public class TemporalDataset extends Graph implements Cloneable {
 	 * @return the index of the created element in the table of temporal elements
 	 */
 	public int addTemporalElement(long inf, long sup, int granularityId, int granularityContextId, int kind) {
-		Table nodeTable = temporalElements.getNodeTable();
-		int row = nodeTable.addRow();
+        // set id to 
+        long id = temporalElements.getNodeTable().getLong(this.indexElements.maximum(), TEMPORAL_ELEMENT_ID) + 1;
+        return addTemporalElement(id, inf, sup, granularityId, granularityContextId, kind);
+	}
+	
+    /**
+     * Adds a new temporal element to the dataset
+     * @param id the id of the temporal element
+     * @param inf the lower end of the temporal element
+     * @param sup the upper end of the temporal element
+     * @param granularityId the granularityID of the temporal element
+     * @param granularityContextId the granularityContextID of the temporal element
+     * @param kind the kind of the temporal element
+     * @return the index of the created element in the table of temporal elements
+     */
+    public int addTemporalElement(long id, long inf, long sup, int granularityId, int granularityContextId, int kind) {
+        Table nodeTable = temporalElements.getNodeTable();
+        int row = nodeTable.addRow();
+        nodeTable.set(row, TEMPORAL_ELEMENT_ID, id);
 		nodeTable.set(row, INF, inf);
 		nodeTable.set(row, SUP, sup);
 		nodeTable.set(row, GRANULARITY_ID, granularityId);
@@ -347,6 +408,7 @@ public class TemporalDataset extends Graph implements Cloneable {
         Schema s = new Schema();
 
         // TODO insert ID column
+        s.addColumn(TEMPORAL_ELEMENT_ID, long.class, -1);
         s.addColumn(INF, long.class, Long.MIN_VALUE);
         s.addColumn(SUP, long.class, Long.MAX_VALUE);
         s.addColumn(GRANULARITY_ID, int.class, -1);

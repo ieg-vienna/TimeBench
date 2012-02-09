@@ -87,11 +87,11 @@ public class TestTemporalDataSet {
 		IntIterator rows5 = index.rows(7, 8);
 		while (rows5.hasNext()) {
 		    int row = rows5.nextInt(); 
-			System.out.println(row + " " + dataset.getTemporalElement(row));
+			System.out.println(row + " " + dataset.getTemporalElementByRow(row));
 		}
 		
         System.out.println("Test iterator & tuplemanager");
-        System.out.println(dataset.getTemporalElement(0));
+        System.out.println(dataset.getTemporalElementByRow(0));
         // Iterator<TemporalElement> teIterator = dataset.temporalElements();
         // while (teIterator.hasNext()) {
         // TemporalElement te = teIterator.next();
@@ -104,14 +104,14 @@ public class TestTemporalDataSet {
         }
 
         System.out.println("Test temporal elements graph");
-        TemporalElement te = dataset.getTemporalElement(interval);
+        TemporalElement te = dataset.getTemporalElementByRow(interval);
         System.out.println("Children of interval   count="
                 + te.getChildElementCount());
         teIterator = te.childElements();
         while (teIterator.hasNext()) {
             System.out.println(teIterator.next());
         }
-        te = dataset.getTemporalElement(begin);
+        te = dataset.getTemporalElementByRow(begin);
         System.out.println("Children of instant   count="
                 + te.getChildElementCount());
         teIterator = te.childElements();
@@ -119,7 +119,7 @@ public class TestTemporalDataSet {
             System.out.println(teIterator.next());
         }
 
-        te = dataset.getTemporalElement(begin);
+        te = dataset.getTemporalElementByRow(begin);
         System.out.println("Parents of begin instant   count="
                 + te.getParentElementCount());
         teIterator = te.parentElements();
@@ -145,7 +145,7 @@ public class TestTemporalDataSet {
         }
 */
         // check that adding a tuple set to a visualization does not affect existing tuples 
-        TemporalElement t2 = dataset.getTemporalElement(2);
+        TemporalElement t2 = dataset.getTemporalElementByRow(2);
         System.out.println(t2);
         Visualization viz = new Visualization();
         viz.addTable("aex", dataElements);

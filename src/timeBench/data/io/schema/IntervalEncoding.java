@@ -50,9 +50,9 @@ public class IntervalEncoding extends TemporalObjectEncoding {
             Map<String, Integer> elements) throws TemporalDataException {
         if (beginKey != null && endKey != null) {
             timeBench.data.relational.GenericTemporalElement begin = tmpds
-                    .getTemporalElement(elements.get(beginKey));
+                    .getTemporalElementByRow(elements.get(beginKey));
             timeBench.data.relational.GenericTemporalElement end = tmpds
-                    .getTemporalElement(elements.get(endKey));
+                    .getTemporalElementByRow(elements.get(endKey));
 
             // XXX make this more correct using Tim's classes (e.g., check &
             // handle different granularities)
@@ -62,7 +62,7 @@ public class IntervalEncoding extends TemporalObjectEncoding {
 
             // add edges to temporal element graph
             timeBench.data.relational.TemporalElement interval = tmpds
-                    .getTemporalElement(row);
+                    .getTemporalElementByRow(row);
             tmpds.getTemporalElements().addEdge(begin, interval);
             tmpds.getTemporalElements().addEdge(end, interval);
 

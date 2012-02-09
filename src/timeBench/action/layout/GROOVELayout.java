@@ -67,7 +67,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		VisualTable vt = m_vis.addTable(group, datasetProvider.getTemporalDataset().getOccurrences());
 		
 		try {
-			layoutGranularity(vt,m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getOccurrences().getTuple(
+			layoutGranularity(vt,m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
 					datasetProvider.getTemporalDataset().getRoots()[0])),position,-1,0.0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

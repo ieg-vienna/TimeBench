@@ -84,6 +84,15 @@ public abstract class TemporalElement extends TableNode {
     }
 
     /**
+     * Get the temporal element id.
+     * 
+     * @return the id
+     */
+    public long getId() {
+        return super.getLong(TemporalDataset.TEMPORAL_ELEMENT_ID);
+    }
+    
+    /**
      * Get the granularity id.
      * 
      * @return the granularity id
@@ -117,7 +126,7 @@ public abstract class TemporalElement extends TableNode {
      * @return a generic temporal element of the same underlying data row.
      */
     public GenericTemporalElement asGeneric() {
-        return this.tmpds.getTemporalElement(this.m_row);
+        return this.tmpds.getTemporalElementByRow(this.m_row);
     }
 
     /**
@@ -126,7 +135,7 @@ public abstract class TemporalElement extends TableNode {
      * @return a temporal primitive of the same underlying data row.
      */
     public TemporalElement asPrimitive() {
-        return this.tmpds.getTemporalPrimitive(this.m_row);
+        return this.tmpds.getTemporalPrimitiveByRow(this.m_row);
     }
     
     /**
@@ -172,15 +181,16 @@ public abstract class TemporalElement extends TableNode {
     /**
      * creates a human-readable string from a {@link TemporalElement}.
      * <p>
-     * Example: GenericTemporalElement[inf=3, sup=14, granularityId=1, kind=1]
+     * Example: GenericTemporalElement[id=2, inf=3, sup=14, granularityId=1, granularityContextId=1, kind=1]
      * 
      * @return a string representation
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[inf="
+        return getClass().getSimpleName() + "[id=" + getId() + ", inf="
                 + super.getLong(TemporalDataset.INF) + ", sup="
                 + super.getLong(TemporalDataset.SUP) + ", granularityId="
-                + getGranularityId() + ", kind=" + getKind() + "]";
+                + getGranularityId() + ", granularityContextId="
+                + getGranularityContextId() + ", kind=" + getKind() + "]";
     }
 }

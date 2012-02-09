@@ -119,7 +119,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			//System.err.println();
 			
 			int rootIndex = root.anchorRelational(workingDataset);
-			workingDataset.setRoots(new int[]{rootIndex});
+			workingDataset.setRoots(new long[]{rootIndex});
 			
 			//System.err.println();
 			
