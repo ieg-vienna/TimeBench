@@ -12,7 +12,6 @@ import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
-import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
@@ -85,8 +84,7 @@ public class TemporalDataset extends Graph implements Cloneable {
         this.indexObjectsByElements = super.getNodeTable().index(TEMPORAL_OBJECT_TEMPORAL_ID);
         this.indexElements = this.temporalElements.getNodeTable().index(TEMPORAL_ELEMENT_ID);
         
-        // TODO initTupleManagers();
-
+        initTupleManagers();
 	}
 	
 	/**
@@ -108,37 +106,34 @@ public class TemporalDataset extends Graph implements Cloneable {
      * This method is called from all constructors and will cause 
      * all existing Tuples retrieved from this dataset to be invalidated.
      */
-//    private void initTupleManagers() {
-//        // dummy manager for edges in occurrences graph
-//        TupleManager tempObjectEdgeManager = new TupleManager(
-//                occurrences.getEdgeTable(), occurrences, TableEdge.class);
-//        
-//        // edges of bipartite graph and nodes of occurrences graph --> TemporalObject
-//        TupleManager tempObjectManager = new BipartiteEdgeManager(
-//                graph.getEdgeTable(), occurrences, graph, TemporalObject.class);
-//        
-//        graph.getEdgeTable().setTupleManager(tempObjectManager);
-//
-//        occurrences.setTupleManagers(tempObjectManager, tempObjectEdgeManager);
-//        occurrences.getNodeTable().setTupleManager(tempObjectManager);
-//        occurrences.getEdgeTable().setTupleManager(tempObjectEdgeManager);
-//        
-//        // nodes of temporal element graph --> GenericTemporalElement
-//        TupleManager temporalTuples = new TemporalElementManager(this, true);
-//
-//        //  dummy manager for edges in temporal element graph 
-//        TupleManager tempElementEdgeManager = new TupleManager(
-//                temporalElements.getEdgeTable(), temporalElements,
-//                TableEdge.class);
-//
-//        temporalElements.setTupleManagers(temporalTuples, tempElementEdgeManager);
-//        temporalElements.getNodeTable().setTupleManager(temporalTuples);
-//        temporalElements.getEdgeTable().setTupleManager(tempElementEdgeManager);
-//
-//        // additional tuple manager for temporal element graph --> temporal primitives
-//        this.temporalPrimitives = new TemporalElementManager(this, false);
-//        this.temporalPrimitives.invalidateAutomatically();
-//    }
+    private void initTupleManagers() {
+        // nodes of temporal object graph --> TemporalObject
+        TupleManager tempObjectManager = new TupleManager(super.getNodeTable(), this, TemporalObject.class);
+        
+        // nodes of temporal element graph --> GenericTemporalElement
+        TupleManager temporalTuples = new TemporalElementManager(this, true);
+
+        // additional tuple manager for temporal element graph --> temporal primitives
+        this.temporalPrimitives = new TemporalElementManager(this, false);
+        this.temporalPrimitives.invalidateAutomatically();
+        
+        // dummy manager for edges in both graphs
+        TupleManager tempObjectEdgeManager = new TupleManager(
+                this.getEdgeTable(), this, TableEdge.class);
+        TupleManager tempElementEdgeManager = new TupleManager(
+                temporalElements.getEdgeTable(), temporalElements,
+                TableEdge.class);
+        
+        // assign to temporal object graph
+        super.setTupleManagers(tempObjectManager, tempObjectEdgeManager);
+        super.getNodeTable().setTupleManager(tempObjectManager);
+        super.getEdgeTable().setTupleManager(tempObjectEdgeManager);
+        
+        // assign to temporal element graph
+        temporalElements.setTupleManagers(temporalTuples, tempElementEdgeManager);
+        temporalElements.getNodeTable().setTupleManager(temporalTuples);
+        temporalElements.getEdgeTable().setTupleManager(tempElementEdgeManager);
+    }
 
     @Deprecated
     public Object clone() {
