@@ -18,10 +18,10 @@ import timeBench.data.util.IntervalTreeIndex;
 
 /**
  * This class maintains data structures that encompass a temporal dataset. It
- * consists of a {@link Table} of DataElements and a {@link Graph} of temporal
- * elements. Temporal occurrences of data elements are saved in an additional
- * {@link Table}. Furthermore, the class provides utility methods to index and
- * query the dataset.
+ * consists of a {@link Graph} of temporal objects and a {@link Graph} of 
+ * temporal elements. Temporal objects are in a 1:n relation with temporal 
+ * elements to encompass temporal occurrence. Furthermore, the class provides 
+ * utility methods to index and query the dataset.
  * 
  * <p>
  * <b>Warning:</b> If a pre-existing temporal elements table is used, it needs
@@ -32,18 +32,12 @@ import timeBench.data.util.IntervalTreeIndex;
  * @author BA, AR, TL
  * 
  */
-public class TemporalDataset implements Cloneable {
-	
-	private BipartiteGraph graph;
+public class TemporalDataset extends Graph implements Cloneable {
 	
 	private Graph temporalElements;
 	
-	private Graph occurrences;
+	private int[] roots = null;	// if we have a forest or tree of temporal objects, null for tables
 	
-	private int[] roots = null;	// If we have a forest or tree of occurences, null for tables
-	
-	private Table dataElements;
-
     private TemporalElementManager temporalPrimitives;
 
 	// predefined column names for temporal elements 
@@ -61,47 +55,30 @@ public class TemporalDataset implements Cloneable {
 	 * Constructs an empty {@link TemporalDataset}
 	 */
 	public TemporalDataset() {
-		this(new Table(), new Table());
-		// define temporal element columns for nodes of the temporal e. graph
-		this.getTemporalElements().addColumns(this.getTemporalElementSchema());
+        // temporal objects are by default in an directed graph
+	    super(true);
+	    
+        this.temporalElements = new Graph(true); 
+        // define temporal element columns for nodes of the temporal e. graph
+        this.temporalElements.getNodeTable().addColumns(this.getTemporalElementSchema());
+        
+        // TODO add foreign key column to temporal objects
+        
+        // TODO initTupleManagers();
 
 	}
 	
 	/**
-	 * Constructs a {@link TemporalDataset} with the given data- and temporal-elements 
-	 * @param dataElements a {@link Table} containing the data elements
-	 * @param temporalElements a {@link Table} containing the temporal elements 
+	 * Constructs an empty {@link TemporalDataset} with the given schema for data elements. 
+	 * @param dataColumns schema for data elements
 	 */
-    public TemporalDataset(Table dataElements, Table temporalElements) {
-        // here we cannot call the other constructor, because that would throw
-        // an exception that is impossible to catch
-        this.dataElements = dataElements;
-        this.temporalElements = new Graph(temporalElements, true);
-        graph = new BipartiteGraph(dataElements, getTemporalElements());
-        occurrences = new Graph(graph.getEdgeTable(), true);
+    public TemporalDataset(Schema dataColumns) {
+        this();
         
-        initTupleManagers();
+        // TODO check that it does not interfere with foreign key 
+        super.getNodeTable().addColumns(dataColumns);
     }
 		
-	/**
-	 * Constructs a {@link TemporalDataset} with the given data- and temporal-elements 
-	 * @param dataElements a {@link Table} containing the data elements
-	 * @param temporalElements a directed {@link Graph} containing the temporal elements   
-	 * and how they are related
-	 * @throws TemporalDataException if the temporal element Graph is not directed
-	 */
-	public TemporalDataset(Table dataElements, Graph temporalElements) throws TemporalDataException {
-		if (!temporalElements.isDirected()) {
-			throw new TemporalDataException("The graph of the temporal elements must be directed");
-		}
-		this.dataElements = dataElements;
-		this.temporalElements = temporalElements;		
-		graph = new BipartiteGraph(dataElements, getTemporalElements());
-        occurrences = new Graph(graph.getEdgeTable(), true);
-        
-        initTupleManagers();
-    }
-	
     /**
      * Set tuple managers for temporal elements, temporal primitives, and
      * temporal objects and use them in the underlying data structures.
@@ -110,83 +87,38 @@ public class TemporalDataset implements Cloneable {
      * This method is called from all constructors and will cause 
      * all existing Tuples retrieved from this dataset to be invalidated.
      */
-    private void initTupleManagers() {
-        // dummy manager for edges in occurrences graph
-        TupleManager tempObjectEdgeManager = new TupleManager(
-                occurrences.getEdgeTable(), occurrences, TableEdge.class);
-        
-        // edges of bipartite graph and nodes of occurrences graph --> TemporalObject
-        TupleManager tempObjectManager = new BipartiteEdgeManager(
-                graph.getEdgeTable(), occurrences, graph, TemporalObject.class);
-        
-        graph.getEdgeTable().setTupleManager(tempObjectManager);
-
-        occurrences.setTupleManagers(tempObjectManager, tempObjectEdgeManager);
-        occurrences.getNodeTable().setTupleManager(tempObjectManager);
-        occurrences.getEdgeTable().setTupleManager(tempObjectEdgeManager);
-        
-        // nodes of temporal element graph --> GenericTemporalElement
-        TupleManager temporalTuples = new TemporalElementManager(this, true);
-
-        //  dummy manager for edges in temporal element graph 
-        TupleManager tempElementEdgeManager = new TupleManager(
-                temporalElements.getEdgeTable(), temporalElements,
-                TableEdge.class);
-
-        temporalElements.setTupleManagers(temporalTuples, tempElementEdgeManager);
-        temporalElements.getNodeTable().setTupleManager(temporalTuples);
-        temporalElements.getEdgeTable().setTupleManager(tempElementEdgeManager);
-
-        // additional tuple manager for temporal element graph --> temporal primitives
-        this.temporalPrimitives = new TemporalElementManager(this, false);
-        this.temporalPrimitives.invalidateAutomatically();
-    }
+//    private void initTupleManagers() {
+//        // dummy manager for edges in occurrences graph
+//        TupleManager tempObjectEdgeManager = new TupleManager(
+//                occurrences.getEdgeTable(), occurrences, TableEdge.class);
+//        
+//        // edges of bipartite graph and nodes of occurrences graph --> TemporalObject
+//        TupleManager tempObjectManager = new BipartiteEdgeManager(
+//                graph.getEdgeTable(), occurrences, graph, TemporalObject.class);
+//        
+//        graph.getEdgeTable().setTupleManager(tempObjectManager);
+//
+//        occurrences.setTupleManagers(tempObjectManager, tempObjectEdgeManager);
+//        occurrences.getNodeTable().setTupleManager(tempObjectManager);
+//        occurrences.getEdgeTable().setTupleManager(tempObjectEdgeManager);
+//        
+//        // nodes of temporal element graph --> GenericTemporalElement
+//        TupleManager temporalTuples = new TemporalElementManager(this, true);
+//
+//        //  dummy manager for edges in temporal element graph 
+//        TupleManager tempElementEdgeManager = new TupleManager(
+//                temporalElements.getEdgeTable(), temporalElements,
+//                TableEdge.class);
+//
+//        temporalElements.setTupleManagers(temporalTuples, tempElementEdgeManager);
+//        temporalElements.getNodeTable().setTupleManager(temporalTuples);
+//        temporalElements.getEdgeTable().setTupleManager(tempElementEdgeManager);
+//
+//        // additional tuple manager for temporal element graph --> temporal primitives
+//        this.temporalPrimitives = new TemporalElementManager(this, false);
+//        this.temporalPrimitives.invalidateAutomatically();
+//    }
 	
-	/**
-	 * Performs a semi-deep clone of the {@link TemporalDataset}, cloning the containing tables,
-	 * but not the data in den tables.
-	 */
-	public Object clone() {
-		
-		Table resultDataElements = new Table();
-		resultDataElements.addColumns(this.dataElements.getSchema());
-		for(int i=0; i<this.dataElements.getRowCount(); i++ )
-			resultDataElements.addTuple(this.dataElements.getTuple(i));
-
-		Graph resultTemporalElements = new Graph(true);
-		resultTemporalElements.getNodeTable().addColumns(this.temporalElements.getNodeTable().getSchema());
-		for(int i=0; i<this.temporalElements.getNodeTable().getRowCount(); i++ )
-			resultTemporalElements.getNodeTable().addTuple(this.temporalElements.getNodeTable().getTuple(i));
-		resultTemporalElements.getEdgeTable().addColumns(this.temporalElements.getEdgeTable().getSchema());
-		for(int i=0; i<this.temporalElements.getEdgeTable().getRowCount(); i++ )
-			resultTemporalElements.addEdge(this.temporalElements.getEdge(i).getSourceNode(), this.temporalElements.getEdge(i).getTargetNode());
-//		resultTemporalElements.addEdge(this.temporalElements.getEdgeTable().getTuple(i).getInt(0),this.temporalElements.getEdgeTable().getTuple(i).getInt(1));
-
-		TemporalDataset result;
-		try {
-			result = new TemporalDataset(resultDataElements,resultTemporalElements);
-		
-			result.occurrences = new Graph();
-			result.occurrences.getNodeTable().addColumns(this.occurrences.getNodeTable().getSchema());
-			for(int i=0; i<this.occurrences.getNodeTable().getRowCount(); i++ )
-				result.occurrences.getNodeTable().addTuple(this.occurrences.getNodeTable().getTuple(i));
-			result.occurrences.getEdgeTable().addColumns(this.occurrences.getEdgeTable().getSchema());
-			for(int i=0; i<this.occurrences.getEdgeTable().getRowCount(); i++ )
-				result.occurrences.addEdge(this.occurrences.getEdge(i).getSourceNode(),this.occurrences.getEdge(i).getTargetNode());
-				
-			result.graph = new BipartiteGraph(dataElements, getTemporalElements(), result.occurrences.getNodeTable());
-		
-			result.initTupleManagers();
-			
-			return result;
-		} catch (TemporalDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-
 	/**
 	 * Gets the roots if the TemporalObjects form a wood, the root, if they form a tree, or null for tables
 	 * 
@@ -209,23 +141,16 @@ public class TemporalDataset implements Cloneable {
 	 * Gets the data elements in the dataset
 	 * @return a {@link Table} containing the data elements
 	 */
+	@Deprecated
 	public Table getDataElements() {
-		return dataElements;
-	}
-	
-	/**
-	 * Gets the temporal elements in the dataset
-	 * @return a {@link Table} containing the temporal elements.
-	 */
-	public Table getTemporalElements() {
-		return temporalElements.getNodeTable();
+		return super.getNodeTable();
 	}
 	
 	/**
 	 * Gets the temporal elements in the dataset
 	 * @return a {@link Graph} containing the temporal elements and how they are related.
 	 */
-	public Graph getTemporalElementsGraph() {
+	public Graph getTemporalElements() {
 		return temporalElements;
 	}
 	
@@ -260,6 +185,7 @@ public class TemporalDataset implements Cloneable {
      * allows iteration over all temporal elements. 
      * @return an object, which provides an iterator
      */
+    @Deprecated
     public Iterable<TemporalElement> temporalElementsIterable() {
         return new Iterable<TemporalElement>() {
             @SuppressWarnings("unchecked")
@@ -286,7 +212,7 @@ public class TemporalDataset implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public Iterator<TemporalObject> temporalObjects() {
-        return graph.getEdgeTable().tuples();
+        return super.nodes();
     }
 
     /**
@@ -295,7 +221,7 @@ public class TemporalDataset implements Cloneable {
      * @return the TemporalObject instance corresponding to the object id
      */
     public TemporalObject getTemporalObject(int n) {
-        return (TemporalObject) graph.getEdgeTable().getTuple(n);
+        return (TemporalObject) super.getNode(n); 
     }
 
 	/**
@@ -304,8 +230,9 @@ public class TemporalDataset implements Cloneable {
 	 * 
 	 * TL 2011-11-07: not deprecated because needed to generate VisualTable 
 	 */
+    @Deprecated
 	public Table getOccurrences() {
-		return occurrences.getNodeTable();
+		return super.getNodeTable();
 	}
 
 	/**
@@ -313,8 +240,9 @@ public class TemporalDataset implements Cloneable {
 	 * and the relations between these occurrences.
 	 * @return a {@link Graph} containing all occurrences and relations between them
 	 */
+    @Deprecated
 	public Graph getOccurrencesGraph() {
-		return occurrences;
+		return this;
 	}
 	
 	/**
@@ -323,8 +251,21 @@ public class TemporalDataset implements Cloneable {
 	 * @param temporalElementInd the index of the temporal element in the {@link Table} of temporal elements
 	 * @return the index of the added occurrence in the {@link Table} of occurrences
 	 */
+    @Deprecated
 	public int addOccurrence(int dataElementInd, int temporalElementInd) {
-		return graph.addEdge(dataElementInd, temporalElementInd);
+	    return addTemporalObject(temporalElementInd);
+	}
+	
+    /**
+     * Adds a temporal object.
+     * @param temporalElementId the id of the temporal element in the {@link Table} of temporal elements
+     * @return the index of the added occurrence in the {@link Table} of occurrences
+     */
+	public int addTemporalObject(int temporalElementId) {
+	    // TODO use keys instead of row numbers
+		int row = super.addNodeRow();
+		// TODO set temporal elemement id
+		return row;
 	}
 	
 	/**
@@ -334,7 +275,7 @@ public class TemporalDataset implements Cloneable {
 	 */
 	// XXX this method does not yet exclude spans
 	public IntervalIndex createTemporalIndex(IntervalComparator comparator) {
-		Table elements = getTemporalElements();
+		Table elements = this.temporalElements.getNodeTable();
 		Column colLo = elements.getColumn(INF);
 		Column colHi = elements.getColumn(SUP);	
 		IntIterator rows = elements.rows(new AbstractPredicate() {
@@ -397,13 +338,15 @@ public class TemporalDataset implements Cloneable {
     /**
      * Get an instance of the default {@link Schema} used for
      * {@link TemporalElement} instances. Contains the data members internally
-     * used to model a temporal element, i.e. inf, sup, granularity, and kind.
+     * used to model a temporal element, i.e. inf, sup, granularity, 
+     * granularity context, and kind.
      * 
      * @return the TemporalElement data Schema
      */
     public Schema getTemporalElementSchema() {
         Schema s = new Schema();
 
+        // TODO insert ID column
         s.addColumn(INF, long.class, Long.MIN_VALUE);
         s.addColumn(SUP, long.class, Long.MAX_VALUE);
         s.addColumn(GRANULARITY_ID, int.class, -1);
@@ -438,16 +381,16 @@ public class TemporalDataset implements Cloneable {
     /**
      * creates a human-readable string from a {@link TemporalDataset}.
      * <p>
-     * Example:TemporalDataset [7 temporal elements, 6 data elements, 6 temporal
-     * objects]
+     * Example:TemporalDataset [7 temporal elements, 9 temporal objects, 
+     * 8 object relationships]
      * 
      * @return a string representation
      */
     @Override
     public String toString() {
-        return "TemporalDataset [" + this.getTemporalElements().getRowCount()
-                + " temporal elements, " + this.getDataElements().getRowCount()
-                + " data elements, " + this.graph.getEdgeCount()
-                + " temporal objects]";
+        return "TemporalDataset [" + this.temporalElements.getNodeCount()
+                + " temporal elements, " + super.getNodeCount()
+                + " temporal objects, " + super.getEdgeCount()
+                + " object relationships]";
     }
 }

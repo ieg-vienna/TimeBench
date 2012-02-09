@@ -52,8 +52,8 @@ public class TemporalElementManager extends TupleManager {
     private boolean generic;
 
     public TemporalElementManager(TemporalDataset tmpds, boolean generic) {
-        super(tmpds.getTemporalElements(), tmpds.getTemporalElementsGraph(),
-                TemporalElement.class);
+        super(tmpds.getTemporalElements().getNodeTable(), 
+                tmpds.getTemporalElements(), TemporalElement.class);
         this.tmpds = tmpds;
         this.generic = generic;
     }

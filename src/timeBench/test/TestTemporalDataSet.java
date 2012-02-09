@@ -42,8 +42,8 @@ public class TestTemporalDataSet {
         int begin = dataset.addTemporalElement(2, 6, 1, 2, 2);
         int end = dataset.addTemporalElement(5, 13, 1, 2, 2);
         int interval = dataset.addTemporalElement(2, 13, 1, 2, 3);
-        dataset.getTemporalElementsGraph().addEdge(begin, interval);
-        dataset.getTemporalElementsGraph().addEdge(end, interval);
+        dataset.getTemporalElements().addEdge(begin, interval);
+        dataset.getTemporalElements().addEdge(end, interval);
 		
         
 		Table dataElements = dataset.getDataElements();
@@ -150,7 +150,7 @@ public class TestTemporalDataSet {
         Visualization viz = new Visualization();
         viz.addTable("aex", dataElements);
         System.out.println(t2);
-        VisualGraph vg = viz.addGraph("bex", dataset.getTemporalElementsGraph());
+        VisualGraph vg = viz.addGraph("bex", dataset.getTemporalElements());
         Node v2 = vg.getNode(2); 
         try {
             Thread.sleep(2000);

@@ -63,8 +63,8 @@ public class IntervalEncoding extends TemporalObjectEncoding {
             // add edges to temporal element graph
             timeBench.data.relational.TemporalElement interval = tmpds
                     .getTemporalElement(row);
-            tmpds.getTemporalElementsGraph().addEdge(begin, interval);
-            tmpds.getTemporalElementsGraph().addEdge(end, interval);
+            tmpds.getTemporalElements().addEdge(begin, interval);
+            tmpds.getTemporalElements().addEdge(end, interval);
 
             elements.put(super.getKey(), row);
         } else
