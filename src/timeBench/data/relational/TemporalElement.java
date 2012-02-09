@@ -78,7 +78,6 @@ public abstract class TemporalElement extends TableNode {
      * 
      * @return the backing temporal dataset
      */
-    // TODO should a temporal element know its dataset? (disadvantage: memory)
     public TemporalDataset getTemporalDataset() {
         return tmpds;
     }
@@ -136,6 +135,16 @@ public abstract class TemporalElement extends TableNode {
      */
     public TemporalElement asPrimitive() {
         return this.tmpds.getTemporalPrimitiveByRow(this.m_row);
+    }
+    
+    /**
+     * Get an iterator over all temporal objects occurring with this temporal 
+     * element.
+     * 
+     * @return temporal objects occurring with the temporal element
+     */
+    public Iterator<TemporalObject> temporalObjects() {
+        return this.tmpds.getTemporalObjectsByElementId(getId());
     }
     
     /**

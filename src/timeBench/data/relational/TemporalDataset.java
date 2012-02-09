@@ -140,6 +140,7 @@ public class TemporalDataset extends Graph implements Cloneable {
 //        this.temporalPrimitives.invalidateAutomatically();
 //    }
 
+    @Deprecated
     public Object clone() {
         throw new UnsupportedOperationException("clone no longer needed");
     }
@@ -266,6 +267,19 @@ public class TemporalDataset extends Graph implements Cloneable {
     public TemporalObject getTemporalObject(long id) {
         int row = this.indexObjects.get(id);
         return (TemporalObject) super.getNode(row); 
+    }
+    
+    /**
+     * Get an iterator over all temporal objects occurring with the given
+     * temporal element.
+     * 
+     * @param temporalId temporal element id 
+     * @return temporal objects occurring with the temporal element
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<TemporalObject> getTemporalObjectsByElementId(long temporalId) {
+        IntIterator rows = this.indexObjectsByElements.rows(temporalId);
+        return super.getNodeTable().tuples(rows);
     }
 
 	/**

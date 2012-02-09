@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 import prefuse.data.Tuple;
+import prefuse.data.tuple.TableNode;
 
 /**
  * Relational view of the temporal object. Following the <em>proxy tuple</em>
@@ -14,23 +15,34 @@ import prefuse.data.Tuple;
  * @author Rind
  *
  */
-public class TemporalObject extends BipartiteEdge {
+public class TemporalObject extends TableNode {
     
     static Logger logger = Logger.getLogger(TemporalObject.class); 
     
     /**
+     * Get the temporal element id.
+     * 
+     * @return the id
+     */
+    public long getId() {
+        return super.getLong(TemporalDataset.TEMPORAL_OBJECT_ID);
+    }
+
+    /**
      * @return the data element
      */
+    @Deprecated
     public Tuple getDataElement() {
-        return bGraph.getNode1Table().getTuple(bGraph.getSourceNode(getRow()));
+        return this;
     }
     
     /**
      * @return the temporal element
      */
     public TemporalElement getTemporalElement() {
-        return (TemporalElement) bGraph.getNode2Table().getTuple(
-                bGraph.getTargetNode(getRow()));
+        long teId = super.getLong(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID);
+        // the temporal object graph, is actually the temporal dataset 
+        return ((TemporalDataset) m_graph).getTemporalElement(teId);
     }
 
     /**
@@ -69,14 +81,14 @@ public class TemporalObject extends BipartiteEdge {
     /**
      * creates a human-readable string from a {@link TemporalObject}.
      * <p>
-     * Example: TemporalObject[occ#=5, data#=5, temporal#=6]
+     * Example: TemporalObject[id=5, temporal id=3]
      * 
      * @return a string representation
      */
     @Override
     public String toString() {
-        return "TemporalObject[occ#=" + super.getRow() + ", data#="
-                + bGraph.getSourceNode(getRow()) + ", temporal#="
-                + bGraph.getTargetNode(getRow()) + "]";
+        return "TemporalObject[id=" + super.getRow() + ", temporal id="
+                + super.getLong(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID)
+                + "]";
     }
 }
