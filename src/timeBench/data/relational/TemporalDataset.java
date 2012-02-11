@@ -47,6 +47,12 @@ public class TemporalDataset extends Graph implements Cloneable {
 
     private Index indexObjectsByElements;
     
+//    /**
+//     * largest id assigned to an temporal element in this dataset
+//     */
+//    private ieg.prefuse.data.ExtremeValueListener maximumTemporalElementId 
+//                = new ieg.prefuse.data.ExtremeValueListener();
+    
     // predefined column names for temporal objects 
     // TODO move constants to TemporalObject or add a prefix? 
     public static final String TEMPORAL_OBJECT_ID = "id";
@@ -87,6 +93,10 @@ public class TemporalDataset extends Graph implements Cloneable {
         this.indexObjectsByElements = super.getNodeTable().index(TEMPORAL_OBJECT_TEMPORAL_ID);
         this.indexElements = this.temporalElements.getNodeTable().index(TEMPORAL_ELEMENT_ID);
         
+        
+//        this.temporalElements.getNodeTable().getColumn(TEMPORAL_ELEMENT_ID)
+//                .addColumnListener(maximumTemporalElementId);
+
         initTupleManagers();
 	}
 	
@@ -379,8 +389,8 @@ public class TemporalDataset extends Graph implements Cloneable {
 	 * @return the index of the created element in the table of temporal elements
 	 */
 	public int addTemporalElement(long inf, long sup, int granularityId, int granularityContextId, int kind) {
-        // set id to 
         long id = temporalElements.getNodeTable().getLong(this.indexElements.maximum(), TEMPORAL_ELEMENT_ID) + 1;
+//        long id = this.maximumTemporalElementId.getMaximum() + 1;
         return addTemporalElement(id, inf, sup, granularityId, granularityContextId, kind);
 	}
 	
