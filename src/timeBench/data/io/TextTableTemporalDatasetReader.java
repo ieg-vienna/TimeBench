@@ -109,7 +109,7 @@ public class TextTableTemporalDatasetReader extends
         // 2. for each data row
         // map of temporal elements extracted from 1 row: specKey -> row 
         TreeMap<String, GenericTemporalElement> elements = new TreeMap<String, GenericTemporalElement>();
-        long temporalObjectId = 1;
+        long temporalObjectId = 0;
         IntIterator rows = table.rows();
         while (rows.hasNext()) {
             Tuple tuple = (Tuple) table.getTuple(rows.nextInt());
