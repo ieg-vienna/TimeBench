@@ -48,6 +48,7 @@ public class TemporalDataset extends Graph implements Cloneable {
     private Index indexObjectsByElements;
     
     // predefined column names for temporal objects 
+    // TODO move constants to TemporalObject or add a prefix? 
     public static final String TEMPORAL_OBJECT_ID = "id";
 
     public static final String TEMPORAL_OBJECT_TEMPORAL_ID = "temporal_id";
@@ -55,6 +56,7 @@ public class TemporalDataset extends Graph implements Cloneable {
     // predefined column names for temporal elements 
     public static final String TEMPORAL_ELEMENT_ID = "id";
 
+    // TODO move constants to TemporalElement or add a prefix? 
     public static final String INF = "inf";
 
 	public static final String SUP = "sup";
@@ -91,11 +93,23 @@ public class TemporalDataset extends Graph implements Cloneable {
 	/**
 	 * Constructs an empty {@link TemporalDataset} with the given schema for data elements. 
 	 * @param dataColumns schema for data elements
+	 * @throws TemporalDataException 
 	 */
-    public TemporalDataset(Schema dataColumns) {
+    public TemporalDataset(Schema dataColumns) throws TemporalDataException {
         this();
         
-        // TODO check that it does not interfere with primary and foreign key 
+        // check that schema does not interfere with primary and foreign key
+        // schema.getColumnIndex(s) would build a HashMap --> less efficient 
+        for (int i = 0; i < dataColumns.getColumnCount(); ++i) {
+            if (dataColumns.getColumnName(i).equals(TEMPORAL_OBJECT_ID)
+                    || dataColumns.getColumnName(i).equals(
+                            TEMPORAL_OBJECT_TEMPORAL_ID)) {
+                throw new TemporalDataException("The column names "
+                        + TEMPORAL_OBJECT_ID + " and "
+                        + TEMPORAL_OBJECT_TEMPORAL_ID + " are reserved.");
+            }
+        }
+
         super.getNodeTable().addColumns(dataColumns);
     }
 		
@@ -323,7 +337,7 @@ public class TemporalDataset extends Graph implements Cloneable {
      */
     public TemporalObject addTemporalObject(long temporalObjectId,
             long temporalElementId) throws TemporalDataException {
-        // TODO make integrity checks optional
+        // TODO make integrity checks optional?
         if (this.indexObjects.get(temporalObjectId) != Integer.MIN_VALUE)
             throw new TemporalDataException("Duplicate temporal object id");
         if (this.indexElements.get(temporalElementId) == Integer.MIN_VALUE)
