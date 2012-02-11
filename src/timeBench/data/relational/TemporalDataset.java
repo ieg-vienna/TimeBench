@@ -403,11 +403,14 @@ public class TemporalDataset extends Graph implements Cloneable {
 	 * @param kind the kind of the temporal element
 	 * @return the index of the created element in the table of temporal elements
 	 */
-	public int addTemporalElement(long inf, long sup, int granularityId, int granularityContextId, int kind) {
-        long id = temporalElements.getNodeTable().getLong(this.indexElements.maximum(), TEMPORAL_ELEMENT_ID) + 1;
+    public int addTemporalElement(long inf, long sup, int granularityId, int granularityContextId, int kind) {
+        long id = (indexElements.size() > 0) 
+                ? temporalElements.getNodeTable().getLong(
+                        this.indexElements.maximum(), TEMPORAL_ELEMENT_ID) + 1
+                : 1;
 //        long id = this.maximumTemporalElementId.getMaximum() + 1;
         return addTemporalElement(id, inf, sup, granularityId, granularityContextId, kind);
-	}
+    }
 	
     /**
      * Adds a new temporal element to the dataset
