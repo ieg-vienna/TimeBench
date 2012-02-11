@@ -103,26 +103,41 @@ public class TemporalDataset extends Graph implements Cloneable {
 	/**
 	 * Constructs an empty {@link TemporalDataset} with the given schema for data elements. 
 	 * @param dataColumns schema for data elements
-	 * @throws TemporalDataException 
+	 * @throws TemporalDataException if a reserved column name was passed
 	 */
     public TemporalDataset(Schema dataColumns) throws TemporalDataException {
         this();
         
+        // for loop mimics behavior of table.addColumns(schema) 
+        for (int i = 0; i < dataColumns.getColumnCount(); ++i) {
+            this.addDataColumn(dataColumns.getColumnName(i),
+                    dataColumns.getColumnType(i), dataColumns.getDefault(i));
+        }
+    }
+
+    /**
+     * Add a data column with the given name and data type to the temporal objects.
+     * @param name the data field name for the column
+     * @param type the data type, as a Java Class, for the column
+     * @param defaultValue the default value for column data values
+     * @throws TemporalDataException if a reserved column name was passed
+     * @see prefuse.data.tuple.TupleSet#addColumn(java.lang.String, java.lang.Class, java.lang.Object)
+     */
+    public void addDataColumn(String name,
+            @SuppressWarnings("rawtypes") Class type, Object defaultValue)
+            throws TemporalDataException {
         // check that schema does not interfere with primary and foreign key
         // schema.getColumnIndex(s) would build a HashMap --> less efficient 
-        for (int i = 0; i < dataColumns.getColumnCount(); ++i) {
-            if (dataColumns.getColumnName(i).equals(TEMPORAL_OBJECT_ID)
-                    || dataColumns.getColumnName(i).equals(
-                            TEMPORAL_OBJECT_TEMPORAL_ID)) {
-                throw new TemporalDataException("The column names "
-                        + TEMPORAL_OBJECT_ID + " and "
-                        + TEMPORAL_OBJECT_TEMPORAL_ID + " are reserved.");
-            }
+        if (name.equals(TEMPORAL_OBJECT_ID)
+                || name.equals(TEMPORAL_OBJECT_TEMPORAL_ID)) {
+            throw new TemporalDataException("The column names "
+                    + TEMPORAL_OBJECT_ID + " and "
+                    + TEMPORAL_OBJECT_TEMPORAL_ID + " are reserved.");
         }
-
-        super.getNodeTable().addColumns(dataColumns);
+            
+        super.getNodeTable().addColumn(name, type, defaultValue);
     }
-		
+    
     /**
      * Set tuple managers for temporal elements, temporal primitives, and
      * temporal objects and use them in the underlying data structures.
