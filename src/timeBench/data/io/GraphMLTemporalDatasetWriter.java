@@ -30,6 +30,9 @@ import timeBench.data.relational.TemporalObject;
  * writes a {@link TemporalDataset} to XML using the GraphML language. It is
  * implemented with SAX using JAXP.
  * 
+ * TODO root elements
+ * TODO calendar
+ * 
  * <p>
  * GraphML only supports attributes of primitive types and string. Only
  * attributes of temporal objects are stored, i.e. the attributes of edges
@@ -78,7 +81,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             hd = tf.newTransformerHandler();
             Transformer serializer = hd.getTransformer();
             serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            // serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             hd.setResult(result);
 
             // check XML namespace support -- did not work??
