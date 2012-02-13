@@ -21,6 +21,7 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
+import timeBench.data.relational.TemporalElement;
 import timeBench.data.relational.TemporalObject;
 
 /**
@@ -126,7 +127,7 @@ public class RConnector {
 
             // relational
             timeBench.data.relational.TemporalDataset tmpds = new timeBench.data.relational.TemporalDataset();
-            tmpds.getDataElements().addColumn(name, double.class);
+            tmpds.addDataColumn(name, double.class, null);
 
             // time indices are only used in log file to check our code
             double[] time = new double[0];
@@ -153,16 +154,15 @@ public class RConnector {
                             + df.format(new Date(inf)) + " sup: "
                             + df.format(new Date(sup)) + " data: " + data[i]);
 
-                int te = tmpds
-                        .addTemporalElement(
-                                inf,
-                                sup,
-                                granularityId,
-                                granularityContextId,
-                                timeBench.data.relational.TemporalDataset.PRIMITIVE_INTERVAL);
-                int dataRow = tmpds.getDataElements().addRow();
-                tmpds.getDataElements().set(dataRow, name, data[i]);
-                tmpds.addOccurrence(dataRow, te);
+                tmpds.addTemporalElement(
+                        i,
+                        inf,
+                        sup,
+                        granularityId,
+                        granularityContextId,
+                        timeBench.data.relational.TemporalDataset.PRIMITIVE_INTERVAL);
+                TemporalObject to = tmpds.addTemporalObject(i, i);
+                to.set(name, data[i]);
             }
 
             return tmpds;
@@ -184,7 +184,7 @@ public class RConnector {
 
             // relational
             timeBench.data.relational.TemporalDataset tmpds = new timeBench.data.relational.TemporalDataset();
-            tmpds.getDataElements().addColumn(name, double.class);
+            tmpds.addDataColumn(name, double.class, null);
 
             // time indices are only used in log file to check our code
             DateFormat df = null;
@@ -198,16 +198,15 @@ public class RConnector {
                     logger.trace("time from R: " + time[i] + " inf: "
                             + df.format(new Date(inf)) + " data: " + data[i]);
 
-                int timeRow = tmpds
-                        .addTemporalElement(
-                                inf,
-                                inf,
-                                granularityId,
-                                granularityContextId,
-                                timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT);
-                int dataRow = tmpds.getDataElements().addRow();
-                tmpds.getDataElements().set(dataRow, name, data[i]);
-                tmpds.addOccurrence(dataRow, timeRow);
+                tmpds.addTemporalElement(
+                        i,
+                        inf,
+                        inf,
+                        granularityId,
+                        granularityContextId,
+                        timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT);
+                TemporalObject to = tmpds.addTemporalObject(i, i);
+                to.set(name, data[i]);
             }
 
             return tmpds;
@@ -217,11 +216,13 @@ public class RConnector {
     }
 
     public void putTemporalDataset(String name,
-            timeBench.data.relational.TemporalDataset tmpds)
+            timeBench.data.relational.TemporalDataset tmpds, String dataField)
             throws TemporalDataException, REngineException {
-        double[] time = new double[tmpds.getOccurrences().getRowCount()];
-        double[] data = new double[tmpds.getOccurrences().getRowCount()];
+        double[] time = new double[tmpds.getTemporalObjectCount()];
+        double[] data = new double[tmpds.getTemporalObjectCount()];
         int i = 0;
+        
+        int dataCol = tmpds.getNodeTable().getColumnNumber(dataField);
 
         for (Iterator<TemporalObject> iter = tmpds.temporalObjects(); iter
                 .hasNext();) {
@@ -229,7 +230,7 @@ public class RConnector {
             if (cur.getTemporalElement().isAnchored()) {
                 time[i] = ((double) cur.getTemporalElement().asGeneric()
                         .getInf()) / 1000.0d;
-                data[i] = cur.getDataElement().getDouble(0);
+                data[i] = cur.getDouble(dataCol);
                 i++;
             } else {
                 logger.debug("skip temp.o. with temp.el. "
@@ -263,8 +264,8 @@ public class RConnector {
     }
 
     public void putTemporalDataset(String name,
-            timeBench.data.relational.TemporalDataset tmpds, int startYear,
-            int startMonth, double frequency, int length)
+            timeBench.data.relational.TemporalDataset tmpds, String dataField,
+            int startYear, int startMonth, double frequency, int length)
             throws REngineException {
         double[] data = new double[length];
         Arrays.fill(data, REXPDouble.NA);
@@ -276,18 +277,19 @@ public class RConnector {
                 .toInt();
         int granularityId = JavaDateCalendarManager.Granularities.Month.toInt();
 
+        int dataCol = tmpds.getNodeTable().getColumnNumber(dataField);
+
         for (Iterator<TemporalObject> iter = tmpds.temporalObjects(); iter
                 .hasNext();) {
             TemporalObject cur = iter.next();
-            if (!cur.getTemporalElement().isAnchored()) {
-                logger.debug("skip temp.o. with unanchored temp.el. "
-                        + cur.getTemporalElement());
-            } else if (cur.getTemporalElement().getGranularityId() != granularityId
-                    || cur.getTemporalElement().getGranularityContextId() != granularityContextId) {
-                logger.debug("skip temp.o. with wrong granularity "
-                        + cur.getTemporalElement());
+            TemporalElement elem = cur.getTemporalElement();
+            if (!elem.isAnchored()) {
+                logger.debug("skip temp.o. with unanchored temp.el. " + elem);
+            } else if (elem.getGranularityId() != granularityId
+                    || elem.getGranularityContextId() != granularityContextId) {
+                logger.debug("skip temp.o. with wrong granularity " + elem);
             } else {
-                long inf = cur.getTemporalElement().asGeneric().getInf();
+                long inf = elem.asGeneric().getInf();
 
                 GregorianCalendar cal = new GregorianCalendar(
                         TimeZone.getTimeZone("UTC"));
@@ -296,11 +298,12 @@ public class RConnector {
                 int month = cal.get(GregorianCalendar.MONTH) + 1;
                 int index = (year - startYear) * 12 + month - startMonth;
 
-                if (index >= 0 && index < length)
-                    data[index] = cur.getDataElement().getDouble(0);
-                else
+                if (index >= 0 && index < length) {
+                    data[index] = cur.getDouble(dataCol);
+                } else {
                     logger.debug("skip temp.o. out of temporal bounds " + index
-                            + " " + cur.getTemporalElement());
+                            + " " + elem);
+                }
             }
         }
 

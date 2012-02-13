@@ -37,6 +37,7 @@ public class TemporalDataset extends Graph implements Cloneable {
 	
 	private Graph temporalElements;
 	
+	// TODO roots as a linked list?
 	private long[] roots = null;	// if we have a forest or tree of temporal objects, null for tables
 	
     private TemporalElementManager temporalPrimitives;
@@ -207,6 +208,8 @@ public class TemporalDataset extends Graph implements Cloneable {
 		return super.getNodeTable();
 	}
 	
+    // ----- TEMPORAL ELEMENT ACCESSORS -----
+    
 	/**
 	 * Gets the temporal elements in the dataset
 	 * @return a {@link Graph} containing the temporal elements and how they are related.
@@ -214,6 +217,14 @@ public class TemporalDataset extends Graph implements Cloneable {
 	public Graph getTemporalElements() {
 		return temporalElements;
 	}
+
+    /**
+     * Get the number of temporal elements in this dataset.
+     * @return the number of temporal elements
+     */
+    public int getTemporalElementCount() {
+        return temporalElements.getNodeCount();
+    }
 	
     /**
      * Get the TemporalElement instance corresponding to its row number.
@@ -284,6 +295,16 @@ public class TemporalDataset extends Graph implements Cloneable {
         return this.temporalPrimitives.iterator(temporalElements.nodeRows());
     }
 
+    // ----- TEMPORAL OBJECT ACCESSORS -----
+    
+    /**
+     * Get the number of temporal objects in this dataset.
+     * @return the number of temporal objects
+     */
+    public int getTemporalObjectCount() {
+        return super.getNodeCount();
+    }
+    
     /**
      * Get an iterator over all temporal objects in the temporal dataset.
      * The temporal object is a proxy tuple for a row in the occurrences table.
