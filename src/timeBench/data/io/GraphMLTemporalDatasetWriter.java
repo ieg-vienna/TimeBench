@@ -1,11 +1,13 @@
 package timeBench.data.io;
 
-import static prefuse.data.io.GraphMLWriter.Tokens.*;
+import static prefuse.data.io.GraphMLWriter.Tokens;
+import static prefuse.data.io.GraphMLWriter.TYPES;
 
 import java.io.OutputStream;
 import java.util.Iterator;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXTransformerFactory;
@@ -16,72 +18,125 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import prefuse.data.Graph;
+import prefuse.data.Schema;
 import prefuse.data.io.DataIOException;
+import prefuse.data.io.GraphMLWriter;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.relational.GenericTemporalElement;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.relational.TemporalObject;
 
 /**
+ * writes a {@link TemporalDataset} to XML using the GraphML language. It is
+ * implemented with SAX using JAXP.
+ * 
+ * <p>
+ * GraphML only supports attributes of primitive types and string. Only
+ * attributes of temporal objects are stored, i.e. the attributes of edges
+ * between temporal objects are ignored.
  * 
  * <p>
  * The class is not thread-safe. Each thread should use its own instance.
  * 
  * @author Rind
  * 
+ * @see {@linkplain http://graphml.graphdrawing.org/primer/graphml-primer.html}
  */
 public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter {
 
+    public static final String GRAPHML_NS = "http://graphml.graphdrawing.org/xmlns";
     public static final String OBJECT_PREFIX = "o";
     public static final String ELEMENT_PREFIX = "t";
 
     private TransformerHandler hd = null;
-    private AttributesImpl atts = null;
 
     @Override
     public void writeData(TemporalDataset tmpds, OutputStream os)
             throws DataIOException {
+        writeData(tmpds, new StreamResult(os));
+    }
+
+    /**
+     * Write a {@link TemporalDataset} to a JAXP {@link Result}.
+     * 
+     * @param tmpds
+     *            the {@link TemporalDataset} to write
+     * @param result
+     *            the JAXP result to write the temporal dataset to
+     * @throws DataIOException
+     */
+    public void writeData(TemporalDataset tmpds, Result result)
+            throws DataIOException {
         try {
-            // setup SAX to identity transform events to a stream
-            // based on
+            // first, check the schema to ensure GraphML compatibility
+            GraphMLWriter.checkGraphMLSchema(tmpds.getNodeTable().getSchema());
+
+            // setup SAX to identity transform events to a stream; cp.
             // http://www.javazoom.net/services/newsletter/xmlgeneration.html
             SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
                     .newInstance();
             hd = tf.newTransformerHandler();
             Transformer serializer = hd.getTransformer();
             serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-            hd.setResult(new StreamResult(os));
+            // serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            hd.setResult(result);
 
-            atts = new AttributesImpl();
+            // check XML namespace support -- did not work??
+            // System.err.println(tf.getFeature("http://xml.org/sax/features/namespaces"));
+            // System.err.println(tf.getFeature("http://xml.org/sax/features/namespace-prefixes"));
 
+            // *** prologue ***
             hd.startDocument();
-            hd.startElement("", "", GRAPHML, atts);
-            // TODO insert schema
-
+            // <graphml ...
+            hd.startPrefixMapping("", GRAPHML_NS);
+            hd.startPrefixMapping("xsi",
+                    "http://www.w3.org/2001/XMLSchema-instance");
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute(
+                    "http://www.w3.org/2001/XMLSchema-instance",
+                    "schemaLocation",
+                    "xsi:schemaLocation",
+                    "CDATA",
+                    GRAPHML_NS
+                            + " http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd");
+            hd.startElement(GRAPHML_NS, Tokens.GRAPHML, Tokens.GRAPHML, atts);
+            // <key ... elements
+            writeAttributeSchema(tmpds);
+            // <graph ...
             atts.clear();
-            atts.addAttribute("", "", ID, "CDATA", "temporalData");
-            atts.addAttribute("", "", EDGEDEF, "CDATA", DIRECTED);
-            hd.startElement("", "", GRAPH, atts);
+            atts.addAttribute(GRAPHML_NS, Tokens.ID, Tokens.ID, "CDATA",
+                    "temporalData");
+            atts.addAttribute(GRAPHML_NS, Tokens.EDGEDEF, Tokens.EDGEDEF,
+                    "CDATA", Tokens.DIRECTED);
+            hd.startElement(GRAPHML_NS, Tokens.GRAPH, Tokens.GRAPH, atts);
 
-            // insert nodes
-            writeTemporalElements(tmpds);
-            writeTemporalObjects(tmpds);
+            // *** nodes ***
+            AttributesImpl nodeAtts = new AttributesImpl();
+            nodeAtts.addAttribute(GRAPHML_NS, Tokens.ID, Tokens.ID, "CDATA", "");
+            AttributesImpl dataAtts = new AttributesImpl();
+            dataAtts.addAttribute(GRAPHML_NS, Tokens.KEY, Tokens.KEY, "CDATA",
+                    "");
+            writeTemporalElements(tmpds, nodeAtts, dataAtts);
+            writeTemporalObjects(tmpds, nodeAtts, dataAtts);
 
-            // insert edges
-            // attribute object is not cleared to improve performance
-            atts.clear();
-            atts.addAttribute("", "", SOURCE, "CDATA", "");
-            atts.addAttribute("", "", TARGET, "CDATA", "");
-            writeBipartiteEdges(tmpds);
+            // *** edges ***
+            AttributesImpl edgeAtts = new AttributesImpl();
+            edgeAtts.addAttribute(GRAPHML_NS, Tokens.SOURCE, Tokens.SOURCE,
+                    "CDATA", "");
+            edgeAtts.addAttribute(GRAPHML_NS, Tokens.TARGET, Tokens.TARGET,
+                    "CDATA", "");
+            writeBipartiteEdges(tmpds, edgeAtts);
             writeGraphEdges(tmpds, TemporalDataset.TEMPORAL_OBJECT_ID,
-                    OBJECT_PREFIX);
+                    OBJECT_PREFIX, edgeAtts);
             writeGraphEdges(tmpds.getTemporalElements(),
-                    TemporalDataset.TEMPORAL_ELEMENT_ID, ELEMENT_PREFIX);
+                    TemporalDataset.TEMPORAL_ELEMENT_ID, ELEMENT_PREFIX,
+                    edgeAtts);
 
-            hd.endElement("", "", GRAPH);
-            hd.endElement("", "", GRAPHML);
-
+            // *** epilogue ***
+            hd.endElement(GRAPHML_NS, Tokens.GRAPH, Tokens.GRAPH);
+            hd.endElement(GRAPHML_NS, Tokens.GRAPHML, Tokens.GRAPHML);
+            hd.endPrefixMapping("");
+            hd.endPrefixMapping("xsi");
             hd.endDocument();
         } catch (TransformerConfigurationException e) {
             throw new DataIOException(e);
@@ -89,52 +144,146 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             throw new DataIOException(e);
         } finally {
             hd = null;
-            atts = null;
         }
     }
 
-    private void writeTemporalElements(TemporalDataset tmpds)
+    // ----- middle abstraction layer: write TimeBench data structures -----
+
+    /**
+     * generate key elements needed for this temporal dataset.
+     * 
+     * @param tmpds
+     * @throws SAXException
+     */
+    private void writeAttributeSchema(TemporalDataset tmpds)
             throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
+        AttributesImpl keyAtts = new AttributesImpl();
+        keyAtts.addAttribute(GRAPHML_NS, Tokens.ID, Tokens.ID, "CDATA", "");
+        keyAtts.addAttribute(GRAPHML_NS, Tokens.ATTRNAME, Tokens.ATTRNAME,
+                "CDATA", "");
+        keyAtts.addAttribute(GRAPHML_NS, Tokens.ATTRTYPE, Tokens.ATTRTYPE,
+                "CDATA", "");
+        keyAtts.addAttribute(GRAPHML_NS, Tokens.FOR, Tokens.FOR, "CDATA",
+                "node");
+
+        // key elements for predefined field values
+        writeGraphMLKey(TemporalDataset.INF, long.class, keyAtts);
+        writeGraphMLKey(TemporalDataset.SUP, long.class, keyAtts);
+        writeGraphMLKey(TemporalDataset.GRANULARITY_ID, int.class, keyAtts);
+        writeGraphMLKey(TemporalDataset.GRANULARITY_CONTEXT_ID, int.class,
+                keyAtts);
+        writeGraphMLKey(TemporalDataset.KIND, int.class, keyAtts);
+
+        // key elements for application-specific field values
+        Schema dataElements = tmpds.getNodeTable().getSchema();
+        for (int i = 0; i < dataElements.getColumnCount(); i++) {
+            String name = dataElements.getColumnName(i);
+            // predefined columns are handled differently
+            if (!(TemporalDataset.TEMPORAL_OBJECT_ID.equals(name) || TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID
+                    .equals(name))) {
+                writeGraphMLKey(name, dataElements.getColumnType(i), keyAtts);
+            }
+        }
+    }
+
+    /**
+     * generate node elements for all temporal elements in the temporal dataset.
+     * 
+     * @param tmpds
+     * @param nodeAtts
+     * @param dataAtts
+     * @throws SAXException
+     */
+    private void writeTemporalElements(TemporalDataset tmpds,
+            AttributesImpl nodeAtts, AttributesImpl dataAtts)
+            throws SAXException {
         Iterator<GenericTemporalElement> iterator = tmpds.temporalElements();
         while (iterator.hasNext()) {
             GenericTemporalElement te = iterator.next();
-            atts.clear();
-            atts.addAttribute("", "", ID, "CDATA", ELEMENT_PREFIX + te.getId());
-            hd.startElement("", "", NODE, atts);
-            // TODO insert data
-            // hd.characters(desc[i].toCharArray(), 0, desc[i].length());
-            hd.endElement("", "", NODE);
+            nodeAtts.setValue(0, ELEMENT_PREFIX + te.getId());
+            hd.startElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE, nodeAtts);
+
+            // data elements for predefined field values
+            writeGraphMLData(TemporalDataset.INF, Long.toString(te.getInf()),
+                    dataAtts);
+            writeGraphMLData(TemporalDataset.SUP, Long.toString(te.getSup()),
+                    dataAtts);
+            writeGraphMLData(TemporalDataset.GRANULARITY_ID,
+                    Integer.toString(te.getGranularityId()), dataAtts);
+            writeGraphMLData(TemporalDataset.GRANULARITY_CONTEXT_ID,
+                    Integer.toString(te.getGranularityContextId()), dataAtts);
+            writeGraphMLData(TemporalDataset.KIND,
+                    Integer.toString(te.getKind()), dataAtts);
+
+            hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
         }
     }
 
-    private void writeTemporalObjects(TemporalDataset tmpds)
+    /**
+     * generate node elements for all temporal objects in the temporal dataset.
+     * 
+     * @param tmpds
+     * @param nodeAtts
+     * @param dataAtts
+     * @throws SAXException
+     */
+    private void writeTemporalObjects(TemporalDataset tmpds,
+            AttributesImpl nodeAtts, AttributesImpl dataAtts)
             throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
         Iterator<TemporalObject> iterator = tmpds.temporalObjects();
         while (iterator.hasNext()) {
             TemporalObject tObj = iterator.next();
-            atts.clear();
-            atts.addAttribute("", "", ID, "CDATA", OBJECT_PREFIX + tObj.getId());
-            hd.startElement("", "", NODE, atts);
-            // TODO insert data
-            hd.endElement("", "", NODE);
+            nodeAtts.setValue(0, OBJECT_PREFIX + tObj.getId());
+            hd.startElement("", Tokens.NODE, Tokens.NODE, nodeAtts);
+
+            // data elements for application-specific field values
+            for (int i = 0; i < tObj.getColumnCount(); i++) {
+                String name = tObj.getColumnName(i);
+                // predefined columns are handled differently
+                if (!(TemporalDataset.TEMPORAL_OBJECT_ID.equals(name) || TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID
+                        .equals(name))) {
+                    writeGraphMLData(name, tObj.getString(i), dataAtts);
+                }
+            }
+
+            hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
         }
     }
 
-    private void writeBipartiteEdges(TemporalDataset tmpds) throws SAXException {
+    /**
+     * generate edge elements for all temporal object &ndash; temporal element
+     * relationships.
+     * 
+     * @param tmpds
+     * @param edgeAtts
+     * @throws SAXException
+     */
+    private void writeBipartiteEdges(TemporalDataset tmpds,
+            AttributesImpl edgeAtts) throws SAXException {
         Iterator<TemporalObject> iterator = tmpds.temporalObjects();
         while (iterator.hasNext()) {
             TemporalObject tObj = iterator.next();
             long objId = tObj.getId();
             long elId = tObj.getTemporalElement().getId();
 
-            writeEdge(ELEMENT_PREFIX + elId, OBJECT_PREFIX + objId);
+            writeGraphMLEdge(ELEMENT_PREFIX + elId, OBJECT_PREFIX + objId,
+                    edgeAtts);
         }
     }
 
-    private void writeGraphEdges(Graph graph, String idField, String prefix)
-            throws SAXException {
+    /**
+     * generate edge elements for all edges in a graph.
+     * 
+     * @param graph
+     * @param idField
+     *            field name of the node identifier
+     * @param prefix
+     *            prefix for the identifier in GraphML
+     * @param edgeAtts
+     * @throws SAXException
+     */
+    private void writeGraphEdges(Graph graph, String idField, String prefix,
+            AttributesImpl edgeAtts) throws SAXException {
         IntIterator edges = graph.edgeRows();
         while (edges.hasNext()) {
             int edgeRow = edges.nextInt();
@@ -143,19 +292,63 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             int tRow = graph.getTargetNode(edgeRow);
             long tId = graph.getNodeTable().getLong(tRow, idField);
 
-            writeEdge(prefix + sId, prefix + tId);
+            writeGraphMLEdge(prefix + sId, prefix + tId, edgeAtts);
         }
     }
 
-    private void writeEdge(String source, String target) throws SAXException {
-        // we assume that attribute object has correct structure (performance)
+    // ----- lowest abstraction layer: write atomic GraphML elements -----
 
+    /**
+     * generate a GraphML key element.
+     * 
+     * @param id
+     * @param type
+     * @param keyAtts
+     * @throws SAXException
+     */
+    private void writeGraphMLKey(String id,
+            @SuppressWarnings("rawtypes") Class type, AttributesImpl keyAtts)
+            throws SAXException {
+        keyAtts.setValue(0, id);
+        keyAtts.setValue(1, id);
+        keyAtts.setValue(2, TYPES.get(type));
+        hd.startElement(GRAPHML_NS, Tokens.KEY, Tokens.KEY, keyAtts);
+        hd.endElement(GRAPHML_NS, Tokens.KEY, Tokens.KEY);
+    }
+
+    /**
+     * generate a GraphML data element.
+     * 
+     * @param key
+     * @param value
+     * @param dataAtts
+     * @throws SAXException
+     */
+    private void writeGraphMLData(String key, String value,
+            AttributesImpl dataAtts) throws SAXException {
+        dataAtts.setValue(0, key);
+        hd.startElement(GRAPHML_NS, Tokens.DATA, Tokens.DATA, dataAtts);
+        hd.characters(value.toCharArray(), 0, value.length());
+        hd.endElement(GRAPHML_NS, Tokens.DATA, Tokens.DATA);
+    }
+
+    /**
+     * generate a GraphML edge element.
+     * 
+     * @param source
+     * @param target
+     * @param edgeAtts
+     * @throws SAXException
+     */
+    private void writeGraphMLEdge(String source, String target,
+            AttributesImpl edgeAtts) throws SAXException {
+        // we assume that attribute object has correct structure (performance)
         // atts.clear();
         // atts.addAttribute("", "", SOURCE, "CDATA", source);
         // atts.addAttribute("", "", TARGET, "CDATA", target);
-        atts.setValue(0, source);
-        atts.setValue(1, target);
-        hd.startElement("", "", EDGE, atts);
-        hd.endElement("", "", EDGE);
+        edgeAtts.setValue(0, source);
+        edgeAtts.setValue(1, target);
+        hd.startElement(GRAPHML_NS, Tokens.EDGE, Tokens.EDGE, edgeAtts);
+        hd.endElement(GRAPHML_NS, Tokens.EDGE, Tokens.EDGE);
     }
 }
