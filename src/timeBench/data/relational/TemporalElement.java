@@ -5,6 +5,7 @@ import java.util.Iterator;
 import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.tuple.TableNode;
+import timeBench.data.TemporalDataException;
 
 /**
  * Relational view of the temporal element. Following the <em>proxy tuple</em>
@@ -25,7 +26,25 @@ public abstract class TemporalElement extends TableNode {
      * the backing temporal data set
      */
     private TemporalDataset tmpds;
+    
+    private int[] supportedKinds = { TemporalDataset.PRIMITIVE_SPAN,
+            TemporalDataset.PRIMITIVE_SET, TemporalDataset.PRIMITIVE_INSTANT,
+            TemporalDataset.PRIMITIVE_INTERVAL };
 
+    protected TemporalElement() {
+    }
+    
+    protected TemporalElement(TemporalDataset tmpds) {
+        this.tmpds = tmpds;
+        try {
+            tmpds.amendTuple(this);
+        } catch (TemporalDataException e) {
+            // this will not happen ;-)
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+    
     /**
      * Initialize a new temporal element backed by a node table. This method is
      * used by the appropriate TupleManager instance, and should not be called
@@ -80,6 +99,14 @@ public abstract class TemporalElement extends TableNode {
      */
     public TemporalDataset getTemporalDataset() {
         return tmpds;
+    }
+
+    public int[] getSupportedKinds() {
+        return supportedKinds;
+    }
+
+    protected void setSupportedKinds(int[] supportedKinds) {
+        this.supportedKinds = supportedKinds;
     }
 
     /**

@@ -33,9 +33,26 @@ public class GenericTemporalElement extends TemporalElement {
      * {@link TemporalElementManager}.
      */
     protected GenericTemporalElement() {
-
     }
 
+    public GenericTemporalElement(TemporalDataset tmpds, long id, long inf, long sup, int granularityId, int granularityContextId, int kind) {
+        super(tmpds);
+        // TODO check for duplicate id
+        this.setLong(TemporalDataset.TEMPORAL_ELEMENT_ID, id);
+        set(inf, sup, granularityId, granularityContextId, kind);
+    }
+    
+    public void set(long inf, long sup, int granularityId, int granularityContextId, int kind) {
+        if (isValid()) {
+            m_table.set(m_row, TemporalDataset.INF, inf);
+            m_table.set(m_row, TemporalDataset.SUP, sup);
+            m_table.set(m_row, TemporalDataset.GRANULARITY_ID, granularityId);
+            m_table.set(m_row, TemporalDataset.GRANULARITY_CONTEXT_ID, granularityContextId);
+            m_table.set(m_row, TemporalDataset.KIND, kind);
+            this.anchoredCache = null;
+        }
+    }
+    
     /**
      * Indicates if the temporal element is anchored in time.
      * 

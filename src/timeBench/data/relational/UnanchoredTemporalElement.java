@@ -42,4 +42,9 @@ public class UnanchoredTemporalElement extends TemporalElement {
     }
 
     // TODO do we need setLength --> I don't think so
+
+    @Override
+    public TemporalElement asPrimitive() {
+        return this;
+    }
 }
