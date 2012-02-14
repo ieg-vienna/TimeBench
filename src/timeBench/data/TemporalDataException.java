@@ -5,7 +5,7 @@ package timeBench.data;
  * 
  * <p>
  * Added:          2011-07-15 / TL<br>
- * Modifications:
+ * Modifications:  2012-02-14 / AR: add usual constructors<br>
  * </p>
  * 
  * @author Tim Lammarsch
@@ -21,4 +21,12 @@ public class TemporalDataException extends Exception {
 	public TemporalDataException(String message) {
 		super(message);
 	}
+
+    public TemporalDataException(Throwable cause) {
+        super(cause);
+    }
+    
+    public TemporalDataException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
