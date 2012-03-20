@@ -22,8 +22,8 @@ import timeBench.data.util.IntervalTreeIndex;
 /**
  * This class maintains data structures that encompass a temporal dataset. It
  * consists of a {@link Graph} of temporal objects and a {@link Graph} of
- * temporal elements. Temporal objects are in a 1:n relation with temporal
- * elements to encompass temporal occurrence. Furthermore, the class provides
+ * temporal elements. Temporal elements are in a 1:n relation with temporal
+ * objects to encompass temporal occurrence. Furthermore, the class provides
  * utility methods to index and query the dataset.
  * 
  * @author BA, AR, TL
@@ -63,7 +63,9 @@ public class TemporalDataset extends Graph implements Cloneable {
      * index for {@link TemporalObject} row numbers by {@link TemporalElement} ID. 
      */
     private Index indexObjectsByElements;
-
+    
+    private Schema dataColumns;
+    
     // /**
     // * largest id assigned to an temporal element in this dataset
     // */
@@ -105,6 +107,8 @@ public class TemporalDataset extends Graph implements Cloneable {
         // add temporal objects columns (primary and foreign key)
         super.addColumn(TEMPORAL_OBJECT_ID, long.class, -1);
         super.addColumn(TEMPORAL_OBJECT_TEMPORAL_ID, long.class, -1);
+        
+        this.dataColumns = new Schema();
 
         // add indices
         this.indexObjects = super.getNodeTable().index(TEMPORAL_OBJECT_ID);
@@ -166,6 +170,21 @@ public class TemporalDataset extends Graph implements Cloneable {
         }
 
         super.getNodeTable().addColumn(name, type, defaultValue);
+        
+        this.dataColumns.addColumn(name, type, defaultValue);
+    }
+    
+    public Schema getDataColumnSchema() {
+        return (Schema) dataColumns.clone();
+    }
+    
+    public int getDataColumnCount() {
+        return dataColumns.getColumnCount();
+    }
+    
+    public Column getDataColumn(int index) {
+        String fieldName = dataColumns.getColumnName(index);
+        return super.getNodeTable().getColumn(fieldName);
     }
 
     /**
@@ -610,10 +629,9 @@ public class TemporalDataset extends Graph implements Cloneable {
      * 
      * @return the TemporalElement data Schema
      */
-    public Schema getTemporalElementSchema() {
+    private Schema getTemporalElementSchema() {
         Schema s = new Schema();
 
-        // TODO insert ID column
         s.addColumn(TEMPORAL_ELEMENT_ID, long.class, -1);
         s.addColumn(INF, long.class, Long.MIN_VALUE);
         s.addColumn(SUP, long.class, Long.MAX_VALUE);
