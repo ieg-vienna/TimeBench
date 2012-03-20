@@ -39,6 +39,7 @@ import prefuse.util.collections.IntIterator;
  * @author Rind
  * 
  */
+// TODO do not extend AmendableTupleManager
 public class TemporalElementManager extends AmendableTupleManager {
 
     /**
@@ -61,6 +62,7 @@ public class TemporalElementManager extends AmendableTupleManager {
         this.generic = generic;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected TemporalElement reallyNewTuple(int row) {
         int kind = m_table.getInt(row, TemporalDataset.KIND);

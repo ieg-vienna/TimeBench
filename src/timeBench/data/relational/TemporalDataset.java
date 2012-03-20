@@ -492,11 +492,11 @@ public class TemporalDataset extends Graph implements Cloneable {
      *            an {@link IntervalComparator} to compare intervals for
      *            indexing any querying purposes.
      */
-    // XXX this method does not yet exclude spans
     public IntervalIndex createTemporalIndex(IntervalComparator comparator) {
         Table elements = this.temporalElements.getNodeTable();
         Column colLo = elements.getColumn(INF);
         Column colHi = elements.getColumn(SUP);
+        // XXX this method does not yet exclude unanchored sets
         IntIterator rows = elements.rows(new AbstractPredicate() {
             @Override
             public boolean getBoolean(Tuple t) {
@@ -598,7 +598,8 @@ public class TemporalDataset extends Graph implements Cloneable {
         }
     }
 
-    // TODO do we want/need methods like this
+    // TODO factory method with Granule --> Tim
+    
     /**
      * Add a new instant to the dataset. This method returns a proxy tuple of
      * this instant, which is of class {@link Instant}.

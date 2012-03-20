@@ -21,13 +21,16 @@ public class AnchoredTemporalElement extends TemporalElement implements
      * relational temporal elements should only be created by the
      * {@link TemporalElementManager}
      */
+    @Deprecated
     protected AnchoredTemporalElement() {
     }
 
+    @Deprecated
     protected AnchoredTemporalElement(TemporalDataset tmpds) {
         super(tmpds);
     }
 
+    @Deprecated
     public AnchoredTemporalElement(TemporalDataset tmpds, long id, long inf, long sup, int granularityId, int granularityContextId, int kind) {
         super(tmpds);
         // TODO check for duplicate id

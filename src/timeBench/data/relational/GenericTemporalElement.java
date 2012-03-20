@@ -32,9 +32,11 @@ public class GenericTemporalElement extends TemporalElement {
      * This constructor should only be called by the
      * {@link TemporalElementManager}.
      */
+    @Deprecated
     protected GenericTemporalElement() {
     }
 
+    @Deprecated
     public GenericTemporalElement(TemporalDataset tmpds, long id, long inf, long sup, int granularityId, int granularityContextId, int kind) {
         super(tmpds);
         // TODO check for duplicate id

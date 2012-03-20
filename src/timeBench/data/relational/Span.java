@@ -19,6 +19,7 @@ public class Span extends UnanchoredTemporalElement {
      * relational temporal elements should only be created by the
      * {@link TemporalElementManager}
      */
+    @Deprecated
     protected Span() {
     }
 

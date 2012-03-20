@@ -31,9 +31,11 @@ public abstract class TemporalElement extends TableNode {
             TemporalDataset.PRIMITIVE_SET, TemporalDataset.PRIMITIVE_INSTANT,
             TemporalDataset.PRIMITIVE_INTERVAL };
 
+    @Deprecated
     protected TemporalElement() {
     }
     
+    @Deprecated
     protected TemporalElement(TemporalDataset tmpds) {
         this.tmpds = tmpds;
         try {
