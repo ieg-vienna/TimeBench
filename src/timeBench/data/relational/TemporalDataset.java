@@ -71,7 +71,7 @@ public class TemporalDataset extends Graph implements Cloneable {
     // = new ieg.prefuse.data.ExtremeValueListener();
 
     // predefined column names for temporal objects
-    // TODO move constants to TemporalObject or add a prefix?
+    // TODO move constants to TemporalObject?
     public static final String TEMPORAL_OBJECT_ID = "id";
 
     public static final String TEMPORAL_OBJECT_TEMPORAL_ID = "temporal_id";
