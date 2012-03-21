@@ -15,6 +15,7 @@ import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
+import timeBench.data.Lifespan;
 import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
@@ -30,7 +31,7 @@ import timeBench.data.util.IntervalTreeIndex;
  * @author BA, AR, TL
  * 
  */
-public class TemporalDataset extends Graph implements Cloneable {
+public class TemporalDataset extends Graph implements Lifespan, Cloneable {
 
     /**
      * {@link Graph} of temporal elements
@@ -802,5 +803,19 @@ public class TemporalDataset extends Graph implements Cloneable {
                 + " temporal elements, " + super.getNodeCount()
                 + " temporal objects, " + super.getEdgeCount()
                 + " object relationships]";
+    }
+
+    @Override
+    public long getInf() {
+        // TODO ignore unanchored temporal elements (use IntervalIndex?)
+        Table elem = temporalElements.getNodeTable(); 
+        return elem.getLong(elem.getMetadata(INF).getMinimumRow(), INF);
+    }
+
+    @Override
+    public long getSup() {
+        // TODO ignore unanchored temporal elements (use IntervalIndex?)
+        Table elem = temporalElements.getNodeTable(); 
+        return elem.getLong(elem.getMetadata(SUP).getMinimumRow(), SUP);
     }
 }

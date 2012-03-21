@@ -100,7 +100,7 @@ public class TemporalObject {
 				kind = timeBench.data.relational.TemporalDataset.PRIMITIVE_SPAN;
 		}
 		int temporalIndex = dataset.addTemporalElement(inf, sup, temporalElement.getGranularity().getIdentifier(), 
-				temporalElement.getGranularity().getGranularityContextIdentifier() ,kind);
+				temporalElement.getGranularity().getGranularityContextIdentifier() ,kind).getRow();
 		int objectIndex = dataset.getDataElements().addRow();
 		for(int i=0; i<dataAspects.size(); i++) {
 			dataset.getDataElements().set(objectIndex, i, dataAspects.get(i));
