@@ -727,18 +727,15 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 .getGranularityContextIdentifier());
     }
 
-    public Interval addInterval(TemporalElement begin, TemporalElement end)
+    public Interval addInterval(Instant begin, Instant end)
             throws TemporalDataException {
-        Instant beginInstant = (Instant) begin.asPrimitive();
-        Instant endInstant = (Instant) end.asPrimitive();
 
         // XXX make this more correct using Tim's classes (e.g., check &
         // handle different granularities)
 
-        GenericTemporalElement interval = addTemporalElement(
-                beginInstant.getInf(), endInstant.getSup(),
-                beginInstant.getGranularityId(),
-                beginInstant.getGranularityContextId(),
+        GenericTemporalElement interval = addTemporalElement(begin.getInf(),
+                end.getSup(), begin.getGranularityId(),
+                begin.getGranularityContextId(),
                 TemporalDataset.PRIMITIVE_INTERVAL);
 
         // add edges to temporal element graph
@@ -748,6 +745,15 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         return (Interval) interval.asPrimitive();
     }
     
+    public Interval addInterval(Instant begin, Span span)
+            throws TemporalDataException {
+        throw new UnsupportedOperationException();
+    }
+    
+    public Interval addInterval(Span span, Instant end)
+            throws TemporalDataException {
+        throw new UnsupportedOperationException();
+    }
     
     /**
      * Get an instance of the default {@link Schema} used for

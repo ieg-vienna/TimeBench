@@ -8,6 +8,7 @@ import prefuse.data.Tuple;
 import timeBench.calendar.Calendar;
 import timeBench.data.TemporalDataException;
 import timeBench.data.relational.GenericTemporalElement;
+import timeBench.data.relational.Instant;
 import timeBench.data.relational.TemporalDataset;
 
 public class IntervalEncoding extends TemporalObjectEncoding {
@@ -50,10 +51,12 @@ public class IntervalEncoding extends TemporalObjectEncoding {
             Map<String, GenericTemporalElement> elements)
             throws TemporalDataException {
         if (beginKey != null && endKey != null) {
-            GenericTemporalElement begin = elements.get(beginKey);
-            GenericTemporalElement end = elements.get(endKey);
+            GenericTemporalElement gBegin = elements.get(beginKey);
+            GenericTemporalElement gEnd = elements.get(endKey);
+            // TODO check & test
+            Instant begin = (Instant) gBegin.asPrimitive();
+            Instant end = (Instant) gEnd.asPrimitive();
 
-            // check & test
             GenericTemporalElement interval = tmpds.addInterval(begin, end)
                     .asGeneric();
 
