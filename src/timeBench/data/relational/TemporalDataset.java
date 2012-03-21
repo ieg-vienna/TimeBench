@@ -14,6 +14,7 @@ import prefuse.data.tuple.TableTuple;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
+import timeBench.calendar.Granule;
 import timeBench.data.TemporalDataException;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
@@ -500,6 +501,18 @@ public class TemporalDataset extends Graph implements Cloneable {
     }
 
     /**
+     * Adds a temporal object.
+     * 
+     * @param temporalElement
+     *            the temporal element
+     * @throws TemporalDataException
+     */
+    public TemporalObject addTemporalObject(TemporalElement temporalElement)
+            throws TemporalDataException {
+        return addTemporalObject(temporalElement.getId());
+    }
+
+    /**
      * Creates an {@link IntervalIndex} for the temporal elements. It helps in
      * querying the elements based on intervals.
      * 
@@ -522,7 +535,8 @@ public class TemporalDataset extends Graph implements Cloneable {
     }
 
     /**
-     * Adds a new temporal element to the dataset
+     * Adds a new temporal element to the dataset but does not return a proxy
+     * tuple.
      * 
      * @param inf
      *            the lower end of the temporal element
@@ -537,14 +551,72 @@ public class TemporalDataset extends Graph implements Cloneable {
      * @return the index of the created element in the table of temporal
      *         elements
      */
-    public int addTemporalElement(long inf, long sup, int granularityId,
+    private int addTemporalElementAsRow(long inf, long sup, int granularityId,
             int granularityContextId, int kind) {
         long id = (indexElements.size() > 0) ? temporalElements.getNodeTable()
                 .getLong(this.indexElements.maximum(), TEMPORAL_ELEMENT_ID) + 1
                 : 1;
         // long id = this.maximumTemporalElementId.getMaximum() + 1;
-        return addTemporalElement(id, inf, sup, granularityId,
+        return addTemporalElementAsRow(id, inf, sup, granularityId,
                 granularityContextId, kind);
+    }
+
+    /**
+     * Adds a new temporal element to the dataset but does not return a proxy
+     * tuple.
+     * 
+     * @param id
+     *            the id of the temporal element
+     * @param inf
+     *            the lower end of the temporal element
+     * @param sup
+     *            the upper end of the temporal element
+     * @param granularityId
+     *            the granularityID of the temporal element
+     * @param granularityContextId
+     *            the granularityContextID of the temporal element
+     * @param kind
+     *            the kind of the temporal element
+     * @return the index of the created element in the table of temporal
+     *         elements
+     */
+    private int addTemporalElementAsRow(long id, long inf, long sup,
+            int granularityId, int granularityContextId, int kind) {
+        Table nodeTable = temporalElements.getNodeTable();
+        int row = nodeTable.addRow();
+        nodeTable.set(row, TEMPORAL_ELEMENT_ID, id);
+        nodeTable.set(row, INF, inf);
+        nodeTable.set(row, SUP, sup);
+        nodeTable.set(row, GRANULARITY_ID, granularityId);
+        nodeTable.set(row, GRANULARITY_CONTEXT_ID, granularityContextId);
+        nodeTable.set(row, KIND, kind);
+
+        // only proxy tuple is GenericTemporalElement -> no need to invalidate
+
+        return row;
+    }
+
+    /**
+     * Adds a new temporal element to the dataset
+     * 
+     * @param inf
+     *            the lower end of the temporal element
+     * @param sup
+     *            the upper end of the temporal element
+     * @param granularityId
+     *            the granularityID of the temporal element
+     * @param granularityContextId
+     *            the granularityContextID of the temporal element
+     * @param kind
+     *            the kind of the temporal element
+     * @return the created temporal element
+     */
+    public GenericTemporalElement addTemporalElement(long inf, long sup,
+            int granularityId, int granularityContextId, int kind) {
+        int row = addTemporalElementAsRow(inf, sup, granularityId,
+                granularityContextId, kind);
+        return (GenericTemporalElement) this.temporalGenerics.getTuple(row);
+
     }
 
     /**
@@ -562,28 +634,16 @@ public class TemporalDataset extends Graph implements Cloneable {
      *            the granularityContextID of the temporal element
      * @param kind
      *            the kind of the temporal element
-     * @return the index of the created element in the table of temporal
-     *         elements
+     * @return the created temporal element
      */
-    public int addTemporalElement(long id, long inf, long sup,
-            int granularityId, int granularityContextId, int kind) {
-        Table nodeTable = temporalElements.getNodeTable();
-        int row = nodeTable.addRow();
-        nodeTable.set(row, TEMPORAL_ELEMENT_ID, id);
-        nodeTable.set(row, INF, inf);
-        nodeTable.set(row, SUP, sup);
-        nodeTable.set(row, GRANULARITY_ID, granularityId);
-        nodeTable.set(row, GRANULARITY_CONTEXT_ID, granularityContextId);
-        nodeTable.set(row, KIND, kind);
+    public GenericTemporalElement addTemporalElement(long id, long inf,
+            long sup, int granularityId, int granularityContextId, int kind) {
+        int row = addTemporalElementAsRow(inf, sup, granularityId,
+                granularityContextId, kind);
+        return (GenericTemporalElement) this.temporalGenerics.getTuple(row);
 
-        // enforce that class of proxy tuple is reconsidered
-        // this is safe because the object is not known outside of this method
-        // (exception are tuple listeners)
-        // this.temporalTuples.invalidate(row);
-
-        return row;
     }
-
+    
     /**
      * adds the tuple to the temporal dataset and links it with the passed
      * {@link Tuple} instance. The tuple must be of a subclass of
@@ -614,8 +674,6 @@ public class TemporalDataset extends Graph implements Cloneable {
         }
     }
 
-    // TODO factory method with Granule --> Tim
-    
     /**
      * Add a new instant to the dataset. This method returns a proxy tuple of
      * this instant, which is of class {@link Instant}.
@@ -632,12 +690,64 @@ public class TemporalDataset extends Graph implements Cloneable {
      */
     public Instant addInstant(long inf, long sup, int granularityId,
             int granularityContextId) {
-        int row = this.addTemporalElement(inf, sup, granularityId,
+        int row = this.addTemporalElementAsRow(inf, sup, granularityId,
                 granularityContextId, TemporalDataset.PRIMITIVE_INSTANT);
         Instant result = (Instant) this.temporalPrimitives.getTuple(row);
         return result;
     }
 
+    /**
+     * Add a new instant to the dataset. This method returns a proxy tuple of
+     * this instant, which is of class {@link Instant}.
+     * 
+     * @param id
+     *            the id of the temporal element
+     * @param inf
+     *            the lower end of the temporal element
+     * @param sup
+     *            the upper end of the temporal element
+     * @param granularityId
+     *            the granularityID of the temporal element
+     * @param granularityContextId
+     *            the granularityContextID of the temporal element
+     * @return a proxy tuple of the created temporal element
+     */
+    public Instant addInstant(long id, long inf, long sup, int granularityId,
+            int granularityContextId) {
+        int row = this.addTemporalElementAsRow(id, inf, sup, granularityId,
+                granularityContextId, TemporalDataset.PRIMITIVE_INSTANT);
+        Instant result = (Instant) this.temporalPrimitives.getTuple(row);
+        return result;
+    }
+
+    public Instant addInstant(Granule granule) throws TemporalDataException {
+        return addInstant(granule.getInf(), granule.getSup(), granule
+                .getGranularity().getIdentifier(), granule.getGranularity()
+                .getGranularityContextIdentifier());
+    }
+
+    public Interval addInterval(TemporalElement begin, TemporalElement end)
+            throws TemporalDataException {
+        Instant beginInstant = (Instant) begin.asPrimitive();
+        Instant endInstant = (Instant) end.asPrimitive();
+
+        // XXX make this more correct using Tim's classes (e.g., check &
+        // handle different granularities)
+
+        GenericTemporalElement interval = addTemporalElement(
+                beginInstant.getInf(), endInstant.getSup(),
+                beginInstant.getGranularityId(),
+                beginInstant.getGranularityContextId(),
+                TemporalDataset.PRIMITIVE_INTERVAL);
+
+        // add edges to temporal element graph
+        this.getTemporalElements().addEdge(begin, interval);
+        this.getTemporalElements().addEdge(end, interval);
+
+        return (Interval) interval.asPrimitive();
+    }
+    
+    
     /**
      * Get an instance of the default {@link Schema} used for
      * {@link TemporalElement} instances. Contains the data members internally

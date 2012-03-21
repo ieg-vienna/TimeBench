@@ -22,11 +22,8 @@ public abstract class InstantEncoding extends TemporalObjectEncoding {
         Granule granule = super.getGranularity().parseDateToGranule(
                 buildDate(tuple));
 
-        // TODO efficient way to remember last added ID
-        int row = tmpds.addTemporalElement(granule.getInf(), granule.getSup(),
-                super.getGranularity().getIdentifier(), super.getGranularity().getGranularityContextIdentifier(),
-                TemporalDataset.PRIMITIVE_INSTANT);
+        GenericTemporalElement elem = tmpds.addInstant(granule).asGeneric();
 
-        elements.put(this.getKey(), tmpds.getTemporalElementByRow(row));
+        elements.put(this.getKey(), elem);
     }
 }

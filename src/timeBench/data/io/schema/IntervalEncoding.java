@@ -47,24 +47,17 @@ public class IntervalEncoding extends TemporalObjectEncoding {
 
     @Override
     public void buildTemporalElement(TemporalDataset tmpds, Tuple tuple,
-            Map<String, GenericTemporalElement> elements) throws TemporalDataException {
+            Map<String, GenericTemporalElement> elements)
+            throws TemporalDataException {
         if (beginKey != null && endKey != null) {
             GenericTemporalElement begin = elements.get(beginKey);
             GenericTemporalElement end = elements.get(endKey);
 
-            // XXX make this more correct using Tim's classes (e.g., check &
-            // handle different granularities)
-            int row = tmpds.addTemporalElement(begin.getInf(), end.getSup(),
-                    super.getGranularity().getIdentifier(), super.getGranularity().getGranularityContextIdentifier(),
-                    TemporalDataset.PRIMITIVE_INTERVAL);
+            // check & test
+            GenericTemporalElement interval = tmpds.addInterval(begin, end)
+                    .asGeneric();
 
-            // add edges to temporal element graph
-            timeBench.data.relational.TemporalElement interval = tmpds
-                    .getTemporalElementByRow(row);
-            tmpds.getTemporalElements().addEdge(begin, interval);
-            tmpds.getTemporalElements().addEdge(end, interval);
-
-            elements.put(this.getKey(), tmpds.getTemporalElementByRow(row));
+            elements.put(this.getKey(), interval);
         } else
             throw new TemporalDataException(
                     "import interval with span not supported yet");
