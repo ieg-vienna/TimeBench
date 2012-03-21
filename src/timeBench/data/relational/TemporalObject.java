@@ -23,9 +23,11 @@ public class TemporalObject extends TableNode {
     /**
      * creates an invalid TemporalObject. Use the other constructors! 
      */
+    @Deprecated
     public TemporalObject() {
     }
 
+    @Deprecated
     public TemporalObject(TemporalDataset tmpds, long id, TemporalElement elem) {
         try {
             tmpds.amendTuple(this);

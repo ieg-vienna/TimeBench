@@ -471,17 +471,32 @@ public class TemporalDataset extends Graph implements Cloneable {
      */
     public TemporalObject addTemporalObject(long temporalObjectId,
             long temporalElementId) throws TemporalDataException {
-        // TODO make integrity checks optional?
-        if (this.indexObjects.get(temporalObjectId) != Integer.MIN_VALUE)
-            throw new TemporalDataException("Duplicate temporal object id");
-        if (this.indexElements.get(temporalElementId) == Integer.MIN_VALUE)
-            throw new TemporalDataException(
-                    "Temporal element id does not exist");
+//        if (this.indexObjects.get(temporalObjectId) != Integer.MIN_VALUE)
+//            throw new TemporalDataException("Duplicate temporal object id");
+//        if (this.indexElements.get(temporalElementId) == Integer.MIN_VALUE)
+//            throw new TemporalDataException(
+//                    "Temporal element id does not exist");
 
         TemporalObject object = (TemporalObject) super.addNode();
         object.set(TEMPORAL_OBJECT_ID, temporalObjectId);
         object.set(TEMPORAL_OBJECT_TEMPORAL_ID, temporalElementId);
         return object;
+    }
+    
+    /**
+     * Adds a temporal object.
+     * 
+     * @param temporalElementId
+     *            the id of the temporal element
+     * @throws TemporalDataException
+     */
+    public TemporalObject addTemporalObject(long temporalElementId)
+            throws TemporalDataException {
+        long id = (indexObjects.size() > 0) ? super.getNodeTable()
+                .getLong(this.indexObjects.maximum(), TEMPORAL_OBJECT_ID) + 1
+                : 1;
+
+        return addTemporalObject(id, temporalElementId);
     }
 
     /**
@@ -581,6 +596,7 @@ public class TemporalDataset extends Graph implements Cloneable {
      *             if the tuple is already valid or has an incompatible type
      * @see AmendableTupleManager
      */
+    @Deprecated
     protected int amendTuple(TableTuple tuple) throws TemporalDataException {
         try {
             if (tuple instanceof TemporalObject) {
