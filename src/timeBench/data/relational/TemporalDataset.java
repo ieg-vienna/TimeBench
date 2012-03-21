@@ -816,6 +816,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public long getSup() {
         // TODO ignore unanchored temporal elements (use IntervalIndex?)
         Table elem = temporalElements.getNodeTable(); 
-        return elem.getLong(elem.getMetadata(SUP).getMinimumRow(), SUP);
+        return elem.getLong(elem.getMetadata(SUP).getMaximumRow(), SUP);
     }
 }
