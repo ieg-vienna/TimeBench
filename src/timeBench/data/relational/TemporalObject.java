@@ -46,7 +46,7 @@ public class TemporalObject extends TableNode {
     /**
      * @return the temporal element
      */
-    public TemporalElement getTemporalElement() {
+    public GenericTemporalElement getTemporalElement() {
         long teId = super.getLong(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID);
         // the temporal object graph, is actually the temporal dataset 
         return ((TemporalDataset) m_graph).getTemporalElement(teId);

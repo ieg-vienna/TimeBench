@@ -5,9 +5,7 @@ import java.util.Iterator;
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
-import prefuse.data.Tuple;
 import prefuse.data.column.Column;
-import prefuse.data.expression.AbstractPredicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
@@ -15,6 +13,7 @@ import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
 import timeBench.data.Lifespan;
 import timeBench.data.TemporalDataException;
+import timeBench.data.expression.AnchoredPredicate;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
@@ -523,13 +522,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         Table elements = this.temporalElements.getNodeTable();
         Column colLo = elements.getColumn(INF);
         Column colHi = elements.getColumn(SUP);
-        // XXX this method does not yet exclude unanchored sets
-        IntIterator rows = elements.rows(new AbstractPredicate() {
-            @Override
-            public boolean getBoolean(Tuple t) {
-                return t.getInt(KIND) != PRIMITIVE_SPAN;
-            }
-        });
+        IntIterator rows = elements.rows(new AnchoredPredicate());
         return new IntervalTreeIndex(elements, rows, colLo, colHi, comparator);
     }
 
