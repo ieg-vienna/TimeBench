@@ -21,33 +21,9 @@ public class AnchoredTemporalElement extends TemporalElement implements
      * relational temporal elements should only be created by the
      * {@link TemporalElementManager}
      */
-    @Deprecated
     protected AnchoredTemporalElement() {
     }
 
-    @Deprecated
-    protected AnchoredTemporalElement(TemporalDataset tmpds) {
-        super(tmpds);
-    }
-
-    @Deprecated
-    public AnchoredTemporalElement(TemporalDataset tmpds, long id, long inf, long sup, int granularityId, int granularityContextId, int kind) {
-        super(tmpds);
-        // TODO check for duplicate id
-        this.setLong(TemporalDataset.TEMPORAL_ELEMENT_ID, id);
-        set(inf, sup, granularityId, granularityContextId, kind);
-    }
-
-    protected void set(long inf, long sup, int granularityId, int granularityContextId, int kind) {
-        if (isValid()) {
-            m_table.set(m_row, TemporalDataset.INF, inf);
-            m_table.set(m_row, TemporalDataset.SUP, sup);
-            m_table.set(m_row, TemporalDataset.GRANULARITY_ID, granularityId);
-            m_table.set(m_row, TemporalDataset.GRANULARITY_CONTEXT_ID, granularityContextId);
-            m_table.set(m_row, TemporalDataset.KIND, kind);
-        }
-    }
-    
     /*
      * (non-Javadoc)
      * 

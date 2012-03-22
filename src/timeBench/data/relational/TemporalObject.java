@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 
 import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;
-import timeBench.data.TemporalDataException;
 
 /**
  * Relational view of the temporal object. Following the <em>proxy tuple</em>
@@ -21,28 +20,12 @@ public class TemporalObject extends TableNode {
     static Logger logger = Logger.getLogger(TemporalObject.class); 
     
     /**
-     * creates an invalid TemporalObject. Use the other constructors! 
+     * creates an invalid TemporalObject. Use {@link TemporalDataset} as a
+     * factory!
      */
-    @Deprecated
-    public TemporalObject() {
+    protected TemporalObject() {
     }
 
-    @Deprecated
-    public TemporalObject(TemporalDataset tmpds, long id, TemporalElement elem) {
-        try {
-            tmpds.amendTuple(this);
-        } catch (TemporalDataException e) {
-            // this will not happen ;-)
-            e.printStackTrace();
-            System.exit(1);
-        }
-        // TODO check for duplicate id
-        this.setLong(TemporalDataset.TEMPORAL_OBJECT_ID, id);
-        // this throws an IllegalStateException if elem is invalid
-        long elemId = elem.getId();
-        this.setLong(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID, elemId);
-    }
-    
     /**
      * Get the temporal element id.
      * 

@@ -15,9 +15,8 @@ public class UnanchoredTemporalElement extends TemporalElement {
 
     /**
      * relational temporal elements should only be created by the
-     * {@link TemporalElementManager}
+     * {@link TemporalDataset}
      */
-    @Deprecated
     protected UnanchoredTemporalElement() {
     }
 

@@ -8,9 +8,7 @@ import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.data.column.Column;
 import prefuse.data.expression.AbstractPredicate;
-import prefuse.data.tuple.AmendableTupleManager;
 import prefuse.data.tuple.TableEdge;
-import prefuse.data.tuple.TableTuple;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
@@ -199,7 +197,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      */
     private void initTupleManagers() {
         // nodes of temporal object graph --> TemporalObject
-        TupleManager tempObjectManager = new AmendableTupleManager(
+        TupleManager tempObjectManager = new TupleManager(
                 super.getNodeTable(), this, TemporalObject.class);
 
         // nodes of temporal element graph --> GenericTemporalElement
@@ -645,36 +643,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
 
     }
     
-    /**
-     * adds the tuple to the temporal dataset and links it with the passed
-     * {@link Tuple} instance. The tuple must be of a subclass of
-     * {@link TemporalObject} or {@link TemporalElement}.
-     * 
-     * @param tuple
-     *            a tuple instance to be added
-     * @return the row index
-     * @throws TemporalDataException
-     *             if the tuple is already valid or has an incompatible type
-     * @see AmendableTupleManager
-     */
-    @Deprecated
-    protected int amendTuple(TableTuple tuple) throws TemporalDataException {
-        try {
-            if (tuple instanceof TemporalObject) {
-                return ((AmendableTupleManager) m_nodeTuples).amendTuple(tuple);
-            } else if (tuple instanceof GenericTemporalElement) {
-                return temporalGenerics.amendTuple(tuple);
-            } else if (tuple instanceof TemporalElement) {
-                return temporalPrimitives.amendTuple(tuple);
-            } else {
-                throw new TemporalDataException("Unsupported tuple type: "
-                        + tuple.getClass().getName());
-            }
-        } catch (IllegalArgumentException e) {
-            throw new TemporalDataException(e);
-        }
-    }
-
     /**
      * Add a new instant to the dataset. This method returns a proxy tuple of
      * this instant, which is of class {@link Instant}.

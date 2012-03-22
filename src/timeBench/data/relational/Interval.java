@@ -14,9 +14,8 @@ public class Interval extends AnchoredTemporalElement {
 
     /**
      * relational temporal elements should only be created by the
-     * {@link TemporalElementManager}
+     * {@link TemporalDataset}
      */
-    @Deprecated
     protected Interval() {
     }
 

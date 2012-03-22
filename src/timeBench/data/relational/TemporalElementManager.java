@@ -1,13 +1,10 @@
 package timeBench.data.relational;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.data.event.EventConstants;
 import prefuse.data.event.TableListener;
-import prefuse.data.tuple.AmendableTupleManager;
 import prefuse.data.tuple.TupleManager;
 import prefuse.util.collections.IntIterator;
 
@@ -39,8 +36,7 @@ import prefuse.util.collections.IntIterator;
  * @author Rind
  * 
  */
-// TODO do not extend AmendableTupleManager
-public class TemporalElementManager extends AmendableTupleManager {
+public class TemporalElementManager extends TupleManager {
 
     /**
      * the temporal dataset. It will be passed to new temporal element tuples
@@ -62,9 +58,8 @@ public class TemporalElementManager extends AmendableTupleManager {
         this.generic = generic;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    protected TemporalElement reallyNewTuple(int row) {
+    protected TemporalElement newTuple(int row) {
         int kind = m_table.getInt(row, TemporalDataset.KIND);
         TemporalElement t;
         if (generic || kind == -1)
@@ -183,11 +178,7 @@ public class TemporalElementManager extends AmendableTupleManager {
                 if (col == TemporalElementManager.this.m_table
                         .getColumnNumber(TemporalDataset.KIND))
                     for (int r = start; r <= end; ++r) {
-                        int[] kinds = ((TemporalElement) getTuple(r))
-                                .getSupportedKinds();
-                        if (!ArrayUtils.contains(kinds, t.getInt(r, col))) {
-                            TemporalElementManager.this.invalidate(r);
-                        }
+                        TemporalElementManager.this.invalidate(r);
                     }
                 break;
             }

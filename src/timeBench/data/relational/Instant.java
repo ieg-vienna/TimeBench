@@ -18,18 +18,10 @@ public class Instant extends AnchoredTemporalElement {
     private static final int[] SUPPORTED_KINDS = { TemporalDataset.PRIMITIVE_INSTANT };
     
     /**
-     * relational temporal elements should only be created by the {@link TemporalElementManager}
+     * creates an invalid TemporalElement. Use {@link TemporalDataset} as a
+     * factory!
      */
-    @Deprecated
     protected Instant() {
-    }
-
-    @Deprecated
-    public Instant(TemporalDataset tmpds, long id, long inf, long sup, int granularityId, int granularityContextId) {
-        super(tmpds);
-        super.setSupportedKinds(SUPPORTED_KINDS);
-        this.setLong(TemporalDataset.TEMPORAL_ELEMENT_ID, id);
-        set(inf, sup, granularityId, granularityContextId, TemporalDataset.PRIMITIVE_INSTANT);
     }
 
     @Override
