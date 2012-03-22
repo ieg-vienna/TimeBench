@@ -227,7 +227,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     @Deprecated
-    public Object clone() {
+    public TemporalDataset clone() {
         throw new UnsupportedOperationException("clone no longer needed");
     }
 

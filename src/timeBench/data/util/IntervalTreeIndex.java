@@ -322,6 +322,12 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	}
 
 	@Override
+	public int maximum() {
+	    // problem: underlying data structure is sorted by INF
+	    throw new UnsupportedOperationException("contact Bilal oder Alex :)");
+	}
+	
+	@Override
 	public IntervalComparator getComparator() {
 		return comparator;
 	}

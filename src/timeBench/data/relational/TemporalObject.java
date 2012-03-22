@@ -23,7 +23,8 @@ public class TemporalObject extends TableNode {
      * creates an invalid TemporalObject. Use {@link TemporalDataset} as a
      * factory!
      */
-    protected TemporalObject() {
+    // make constructor protected: TemporalObjectManager extends TupleManager
+    public TemporalObject() {
     }
 
     /**
