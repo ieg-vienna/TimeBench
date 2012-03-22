@@ -343,14 +343,9 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * @return an object, which provides an iterator
      */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public Iterable<TemporalElement> temporalElementsIterable() {
-        return new Iterable<TemporalElement>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public Iterator<TemporalElement> iterator() {
-                return temporalElements.nodes();
-            }
-        };
+        return new ieg.util.lang.CustomIterable(temporalElements.nodes());
     }
 
     /**

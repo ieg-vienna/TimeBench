@@ -1,5 +1,7 @@
 package timeBench.data.relational;
 
+import ieg.util.lang.CustomIterable;
+
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
@@ -60,8 +62,14 @@ public class TemporalObject extends TableNode {
      * @return an iterator over children
      */
     @SuppressWarnings("unchecked")
+    // TODO rename in childObjectIterator()
     public Iterator<TemporalObject> childElements() {
         return super.inNeighbors();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public Iterable<TemporalObject> childObjects() {
+        return new CustomIterable(super.inNeighbors());
     }
 
     /**
@@ -69,6 +77,7 @@ public class TemporalObject extends TableNode {
      * 
      * @return the number of child temporal elements
      */
+    // TODO rename in getChildObjectCount()
     public int getChildElementCount() {
         return super.m_graph.getInDegree(this);
     }
