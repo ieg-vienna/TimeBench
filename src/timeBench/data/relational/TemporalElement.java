@@ -26,6 +26,7 @@ public abstract class TemporalElement extends TableNode {
      */
     private TemporalDataset tmpds;
     
+    @Deprecated
     private int[] supportedKinds = { TemporalDataset.PRIMITIVE_SPAN,
             TemporalDataset.PRIMITIVE_SET, TemporalDataset.PRIMITIVE_INSTANT,
             TemporalDataset.PRIMITIVE_INTERVAL };
@@ -93,10 +94,12 @@ public abstract class TemporalElement extends TableNode {
         return tmpds;
     }
 
+    @Deprecated
     public int[] getSupportedKinds() {
         return supportedKinds;
     }
 
+    @Deprecated
     protected void setSupportedKinds(int[] supportedKinds) {
         this.supportedKinds = supportedKinds;
     }

@@ -15,13 +15,16 @@ import java.util.Iterator;
  */
 public class Instant extends AnchoredTemporalElement {
 
+    @Deprecated
     private static final int[] SUPPORTED_KINDS = { TemporalDataset.PRIMITIVE_INSTANT };
     
     /**
      * creates an invalid TemporalElement. Use {@link TemporalDataset} as a
      * factory!
      */
+    @SuppressWarnings("deprecation")
     protected Instant() {
+        setSupportedKinds(SUPPORTED_KINDS);
     }
 
     @Override
