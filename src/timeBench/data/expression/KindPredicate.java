@@ -13,7 +13,7 @@ import timeBench.data.relational.TemporalElement;
  */
 public class KindPredicate extends AbstractPredicate {
 
-    // TODO extend ComparionPredicate to use optimizations in FilterIteratorFactory#getComparisonIterator(...)
+    // TODO extend ComparionPredicate to use optimizations in FilterIteratorFactory#getComparisonIterator(...), also needs an index on kind
     // TODO support TemporalObject
     
     /** convenience instance for instants. */

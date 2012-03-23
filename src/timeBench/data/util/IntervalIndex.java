@@ -2,6 +2,7 @@ package timeBench.data.util;
 
 import prefuse.util.collections.IntIterator;
 
+// TODO pass comparator for each query not for building the tree
 
 /**
  * Represents an index over two column of data, allowing quick lookups of

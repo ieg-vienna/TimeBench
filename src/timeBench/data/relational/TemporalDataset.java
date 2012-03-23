@@ -15,6 +15,7 @@ import timeBench.calendar.Granule;
 import timeBench.data.Lifespan;
 import timeBench.data.TemporalDataException;
 import timeBench.data.expression.AnchoredPredicate;
+import timeBench.data.util.DefaultIntervalComparator;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
@@ -63,6 +64,12 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * index for {@link TemporalObject} row numbers by {@link TemporalElement} ID. 
      */
     private Index indexObjectsByElements;
+    
+    /**
+     * interval index for anchored {@link TemporalElement}s.
+     * Initialized on demand by {@link #intervalIndex()}.
+     */
+    private IntervalIndex indexElementIntervals = null;
     
     private Schema dataColumns;
     
@@ -524,21 +531,45 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     /**
-     * Creates an {@link IntervalIndex} for the temporal elements. It helps in
-     * querying the elements based on intervals.
+     * Create (if necessary) and return the {@link IntervalIndex} for
+     * {@link TemporalElement}s. It helps in querying the elements based on
+     * intervals. The first call to this method will cause the index to be
+     * created and stored. Subsequent calls will simply return the stored index.
+     * To attempt to retrieve an index without triggering creation of a new
+     * index, use the {@link #getIntervalIndex()} method.
      * 
-     * @param comparator
-     *            an {@link IntervalComparator} to compare intervals for
-     *            indexing any querying purposes.
+     * @return the interval index
      */
-    public IntervalIndex createTemporalIndex(IntervalComparator comparator) {
+    public IntervalIndex intervalIndex() {
+        if (indexElementIntervals != null) {
+            return indexElementIntervals; // already indexed
+        }
+
         Table elements = this.temporalElements.getNodeTable();
         Column colLo = elements.getColumn(INF);
         Column colHi = elements.getColumn(SUP);
         IntIterator rows = elements.rows(new AnchoredPredicate());
-        return new IntervalTreeIndex(elements, rows, colLo, colHi, comparator);
+        IntervalComparator comparator = new DefaultIntervalComparator();
+        indexElementIntervals = new IntervalTreeIndex(elements, rows, colLo,
+                colHi, comparator);
+
+        // TODO keep interval index up-to-date
+        
+        // TODO predicate to take advantage of interval index
+        
+        return indexElementIntervals;
     }
 
+    /**
+     * Retrieve, without creating, the interval index for
+     * {@link TemporalElement}s.
+     * 
+     * @return the stored interval index , or null if no index has been created
+     */
+    public IntervalIndex getIntervalIndex() {
+        return indexElementIntervals;
+    }
+    
     /**
      * Adds a new temporal element to the dataset but does not return a proxy
      * tuple.
