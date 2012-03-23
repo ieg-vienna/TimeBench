@@ -6,6 +6,7 @@ import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.column.Column;
+import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
@@ -335,6 +336,21 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     @SuppressWarnings("unchecked")
     public Iterator<GenericTemporalElement> temporalElements() {
         return temporalElements.nodes();
+    }
+    
+    /**
+     * Get an iterator over {@link TemporalElement}s in the temporal dataset,
+     * filtered by the given predicate.
+     * 
+     * @param filter
+     *            predicate to apply to tuples in this set, only tuples for
+     *            which the predicate evaluates to true are included in the
+     *            iteration
+     * @return an iterator over TemporalElement instances
+     */
+    @SuppressWarnings("unchecked")
+    public Iterator<GenericTemporalElement> temporalElements(Predicate filter) {
+        return temporalElements.getNodeTable().tuples(filter);
     }
 
     /**

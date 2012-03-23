@@ -2,7 +2,6 @@ package timeBench.data.expression;
 
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractPredicate;
-import prefuse.data.expression.Expression;
 import timeBench.data.relational.TemporalElement;
 import timeBench.data.relational.TemporalObject;
 
@@ -24,19 +23,5 @@ public class AnchoredPredicate extends AbstractPredicate {
             throw new UnsupportedOperationException(
                     "AnchoredPredicate only supports temporal objects and elements.");
         }
-    }
-
-    /**
-     * @see prefuse.data.expression.Function#addParameter(prefuse.data.expression.Expression)
-     */
-    public void addParameter(Expression e) {
-        throw new IllegalStateException("This function takes 0 parameters");
-    }
-
-    /**
-     * @see prefuse.data.expression.Function#getParameterCount()
-     */
-    public int getParameterCount() {
-        return 0;
     }
 }
