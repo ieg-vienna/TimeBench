@@ -34,8 +34,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	timeBench.data.relational.TemporalDataset workingDataset;
 	CalendarManager calendarManager;
 	Granularity[] granularities;	
-	double[] minValues;
-	double[] maxValues;
+	double[][] minValues;
+	double[][] maxValues;
 	Double missingValueIdentifier;
 
 	/**
@@ -62,13 +62,16 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			workingDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
 		
 			int columnCount = sourceDataset.getDataColumnCount();
-			minValues = new double[columnCount];
-			maxValues = new double[columnCount];
-			for(int i=0; i<columnCount; 	i++) {
-				if (sourceDataset.getDataColumn(i).canGetDouble())
-					minValues[i] = Double.MAX_VALUE;
-					maxValues[i] = Double.MIN_VALUE;
+			minValues = new double[columnCount][granularities.length];
+			maxValues = new double[columnCount][granularities.length];
+			for(int i=0; i<columnCount;	i++) {
+				if (sourceDataset.getDataColumn(i).canGetDouble()) {
+					for(int j=0; j<granularities.length; j++) {
+						minValues[i][j] = Double.MAX_VALUE;
+						maxValues[i][j] = Double.MIN_VALUE;
+					}
 				}
+			}
 						
 			GenericTemporalElement te = workingDataset.addTemporalElement(0 /* TODO Interval Tree */,0 /* TODO Interval Tree */,
 					32767, 32767, TemporalDataset.PRIMITIVE_INTERVAL);
@@ -109,7 +112,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 				}
 				if(i==0) {
 					for(int j=0; j<futureBranches.size(); j++ ) {
-						aggregate(futureBranches.get(j),futureLeaves.get(j).iterator());
+						aggregate(futureBranches.get(j),futureLeaves.get(j).iterator(),-1);
 					}
 				} else {
 					currentBranches = futureBranches;
@@ -117,7 +120,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 				}
 			}
 			
-			aggregate(root);
+			aggregate(root,0);
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
 		} catch (TemporalDataException e1) {
@@ -129,14 +132,14 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 	
 
-	private void aggregate(TemporalObject parent) {
+	private void aggregate(TemporalObject parent,int level) {
 		for(Iterator<TemporalObject> i = parent.childElements(); i.hasNext(); ) {
 			TemporalObject child = i.next();
-				aggregate(child);
+				aggregate(child,level+1);
 	    }
-		aggregate(parent,parent.childElements());
+		aggregate(parent,parent.childElements(),level-1);
 	}
-	private void aggregate(TemporalObject parent,Iterator<TemporalObject> childs) {		
+	private void aggregate(TemporalObject parent,Iterator<TemporalObject> childs,int level) {		
 		double[] numObjects = new double[sourceDataset.getDataColumnCount()]; 
 		double[] totalValue = new double[sourceDataset.getDataColumnCount()]; 
 		for(int i=0; i<sourceDataset.getDataColumnCount(); i++) {
@@ -151,8 +154,10 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					double value = temporalObject.getDouble(j);
 					totalValue[j] += value;
 					numObjects[j]++;
-					minValues[j] = Math.min(minValues[j], value);
-					maxValues[j] = Math.max(maxValues[j], value);
+					if (level >= 0 ) {
+						minValues[j][level] = Math.min(minValues[j][level], value);
+						maxValues[j][level] = Math.max(maxValues[j][level], value);
+					}
 				}
 			}
 		}
@@ -160,8 +165,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		for(int i=0; i<sourceDataset.getDataColumnCount(); i++) {
 			totalValue[i] /= numObjects[i];
 			if(Double.isNaN(totalValue[i])) {
-				minValues[i] = Double.NaN;
-				maxValues[i] = Double.NaN;
+				minValues[i][level] = Double.NaN;
+				maxValues[i][level] = Double.NaN;
 			}
 		}
 	}
@@ -175,17 +180,17 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	}
 
 	@Override
-	public Double getMinValue(int index) {
+	public Double getMinValue(int level,int index) {
 		if(minValues == null || minValues.length <= index)
 			return null;
 		else
-			return minValues[index];
+			return minValues[index][level];
 	}
 
 	@Override
-	public Double getMaxValue(int index) {
+	public Double getMaxValue(int level,int index) {
 		if(maxValues == null || maxValues.length <= index)
 			return null;
 		else
-			return maxValues[index];	}
+			return maxValues[index][level];	}
 }
