@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import prefuse.Display;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
+import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import timeBench.action.analytical.MinMaxValuesProvider;
@@ -37,7 +38,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	TemporalDatasetProvider datasetProvider;
 	//boolean[] granularityVisible;
 	//int[] granularityColorCalculation;
-	int columnUsed;
 	//boolean[] granularityColorOverlay;
 	//int[] granularityOrientation;
 	GranularityGROOVELayoutSettings[] settings;
@@ -54,7 +54,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		hotPalette = prefuse.util.ColorLib.getHotPalette(768);
 		this.group = group;
 		this.datasetProvider = datasetProvider;
-		this.columnUsed = columnUsed;
 		this.settings = settings;
 	}
 	
@@ -64,10 +63,10 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		Rectangle position = new Rectangle(new Point(0,0),display.getSize());
 		
 		m_vis.removeGroup(group);
-		VisualTable vt = m_vis.addTable(group, datasetProvider.getTemporalDataset().getOccurrences());
+		VisualGraph vg = m_vis.addGraph(group, datasetProvider.getTemporalDataset());
 		
 		try {
-			layoutGranularity(vt,m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
+			layoutGranularity(vg,m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
 					datasetProvider.getTemporalDataset().getRoots()[0])),position,-1,0.0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -80,7 +79,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	 * @throws Exception 
 	 * 
 	 */
-	private void layoutGranularity(VisualTable vt,VisualItem node,Rectangle position,int granularityLevel,double parentValue) throws Exception {
+	private void layoutGranularity(VisualGraph vg,VisualItem node,Rectangle position,int granularityLevel,double parentValue) throws Exception {
 		node.setStartX(position.getMinX());
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
@@ -88,26 +87,19 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setDOI(granularityLevel);
 		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));
 	
-		double value = datasetProvider.getTemporalDataset().getDataElements().getDouble(m_vis.getSourceTuple(node).getInt(1), columnUsed);
+		double value = node.getDouble(settings[granularityLevel].getSourceColumn());
 
 		if (granularityLevel < 0)
 			node.setVisible(false);
 		else {
 			node.setVisible(settings[granularityLevel].isVisible());
 
-			String columnName = datasetProvider.getTemporalDataset().getDataElements().getColumnName(columnUsed);
-			Double min = null;
-			Double max = null;
+			double min = Double.NaN;
+			double max = Double.NaN;
 			if (datasetProvider instanceof MinMaxValuesProvider) {
-				min = ((MinMaxValuesProvider)datasetProvider).getMinValue(columnUsed);
-				max = ((MinMaxValuesProvider)datasetProvider).getMaxValue(columnUsed);
+				min = ((MinMaxValuesProvider)datasetProvider).getMinValue(granularityLevel,settings[granularityLevel].getSourceColumn());
+				max = ((MinMaxValuesProvider)datasetProvider).getMaxValue(granularityLevel,settings[granularityLevel].getSourceColumn());
 			}
-			if (min == null)
-				min = datasetProvider.getTemporalDataset().getDataElements().getDouble(
-						datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMinimumRow(), columnUsed);
-			if (max == null)
-			 	max = datasetProvider.getTemporalDataset().getDataElements().getDouble(
-			 			datasetProvider.getTemporalDataset().getDataElements().getMetadata(columnName).getMaximumRow(), columnUsed);
 
 			switch(settings[granularityLevel].getColorCalculation()) {
 			case COLOR_CALCULATION_GLOWING_METAL:
@@ -139,15 +131,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			Tuple sourceTuple = m_vis.getSourceTuple(node);
 			if (sourceTuple instanceof TemporalObject) {
 				TemporalObject temporalObject = (TemporalObject)sourceTuple;
-//				if (granularityLevel < 3)
-//					System.err.println("");			
-//				if (granularityLevel > -1)
-//					System.err.print("  ");
-//				if (granularityLevel > 0)
-//					System.err.print("  ");
-//				if (granularityLevel > 1)
-//					System.err.print("  ");
-//				System.err.print(temporalObject.getChildElementCount());
 				TreeMap<Long,TemporalObject> orderedChilds = new TreeMap<Long, TemporalObject>();
 				Iterator<TemporalObject> iter = temporalObject.childElements();
 				while(iter.hasNext()) {
@@ -176,7 +159,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 						subPosition.width -= (borderWidth[0] + borderWidth[2]);
 						subPosition.height -= (borderWidth[1] + borderWidth[3]);
 					}
-					layoutGranularity(vt,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
+					layoutGranularity(vg,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
 				}
 			}
 			else

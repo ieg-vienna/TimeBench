@@ -2,20 +2,36 @@ package timeBench.action.layout;
 
 public class GranularityGROOVELayoutSettings {
 	private static final long serialVersionUID = -707716457554852086L;
+
 	private int orientation;
 	private boolean visible;
 	private int[] borderWith;
 	private int colorCalculation;
-	private boolean colorOverlay;
+	private boolean colorOverlay;	
 	
 	public @Deprecated GranularityGROOVELayoutSettings() {		
 	}
-	public GranularityGROOVELayoutSettings(int orientation,boolean visible,int[] borderWidth,int colorCalculation,boolean colorOverlay) {
+	public GranularityGROOVELayoutSettings(int sourceColumn,int orientation,boolean visible,int[] borderWidth,int colorCalculation,boolean colorOverlay) {
+		this.sourceColumn = sourceColumn;
 		this.orientation = orientation;
 		this.visible = visible;
 		this.borderWith = borderWidth;
 		this.colorCalculation = colorCalculation;
 		this.colorOverlay = colorOverlay;
+	}
+	
+	private int sourceColumn;
+	/**
+	 * @return the sourceColumn
+	 */
+	public int getSourceColumn() {
+		return sourceColumn;
+	}
+	/**
+	 * @param sourceColumn the sourceColumn to set
+	 */
+	public void setSourceColumn(int sourceColumn) {
+		this.sourceColumn = sourceColumn;
 	}
 	
 	public int getOrientation() {
