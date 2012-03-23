@@ -12,6 +12,6 @@ package timeBench.action.analytical;
  *
  */
 public interface MinMaxValuesProvider {
-	Double getMinValue(int index);
-	Double getMaxValue(int index);
+	Double getMinValue(int level,int index);
+	Double getMaxValue(int level,int index);
 }
