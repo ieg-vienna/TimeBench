@@ -13,6 +13,9 @@ import timeBench.data.relational.TemporalElement;
  */
 public class KindPredicate extends AbstractPredicate {
 
+    // TODO extend ComparionPredicate to use optimizations in FilterIteratorFactory#getComparisonIterator(...)
+    // TODO support TemporalObject
+    
     /** convenience instance for instants. */
     public static final Predicate INSTANT = new KindPredicate(
             TemporalDataset.PRIMITIVE_INSTANT);

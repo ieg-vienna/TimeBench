@@ -395,6 +395,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public Iterator<TemporalObject> temporalObjects() {
         return super.nodes();
     }
+    
+    // TODO iterators with predicate
 
     /**
      * Get the TemporalObject instance corresponding to its id.
