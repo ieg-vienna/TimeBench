@@ -13,6 +13,8 @@ import timeBench.data.relational.TemporalElement;
  */
 public class GranularityPredicate extends AbstractPredicate {
 
+    // XXX extend ColumnExpression so that ExpressionAnalyzer#hasDependency() works?
+    
     private int granularityId;
     private int granularityContextId;
 

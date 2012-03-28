@@ -15,6 +15,7 @@ public class KindPredicate extends AbstractPredicate {
 
     // TODO extend ComparionPredicate to use optimizations in FilterIteratorFactory#getComparisonIterator(...), also needs an index on kind
     // TODO support TemporalObject
+    // XXX extend ColumnExpression so that ExpressionAnalyzer#hasDependency() works?  
     
     /** convenience instance for instants. */
     public static final Predicate INSTANT = new KindPredicate(

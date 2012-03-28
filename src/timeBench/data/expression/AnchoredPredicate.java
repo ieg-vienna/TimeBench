@@ -13,6 +13,8 @@ import timeBench.data.relational.TemporalObject;
  */
 public class AnchoredPredicate extends AbstractPredicate {
 
+    // XXX extend ColumnExpression so that ExpressionAnalyzer#hasDependency() works?  
+    
     @Override
     public boolean getBoolean(Tuple t) {
         if (t instanceof TemporalObject) {
