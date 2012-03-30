@@ -1,7 +1,6 @@
 package timeBench.calendar;
 
 import timeBench.data.TemporalDataException;
-import timeBench.data.oo.Interval;
 
 /**
  * 
@@ -38,9 +37,9 @@ public class Granule {
 		}
 	}
 	
-	public Granule(Interval interval) throws TemporalDataException {
-		this(interval.getInf(),interval.getSup(),interval.getGranularity());
-	}
+	//public Granule(Interval interval) throws TemporalDataException {
+		//this(interval.getInf(),interval.getSup(),interval.getGranularity());
+	//}
 	
 	public Granule(long identifier,Granularity granularity) {
 		this.identifier = identifier;
@@ -73,8 +72,8 @@ public class Granule {
 		return identifier;
 	}
 	
-	public Interval getLifespan() throws TemporalDataException
-	{
-		return new Interval(getInf(),getSup(),granularity);
-	}
+	//public Interval getLifespan() throws TemporalDataException
+	//{
+		//return new Interval(getInf(),getSup(),granularity);
+	//}
 }
