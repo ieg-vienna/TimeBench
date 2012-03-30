@@ -68,7 +68,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
 		try {
 			layoutGranularity(vg,(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
-					datasetProvider.getTemporalDataset().getRoots()[0])),position,-1,0.0);
+					datasetProvider.getTemporalDataset().getRoots()[0])),position,0,0.0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
