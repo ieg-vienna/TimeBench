@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import prefuse.Display;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
+import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
@@ -66,7 +67,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		VisualGraph vg = m_vis.addGraph(group, datasetProvider.getTemporalDataset());
 		
 		try {
-			layoutGranularity(vg,m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
+			layoutGranularity(vg,(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
 					datasetProvider.getTemporalDataset().getRoots()[0])),position,-1,0.0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -79,7 +80,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	 * @throws Exception 
 	 * 
 	 */
-	private void layoutGranularity(VisualGraph vg,VisualItem node,Rectangle position,int granularityLevel,double parentValue) throws Exception {
+	private void layoutGranularity(VisualGraph vg,NodeItem node,Rectangle position,int granularityLevel,double parentValue) throws Exception {
 		node.setStartX(position.getMinX());
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
@@ -127,43 +128,37 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			}
 		}
 		
-		if(granularityLevel+1 < settings.length) {		
-			Tuple sourceTuple = m_vis.getSourceTuple(node);
-			if (sourceTuple instanceof TemporalObject) {
-				TemporalObject temporalObject = (TemporalObject)sourceTuple;
-				TreeMap<Long,TemporalObject> orderedChilds = new TreeMap<Long, TemporalObject>();
-				Iterator<TemporalObject> iter = temporalObject.childElements();
-				while(iter.hasNext()) {
-					TemporalObject iChild = iter.next();
-					orderedChilds.put(iChild.getTemporalElement().asGeneric().getInf(), iChild);
-				}
-				int numberOfSubElements = orderedChilds.size();
-				Long iKey = orderedChilds.firstKey();
-				for(int i=0; iKey != null; i++)
-				{
-					TemporalObject iChild = orderedChilds.get(iKey);
-					iKey = orderedChilds.higherKey(iKey);
-					Rectangle subPosition = (Rectangle)position.clone();
-					if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
-						subPosition.x += position.width/numberOfSubElements*i;
-						subPosition.width = position.width/numberOfSubElements;
-					} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
-						subPosition.y += position.height/numberOfSubElements*i;
-						subPosition.height = position.height/numberOfSubElements;					
-					}			
-					if (granularityLevel >= 0)
-					{
-						int[] borderWidth = settings[granularityLevel+1].getBorderWith();
-						subPosition.x += borderWidth[0];
-						subPosition.y += borderWidth[1];
-						subPosition.width -= (borderWidth[0] + borderWidth[2]);
-						subPosition.height -= (borderWidth[1] + borderWidth[3]);
-					}
-					layoutGranularity(vg,m_vis.getVisualItem("GROOVE",iChild), subPosition, granularityLevel+1,value);
-				}
+		if(granularityLevel+1 < settings.length) {
+			Iterator<NodeItem> iChilds = node.inNeighbors();
+			TreeMap<Long,NodeItem> orderedChilds = new TreeMap<Long, NodeItem>();
+			while(iChilds.hasNext()) {
+				NodeItem iChild = iChilds.next();				
+				orderedChilds.put(((TemporalObject)iChild.getSourceTuple()).getTemporalElement().asGeneric().getInf(), iChild);
 			}
-			else
-				throw new Exception("VisualTable not built off TemporalObject instances");
+			int numberOfSubElements = orderedChilds.size();
+			Long iKey = orderedChilds.firstKey();
+			for(int i=0; iKey != null; i++)
+			{
+				NodeItem iChild = orderedChilds.get(iKey);
+				iKey = orderedChilds.higherKey(iKey);
+				Rectangle subPosition = (Rectangle)position.clone();
+				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
+					subPosition.x += position.width/numberOfSubElements*i;
+					subPosition.width = position.width/numberOfSubElements;
+				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
+					subPosition.y += position.height/numberOfSubElements*i;
+					subPosition.height = position.height/numberOfSubElements;					
+				}			
+				if (granularityLevel >= 0)
+				{
+					int[] borderWidth = settings[granularityLevel+1].getBorderWith();
+					subPosition.x += borderWidth[0];
+					subPosition.y += borderWidth[1];
+					subPosition.width -= (borderWidth[0] + borderWidth[2]);
+					subPosition.height -= (borderWidth[1] + borderWidth[3]);
+				}
+				layoutGranularity(vg,iChild, subPosition, granularityLevel+1,value);
+			}
 		}
 	}
 
