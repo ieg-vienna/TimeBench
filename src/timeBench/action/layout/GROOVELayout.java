@@ -87,9 +87,9 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setEndY(position.getMaxY());
 		node.setDOI(granularityLevel);
 		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));
-	
-		double value = node.getDouble(settings[granularityLevel].getSourceColumn());
-
+			
+		double value = node.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));
+		
 		if (granularityLevel < 0)
 			node.setVisible(false);
 		else {
