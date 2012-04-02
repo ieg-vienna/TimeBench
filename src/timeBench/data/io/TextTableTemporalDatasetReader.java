@@ -164,7 +164,7 @@ public class TextTableTemporalDatasetReader extends
                 if (logger.isDebugEnabled())
                     logger.debug("prepare data col \"" + col + "\" type "
                             + table.getColumnType(col));
-                dataElements.addColumn(col, table.getColumnType(col));
+                tmpds.addDataColumn(col, table.getColumnType(col), null);
             } else if (dataElements.getColumnType(col) != table
                     .getColumnType(col)) {
                 // column exists but wrong data type
