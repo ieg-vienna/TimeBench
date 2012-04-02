@@ -112,7 +112,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 				}
 				if(i==0) {
 					for(int j=0; j<futureBranches.size(); j++ ) {
-						aggregate(futureBranches.get(j),futureLeaves.get(j).iterator(),-1);
+						aggregate(futureBranches.get(j),futureLeaves.get(j).iterator(),granularities.length);
 					}
 				} else {
 					currentBranches = futureBranches;
@@ -137,7 +137,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			TemporalObject child = i.next();
 				aggregate(child,level+1);
 	    }
-		aggregate(parent,parent.childElements(),level-1);
+		aggregate(parent,parent.childElements(),level);
 	}
 	private void aggregate(TemporalObject parent,Iterator<TemporalObject> childs,int level) {		
 		double[] numObjects = new double[sourceDataset.getDataColumnCount()]; 
