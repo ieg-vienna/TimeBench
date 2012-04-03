@@ -23,7 +23,8 @@ public abstract class TemporalElement extends TableNode {
 
     // predefined column names for temporal elements (similar to VisualItem)
     /**
-     * the identifier data field for temporal elements.
+     * the identifier data field for temporal elements. Primary key of the
+     * temporal element table.
      */
     public static final String ID = "id";
 

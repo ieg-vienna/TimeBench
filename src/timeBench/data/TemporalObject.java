@@ -24,12 +24,14 @@ public class TemporalObject extends TableNode {
     // predefined column names for temporal objects (similar to VisualItem)
     
     /**
-     * the identifier data field for temporal objects.
+     * the identifier data field for temporal objects. Primary key of the
+     * temporal object table.
      */
     public static final String ID = "_id";
 
     /**
-     * the data field containing the identifier of the temporal element.
+     * the data field containing the identifier of the temporal element. Foreign
+     * key to the temporal element table.
      */
     public static final String TEMPORAL_ELEMENT_ID = "_temporal_id"; 
     
