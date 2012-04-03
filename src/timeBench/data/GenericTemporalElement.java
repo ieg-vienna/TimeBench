@@ -38,11 +38,11 @@ public class GenericTemporalElement extends TemporalElement {
 
     public void set(long inf, long sup, int granularityId, int granularityContextId, int kind) {
         if (isValid()) {
-            m_table.set(m_row, TemporalDataset.INF, inf);
-            m_table.set(m_row, TemporalDataset.SUP, sup);
-            m_table.set(m_row, TemporalDataset.GRANULARITY_ID, granularityId);
-            m_table.set(m_row, TemporalDataset.GRANULARITY_CONTEXT_ID, granularityContextId);
-            m_table.set(m_row, TemporalDataset.KIND, kind);
+            m_table.set(m_row, TemporalElement.INF, inf);
+            m_table.set(m_row, TemporalElement.SUP, sup);
+            m_table.set(m_row, TemporalElement.GRANULARITY_ID, granularityId);
+            m_table.set(m_row, TemporalElement.GRANULARITY_CONTEXT_ID, granularityContextId);
+            m_table.set(m_row, TemporalElement.KIND, kind);
             this.anchoredCache = null;
         }
     }
@@ -106,7 +106,7 @@ public class GenericTemporalElement extends TemporalElement {
      * @return value of the inf attribute
      */
     public long getInf() {
-        return super.getLong(TemporalDataset.INF);
+        return super.getLong(TemporalElement.INF);
     }
 
     /**
@@ -120,7 +120,7 @@ public class GenericTemporalElement extends TemporalElement {
      *            the value of the inf attribute
      */
     public void setInf(long infimum) {
-        super.setLong(TemporalDataset.INF, infimum);
+        super.setLong(TemporalElement.INF, infimum);
     }
 
     /**
@@ -130,7 +130,7 @@ public class GenericTemporalElement extends TemporalElement {
      * @return value of the sup attribute
      */
     public long getSup() {
-        return super.getLong(TemporalDataset.SUP);
+        return super.getLong(TemporalElement.SUP);
     }
 
     /**
@@ -144,7 +144,7 @@ public class GenericTemporalElement extends TemporalElement {
      *            the value of the sup attribute
      */
     public void setSup(long supremum) {
-        super.setLong(TemporalDataset.SUP, supremum);
+        super.setLong(TemporalElement.SUP, supremum);
     }
 
     /**
@@ -154,7 +154,7 @@ public class GenericTemporalElement extends TemporalElement {
      *            the granularity id
      */
     public void setGranularityId(int granularityId) {
-        super.setInt(TemporalDataset.GRANULARITY_ID, granularityId);
+        super.setInt(TemporalElement.GRANULARITY_ID, granularityId);
     }
 
     /**
@@ -165,7 +165,7 @@ public class GenericTemporalElement extends TemporalElement {
      */
     public void setKind(int kind) {
         this.anchoredCache = null;
-        super.setInt(TemporalDataset.KIND, kind);
+        super.setInt(TemporalElement.KIND, kind);
     }
 
     @Override

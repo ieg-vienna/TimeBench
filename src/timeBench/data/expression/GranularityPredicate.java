@@ -6,7 +6,6 @@ import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
 import prefuse.data.expression.NumericLiteral;
 import prefuse.data.expression.Predicate;
-import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 
 /**
@@ -34,7 +33,7 @@ public class GranularityPredicate extends AndPredicate {
     public GranularityPredicate(int granularityId) {
         super();
         super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
-                new ColumnExpression(TemporalDataset.GRANULARITY_ID),
+                new ColumnExpression(TemporalElement.GRANULARITY_ID),
                 new NumericLiteral(granularityId)));
 
         this.granularityId = granularityId;
@@ -53,7 +52,7 @@ public class GranularityPredicate extends AndPredicate {
         super();
         super.add(new GranularityContextPredicate(granularityContextId));
         super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
-                new ColumnExpression(TemporalDataset.GRANULARITY_ID),
+                new ColumnExpression(TemporalElement.GRANULARITY_ID),
                 new NumericLiteral(granularityId)));
 
         this.granularityId = granularityId;
@@ -65,12 +64,12 @@ public class GranularityPredicate extends AndPredicate {
     public boolean getBoolean(Tuple t) {
         if (contextSet) {
             int tupleContextId = t
-                    .getInt(TemporalDataset.GRANULARITY_CONTEXT_ID);
+                    .getInt(TemporalElement.GRANULARITY_CONTEXT_ID);
             if (granularityContextId != tupleContextId) {
                 return false;
             }
         }
-        int tupleGranularityId = t.getInt(TemporalDataset.GRANULARITY_ID);
+        int tupleGranularityId = t.getInt(TemporalElement.GRANULARITY_ID);
         return (granularityId == tupleGranularityId);
     }
 

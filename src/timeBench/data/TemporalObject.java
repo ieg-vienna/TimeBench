@@ -19,7 +19,20 @@ import prefuse.data.tuple.TableNode;
  */
 public class TemporalObject extends TableNode {
     
-    static Logger logger = Logger.getLogger(TemporalObject.class); 
+    static Logger logger = Logger.getLogger(TemporalObject.class);
+    
+    // predefined column names for temporal objects (similar to VisualItem)
+    
+    /**
+     * the identifier data field for temporal objects.
+     */
+    public static final String ID = "_id";
+
+    /**
+     * the data field containing the identifier of the temporal element.
+     */
+    public static final String TEMPORAL_ELEMENT_ID = "_temporal_id"; 
+    
     
     /**
      * creates an invalid TemporalObject. Use {@link TemporalDataset} as a
@@ -35,7 +48,7 @@ public class TemporalObject extends TableNode {
      * @return the id
      */
     public long getId() {
-        return super.getLong(TemporalDataset.TEMPORAL_OBJECT_ID);
+        return super.getLong(TemporalObject.ID);
     }
 
     /**
@@ -50,7 +63,7 @@ public class TemporalObject extends TableNode {
      * @return the temporal element
      */
     public GenericTemporalElement getTemporalElement() {
-        long teId = super.getLong(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID);
+        long teId = super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID);
         // the temporal object graph, is actually the temporal dataset 
         return ((TemporalDataset) m_graph).getTemporalElement(teId);
     }
@@ -105,7 +118,7 @@ public class TemporalObject extends TableNode {
     @Override
     public String toString() {
         return "TemporalObject[id=" + super.getRow() + ", temporal id="
-                + super.getLong(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID)
+                + super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID)
                 + "]";
     }
 }

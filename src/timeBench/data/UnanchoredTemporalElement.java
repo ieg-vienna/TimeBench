@@ -39,7 +39,7 @@ public class UnanchoredTemporalElement extends TemporalElement {
      */
     @Override
     public long getLength() {
-        return super.getLong(TemporalDataset.INF);
+        return super.getLong(TemporalElement.INF);
     }
 
     // TODO do we need setLength --> I don't think so

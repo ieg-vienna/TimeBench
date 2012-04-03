@@ -50,7 +50,7 @@ public class AnchoredTemporalElement extends TemporalElement implements
      */
     @Override
     public long getInf() {
-        return super.getLong(TemporalDataset.INF);
+        return super.getLong(TemporalElement.INF);
     }
 
     /**
@@ -66,7 +66,7 @@ public class AnchoredTemporalElement extends TemporalElement implements
     @Deprecated
     public void setInf(long infimum) {
         // TODO do we need setters at all?
-        super.setLong(TemporalDataset.INF, infimum);
+        super.setLong(TemporalElement.INF, infimum);
     }
 
     /*
@@ -76,7 +76,7 @@ public class AnchoredTemporalElement extends TemporalElement implements
      */
     @Override
     public long getSup() {
-        return super.getLong(TemporalDataset.SUP);
+        return super.getLong(TemporalElement.SUP);
     }
 
     /**
@@ -91,7 +91,7 @@ public class AnchoredTemporalElement extends TemporalElement implements
      */
     @Deprecated
     public void setSup(long supremum) {
-        super.setLong(TemporalDataset.SUP, supremum);
+        super.setLong(TemporalElement.SUP, supremum);
     }
 
     @Override

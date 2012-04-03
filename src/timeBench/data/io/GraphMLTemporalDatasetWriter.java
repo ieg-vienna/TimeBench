@@ -24,6 +24,7 @@ import prefuse.data.io.GraphMLWriter;
 import prefuse.util.collections.IntIterator;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -129,10 +130,10 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             edgeAtts.addAttribute(GRAPHML_NS, Tokens.TARGET, Tokens.TARGET,
                     "CDATA", "");
             writeBipartiteEdges(tmpds, edgeAtts);
-            writeGraphEdges(tmpds, TemporalDataset.TEMPORAL_OBJECT_ID,
+            writeGraphEdges(tmpds, TemporalObject.ID,
                     OBJECT_PREFIX, edgeAtts);
             writeGraphEdges(tmpds.getTemporalElements(),
-                    TemporalDataset.TEMPORAL_ELEMENT_ID, ELEMENT_PREFIX,
+                    TemporalElement.ID, ELEMENT_PREFIX,
                     edgeAtts);
 
             // *** epilogue ***
@@ -170,19 +171,19 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
                 "node");
 
         // key elements for predefined field values
-        writeGraphMLKey(TemporalDataset.INF, long.class, keyAtts);
-        writeGraphMLKey(TemporalDataset.SUP, long.class, keyAtts);
-        writeGraphMLKey(TemporalDataset.GRANULARITY_ID, int.class, keyAtts);
-        writeGraphMLKey(TemporalDataset.GRANULARITY_CONTEXT_ID, int.class,
+        writeGraphMLKey(TemporalElement.INF, long.class, keyAtts);
+        writeGraphMLKey(TemporalElement.SUP, long.class, keyAtts);
+        writeGraphMLKey(TemporalElement.GRANULARITY_ID, int.class, keyAtts);
+        writeGraphMLKey(TemporalElement.GRANULARITY_CONTEXT_ID, int.class,
                 keyAtts);
-        writeGraphMLKey(TemporalDataset.KIND, int.class, keyAtts);
+        writeGraphMLKey(TemporalElement.KIND, int.class, keyAtts);
 
         // key elements for application-specific field values
         Schema dataElements = tmpds.getNodeTable().getSchema();
         for (int i = 0; i < dataElements.getColumnCount(); i++) {
             String name = dataElements.getColumnName(i);
             // predefined columns are handled differently
-            if (!(TemporalDataset.TEMPORAL_OBJECT_ID.equals(name) || TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID
+            if (!(TemporalObject.ID.equals(name) || TemporalObject.TEMPORAL_ELEMENT_ID
                     .equals(name))) {
                 writeGraphMLKey(name, dataElements.getColumnType(i), keyAtts);
             }
@@ -207,15 +208,15 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             hd.startElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE, nodeAtts);
 
             // data elements for predefined field values
-            writeGraphMLData(TemporalDataset.INF, Long.toString(te.getInf()),
+            writeGraphMLData(TemporalElement.INF, Long.toString(te.getInf()),
                     dataAtts);
-            writeGraphMLData(TemporalDataset.SUP, Long.toString(te.getSup()),
+            writeGraphMLData(TemporalElement.SUP, Long.toString(te.getSup()),
                     dataAtts);
-            writeGraphMLData(TemporalDataset.GRANULARITY_ID,
+            writeGraphMLData(TemporalElement.GRANULARITY_ID,
                     Integer.toString(te.getGranularityId()), dataAtts);
-            writeGraphMLData(TemporalDataset.GRANULARITY_CONTEXT_ID,
+            writeGraphMLData(TemporalElement.GRANULARITY_CONTEXT_ID,
                     Integer.toString(te.getGranularityContextId()), dataAtts);
-            writeGraphMLData(TemporalDataset.KIND,
+            writeGraphMLData(TemporalElement.KIND,
                     Integer.toString(te.getKind()), dataAtts);
 
             hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
@@ -243,7 +244,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             for (int i = 0; i < tObj.getColumnCount(); i++) {
                 String name = tObj.getColumnName(i);
                 // predefined columns are handled differently
-                if (!(TemporalDataset.TEMPORAL_OBJECT_ID.equals(name) || TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID
+                if (!(TemporalObject.ID.equals(name) || TemporalObject.TEMPORAL_ELEMENT_ID
                         .equals(name))) {
                     writeGraphMLData(name, tObj.getString(i), dataAtts);
                 }

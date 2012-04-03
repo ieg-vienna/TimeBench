@@ -125,7 +125,7 @@ public class TextTableTemporalDatasetReader extends
                     // 2.1.2. if it has data columns
                     if (encoding.getDataColumns().length > 0) {
                         if (encoding.isTemporalObjectIdIncluded()) { 
-                            temporalObjectId = tuple.getLong(TemporalDataset.TEMPORAL_OBJECT_ID);
+                            temporalObjectId = tuple.getLong(TemporalObject.ID);
                         } else {
                             temporalObjectId++;
                         }
@@ -172,7 +172,7 @@ public class TextTableTemporalDatasetReader extends
                         + " already exists with a different type: is "
                         + dataElements.getColumnType(col) + " expected "
                         + table.getColumnType(col));
-            } else if (col.equals(TemporalDataset.TEMPORAL_OBJECT_TEMPORAL_ID)) {
+            } else if (col.equals(TemporalObject.TEMPORAL_ELEMENT_ID)) {
                 // try to put data in foreign key column
                 throw new TemporalDataException("Data column " + col
                         + " is reserved for TimeBench.");

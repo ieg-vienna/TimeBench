@@ -60,7 +60,7 @@ public class TemporalElementManager extends TupleManager {
 
     @Override
     protected TemporalElement newTuple(int row) {
-        int kind = m_table.getInt(row, TemporalDataset.KIND);
+        int kind = m_table.getInt(row, TemporalElement.KIND);
         TemporalElement t;
         if (generic || kind == -1)
             t = new GenericTemporalElement();
@@ -102,7 +102,7 @@ public class TemporalElementManager extends TupleManager {
     protected static boolean isAnchored(Graph g, int row) {
         // use low level functions, otherwise a tuple would be created (circular
         // dependency)
-        int kind = g.getNodeTable().getInt(row, TemporalDataset.KIND);
+        int kind = g.getNodeTable().getInt(row, TemporalElement.KIND);
         if (kind == TemporalDataset.PRIMITIVE_INSTANT
                 || kind == TemporalDataset.PRIMITIVE_INTERVAL)
             return true;
@@ -176,7 +176,7 @@ public class TemporalElementManager extends TupleManager {
 
                 // if primitive has changed, invalidate primitives
                 if (col == TemporalElementManager.this.m_table
-                        .getColumnNumber(TemporalDataset.KIND))
+                        .getColumnNumber(TemporalElement.KIND))
                     for (int r = start; r <= end; ++r) {
                         TemporalElementManager.this.invalidate(r);
                     }
@@ -190,11 +190,11 @@ public class TemporalElementManager extends TupleManager {
                     }
                 } else {
                     // relevant column deleted
-                    if (col == t.getColumnNumber(TemporalDataset.KIND)
-                            || col == t.getColumnNumber(TemporalDataset.INF)
-                            || col == t.getColumnNumber(TemporalDataset.SUP)
+                    if (col == t.getColumnNumber(TemporalElement.KIND)
+                            || col == t.getColumnNumber(TemporalElement.INF)
+                            || col == t.getColumnNumber(TemporalElement.SUP)
                             || col == t
-                                    .getColumnNumber(TemporalDataset.GRANULARITY_ID))
+                                    .getColumnNumber(TemporalElement.GRANULARITY_ID))
                         TemporalElementManager.this.invalidateAll();
                 }
                 break;

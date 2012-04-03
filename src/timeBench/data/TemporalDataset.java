@@ -77,26 +77,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     // private ieg.prefuse.data.ExtremeValueListener maximumTemporalElementId
     // = new ieg.prefuse.data.ExtremeValueListener();
 
-    // predefined column names for temporal objects
-    // TODO move constants to TemporalObject?
-    public static final String TEMPORAL_OBJECT_ID = "id";
-
-    public static final String TEMPORAL_OBJECT_TEMPORAL_ID = "temporal_id";
-
-    // predefined column names for temporal elements
-    public static final String TEMPORAL_ELEMENT_ID = "id";
-
-    // TODO move constants to TemporalElement or add a prefix?
-    public static final String INF = "inf";
-
-    public static final String SUP = "sup";
-
-    public static final String GRANULARITY_ID = "granularityID";
-
-    public static final String GRANULARITY_CONTEXT_ID = "granularityContextID";
-
-    public static final String KIND = "kind";
-
     /**
      * Constructs an empty {@link TemporalDataset}
      */
@@ -110,19 +90,19 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 this.getTemporalElementSchema());
 
         // add temporal objects columns (primary and foreign key)
-        super.addColumn(TEMPORAL_OBJECT_ID, long.class, -1);
-        super.addColumn(TEMPORAL_OBJECT_TEMPORAL_ID, long.class, -1);
+        super.addColumn(TemporalObject.ID, long.class, -1);
+        super.addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
         
         this.dataColumns = new Schema();
 
         // add indices
-        this.indexObjects = super.getNodeTable().index(TEMPORAL_OBJECT_ID);
+        this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
         this.indexObjectsByElements = super.getNodeTable().index(
-                TEMPORAL_OBJECT_TEMPORAL_ID);
+                TemporalObject.TEMPORAL_ELEMENT_ID);
         this.indexElements = this.temporalElements.getNodeTable().index(
-                TEMPORAL_ELEMENT_ID);
+                TemporalElement.ID);
 
-        // this.temporalElements.getNodeTable().getColumn(TEMPORAL_ELEMENT_ID)
+        // this.temporalElements.getNodeTable().getColumn(ID)
         // .addColumnListener(maximumTemporalElementId);
 
         initTupleManagers();
@@ -167,11 +147,11 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
             throws TemporalDataException {
         // check that schema does not interfere with primary and foreign key
         // schema.getColumnIndex(s) would build a HashMap --> less efficient
-        if (name.equals(TEMPORAL_OBJECT_ID)
-                || name.equals(TEMPORAL_OBJECT_TEMPORAL_ID)) {
+        if (name.equals(TemporalObject.ID)
+                || name.equals(TemporalObject.TEMPORAL_ELEMENT_ID)) {
             throw new TemporalDataException("The column names "
-                    + TEMPORAL_OBJECT_ID + " and "
-                    + TEMPORAL_OBJECT_TEMPORAL_ID + " are reserved.");
+                    + TemporalObject.ID + " and "
+                    + TemporalObject.TEMPORAL_ELEMENT_ID + " are reserved.");
         }
 
         super.getNodeTable().addColumn(name, type, defaultValue);
@@ -498,8 +478,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
 //                    "Temporal element id does not exist");
 
         TemporalObject object = (TemporalObject) super.addNode();
-        object.set(TEMPORAL_OBJECT_ID, temporalObjectId);
-        object.set(TEMPORAL_OBJECT_TEMPORAL_ID, temporalElementId);
+        object.set(TemporalObject.ID, temporalObjectId);
+        object.set(TemporalObject.TEMPORAL_ELEMENT_ID, temporalElementId);
         return object;
     }
     
@@ -513,7 +493,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public TemporalObject addTemporalObject(long temporalElementId)
             throws TemporalDataException {
         long id = (indexObjects.size() > 0) ? super.getNodeTable()
-                .getLong(this.indexObjects.maximum(), TEMPORAL_OBJECT_ID) + 1
+                .getLong(this.indexObjects.maximum(), TemporalObject.ID) + 1
                 : 1;
 
         return addTemporalObject(id, temporalElementId);
@@ -547,8 +527,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         }
 
         Table elements = this.temporalElements.getNodeTable();
-        Column colLo = elements.getColumn(INF);
-        Column colHi = elements.getColumn(SUP);
+        Column colLo = elements.getColumn(TemporalElement.INF);
+        Column colHi = elements.getColumn(TemporalElement.SUP);
         IntIterator rows = elements.rows(new AnchoredPredicate());
         IntervalComparator comparator = new DefaultIntervalComparator();
         indexElementIntervals = new IntervalTreeIndex(elements, rows, colLo,
@@ -591,7 +571,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     private int addTemporalElementAsRow(long inf, long sup, int granularityId,
             int granularityContextId, int kind) {
         long id = (indexElements.size() > 0) ? temporalElements.getNodeTable()
-                .getLong(this.indexElements.maximum(), TEMPORAL_ELEMENT_ID) + 1
+                .getLong(this.indexElements.maximum(), TemporalElement.ID) + 1
                 : 1;
         // long id = this.maximumTemporalElementId.getMaximum() + 1;
         return addTemporalElementAsRow(id, inf, sup, granularityId,
@@ -621,12 +601,12 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
             int granularityId, int granularityContextId, int kind) {
         Table nodeTable = temporalElements.getNodeTable();
         int row = nodeTable.addRow();
-        nodeTable.set(row, TEMPORAL_ELEMENT_ID, id);
-        nodeTable.set(row, INF, inf);
-        nodeTable.set(row, SUP, sup);
-        nodeTable.set(row, GRANULARITY_ID, granularityId);
-        nodeTable.set(row, GRANULARITY_CONTEXT_ID, granularityContextId);
-        nodeTable.set(row, KIND, kind);
+        nodeTable.set(row, TemporalElement.ID, id);
+        nodeTable.set(row, TemporalElement.INF, inf);
+        nodeTable.set(row, TemporalElement.SUP, sup);
+        nodeTable.set(row, TemporalElement.GRANULARITY_ID, granularityId);
+        nodeTable.set(row, TemporalElement.GRANULARITY_CONTEXT_ID, granularityContextId);
+        nodeTable.set(row, TemporalElement.KIND, kind);
 
         // only proxy tuple is GenericTemporalElement -> no need to invalidate
 
@@ -772,12 +752,12 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     private Schema getTemporalElementSchema() {
         Schema s = new Schema();
 
-        s.addColumn(TEMPORAL_ELEMENT_ID, long.class, -1);
-        s.addColumn(INF, long.class, Long.MIN_VALUE);
-        s.addColumn(SUP, long.class, Long.MAX_VALUE);
-        s.addColumn(GRANULARITY_ID, int.class, -1);
-        s.addColumn(GRANULARITY_CONTEXT_ID, int.class, -1);
-        s.addColumn(KIND, int.class, -1);
+        s.addColumn(TemporalElement.ID, long.class, -1);
+        s.addColumn(TemporalElement.INF, long.class, Long.MIN_VALUE);
+        s.addColumn(TemporalElement.SUP, long.class, Long.MAX_VALUE);
+        s.addColumn(TemporalElement.GRANULARITY_ID, int.class, -1);
+        s.addColumn(TemporalElement.GRANULARITY_CONTEXT_ID, int.class, -1);
+        s.addColumn(TemporalElement.KIND, int.class, -1);
 
         return s;
     }
@@ -821,13 +801,13 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public long getInf() {
         // TODO ignore unanchored temporal elements (use IntervalIndex?)
         Table elem = temporalElements.getNodeTable(); 
-        return elem.getLong(elem.getMetadata(INF).getMinimumRow(), INF);
+        return elem.getLong(elem.getMetadata(TemporalElement.INF).getMinimumRow(), TemporalElement.INF);
     }
 
     @Override
     public long getSup() {
         // TODO ignore unanchored temporal elements (use IntervalIndex?)
         Table elem = temporalElements.getNodeTable(); 
-        return elem.getLong(elem.getMetadata(SUP).getMaximumRow(), SUP);
+        return elem.getLong(elem.getMetadata(TemporalElement.SUP).getMaximumRow(), TemporalElement.SUP);
     }
 }

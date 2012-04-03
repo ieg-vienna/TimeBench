@@ -44,14 +44,14 @@ public class KindPredicate extends ComparisonPredicate {
      */
     public KindPredicate(int kind) {
         super(ComparisonPredicate.EQ,
-                new ColumnExpression(TemporalDataset.KIND), new NumericLiteral(
+                new ColumnExpression(TemporalElement.KIND), new NumericLiteral(
                         kind));
         this.kind = kind;
     }
 
     @Override
     public boolean getBoolean(Tuple t) {
-        int tupleKind = t.getInt(TemporalDataset.KIND);
+        int tupleKind = t.getInt(TemporalElement.KIND);
         return (kind == tupleKind);
     }
 

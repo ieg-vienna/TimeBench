@@ -21,6 +21,38 @@ import prefuse.data.tuple.TableNode;
  */
 public abstract class TemporalElement extends TableNode {
 
+    // predefined column names for temporal elements (similar to VisualItem)
+    /**
+     * the identifier data field for temporal elements.
+     */
+    public static final String ID = "id";
+
+    /**
+     * the &quot;inf&quot; data field for temporal elements.
+     */
+    public static final String INF = "inf";
+
+    /**
+     * the &quot;sup&quot; data field for temporal elements.
+     */
+    public static final String SUP = "sup";
+
+    /**
+     * the &quot;granularity id&quot; data field for temporal elements.
+     */
+    public static final String GRANULARITY_ID = "granularityID";
+
+    /**
+     * the &quot;granularity context id&quot; data field for temporal elements.
+     */
+    public static final String GRANULARITY_CONTEXT_ID = "granularityContextID";
+
+    /**
+     * the &quot;kind&quot; data field for temporal elements.
+     */
+    public static final String KIND = "kind";
+
+    
     /**
      * the backing temporal data set
      */
@@ -110,7 +142,7 @@ public abstract class TemporalElement extends TableNode {
      * @return the id
      */
     public long getId() {
-        return super.getLong(TemporalDataset.TEMPORAL_ELEMENT_ID);
+        return super.getLong(TemporalElement.ID);
     }
     
     /**
@@ -119,7 +151,7 @@ public abstract class TemporalElement extends TableNode {
      * @return the granularity id
      */
     public int getGranularityId() {
-        return super.getInt(TemporalDataset.GRANULARITY_ID);
+        return super.getInt(TemporalElement.GRANULARITY_ID);
     }
     
     /**
@@ -128,7 +160,7 @@ public abstract class TemporalElement extends TableNode {
      * @return the granularity context id
      */
     public int getGranularityContextId() {
-        return super.getInt(TemporalDataset.GRANULARITY_CONTEXT_ID);
+        return super.getInt(TemporalElement.GRANULARITY_CONTEXT_ID);
     }
 
     /**
@@ -138,7 +170,7 @@ public abstract class TemporalElement extends TableNode {
      * @return the kind of temporal element
      */
     public int getKind() {
-        return super.getInt(TemporalDataset.KIND);
+        return super.getInt(TemporalElement.KIND);
     }
     
     /**
@@ -219,8 +251,8 @@ public abstract class TemporalElement extends TableNode {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[id=" + getId() + ", inf="
-                + super.getLong(TemporalDataset.INF) + ", sup="
-                + super.getLong(TemporalDataset.SUP) + ", granularityId="
+                + super.getLong(TemporalElement.INF) + ", sup="
+                + super.getLong(TemporalElement.SUP) + ", granularityId="
                 + getGranularityId() + ", granularityContextId="
                 + getGranularityContextId() + ", kind=" + getKind() + "]";
     }

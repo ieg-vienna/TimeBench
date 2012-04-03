@@ -18,6 +18,7 @@ import timeBench.calendar.Granularity;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalObject;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class TemporalObjectEncoding {
@@ -64,7 +65,7 @@ public abstract class TemporalObjectEncoding {
             this.granularity = new Granularity(calendar, granularityId, granularityContextId);
         
         this.temporalObjectIdIncluded = ArrayUtils.contains(this.dataColumns, 
-                TemporalDataset.TEMPORAL_OBJECT_ID);
+                TemporalObject.ID);
     }
 
     public abstract void buildTemporalElement(TemporalDataset tmpds,
