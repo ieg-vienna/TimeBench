@@ -1,22 +1,26 @@
 package timeBench.data.expression;
 
 import prefuse.data.Tuple;
-import prefuse.data.expression.AbstractPredicate;
+import prefuse.data.expression.ColumnExpression;
+import prefuse.data.expression.ComparisonPredicate;
+import prefuse.data.expression.Expression;
+import prefuse.data.expression.NumericLiteral;
 import prefuse.data.expression.Predicate;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.relational.TemporalElement;
 
 /**
  * Predicate that indicates if a {@link TemporalElement} is of a certain kind.
+ * It extends {@link ComparisonPredicate} to use index optimizations in
+ * {@link prefuse.data.util.FilterIteratorFactory}.
  * 
  * @author Rind
  */
-public class KindPredicate extends AbstractPredicate {
+public class KindPredicate extends ComparisonPredicate {
 
-    // TODO extend ComparionPredicate to use optimizations in FilterIteratorFactory#getComparisonIterator(...), also needs an index on kind
     // TODO support TemporalObject
-    // XXX extend ColumnExpression so that ExpressionAnalyzer#hasDependency() works?  
-    
+    // TODO extend Function and register at FunctionTable
+
     /** convenience instance for instants. */
     public static final Predicate INSTANT = new KindPredicate(
             TemporalDataset.PRIMITIVE_INSTANT);
@@ -39,6 +43,9 @@ public class KindPredicate extends AbstractPredicate {
      *            the kind code to match by this predicate
      */
     public KindPredicate(int kind) {
+        super(ComparisonPredicate.EQ,
+                new ColumnExpression(TemporalDataset.KIND), new NumericLiteral(
+                        kind));
         this.kind = kind;
     }
 
@@ -46,5 +53,15 @@ public class KindPredicate extends AbstractPredicate {
     public boolean getBoolean(Tuple t) {
         int tupleKind = t.getInt(TemporalDataset.KIND);
         return (kind == tupleKind);
+    }
+
+    @Override
+    public void setLeftExpression(Expression e) {
+        throw new UnsupportedOperationException("readonly");
+    }
+
+    @Override
+    public void setRightExpression(Expression e) {
+        throw new UnsupportedOperationException("readonly");
     }
 }

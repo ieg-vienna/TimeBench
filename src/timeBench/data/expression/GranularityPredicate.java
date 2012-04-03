@@ -1,7 +1,11 @@
 package timeBench.data.expression;
 
 import prefuse.data.Tuple;
-import prefuse.data.expression.AbstractPredicate;
+import prefuse.data.expression.AndPredicate;
+import prefuse.data.expression.ColumnExpression;
+import prefuse.data.expression.ComparisonPredicate;
+import prefuse.data.expression.NumericLiteral;
+import prefuse.data.expression.Predicate;
 import timeBench.data.relational.TemporalDataset;
 import timeBench.data.relational.TemporalElement;
 
@@ -11,10 +15,8 @@ import timeBench.data.relational.TemporalElement;
  * 
  * @author Rind
  */
-public class GranularityPredicate extends AbstractPredicate {
+public class GranularityPredicate extends AndPredicate {
 
-    // XXX extend ColumnExpression so that ExpressionAnalyzer#hasDependency() works?
-    
     private int granularityId;
     private int granularityContextId;
 
@@ -22,8 +24,6 @@ public class GranularityPredicate extends AbstractPredicate {
      * if granularity context is not set, we do not check it
      */
     private boolean contextSet;
-    
-    // TODO if we need to check granularity context only --> separate class
 
     /**
      * create a new GranularityPredicate. Ignores granularity context.
@@ -32,6 +32,11 @@ public class GranularityPredicate extends AbstractPredicate {
      *            the granularity id to match by this predicate
      */
     public GranularityPredicate(int granularityId) {
+        super();
+        super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
+                new ColumnExpression(TemporalDataset.GRANULARITY_ID),
+                new NumericLiteral(granularityId)));
+
         this.granularityId = granularityId;
         this.contextSet = false;
     }
@@ -45,6 +50,12 @@ public class GranularityPredicate extends AbstractPredicate {
      *            the granularity context id to match by this predicate
      */
     public GranularityPredicate(int granularityId, int granularityContextId) {
+        super();
+        super.add(new GranularityContextPredicate(granularityContextId));
+        super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
+                new ColumnExpression(TemporalDataset.GRANULARITY_ID),
+                new NumericLiteral(granularityId)));
+
         this.granularityId = granularityId;
         this.granularityContextId = granularityContextId;
         this.contextSet = true;
@@ -61,5 +72,41 @@ public class GranularityPredicate extends AbstractPredicate {
         }
         int tupleGranularityId = t.getInt(TemporalDataset.GRANULARITY_ID);
         return (granularityId == tupleGranularityId);
+    }
+
+    @Override
+    public Predicate getSubPredicate(Predicate p) {
+        for (int i = 0; i < m_clauses.size(); ++i) {
+            Predicate pp = (Predicate) m_clauses.get(i);
+            if (p != pp) {
+                return pp;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void add(Predicate p) {
+        throw new UnsupportedOperationException("readonly");
+    }
+
+    @Override
+    public boolean remove(Predicate p) {
+        throw new UnsupportedOperationException("readonly");
+    }
+
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("readonly");
+    }
+
+    @Override
+    public void set(Predicate p) {
+        throw new UnsupportedOperationException("readonly");
+    }
+
+    @Override
+    public void set(Predicate[] p) {
+        throw new UnsupportedOperationException("readonly");
     }
 }
