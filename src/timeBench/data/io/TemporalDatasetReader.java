@@ -8,7 +8,7 @@ import java.net.URL;
 
 import prefuse.data.io.DataIOException;
 import timeBench.data.TemporalDataException;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 /**
  * interface for classes that read in a temporal dataset from a particular file

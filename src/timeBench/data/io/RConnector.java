@@ -21,8 +21,9 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
-import timeBench.data.relational.TemporalElement;
-import timeBench.data.relational.TemporalObject;
+import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElement;
+import timeBench.data.TemporalObject;
 
 /**
  * XXX Should we (a) encapsulate REngine or (b) provide some static helper methods?
@@ -73,7 +74,7 @@ public class RConnector {
         return x.asDouble();
     }
 
-    public timeBench.data.relational.TemporalDataset getTemporalDataset(
+    public TemporalDataset getTemporalDataset(
             String name) throws REngineException, REXPMismatchException,
             TemporalDataException {
         // check R class
@@ -126,7 +127,7 @@ public class RConnector {
             }
 
             // relational
-            timeBench.data.relational.TemporalDataset tmpds = new timeBench.data.relational.TemporalDataset();
+            TemporalDataset tmpds = new timeBench.data.TemporalDataset();
             tmpds.addDataColumn(name, double.class, null);
 
             // time indices are only used in log file to check our code
@@ -160,7 +161,7 @@ public class RConnector {
                         sup,
                         granularityId,
                         granularityContextId,
-                        timeBench.data.relational.TemporalDataset.PRIMITIVE_INTERVAL);
+                        TemporalDataset.PRIMITIVE_INTERVAL);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
             }
@@ -183,7 +184,7 @@ public class RConnector {
             int granularityId = calM.getBottomGranularityIdentifier();
 
             // relational
-            timeBench.data.relational.TemporalDataset tmpds = new timeBench.data.relational.TemporalDataset();
+            TemporalDataset tmpds = new timeBench.data.TemporalDataset();
             tmpds.addDataColumn(name, double.class, null);
 
             // time indices are only used in log file to check our code
@@ -204,7 +205,7 @@ public class RConnector {
                         inf,
                         granularityId,
                         granularityContextId,
-                        timeBench.data.relational.TemporalDataset.PRIMITIVE_INSTANT);
+                        TemporalDataset.PRIMITIVE_INSTANT);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
             }
@@ -216,7 +217,7 @@ public class RConnector {
     }
 
     public void putTemporalDataset(String name,
-            timeBench.data.relational.TemporalDataset tmpds, String dataField)
+            TemporalDataset tmpds, String dataField)
             throws TemporalDataException, REngineException {
         double[] time = new double[tmpds.getTemporalObjectCount()];
         double[] data = new double[tmpds.getTemporalObjectCount()];
@@ -264,7 +265,7 @@ public class RConnector {
     }
 
     public void putTemporalDataset(String name,
-            timeBench.data.relational.TemporalDataset tmpds, String dataField,
+            TemporalDataset tmpds, String dataField,
             int startYear, int startMonth, double frequency, int length)
             throws REngineException {
         double[] data = new double[length];

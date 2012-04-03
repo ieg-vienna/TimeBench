@@ -5,9 +5,9 @@ import java.util.Map;
 
 import prefuse.data.Tuple;
 import timeBench.calendar.Granule;
+import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
-import timeBench.data.relational.GenericTemporalElement;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 public abstract class InstantEncoding extends TemporalObjectEncoding {
 

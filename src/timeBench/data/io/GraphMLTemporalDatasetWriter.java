@@ -22,9 +22,9 @@ import prefuse.data.Schema;
 import prefuse.data.io.DataIOException;
 import prefuse.data.io.GraphMLWriter;
 import prefuse.util.collections.IntIterator;
-import timeBench.data.relational.GenericTemporalElement;
-import timeBench.data.relational.TemporalDataset;
-import timeBench.data.relational.TemporalObject;
+import timeBench.data.GenericTemporalElement;
+import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalObject;
 
 /**
  * writes a {@link TemporalDataset} to XML using the GraphML language. It is

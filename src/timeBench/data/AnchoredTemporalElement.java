@@ -1,6 +1,5 @@
-package timeBench.data.relational;
+package timeBench.data;
 
-import timeBench.data.Lifespan;
 
 /**
  * Anchored temporal element in the relational view. Following the

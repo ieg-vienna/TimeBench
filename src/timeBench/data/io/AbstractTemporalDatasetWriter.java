@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import prefuse.data.io.DataIOException;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 /**
  * Abstract base class implementation of the TemporalDatasetWriter interface.

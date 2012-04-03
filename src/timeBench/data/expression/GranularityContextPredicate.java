@@ -5,8 +5,8 @@ import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
 import prefuse.data.expression.Expression;
 import prefuse.data.expression.NumericLiteral;
-import timeBench.data.relational.TemporalDataset;
-import timeBench.data.relational.TemporalElement;
+import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElement;
 
 /**
  * Predicate that indicates if a {@link TemporalElement} is of a certain context

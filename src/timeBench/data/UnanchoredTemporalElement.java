@@ -1,4 +1,5 @@
-package timeBench.data.relational;
+package timeBench.data;
+
 
 /**
  * Unanchored temporal element in the relational view. Following the

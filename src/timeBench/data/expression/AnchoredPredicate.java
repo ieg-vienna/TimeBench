@@ -2,8 +2,8 @@ package timeBench.data.expression;
 
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractPredicate;
-import timeBench.data.relational.TemporalElement;
-import timeBench.data.relational.TemporalObject;
+import timeBench.data.TemporalElement;
+import timeBench.data.TemporalObject;
 
 /**
  * Expression that indicates if a {@link TemporalObject} or

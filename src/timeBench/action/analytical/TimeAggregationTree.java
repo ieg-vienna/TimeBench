@@ -10,13 +10,13 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
+import timeBench.data.AnchoredTemporalElement;
+import timeBench.data.GenericTemporalElement;
+import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
-import timeBench.data.relational.AnchoredTemporalElement;
-import timeBench.data.relational.GenericTemporalElement;
-import timeBench.data.relational.Instant;
-import timeBench.data.relational.TemporalDataset;
-import timeBench.data.relational.TemporalDatasetProvider;
-import timeBench.data.relational.TemporalObject;
+import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalDatasetProvider;
+import timeBench.data.TemporalObject;
 
 /**
  * 
@@ -30,8 +30,8 @@ import timeBench.data.relational.TemporalObject;
  *
  */
 public class TimeAggregationTree extends prefuse.action.Action implements TemporalDatasetProvider, MinMaxValuesProvider {
-	timeBench.data.relational.TemporalDataset sourceDataset;
-	timeBench.data.relational.TemporalDataset workingDataset;
+	TemporalDataset sourceDataset;
+	TemporalDataset workingDataset;
 	CalendarManager calendarManager;
 	Granularity[] granularities;	
 	double[][] minValues;
@@ -43,7 +43,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	 * @param temporalDataset
 	 * @param columnsUsed 
 	 */
-	public TimeAggregationTree(timeBench.data.relational.TemporalDataset sourceDataset, CalendarManagers calendarManager,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
+	public TimeAggregationTree(TemporalDataset sourceDataset, CalendarManagers calendarManager,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
 		this.sourceDataset = sourceDataset;
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		this.granularities = new Granularity[granularities.length];
@@ -175,7 +175,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	 * @see timeBench.data.relational.TemporalDatasetProvider#getTemporalDataset()
 	 */
 	@Override
-	public timeBench.data.relational.TemporalDataset getTemporalDataset() {
+	public TemporalDataset getTemporalDataset() {
 		return workingDataset;
 	}
 

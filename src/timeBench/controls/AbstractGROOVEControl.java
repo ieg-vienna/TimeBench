@@ -11,8 +11,8 @@ import prefuse.action.ActionList;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
-import timeBench.data.relational.TemporalDataset;
-import timeBench.data.relational.TemporalObject;
+import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalObject;
 
 public class AbstractGROOVEControl extends prefuse.controls.ControlAdapter {	
 	private ArrayList<TemporalObject> brushedObjects;

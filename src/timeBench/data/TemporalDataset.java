@@ -1,4 +1,4 @@
-package timeBench.data.relational;
+package timeBench.data;
 
 import java.util.Iterator;
 
@@ -12,8 +12,6 @@ import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
-import timeBench.data.Lifespan;
-import timeBench.data.TemporalDataException;
 import timeBench.data.expression.AnchoredPredicate;
 import timeBench.data.util.DefaultIntervalComparator;
 import timeBench.data.util.IntervalComparator;
@@ -402,6 +400,9 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public Iterator<TemporalObject> temporalObjects() {
         return super.nodes();
     }
+//    public Iterable<TemporalObject> temporalObjects() {
+//        return new ieg.util.lang.CustomIterable(super.nodes());
+//    }
     
     // TODO iterators with predicate
 

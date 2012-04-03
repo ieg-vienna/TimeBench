@@ -1,4 +1,4 @@
-package timeBench.data.relational;
+package timeBench.data;
 
 import prefuse.data.Graph;
 import prefuse.data.Table;

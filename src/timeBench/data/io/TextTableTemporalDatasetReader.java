@@ -14,13 +14,13 @@ import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
+import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
+import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalObject;
 import timeBench.data.io.schema.DateInstantEncoding;
 import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.data.io.schema.TemporalObjectEncoding;
-import timeBench.data.relational.TemporalDataset;
-import timeBench.data.relational.GenericTemporalElement;
-import timeBench.data.relational.TemporalObject;
 
 public class TextTableTemporalDatasetReader extends
         AbstractTemporalDatasetReader {

@@ -15,9 +15,9 @@ import org.apache.log4j.Logger;
 import prefuse.data.Tuple;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.Granularity;
+import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
-import timeBench.data.relational.GenericTemporalElement;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class TemporalObjectEncoding {

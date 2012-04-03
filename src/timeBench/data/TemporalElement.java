@@ -1,4 +1,4 @@
-package timeBench.data.relational;
+package timeBench.data;
 
 import java.util.Iterator;
 

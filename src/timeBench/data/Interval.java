@@ -1,4 +1,5 @@
-package timeBench.data.relational;
+package timeBench.data;
+
 
 /**
  * Interval in the relational view. Following the <em>proxy tuple</em> pattern

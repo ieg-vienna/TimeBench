@@ -17,8 +17,8 @@ import timeBench.action.analytical.MinMaxValuesProvider;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
-import timeBench.data.relational.TemporalDatasetProvider;
-import timeBench.data.relational.TemporalObject;
+import timeBench.data.TemporalDatasetProvider;
+import timeBench.data.TemporalObject;
 
 /**
  * 

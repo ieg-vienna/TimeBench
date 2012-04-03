@@ -1,7 +1,8 @@
-package timeBench.data.relational;
+package timeBench.data;
 
 import java.util.Collections;
 import java.util.Iterator;
+
 
 /**
  * Instant in the relational view. Following the

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.OutputStream;
 
 import prefuse.data.io.DataIOException;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 /**
  * interface for classes that write a temporal dataset to a particular file

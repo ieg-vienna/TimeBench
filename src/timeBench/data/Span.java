@@ -1,7 +1,8 @@
-package timeBench.data.relational;
+package timeBench.data;
 
 import java.util.Collections;
 import java.util.Iterator;
+
 
 /**
  * Span in the relational view. Following the <em>proxy tuple</em> pattern [Heer

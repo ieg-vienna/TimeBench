@@ -7,7 +7,7 @@ import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.io.DataIOException;
 import prefuse.data.io.GraphMLReader;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 /**
  * TemporalDatasetReader implementation that reads in temporal data formatted

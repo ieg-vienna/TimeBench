@@ -1,4 +1,5 @@
-package timeBench.data.relational;
+package timeBench.data;
+
 
 /**
  * Any class can have this interface in order to provide the getTemporalDataset()

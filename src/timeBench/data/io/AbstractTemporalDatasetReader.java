@@ -10,7 +10,7 @@ import java.net.URL;
 import prefuse.data.io.DataIOException;
 import prefuse.util.io.IOLib;
 import timeBench.data.TemporalDataException;
-import timeBench.data.relational.TemporalDataset;
+import timeBench.data.TemporalDataset;
 
 /**
  * Abstract base class implementation of the TemporalDatasetReader interface. Provides
