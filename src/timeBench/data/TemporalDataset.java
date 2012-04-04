@@ -634,7 +634,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      */
     public GenericTemporalElement addTemporalElement(long id, long inf,
             long sup, int granularityId, int granularityContextId, int kind) {
-        int row = addTemporalElementAsRow(inf, sup, granularityId,
+        int row = addTemporalElementAsRow(id, inf, sup, granularityId,
                 granularityContextId, kind);
         return (GenericTemporalElement) this.temporalGenerics.getTuple(row);
 
