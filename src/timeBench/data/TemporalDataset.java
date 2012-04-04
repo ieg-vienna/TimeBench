@@ -265,14 +265,17 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     /**
-     * Get the TemporalElement instance corresponding to its id.
+     * Get the TemporalElement instance corresponding to its id, or
+     * <tt>null</tt> if this dataset contains no element for the id.
      * 
      * @param id
      *            element id
-     * @return the TemporalElement instance corresponding to the element id
+     * @return the TemporalElement instance corresponding to the element id, or
+     *         <tt>null</tt> if this dataset contains no element for the id.
      */
     public GenericTemporalElement getTemporalElement(long id) {
-        return getTemporalElementByRow(this.indexElements.get(id));
+        int row = this.indexElements.get(id);
+        return (row == Integer.MIN_VALUE) ? null : getTemporalElementByRow(row);
     }
 
     /**
@@ -287,14 +290,18 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     /**
-     * Get the temporal primitive corresponding to its id.
+     * Get the temporal primitive corresponding to its id, or <tt>null</tt> if
+     * this dataset contains no primitive for the id.
      * 
      * @param n
      *            element id
-     * @return the temporal primitive corresponding to the element id
+     * @return the temporal primitive corresponding to the element id, or
+     *         <tt>null</tt> if this dataset contains no primitive for the id.
      */
     public TemporalElement getTemporalPrimitive(long id) {
-        return getTemporalPrimitiveByRow(this.indexElements.get(id));
+        int row = this.indexElements.get(id);
+        return (row == Integer.MIN_VALUE) ? null
+                : getTemporalPrimitiveByRow(row);
     }
 
     /**
@@ -393,15 +400,18 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     /**
-     * Get the {@link TemporalObject} instance corresponding to its id.
+     * Get the {@link TemporalObject} instance corresponding to its id, or
+     * <tt>null</tt> if this dataset contains no object for the id.
      * 
      * @param id
      *            object id
-     * @return the TemporalObject instance corresponding to the object id
+     * @return the TemporalObject instance corresponding to the object id, or
+     *         <tt>null</tt> if this dataset contains no object for the id.
      */
     public TemporalObject getTemporalObject(long id) {
         int row = this.indexObjects.get(id);
-        return (TemporalObject) super.getNode(row);
+        return (row == Integer.MIN_VALUE) ? null : 
+            (TemporalObject) super.getNode(row);
     }
 
     /**
