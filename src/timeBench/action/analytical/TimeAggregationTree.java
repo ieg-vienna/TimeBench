@@ -1,8 +1,6 @@
 package timeBench.action.analytical;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 import timeBench.calendar.CalendarManager;
@@ -10,7 +8,6 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
@@ -133,11 +130,10 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 
 	private void aggregate(TemporalObject parent,int level) {
-		for(Iterator<TemporalObject> i = parent.childElements(); i.hasNext(); ) {
-			TemporalObject child = i.next();
+	    for (TemporalObject child : parent.childObjects()) {
 				aggregate(child,level+1);
 	    }
-		aggregate(parent,parent.childElements(),level);
+		aggregate(parent,parent.childObjects().iterator(),level);
 	}
 	private void aggregate(TemporalObject parent,Iterator<TemporalObject> childs,int level) {		
 		double[] numObjects = new double[sourceDataset.getDataColumnCount()]; 
@@ -147,8 +143,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			totalValue[i] = 0;
 		}
 
-		for(Iterator<TemporalObject> i = parent.childElements(); i.hasNext(); ) {
-			TemporalObject temporalObject = i.next();
+        for (TemporalObject temporalObject : parent.childObjects()) {
 			for(int j=0; j<sourceDataset.getDataColumnCount(); j++) {
 				if(sourceDataset.getDataColumn(j).canGetDouble()) {
 					double value = temporalObject.getDouble(j);

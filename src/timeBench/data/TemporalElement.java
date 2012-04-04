@@ -1,6 +1,6 @@
 package timeBench.data;
 
-import java.util.Iterator;
+import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
 import prefuse.data.Table;
@@ -198,7 +198,7 @@ public abstract class TemporalElement extends TableNode {
      * 
      * @return temporal objects occurring with the temporal element
      */
-    public Iterator<TemporalObject> temporalObjects() {
+    public Iterable<TemporalObject> temporalObjects() {
         return this.tmpds.getTemporalObjectsByElementId(getId());
     }
     
@@ -209,8 +209,8 @@ public abstract class TemporalElement extends TableNode {
      * @return an iterator over parents
      */
     @SuppressWarnings("unchecked")
-    public Iterator<TemporalElement> parentElements() {
-        return super.outNeighbors();
+    public Iterable<GenericTemporalElement> parentElements() {
+        return new CustomIterable(super.outNeighbors());
     }
 
     /**
@@ -229,8 +229,8 @@ public abstract class TemporalElement extends TableNode {
      * @return an iterator over children
      */
     @SuppressWarnings("unchecked")
-    public Iterator<TemporalElement> childElements() {
-        return super.inNeighbors();
+    public Iterable<GenericTemporalElement> childElements() {
+        return new CustomIterable(super.inNeighbors());
     }
 
     /**

@@ -1,6 +1,6 @@
 package timeBench.data;
 
-import java.util.Iterator;
+import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
 import prefuse.data.Schema;
@@ -49,17 +49,17 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     private TemporalElementManager temporalGenerics;
 
     /**
-     * index for {@link TemporalObject} row numbers by ID. 
+     * index for {@link TemporalObject} row numbers by {@link TemporalObject#ID}. 
      */
     private Index indexObjects;
 
     /**
-     * index for {@link TemporalElement} row numbers by ID. 
+     * index for {@link TemporalElement} row numbers by {@link TemporalElement#ID}. 
      */
     private Index indexElements;
 
     /**
-     * index for {@link TemporalObject} row numbers by {@link TemporalElement} ID. 
+     * index for {@link TemporalObject} row numbers by {@link TemporalElement#ID}. 
      */
     private Index indexObjectsByElements;
     
@@ -69,14 +69,11 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      */
     private IntervalIndex indexElementIntervals = null;
     
+    /**
+     * additional data fields of {@link TemporalObject}s.
+     */
     private Schema dataColumns;
     
-    // /**
-    // * largest id assigned to an temporal element in this dataset
-    // */
-    // private ieg.prefuse.data.ExtremeValueListener maximumTemporalElementId
-    // = new ieg.prefuse.data.ExtremeValueListener();
-
     /**
      * Constructs an empty {@link TemporalDataset}
      */
@@ -101,9 +98,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 TemporalObject.TEMPORAL_ELEMENT_ID);
         this.indexElements = this.temporalElements.getNodeTable().index(
                 TemporalElement.ID);
-
-        // this.temporalElements.getNodeTable().getColumn(ID)
-        // .addColumnListener(maximumTemporalElementId);
 
         initTupleManagers();
     }
@@ -136,7 +130,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * @param type
      *            the data type, as a Java Class, for the column
      * @param defaultValue
-     *            the default value for column data values
+     *            the default value for column data values or <tt>null</tt>
      * @throws TemporalDataException
      *             if a reserved column name was passed
      * @see prefuse.data.tuple.TupleSet#addColumn(java.lang.String,
@@ -149,9 +143,9 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         // schema.getColumnIndex(s) would build a HashMap --> less efficient
         if (name.equals(TemporalObject.ID)
                 || name.equals(TemporalObject.TEMPORAL_ELEMENT_ID)) {
-            throw new TemporalDataException("The column names "
-                    + TemporalObject.ID + " and "
-                    + TemporalObject.TEMPORAL_ELEMENT_ID + " are reserved.");
+            throw new TemporalDataException("The column names \""
+                    + TemporalObject.ID + "\" and \""
+                    + TemporalObject.TEMPORAL_ELEMENT_ID + "\" are reserved.");
         }
 
         super.getNodeTable().addColumn(name, type, defaultValue);
@@ -238,16 +232,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         this.roots = roots;
     }
 
-    /**
-     * Gets the data elements in the dataset
-     * 
-     * @return a {@link Table} containing the data elements
-     */
-    @Deprecated
-    public Table getDataElements() {
-        return super.getNodeTable();
-    }
-
     // ----- TEMPORAL ELEMENT ACCESSORS -----
 
     /**
@@ -316,13 +300,14 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     /**
      * Get an iterator over all temporal elements in the temporal dataset.
      * 
-     * @return an iterator over TemporalElement instances
+     * @return an object, which provides an iterator over TemporalElement
+     *         instances
      */
     @SuppressWarnings("unchecked")
-    public Iterator<GenericTemporalElement> temporalElements() {
-        return temporalElements.nodes();
+    public Iterable<GenericTemporalElement> temporalElements() {
+        return new CustomIterable(temporalElements.nodes());
     }
-    
+
     /**
      * Get an iterator over {@link TemporalElement}s in the temporal dataset,
      * filtered by the given predicate.
@@ -331,32 +316,42 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      *            predicate to apply to tuples in this set, only tuples for
      *            which the predicate evaluates to true are included in the
      *            iteration
-     * @return an iterator over TemporalElement instances
+     * @return an object, which provides an iterator over TemporalElement
+     *         instances
      */
     @SuppressWarnings("unchecked")
-    public Iterator<GenericTemporalElement> temporalElements(Predicate filter) {
-        return temporalElements.getNodeTable().tuples(filter);
-    }
-
-    /**
-     * allows iteration over all temporal elements.
-     * 
-     * @return an object, which provides an iterator
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public Iterable<TemporalElement> temporalElementsIterable() {
-        return new ieg.util.lang.CustomIterable(temporalElements.nodes());
+    public Iterable<GenericTemporalElement> temporalElements(Predicate filter) {
+        return new CustomIterable(temporalElements.getNodeTable()
+                .tuples(filter));
     }
 
     /**
      * Get an iterator over all temporal primitives in the temporal dataset.
      * 
-     * @return an iterator over TemporalElement instances
+     * @return an object, which provides an iterator over TemporalElement
+     *         instances
      */
     @SuppressWarnings("unchecked")
-    public Iterator<TemporalElement> temporalPrimitives() {
-        return this.temporalPrimitives.iterator(temporalElements.nodeRows());
+    public Iterable<TemporalElement> temporalPrimitives() {
+        return new CustomIterable(temporalPrimitives.iterator(temporalElements
+                .nodeRows()));
+    }
+
+    /**
+     * Get an iterator over temporal primitives in the temporal dataset,
+     * filtered by the given predicate.
+     * 
+     * @param filter
+     *            predicate to apply to tuples in this set, only tuples for
+     *            which the predicate evaluates to true are included in the
+     *            iteration
+     * @return an object, which provides an iterator over TemporalElement
+     *         instances
+     */
+    @SuppressWarnings("unchecked")
+    public Iterable<GenericTemporalElement> temporalPrimitives(Predicate filter) {
+        IntIterator iit = temporalElements.getNodeTable().rows(filter);
+        return new CustomIterable(temporalPrimitives.iterator(iit));
     }
 
     // ----- TEMPORAL OBJECT ACCESSORS -----
@@ -371,23 +366,34 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     /**
-     * Get an iterator over all temporal objects in the temporal dataset. The
-     * temporal object is a proxy tuple for a row in the occurrences table.
+     * Get an iterator over all {@link TemporalObject}s in the temporal dataset.
      * 
-     * @return an iterator over TemporalObject instances
+     * @return an object, which provides an iterator over TemporalObject
+     *         instances
      */
     @SuppressWarnings("unchecked")
-    public Iterator<TemporalObject> temporalObjects() {
-        return super.nodes();
+    public Iterable<TemporalObject> temporalObjects() {
+        return new CustomIterable(super.nodes());
     }
-//    public Iterable<TemporalObject> temporalObjects() {
-//        return new ieg.util.lang.CustomIterable(super.nodes());
-//    }
-    
-    // TODO iterators with predicate
 
     /**
-     * Get the TemporalObject instance corresponding to its id.
+     * Get an iterator over {@link TemporalObject}s in the temporal dataset,
+     * filtered by the given predicate.
+     * 
+     * @param filter
+     *            predicate to apply to tuples in this set, only tuples for
+     *            which the predicate evaluates to true are included in the
+     *            iteration
+     * @return an object, which provides an iterator over TemporalObject
+     *         instances
+     */
+    @SuppressWarnings("unchecked")
+    public Iterable<TemporalObject> temporalObjects(Predicate filter) {
+        return new CustomIterable(super.getNodeTable().tuples(filter));
+    }
+
+    /**
+     * Get the {@link TemporalObject} instance corresponding to its id.
      * 
      * @param id
      *            object id
@@ -399,18 +405,19 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     }
 
     /**
-     * Get an iterator over all temporal objects occurring with the given
+     * Get an iterator over all {@link TemporalObject}s occurring with the given
      * temporal element.
      * 
      * @param temporalId
      *            temporal element id
-     * @return temporal objects occurring with the temporal element
+     * @return an object, which provides an iterator over temporal objects
+     *         occurring with the temporal element
      */
     @SuppressWarnings("unchecked")
-    public Iterator<TemporalObject> getTemporalObjectsByElementId(
+    public Iterable<TemporalObject> getTemporalObjectsByElementId(
             long temporalId) {
         IntIterator rows = this.indexObjectsByElements.rows(temporalId);
-        return super.getNodeTable().tuples(rows);
+        return new CustomIterable(super.getNodeTable().tuples(rows));
     }
 
     /**
@@ -420,57 +427,23 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * 
      *         TL 2011-11-07: not deprecated because needed to generate
      *         VisualTable
+     *         AR 2012-04-03: renamed to getTemporalObjectTable()
      */
-    @Deprecated
-    public Table getOccurrences() {
+    public Table getTemporalObjectTable() {
         return super.getNodeTable();
     }
 
     /**
-     * Gets the graph that contains all (temporal) occurrences of data elements,
-     * and the relations between these occurrences.
-     * 
-     * @return a {@link Graph} containing all occurrences and relations between
-     *         them
-     */
-    @Deprecated
-    public Graph getOccurrencesGraph() {
-        return this;
-    }
-
-    /**
-     * Adds an occurrence of a data element at a given temporal element
-     * 
-     * @param dataElementInd
-     *            the index of the data element in the {@link Table} of data
-     *            elements
-     * @param temporalElementInd
-     *            the index of the temporal element in the {@link Table} of
-     *            temporal elements
-     * @return the index of the added occurrence in the {@link Table} of
-     *         occurrences
-     */
-    @Deprecated
-    public int addOccurrence(int dataElementInd, int temporalElementInd) {
-        try {
-            addTemporalObject(dataElementInd, temporalElementInd);
-        } catch (TemporalDataException e) {
-            e.printStackTrace();
-        }
-        return this.indexObjects.get(temporalElementInd);
-    }
-
-    /**
-     * Adds a temporal object.
+     * Adds a temporal object to the temporal dataset.
      * 
      * @param temporalObjectId
      *            the id of the temporal object
      * @param temporalElementId
      *            the id of the temporal element
-     * @throws TemporalDataException
+     * @return the proxy tuple of the new temporal object.
      */
     public TemporalObject addTemporalObject(long temporalObjectId,
-            long temporalElementId) throws TemporalDataException {
+            long temporalElementId) {
 //        if (this.indexObjects.get(temporalObjectId) != Integer.MIN_VALUE)
 //            throw new TemporalDataException("Duplicate temporal object id");
 //        if (this.indexElements.get(temporalElementId) == Integer.MIN_VALUE)
@@ -482,32 +455,29 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         object.set(TemporalObject.TEMPORAL_ELEMENT_ID, temporalElementId);
         return object;
     }
-    
+
     /**
-     * Adds a temporal object.
+     * Adds a temporal object to the temporal dataset.
      * 
      * @param temporalElementId
      *            the id of the temporal element
-     * @throws TemporalDataException
+     * @return the proxy tuple of the new temporal object.
      */
-    public TemporalObject addTemporalObject(long temporalElementId)
-            throws TemporalDataException {
-        long id = (indexObjects.size() > 0) ? super.getNodeTable()
-                .getLong(this.indexObjects.maximum(), TemporalObject.ID) + 1
-                : 1;
+    public TemporalObject addTemporalObject(long temporalElementId) {
+        long id = (indexObjects.size() > 0) ? super.getNodeTable().getLong(
+                this.indexObjects.maximum(), TemporalObject.ID) + 1 : 1;
 
         return addTemporalObject(id, temporalElementId);
     }
 
     /**
-     * Adds a temporal object.
+     * Adds a temporal object to the temporal dataset.
      * 
      * @param temporalElement
      *            the temporal element
-     * @throws TemporalDataException
+     * @return the proxy tuple of the new temporal object.
      */
-    public TemporalObject addTemporalObject(TemporalElement temporalElement)
-            throws TemporalDataException {
+    public TemporalObject addTemporalObject(TemporalElement temporalElement) {
         return addTemporalObject(temporalElement.getId());
     }
 
@@ -573,7 +543,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         long id = (indexElements.size() > 0) ? temporalElements.getNodeTable()
                 .getLong(this.indexElements.maximum(), TemporalElement.ID) + 1
                 : 1;
-        // long id = this.maximumTemporalElementId.getMaximum() + 1;
         return addTemporalElementAsRow(id, inf, sup, granularityId,
                 granularityContextId, kind);
     }
@@ -767,19 +736,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public static final int PRIMITIVE_SET = 1;
     public static final int PRIMITIVE_INSTANT = 2;
     public static final int PRIMITIVE_INTERVAL = 3;
-
-    // TODO move this enumeration to a separate file???
-    // TODO use constants instead of enumeration?
-    @Deprecated
-    public enum Primitives {
-        SPAN(0), SET(1), INSTANT(2), INTERVAL(3);
-
-        public final int kind;
-
-        private Primitives(int kind) {
-            this.kind = kind;
-        }
-    }
 
     /**
      * creates a human-readable string from a {@link TemporalDataset}.

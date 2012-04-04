@@ -1,8 +1,6 @@
 package timeBench.data;
 
 import java.util.Collections;
-import java.util.Iterator;
-
 
 /**
  * Instant in the relational view. Following the
@@ -29,9 +27,9 @@ public class Instant extends AnchoredTemporalElement {
     }
 
     @Override
-    public Iterator<TemporalElement> childElements() {
+    public Iterable<GenericTemporalElement> childElements() {
         // an instant should not have children (speedup?)
-        return Collections.<TemporalElement> emptyList().iterator();
+        return Collections.<GenericTemporalElement> emptyList();
     }
 
     @Override

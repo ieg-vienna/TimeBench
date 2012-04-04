@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
@@ -225,9 +224,7 @@ public class RConnector {
         
         int dataCol = tmpds.getNodeTable().getColumnNumber(dataField);
 
-        for (Iterator<TemporalObject> iter = tmpds.temporalObjects(); iter
-                .hasNext();) {
-            TemporalObject cur = iter.next();
+        for (TemporalObject cur : tmpds.temporalObjects()) { 
             if (cur.getTemporalElement().isAnchored()) {
                 time[i] = ((double) cur.getTemporalElement().asGeneric()
                         .getInf()) / 1000.0d;
@@ -280,9 +277,7 @@ public class RConnector {
 
         int dataCol = tmpds.getNodeTable().getColumnNumber(dataField);
 
-        for (Iterator<TemporalObject> iter = tmpds.temporalObjects(); iter
-                .hasNext();) {
-            TemporalObject cur = iter.next();
+        for (TemporalObject cur : tmpds.temporalObjects()) { 
             TemporalElement elem = cur.getTemporalElement();
             if (!elem.isAnchored()) {
                 logger.debug("skip temp.o. with unanchored temp.el. " + elem);

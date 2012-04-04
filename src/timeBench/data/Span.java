@@ -1,8 +1,6 @@
 package timeBench.data;
 
 import java.util.Collections;
-import java.util.Iterator;
-
 
 /**
  * Span in the relational view. Following the <em>proxy tuple</em> pattern [Heer
@@ -24,9 +22,9 @@ public class Span extends UnanchoredTemporalElement {
     }
 
     @Override
-    public Iterator<TemporalElement> childElements() {
+    public Iterable<GenericTemporalElement> childElements() {
         // a span should not have children (speedup?)
-        return Collections.<TemporalElement> emptyList().iterator();
+        return Collections.<GenericTemporalElement> emptyList();
     }
 
     @Override

@@ -2,11 +2,8 @@ package timeBench.data;
 
 import ieg.util.lang.CustomIterable;
 
-import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 
-import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;
 
 /**
@@ -54,14 +51,6 @@ public class TemporalObject extends TableNode {
     }
 
     /**
-     * @return the data element
-     */
-    @Deprecated
-    public Tuple getDataElement() {
-        return this;
-    }
-    
-    /**
      * @return the temporal element
      */
     public GenericTemporalElement getTemporalElement() {
@@ -71,29 +60,33 @@ public class TemporalObject extends TableNode {
     }
 
     /**
-     * Get an iterator over all temporal elements that are children of this
-     * temporal element.
+     * Get an iterator over all temporal objects that are parent of this
+     * temporal object.
      * 
-     * @return an iterator over children
+     * @return an object, which provides an iterator over parents
      */
     @SuppressWarnings("unchecked")
-    // TODO rename in childObjectIterator()
-    public Iterator<TemporalObject> childElements() {
-        return super.inNeighbors();
+    public Iterable<TemporalObject> parentObjects() {
+        return new CustomIterable(super.outNeighbors());
     }
-    
+
+    /**
+     * Get an iterator over all temporal objects that are children of this
+     * temporal object.
+     * 
+     * @return an object, which provides an iterator over children
+     */
     @SuppressWarnings("unchecked")
     public Iterable<TemporalObject> childObjects() {
         return new CustomIterable(super.inNeighbors());
     }
 
     /**
-     * Gets the number of child temporal elements
+     * Gets the number of child temporal objects.
      * 
-     * @return the number of child temporal elements
+     * @return the number of child temporal objects.
      */
-    // TODO rename in getChildObjectCount()
-    public int getChildElementCount() {
+    public int getChildObjectCount() {
         return super.m_graph.getInDegree(this);
     }
     
@@ -105,7 +98,7 @@ public class TemporalObject extends TableNode {
     public void linkWithChild(TemporalObject child) {
         super.m_graph.addEdge(child, this);
         logger.trace("link with child: " + this.getRow() + " <- " + child.getRow() 
-                + " my childs: " + this.getChildElementCount() 
+                + " my childs: " + this.getChildObjectCount() 
                 + " total childs: " + super.m_graph.getEdgeCount() 
                 + " total nodes: " + super.m_graph.getNodeCount());
     } 

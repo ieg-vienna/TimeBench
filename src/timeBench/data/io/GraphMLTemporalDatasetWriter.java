@@ -4,7 +4,6 @@ import static prefuse.data.io.GraphMLWriter.Tokens;
 import static prefuse.data.io.GraphMLWriter.TYPES;
 
 import java.io.OutputStream;
-import java.util.Iterator;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -201,9 +200,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     private void writeTemporalElements(TemporalDataset tmpds,
             AttributesImpl nodeAtts, AttributesImpl dataAtts)
             throws SAXException {
-        Iterator<GenericTemporalElement> iterator = tmpds.temporalElements();
-        while (iterator.hasNext()) {
-            GenericTemporalElement te = iterator.next();
+        for (GenericTemporalElement te : tmpds.temporalElements()) {
             nodeAtts.setValue(0, ELEMENT_PREFIX + te.getId());
             hd.startElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE, nodeAtts);
 
@@ -234,9 +231,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     private void writeTemporalObjects(TemporalDataset tmpds,
             AttributesImpl nodeAtts, AttributesImpl dataAtts)
             throws SAXException {
-        Iterator<TemporalObject> iterator = tmpds.temporalObjects();
-        while (iterator.hasNext()) {
-            TemporalObject tObj = iterator.next();
+        for (TemporalObject tObj : tmpds.temporalObjects()) { 
             nodeAtts.setValue(0, OBJECT_PREFIX + tObj.getId());
             hd.startElement("", Tokens.NODE, Tokens.NODE, nodeAtts);
 
@@ -264,9 +259,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
      */
     private void writeBipartiteEdges(TemporalDataset tmpds,
             AttributesImpl edgeAtts) throws SAXException {
-        Iterator<TemporalObject> iterator = tmpds.temporalObjects();
-        while (iterator.hasNext()) {
-            TemporalObject tObj = iterator.next();
+        for (TemporalObject tObj : tmpds.temporalObjects()) { 
             long objId = tObj.getId();
             long elId = tObj.getTemporalElement().getId();
 
