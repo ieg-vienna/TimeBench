@@ -622,14 +622,20 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return 16383;
 	}
 
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#createGranule(long, long, int, timeBench.calendar.Granularity)
-	 */
 	@Override
-	public Granule createGranule(long inf, long sup, int mode,
-			Granularity granularity) {
-		// TODO Auto-generated method stub
-		return null;
+	public Granule createGranule(long inf, long sup, int mode, Granularity granularity) throws TemporalDataException {
+		switch(mode) {
+			case Granule.MODE_FORCE:
+				return new Granule(inf,sup,mode,granularity);
+			case Granule.MODE_INF_GRANULE:
+				return createGranule(inf,granularity);
+			case Granule.MODE_MIDDLE_GRANULE:
+				return createGranule(inf+(sup-inf)/2,granularity);
+			case Granule.MODE_SUP_GRANULE:
+				return createGranule(sup,granularity);
+			default:
+				throw new TemporalDataException("Illegal mode in createGranule");
+		}
 	}
 
 

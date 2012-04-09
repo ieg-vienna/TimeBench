@@ -73,7 +73,7 @@ public class Calendar {
 	}
 
 	public Granule createGranule(long inf, long sup, int mode,
-			Granularity granularity) {
+			Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranule(inf,sup,mode, granularity);
 	}
 
