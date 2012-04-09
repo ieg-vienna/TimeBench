@@ -42,62 +42,6 @@ public class Calendar {
 	public Granularity getDiscreteTimeDomain() {
 		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
 	}
-
-
-	/**
-	 * Converts a granule in a granularity to another granularity, but returns only
-	 * one granule, using heuristics to decide which one if more would be correct.
-	 * @param timeStamp The number of the granule in the original granularity.
-	 * @param sourceGranularity Identifier of the source granularity
-	 * @param targetGranularity Identifier of the target granularity
-	 * @return The number of the corresponding granule in the new granularity.
-	 * @throws TemporalDataException 
-	 */
-	public Granule mapGranuleToGranularityAsGranule(long timeStamp,
-			int sourceGranularity, int targetGranularity) throws TemporalDataException {
-		return calendarManager.mapGranuleToGranularityAsGranule(timeStamp,
-				sourceGranularity,targetGranularity);
-	}
-
-
-	/**
-	 *  Converts a granule in a granularity to another granularity and returns a list of all granules that are part of
-	 * it. Use heuristics if necessary.
-	 * @param timeStamp The number of the granule in the original granularity.
-	 * @param sourceGranularity Identifier of the source granularity
-	 * @param targetGranularity Identifier of the target granularity
-	 * @return The list of numbers of the corresponding granules in the new granularity.
-	 * @throws TemporalDataException 
-	 */
-	public ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,
-			int sourceGranularity, int targetGranularity) throws TemporalDataException {
-		return calendarManager.mapGranuleToGranularityAsGranuleList(timeStamp,
-				sourceGranularity,targetGranularity);
-	}
-
-
-//	/**
-//	 * @param input
-//	 * @param identifier
-//	 * @return
-//	 * @throws ParseException 
-//	 * @throws TemporalDataException 
-//	 */
-//	public Granule parseStringToGranule(String input, Granularity granularity) throws ParseException, TemporalDataException {
-//		return calendarManager.parseStringToGranule(input,granularity);
-//	}
-//
-//    public Granule parseStringToGranule(String input, Granularity granularity,
-//            String dateTimePattern) throws ParseException,
-//            TemporalDataException {
-//        return calendarManager.parseStringToGranule(input, granularity,
-//                dateTimePattern);
-//    }
-
-    public Granule parseDateToGranule(Date input, Granularity granularity)
-            throws TemporalDataException {
-        return calendarManager.parseDateToGranule(input, granularity);
-    }
     
 	public int[] getGranularityIdentifiers() {
 		return calendarManager.getGranularityIdentifiers();
@@ -105,11 +49,6 @@ public class Calendar {
 	
 	public Granularity getGranularityFromIdentifier(int identifier,int contextIdentifier) {
 		return new Granularity(this,identifier,contextIdentifier);
-	}
-
-
-	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException {
-		return calendarManager.parseInfToGranule(inf,granularity);
 	}
 	
     static class CalendarAdapter extends XmlAdapter<Integer, Calendar> {
@@ -129,112 +68,38 @@ public class Calendar {
         
     }
 
-	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
-		return calendarManager.getGranuleIdentifier(granule);
-	}
-	
-	public long getGranuleContextIdentifier(Granule granule) throws TemporalDataException {
-		return calendarManager.getGranuleIdentifier(granule);
+	public Granule createGranule(Date input, Granularity granularity) throws TemporalDataException {
+		return calendarManager.createGranule(input,granularity);
 	}
 
-	public Long getInf(Granule granule) throws TemporalDataException {
-		return calendarManager.getInf(granule);
-	}
-
-
-	public Long getSup(Granule granule) throws TemporalDataException {
-		return calendarManager.getSup(granule);
-	}
-
-
-	/**
-	 * @param input
-	 * @param granularity
-	 * @return
-	 */
-	public Granule createGranule(Date input, Granularity granularity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/**
-	 * @param inf
-	 * @param sup
-	 * @param mode
-	 * @param granularity
-	 * @return
-	 */
 	public Granule createGranule(long inf, long sup, int mode,
 			Granularity granularity) {
-		// TODO Auto-generated method stub
-		return null;
+		return calendarManager.createGranule(inf,sup,mode, granularity);
 	}
 
-
-	/**
-	 * @param inf
-	 * @param sup
-	 * @param cover
-	 * @param granularity
-	 * @return
-	 */
 	public Granule[] createGranules(long inf, long sup, double cover,
 			Granularity granularity) {
-		// TODO Auto-generated method stub
-		return null;
+		return calendarManager.createGranules(inf,sup,cover,granularity);
 	}
 
-
-	/**
-	 * @param granules
-	 * @param cover
-	 * @param granularity
-	 * @return
-	 */
 	public Granule[] createGranules(Granule[] granules, double cover,
 			Granularity granularity) {
-		// TODO Auto-generated method stub
-		return null;
+		return calendarManager.createGranules(granules,cover, granularity);
 	}
 
-
-	/**
-	 * @param granule
-	 * @return
-	 */
-	public long createGranuleIdentifier(Granule granule) {
-		// TODO Auto-generated method stub
-		return 0;
+	public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
+		return calendarManager.createGranuleIdentifier(granule);
 	}
 
-
-	/**
-	 * @param granule
-	 * @return
-	 */
 	public String createGranuleLabel(Granule granule) {
-		// TODO Auto-generated method stub
-		return null;
+		return calendarManager.createGranuleLabel(granule);
 	}
 
-
-	/**
-	 * @param granule
-	 * @return
-	 */
-	public Long createInf(Granule granule) {
-		// TODO Auto-generated method stub
-		return null;
+	public long createInf(Granule granule) {
+		return calendarManager.createInf(granule);
 	}
 
-
-	/**
-	 * @param granule
-	 * @return
-	 */
-	public Long createSup(Granule granule) {
-		// TODO Auto-generated method stub
-		return null;
+	public long createSup(Granule granule) {
+		return calendarManager.createSup(granule);
 	}
 }

@@ -20,27 +20,19 @@ import timeBench.data.TemporalDataException;
 public interface CalendarManager {
 
 	public Calendar calendar();
-	public Calendar getDefaultCalendar();
-	public long before(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException;
-	public long after(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException;
-	public Granule mapGranuleToGranularityAsGranule(long timeStamp,int sourceGranularity, int targetGranularity) throws TemporalDataException;
-	public ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,int sourceGranularity, int targetGranularity)
-			throws TemporalDataException, TemporalDataException;
-//	Granule parseStringToGranule(String input, Granularity granularity)
-//			throws ParseException, TemporalDataException;
-//
-//    Granule parseStringToGranule(String input, Granularity granularity,
-//            String dateTimePattern) throws ParseException,
-//            TemporalDataException;
-
-    Granule parseDateToGranule(Date input, Granularity granularity)
-            throws TemporalDataException;
-    
+	public Calendar getDefaultCalendar();    
 	public int[] getGranularityIdentifiers();
-	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException;
-	public long getGranuleIdentifier(Granule granule) throws TemporalDataException;
-	public Long getInf(Granule granule) throws TemporalDataException;
-	public Long getSup(Granule granule) throws TemporalDataException;
 	public int getBottomGranularityIdentifier();
 	public int getTopGranularityIdentifier();
+	public Granule createGranule(Date input, Granularity granularity) throws TemporalDataException;
+	public Granule createGranule(long inf, long sup, int mode,
+			Granularity granularity);
+	public Granule[] createGranules(long inf, long sup, double cover,
+			Granularity granularity);
+	public Granule[] createGranules(Granule[] granules, double cover,
+			Granularity granularity);
+	public long createGranuleIdentifier(Granule granule) throws TemporalDataException;
+	public String createGranuleLabel(Granule granule);
+	public long createInf(Granule granule);
+	public long createSup(Granule granule);
 }

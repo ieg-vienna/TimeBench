@@ -133,131 +133,6 @@ public class JavaDateCalendarManager implements CalendarManager {
 			defaultCalendar = calendar();
 		return defaultCalendar;
 	}
-
-	
-	/**
-	 * Calculate the timeStamp which is a number of granules in a given granularity before another timeStamp.
-	 * @param timeStamp The base timeStamp.
-	 * @param granules The number of granules.
-	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
-	 * @return The resulting timeStamp.
-	 */
-	public long before(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
-		javaCalendar.setTimeInMillis(timeStamp);
-		javaCalendar.add(beforeAfterSwitch(granularityIdentifier), (int) (-granules * (Granularities.fromInt(granularityIdentifier) == Granularities.Quarter ? 3 : 1)));
-		return javaCalendar.getTimeInMillis();
-	}
-	
-	
-	/**
-	 * Calculate the timeStamp which is a number of granules in a given granularity after another timeStamp.
-	 * @param timeStamp The base timeStamp.
-	 * @param granules The number of granules.
-	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
-	 * @return The resulting timeStamp.
-	 */
-	public long after(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
-		javaCalendar.setTimeInMillis(timeStamp);
-		javaCalendar.add(beforeAfterSwitch(granularityIdentifier), (int) (granules * (Granularities.fromInt(granularityIdentifier) == Granularities.Quarter ? 3 : 1)));
-		return javaCalendar.getTimeInMillis();
-	}	
-	
-	
-	private int beforeAfterSwitch(int identifier) throws TemporalDataException {
-		switch(Granularities.fromInt(identifier)) {
-			case Millisecond:
-				return java.util.Calendar.MILLISECOND;
-			case Second:
-				return java.util.Calendar.SECOND;
-			case Minute:
-				return java.util.Calendar.MINUTE;
-			case Hour:
-				return java.util.Calendar.HOUR_OF_DAY;
-			case Day:
-				return java.util.Calendar.DAY_OF_MONTH;
-			case Week:
-				return java.util.Calendar.WEEK_OF_YEAR;
-			case Month:
-				return java.util.Calendar.MONTH;
-			case Quarter:
-				return java.util.Calendar.MONTH;
-			case Year:
-				return java.util.Calendar.YEAR;
-			default: throw new TemporalDataException("Unknown Granularity");
-		}
-	}
-
-
-	/**
-	 * Converts a granule in a granularity to another granularity, but returns only
-	 * one granule, using heuristics to decide which one if more would be correct.
-	 * @param timeStamp The number of the granule in the original granularity.
-	 * @param sourceGranularity Identifier of the source granularity
-	 * @param targetGranularity Identifier of the target granularity
-	 * @return The number of the corresponding granule in the new granularity.
-	 * @throws TemporalDataException 
-	 */
-	public Granule mapGranuleToGranularityAsGranule(long timeStamp,
-			int sourceGranularity, int targetGranularity) throws TemporalDataException {
-		//long resultTimeStamp = 0;
-		
-		throw new TemporalDataException("No mappings defined yet.");
-		
-		//return resultTimeStamp;
-	}
-	
-	/**
-	 * Converts a granule in a granularity to another granularity and returns a list of all granules that are part of
-	 * it. Use heuristics if necessary.
-	 * @param timeStamp The number of the granule in the original granularity.
-	 * @param sourceGranularity Identifier of the source granularity
-	 * @param targetGranularity Identifier of the target granularity
-	 * @return The list of numbers of the corresponding granules in the new granularity.
-	 * @throws TemporalDataException 
-	 */
-	public java.util.ArrayList<Granule> mapGranuleToGranularityAsGranuleList(long timeStamp,
-			int sourceGranularity, int targetGranularity) throws TemporalDataException {
-		
-		throw new TemporalDataException("No mappings defined yet.");
-		
-		//return resultTimeStamp;
-	}
-
-
-//    /*
-//     * (non-Javadoc)
-//     * 
-//     * @see
-//     * timeBench.calendar.CalendarManager#parseStringToGranule(java.lang.String,
-//     * int)
-//     */
-//    @Override
-//    public Granule parseStringToGranule(String input, Granularity granularity)
-//            throws ParseException, TemporalDataException {
-//        return parseStringToGranule(input, granularity,
-//                DateFormat.getDateInstance(java.text.DateFormat.DEFAULT,
-//                        Locale.US));
-//    }
-//
-//    @Override
-//    public Granule parseStringToGranule(String input, Granularity granularity,
-//            String dateTimePattern) throws ParseException,
-//            TemporalDataException {
-//        // TODO allow specification of Locale via encoding (e.g. needed for month names)
-//        return parseStringToGranule(input, granularity,
-//                new java.text.SimpleDateFormat(dateTimePattern, Locale.US));
-//    }
-
-    private Granule parseStringToGranule(String input, Granularity granularity,
-            DateFormat format) throws ParseException, TemporalDataException {
-        return parseDateToGranule(format.parse(input), granularity);
-    }
-
-    @Override
-    public Granule parseDateToGranule(Date date, Granularity granularity)
-            throws TemporalDataException {
-    	return createGranule(date, granularity);
-    }
     
     private int[] buildGranularityListForCreateGranule(Granularity granularity) throws TemporalDataException {
         int[] result;
@@ -313,7 +188,7 @@ public class JavaDateCalendarManager implements CalendarManager {
         return result;    	
     }
 
-	private Granule createGranule(long chronon, Granularity granularity) throws TemporalDataException {
+	public Granule createGranule(long chronon, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
 		calInf.setTimeInMillis(chronon);
@@ -322,7 +197,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return createGranule(calInf,calSup,granularity);
 	}
 	
-	private Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
+	public Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
 		calInf.setTime(date);
@@ -378,76 +253,208 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return new int[] {0,1,2,3,4,5,6,7,8,32767};
 	}
 
-
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#parseInfToGranule(long)
-	 */
 	@Override
-	public Granule parseInfToGranule(long inf,Granularity granularity) throws TemporalDataException {
-		return createGranule(inf,granularity);
-	}
-
-
-	@Override
-	public long getGranuleIdentifier(Granule granule) throws TemporalDataException {
+	public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
 		long result = 0;
 		
 		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
 			case Millisecond:
-				result = granule.getInf();
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Second:
+						result = granule.getInf()%1000;
+						break;
+					case Minute:
+						result = granule.getInf()%60000;
+						break;
+					case Hour:
+						result = granule.getInf()%3600000;
+						break;
+					case Day:
+						result = granule.getInf()%86400000;
+						break;
+					case Week: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*86400000 + granule.getInf()%86400000;
+						break;
+					}
+					case Month: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_MONTH)*86400000 + granule.getInf()%86400000;
+						break;
+					}
+					case Quarter: 
+						result = getDayInQuarter(granule.getInf())*86400000 + granule.getInf()%86400000;
+						break;
+					case Year: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400000 + granule.getInf()%86400000;
+						break;
+					}
+					default:
+						result = granule.getInf();					
+				}
 				break;
 			case Second:
 				result = granule.getInf()/1000;
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Minute:
+						result %= 60;
+						break;
+					case Hour:
+						result %= 3600;
+						break;
+					case Day:
+						result %= 86400;
+					case Week: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*86400 + result % 86400;
+						break;
+					}
+					case Month: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_MONTH)*86400 + result % 86400;
+						break;
+					}
+					case Quarter: 
+						result = getDayInQuarter(granule.getInf())*86400 + result % 86400;
+						break;
+					case Year: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400 + result % 86400;
+						break;
+					}
+				}
 				break;
 			case Minute:
 				result = granule.getInf()/60000;
+				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
+					case Hour:
+						result %= 60;
+						break;
+					case Day:
+						result %= 1440;
+					case Week: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*1440 + result % 1440;
+						break;
+					}
+					case Month: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_MONTH)*1440 + result % 1440;
+						break;
+					}
+					case Quarter: 
+						result = getDayInQuarter(granule.getInf())*1440 + result % 1440;
+						break;
+					case Year: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*1440 + result % 1440;
+						break;
+					}
+				}
 				break;
 			case Hour:
+				result = granule.getInf()/3600000;
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
-				case Day:
-					GregorianCalendar cal = new GregorianCalendar();
-					cal.setTimeInMillis(granule.getInf());
-					result = cal.get(GregorianCalendar.HOUR_OF_DAY);
-					break;
-				default:
-					result = granule.getInf()/360000;
+					case Day:
+						result %= 24;
+						break;
+					case Week: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*24 + result % 24;
+						break;
+					}
+					case Month: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_MONTH)*24 + result % 24;
+						break;
+					}
+					case Quarter: 
+						result = getDayInQuarter(granule.getInf())*24 + result % 24;
+						break;
+					case Year: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*24 + result % 24;
+						break;
+					}
 				}
 				break;
 			case Day:
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
-					case Week:
+					case Week: {
 						GregorianCalendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7;
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK);
 						break;
+					}
+					case Month: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_MONTH);
+						break;
+					}
+					case Quarter: 
+						result = getDayInQuarter(granule.getInf());
+						break;
+					case Year: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR);
+						break;
+					}
 					default:
-						result = granule.getInf()/8640000;
+						result = granule.getInf() / 86400000;
 				}
 				break;
 			case Week:
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
-					case Month:
+					case Month: {
 						GregorianCalendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(granule.getInf());
 						result = cal.get(GregorianCalendar.WEEK_OF_MONTH);
 						break;
+						}
+					case Quarter: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.WEEK_OF_YEAR) / 4;
+						break;
+						}
+					case Year: {
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(granule.getInf());
+						result = cal.get(GregorianCalendar.WEEK_OF_MONTH);
+						break;
+						}
 					default:
-						result = granule.getInf()/60480000;
+						result = granule.getInf() / 60480000;
 						break;
 				}
 				break;
-			case Month:{
+			case Month: {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(granule.getInf());
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
 					case Quarter:
-						result = (cal.get(GregorianCalendar.MONTH)-1)%4;
+						result = cal.get(GregorianCalendar.MONTH) % 3;
 						break;
 					case Year:
-						result = cal.get(GregorianCalendar.MONTH)-1;
+						result = cal.get(GregorianCalendar.MONTH);
 						break;
 					default:
-						result = (cal.get(GregorianCalendar.YEAR)-1970)*12+(cal.get(GregorianCalendar.MONTH)-1);
+						result = granule.getInf() / 2592000000L;
 						break;
 					}
 				break;}
@@ -456,24 +463,55 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year:{
 						GregorianCalendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.MONTH)-1)/3;
+						result = cal.get(GregorianCalendar.MONTH) / 4;
 						break;}
 					default:{
-						GregorianCalendar cal = new GregorianCalendar();
-						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.YEAR)-1970)*4+(cal.get(GregorianCalendar.MONTH)-1)/3;
-					break;}
+						result = granule.getInf() / 10368000000L;
+						break;
+					}
 				}
 				break;
 			case Year:
 				GregorianCalendar cal = new GregorianCalendar();
-				result = cal.get(GregorianCalendar.YEAR)-1970;
+				result = cal.get(GregorianCalendar.YEAR);
 				break;
 		}
 		
 		return result;
 	}
 
+	private long getDayInQuarter(long inf) {
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(inf);
+		switch(cal.get(GregorianCalendar.MONTH)) {
+			case GregorianCalendar.JANUARY:
+				return cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.FEBRUARY:
+				return 31+cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.MARCH:
+				return 31+
+						(cal.isLeapYear(cal.get(GregorianCalendar.YEAR)) ? 29 : 28) +
+						cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.APRIL:
+				return cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.MAY:
+				return 30+cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.JUNE:
+				return 61+cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.JULY:
+				return cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.AUGUST:
+				return 31+cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.SEPTEMBER:
+				return 62+cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.OCTOBER:
+				return cal.get(GregorianCalendar.DAY_OF_MONTH);
+			case GregorianCalendar.NOVEMBER:
+				return 31+cal.get(GregorianCalendar.DAY_OF_MONTH);
+			default: // GregorianCalendar.DECEMBER:
+				return 61+cal.get(GregorianCalendar.DAY_OF_MONTH);
+		}
+	}
 
 	@Override
 	public Long getInf(Granule granule) throws TemporalDataException {
@@ -582,5 +620,66 @@ public class JavaDateCalendarManager implements CalendarManager {
 	
 	public int getTopGranularityIdentifier() {
 		return 16383;
+	}
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#createGranule(long, long, int, timeBench.calendar.Granularity)
+	 */
+	@Override
+	public Granule createGranule(long inf, long sup, int mode,
+			Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#createGranules(long, long, double, timeBench.calendar.Granularity)
+	 */
+	@Override
+	public Granule[] createGranules(long inf, long sup, double cover,
+			Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#createGranules(timeBench.calendar.Granule[], double, timeBench.calendar.Granularity)
+	 */
+	@Override
+	public Granule[] createGranules(Granule[] granules, double cover,
+			Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#createGranuleLabel(timeBench.calendar.Granule)
+	 */
+	@Override
+	public String createGranuleLabel(Granule granule) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#createInf(timeBench.calendar.Granule)
+	 */
+	@Override
+	public long createInf(Granule granule) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#createSup(timeBench.calendar.Granule)
+	 */
+	@Override
+	public long createSup(Granule granule) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

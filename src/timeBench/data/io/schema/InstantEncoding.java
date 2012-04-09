@@ -19,7 +19,7 @@ public abstract class InstantEncoding extends TemporalObjectEncoding {
     @Override
     public void buildTemporalElement(TemporalDataset tmpds, Tuple tuple,
             Map<String, GenericTemporalElement> elements) throws TemporalDataException {
-        Granule granule = super.getGranularity().parseDateToGranule(
+        Granule granule = super.getGranularity().createGranule(
                 buildDate(tuple));
 
         GenericTemporalElement elem = tmpds.addInstant(granule).asGeneric();
