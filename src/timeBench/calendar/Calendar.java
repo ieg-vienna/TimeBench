@@ -24,8 +24,7 @@ import timeBench.data.TemporalDataException;
  */
 @XmlJavaTypeAdapter(Calendar.CalendarAdapter.class) 
 public class Calendar {
-	private CalendarManager calendarManager = null;
-	
+	private CalendarManager calendarManager = null;	
 	
 	/**
 	 * Default constructor.
@@ -42,36 +41,6 @@ public class Calendar {
 	 */
 	public Granularity getDiscreteTimeDomain() {
 		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
-	}
-
-	
-	/**
-	 * Calculate the timeStamp which is a number of granules in a given granularity before another timeStamp.
-	 * @param timeStamp The base timeStamp.
-	 * @param granules The number of granules.
-	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
-	 * @return The resulting timeStamp.
-	 */
-	public long before(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
-		if (calendarManager instanceof JavaDateCalendarManager)
-			return ((JavaDateCalendarManager)calendarManager).before(timeStamp,granules,granularityIdentifier);
-		else
-			throw new TemporalDataException("Unknown or missing calendar manager");		
-	}
-	
-
-	/**
-	 * Calculate the timeStamp which is a number of granules in a given granularity after another timeStamp.
-	 * @param timeStamp The base timeStamp.
-	 * @param granules The number of granules.
-	 * @param granularityIdentifier The granularityIdentifier given as integer (which might have different meaning based on the calendar and calendarManager).
-	 * @return The resulting timeStamp.
-	 */
-	public long after(long timeStamp, long granules, int granularityIdentifier) throws TemporalDataException {
-		if (calendarManager instanceof JavaDateCalendarManager)
-			return ((JavaDateCalendarManager)calendarManager).after(timeStamp,granules,granularityIdentifier);
-		else
-			throw new TemporalDataException("Unknown or missing calendar manager");		
 	}
 
 
@@ -175,5 +144,97 @@ public class Calendar {
 
 	public Long getSup(Granule granule) throws TemporalDataException {
 		return calendarManager.getSup(granule);
+	}
+
+
+	/**
+	 * @param input
+	 * @param granularity
+	 * @return
+	 */
+	public Granule createGranule(Date input, Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/**
+	 * @param inf
+	 * @param sup
+	 * @param mode
+	 * @param granularity
+	 * @return
+	 */
+	public Granule createGranule(long inf, long sup, int mode,
+			Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/**
+	 * @param inf
+	 * @param sup
+	 * @param cover
+	 * @param granularity
+	 * @return
+	 */
+	public Granule[] createGranules(long inf, long sup, double cover,
+			Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/**
+	 * @param granules
+	 * @param cover
+	 * @param granularity
+	 * @return
+	 */
+	public Granule[] createGranules(Granule[] granules, double cover,
+			Granularity granularity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/**
+	 * @param granule
+	 * @return
+	 */
+	public long createGranuleIdentifier(Granule granule) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	/**
+	 * @param granule
+	 * @return
+	 */
+	public String createGranuleLabel(Granule granule) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/**
+	 * @param granule
+	 * @return
+	 */
+	public Long createInf(Granule granule) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/**
+	 * @param granule
+	 * @return
+	 */
+	public Long createSup(Granule granule) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

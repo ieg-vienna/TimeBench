@@ -366,7 +366,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 			}
 		}
 		
-		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),granularity,true);
+		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),Granule.MODE_FORCE,granularity);
 	}
 
 
