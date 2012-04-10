@@ -78,12 +78,12 @@ public class Calendar {
 	}
 
 	public Granule[] createGranules(long inf, long sup, double cover,
-			Granularity granularity) {
+			Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranules(inf,sup,cover,granularity);
 	}
 
 	public Granule[] createGranules(Granule[] granules, double cover,
-			Granularity granularity) {
+			Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranules(granules,cover, granularity);
 	}
 

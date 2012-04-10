@@ -2,6 +2,7 @@ package timeBench.calendar;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -644,8 +645,33 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 */
 	@Override
 	public Granule[] createGranules(long inf, long sup, double cover,
-			Granularity granularity) {
+			Granularity granularity) throws TemporalDataException {
+		Granule first = createGranule(inf,granularity);
+		Granule last = createGranule(sup, granularity);
 		
+		long firstIdentifier = first.getIdentifier();
+		long lastIdentifier = last.getIdentifier();
+		
+		if( (double)(inf-first.getInf()) / (double)(first.getSup()-first.getInf()) < cover) {
+			firstIdentifier++;
+		}
+		if( (double)(last.getSup()-sup) / (double)(last.getSup()-last.getInf()) < cover) {
+			lastIdentifier--;
+		}
+
+		Granule[] result;
+		if(firstIdentifier>lastIdentifier)
+			result = new Granule[0];
+		else {
+			result = new Granule[(int)(lastIdentifier-firstIdentifier+1)];
+			result[0] = first;
+			for(int i=1; i<(int)(lastIdentifier-firstIdentifier); i++) {
+				result[i] = new Granule(firstIdentifier+1,granularity);	// be quick here, calculate inf/sup on demand
+			}
+			result[(int)(lastIdentifier-firstIdentifier)] = last;	// when first=last set 0 again
+		}
+		
+		return result;
 	}
 
 
@@ -654,9 +680,16 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 */
 	@Override
 	public Granule[] createGranules(Granule[] granules, double cover,
-			Granularity granularity) {
-		// TODO Auto-generated method stub
-		return null;
+			Granularity granularity) throws TemporalDataException {
+		ArrayList<Granule> result = new ArrayList<Granule>();
+		for(Granule iGran : granules) {
+			for(Granule iGran2 : createGranules(iGran.getInf(), iGran.getSup(), cover, granularity)) {
+				if(result.get(result.size()-1).getIdentifier() < iGran2.getIdentifier())
+					result.add(iGran2);
+			}
+		}
+		
+		return (Granule[])result.toArray();
 	}
 
 	/* (non-Javadoc)

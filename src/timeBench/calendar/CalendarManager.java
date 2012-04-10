@@ -28,9 +28,9 @@ public interface CalendarManager {
 	public Granule createGranule(long inf, long sup, int mode,
 			Granularity granularity) throws TemporalDataException;
 	public Granule[] createGranules(long inf, long sup, double cover,
-			Granularity granularity);
+			Granularity granularity) throws TemporalDataException;
 	public Granule[] createGranules(Granule[] granules, double cover,
-			Granularity granularity);
+			Granularity granularity) throws TemporalDataException;
 	public long createGranuleIdentifier(Granule granule) throws TemporalDataException;
 	public String createGranuleLabel(Granule granule);
 	public long createInf(Granule granule);
