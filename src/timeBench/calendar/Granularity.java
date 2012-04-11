@@ -63,44 +63,113 @@ public class Granularity {
 	 * {@link Granule} instead.
 	 * @param date the {@link Date} used to generate the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
+	 * @return the constructed {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */ 
     public Granule createGranule(Date date) throws TemporalDataException {
         return calendar.createGranule(date, this);
     }
 
-	public Granule createGranule(long inf,long sup,int mode) throws TemporalDataException {
+	/**
+	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GANULE mode}.
+	 * Consider using the adequate constructor of
+	 * {@link Granule} instead.
+	 * @param inf the chronon that determines the start of the granule constructed
+	 * @param sup the chronon that determines the end of the granule constructed
+	 * @param mode the {@linkplain Granule#MODE_INF_GANULE mode} used to construct the granule
+	 * @return the constructed {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Granule createGranule(long inf,long sup,int mode) throws TemporalDataException {
 		return calendar.createGranule(inf,sup,mode,this);
 	}
 	
-	public Granule[] createGranules(long inf,long sup) throws TemporalDataException {
+	/**
+	 * Constructs several {@link Granule} objects from inf to sup that are at least partly in the given interval.
+	 * @param inf the chronon that determines the start of the {@link Granule} range constructed
+	 * @param sup the chronon that determines the end of the {@link Granule} range constructed
+	 * @return the constructed {@link Array} of {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Granule[] createGranules(long inf,long sup) throws TemporalDataException {
 		return this.createGranules(inf,sup,0.0);
 	}
 
-	public Granule[] createGranules(long inf,long sup,double cover) throws TemporalDataException {
+	/**
+	 * Constructs several {@link Granule} objects from inf to sup that are at least partly in the given interval with
+	 * a coverage of a least a given fraction.
+	 * @param inf the chronon that determines the start of the {@link Granule} range constructed
+	 * @param sup the chronon that determines the end of the {@link Granule} range constructed
+	 * @param cover the coverage fraction of a granule needed to be included in the result
+	 * @return the constructed {@link Array} of {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Granule[] createGranules(long inf,long sup,double cover) throws TemporalDataException {
 		return calendar.createGranules(inf,sup,cover,this);
 	}
 	
-	public Granule[] createGranules(Granule[] granules) throws TemporalDataException {
+	/**
+	 * Constructs several {@link Granule} objects from other {@link Granule} objects that can (and most likely
+	 * will) be in a different granularity. All {@link Granule} that are at least partly covered are
+	 * returned.
+	 * @param Granule[] the {@link Array} of {@link Granule} used as source
+	 * @return the constructed {@link Array} of {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Granule[] createGranules(Granule[] granules) throws TemporalDataException {
 		return this.createGranules(granules,0.0);
 	}
 
-	public Granule[] createGranules(Granule[] granules,double cover) throws TemporalDataException {
+	/**
+	 * Constructs several {@link Granule} objects from other {@link Granule} objects that can (and most likely
+	 * will) be in a different granularity. All  {@link Granule} with
+	 * a coverage of a least a given fraction are returned.
+	 * @param Granule[] the {@link Array} of {@link Granule} used as source
+	 * @param cover the coverage fraction of a granule needed to be included in the result
+	 * @return the constructed {@link Array} of {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Granule[] createGranules(Granule[] granules,double cover) throws TemporalDataException {
 		return calendar.createGranules(granules,cover,this);
 	}
 	
-	public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
+	/**
+	 * Calculate and return the identifier of a {@link Granule}. An identifier is a numeric label given in the context
+	 * of the {@link Granularity}. Consider using the adequate method of
+	 * {@link Granule} instead.
+	 * @return the identifier
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendar.createGranuleIdentifier(granule);		
 	}
 	
-	public String createGranuleLabel(Granule granule) throws TemporalDataException {
+	/**
+	 * Calculate and return the human readable label of a {@link Granule}.
+	 * Consider using the adequate method of
+	 * {@link Granule} instead.
+	 * @return the label
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public String createGranuleLabel(Granule granule) throws TemporalDataException {
 		return calendar.createGranuleLabel(granule);		
 	}
 
-	public Long createInf(Granule granule) throws TemporalDataException {
+	/**
+	 * Calculate and return the inf of a {@link Granule}.
+	 * @return the inf
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Long createInf(Granule granule) throws TemporalDataException {
 		return calendar.createInf(granule);
 	}
 
-	public Long createSup(Granule granule) throws TemporalDataException {
+	/**
+	 * Calculate and return the sup of a {@link Granule}.
+	 * @return the sup
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
+	 */
+    public Long createSup(Granule granule) throws TemporalDataException {
 		return calendar.createSup(granule);
 	}
 }
