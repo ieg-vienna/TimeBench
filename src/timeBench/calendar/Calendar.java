@@ -99,7 +99,7 @@ public class Calendar {
 		return calendarManager.createInf(granule);
 	}
 
-	public long createSup(Granule granule) {
+	public long createSup(Granule granule) throws TemporalDataException {
 		return calendarManager.createSup(granule);
 	}
 }

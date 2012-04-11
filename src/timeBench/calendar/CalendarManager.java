@@ -34,5 +34,5 @@ public interface CalendarManager {
 	public long createGranuleIdentifier(Granule granule) throws TemporalDataException;
 	public String createGranuleLabel(Granule granule) throws TemporalDataException;
 	public long createInf(Granule granule) throws TemporalDataException;
-	public long createSup(Granule granule);
+	public long createSup(Granule granule) throws TemporalDataException;
 }

@@ -516,54 +516,6 @@ public class JavaDateCalendarManager implements CalendarManager {
 
 //	@Override
 //	public Long getSup(Granule granule) throws TemporalDataException {
-//		long result = 0;
-//		
-//		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
-//			case Millisecond:
-//				result = granule.getIdentifier();
-//				break;
-//			case Second:
-//				result = granule.getIdentifier()*1000+999;
-//				break;
-//			case Minute:
-//				result = granule.getIdentifier()*60000+59999;
-//				break;
-//			case Hour:
-//				result = granule.getIdentifier()*360000+359999;
-//				break;
-//			case Day:
-//				result = granule.getIdentifier()*8640000+8639999;
-//				break;
-//			case Week:
-//				result = granule.getIdentifier()*60480000+60479999;
-//				break;
-//			case Month:{
-//				GregorianCalendar cal = new GregorianCalendar();
-//				cal.setTimeInMillis(0);
-//				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
-//				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
-//				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000-1;
-//				break;}
-//			case Quarter:{
-//				GregorianCalendar cal = new GregorianCalendar();
-//				cal.setTimeInMillis(0);
-//				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
-//				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
-//				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000-1;
-//				cal.add(GregorianCalendar.MONTH, 1);
-//				result += cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000;
-//				cal.add(GregorianCalendar.MONTH, 1);
-//				result += cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000;
-//				break;}
-//			case Year:{
-//				GregorianCalendar cal = new GregorianCalendar();
-//				cal.setTimeInMillis(0);
-//				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()+1970));
-//				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_YEAR)*8640000-1;
-//				break;}
-//		}
-//		
-//		return result;
 //	}
 	
 	public int getBottomGranularityIdentifier() {
@@ -721,8 +673,54 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @see timeBench.calendar.CalendarManager#createSup(timeBench.calendar.Granule)
 	 */
 	@Override
-	public long createSup(Granule granule) {
-		// TODO Auto-generated method stub
-		return 0;
+	public long createSup(Granule granule) throws TemporalDataException {
+		long result = 0;
+		
+		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
+			case Millisecond:
+				result = granule.getIdentifier();
+				break;
+			case Second:
+				result = granule.getIdentifier()*1000+999;
+				break;
+			case Minute:
+				result = granule.getIdentifier()*60000+59999;
+				break;
+			case Hour:
+				result = granule.getIdentifier()*360000+359999;
+				break;
+			case Day:
+				result = granule.getIdentifier()*8640000+8639999;
+				break;
+			case Week:
+				result = granule.getIdentifier()*60480000+60479999;
+				break;
+			case Month:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000-1;
+				break;}
+			case Quarter:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000-1;
+				cal.add(GregorianCalendar.MONTH, 1);
+				result += cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000;
+				cal.add(GregorianCalendar.MONTH, 1);
+				result += cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)*8640000;
+				break;}
+			case Year:{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(0);
+				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()+1970));
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_YEAR)*8640000-1;
+				break;}
+		}
+		
+		return result;
 	}
 }
