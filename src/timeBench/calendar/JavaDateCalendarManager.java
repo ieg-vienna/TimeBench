@@ -603,14 +603,24 @@ public class JavaDateCalendarManager implements CalendarManager {
 		String result = null;
 		
 		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
-			case Hour:
-				break;
 			case Day:
-				//if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week )
-					//Calendar cal;
+				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week ) {
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.setTimeInMillis(granule.getInf());
+					cal.getDisplayName(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.LONG, Locale.getDefault());
+				} else
+					result = String.format("%d",granule.getIdentifier()+1);
+				break;
+			case Month:
+				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week ) {
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.setTimeInMillis(granule.getInf());
+					cal.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, Locale.getDefault());
+				} else
+					result = String.format("%d",granule.getIdentifier()+1);
 				break;
 			default:
-				result = String.format("%d",granule.getIdentifier());
+				result = String.format("%d",granule.getIdentifier()+1);
 		}
 		
 		return result;
