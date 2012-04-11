@@ -1,13 +1,15 @@
 package timeBench.calendar;
 
+import java.util.Date;
+
 import timeBench.data.TemporalDataException;
 
 /**
- * A granule of a granularity. Use this for all methods on granules if possible.
+ * A granule of a {@link Granularity}. Use this for all methods on granules if possible.
  * For creation of multiple instances, factories are given in {@link Granularity}. 
  * <p>
  * Added:         2011-07-19 / TL<br>
- * Modifications: 2012-04-11 / TL
+ * Modifications: 2012-04-11 / TL / inf, sup absolte, identifier in context
  * </p>
  * 
  * @author Tim Lammarsch
@@ -80,6 +82,19 @@ public class Granule {
 	 */
 	public Granule(long identifier,Granularity granularity) {
 		this.identifier = identifier;
+		this.granularity = granularity;
+	}
+	
+
+	/**
+	 * Constructs a Granule from a given {@link Date} in a given {@link Granularity}
+	 * @param date the {@link Date} used to generate the granule
+	 * @param granularity granularity the {@link Granularity} to which the granule belongs
+	 */
+	public Granule(Date date, Granularity granularity) throws TemporalDataException {
+		Granule g2 = granularity.createGranule(date);
+		this.inf = g2.getInf();
+		this.sup = g2.getSup();
 		this.granularity = granularity;
 	}
 	

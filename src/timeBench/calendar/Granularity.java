@@ -6,10 +6,10 @@ import java.util.Date;
 import timeBench.data.TemporalDataException;
 
 /**
- * A granularity of a calendar. 
+ * A granularity of a {@link Calendar}. Contains factories for multiple {@link Granule} instances.  
  * <p>
  * Added:         2011-07-19 / TL<br>
- * Modifications: 
+ * Modifications: 2012-04-11 / TL / inf, sup absolte, identifier in context
  * </p>
  * 
  * @author Tim Lammarsch
@@ -19,23 +19,23 @@ public class Granularity {
 	private Calendar calendar = null;
 	private int identifier;
 	private int contextIdentifier;
-	
-	
+		
 	/**
-	 * The default constructor.
-	 * @param calendar The calendar the granularity belongs to.
-	 * @param identifier The identifier of the granularity whose meaning depends on the calendar.
+	 * Constructs a Granularity using a given {@link Calendar}, with identifiers for granularity
+	 * and context given as integers from the {@link CalendarManager}.
+	 * @param calendar The {@link Calendar} the granularity belongs to.
+	 * @param identifier The identifier of the granularity whose meaning depends on the {@link CalendarManager}.
+	 * @param contextIdentifier The context identifier of the granularity whose meaning depends on the {@link CalendarManager}.
 	 */
 	public Granularity(Calendar calendar, int identifier, int contextIdentifier){
 		this.calendar = calendar;
 		this.identifier = identifier;
 		this.contextIdentifier = contextIdentifier;
 	}
-		
      
      /**
-      * Return calendar this granularity belongs to.
-      * @return The calendar this granularity belongs to.
+      * Return {@link Calendar} this granularity belongs to.
+      * @return the {@link Calendar} this granularity belongs to
       */
      public Calendar getCalendar()
      {
@@ -43,20 +43,29 @@ public class Granularity {
      }
 
 	/**
-	 * Returns identifier of this granularity.
-	 * @return Identifier of this granularity
+	 * Returns identifier of this granularity whose meaning depends on the {@link CalendarManager}.
+	 * @return identifier of this granularity whose meaning depends on the {@link CalendarManager}
 	 */
 	public int getIdentifier() {
 		return identifier;
 	}
 
+	/**
+	 * Returns context identifier of this granularity whose meaning depends on the {@link CalendarManager}.
+	 * @return context identifier of this granularity whose meaning depends on the {@link CalendarManager}
+	 */
 	public int getGranularityContextIdentifier() {
 		return contextIdentifier;
 	}
 	
- 
-    public Granule createGranule(Date input) throws TemporalDataException {
-        return calendar.createGranule(input, this);
+	/**
+	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
+	 * {@link Granule} instead.
+	 * @param date the {@link Date} used to generate the granule
+	 * @param granularity granularity the {@link Granularity} to which the granule belongs
+	 */ 
+    public Granule createGranule(Date date) throws TemporalDataException {
+        return calendar.createGranule(date, this);
     }
 
 	public Granule createGranule(long inf,long sup,int mode) throws TemporalDataException {
