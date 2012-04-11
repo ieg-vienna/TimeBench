@@ -91,11 +91,11 @@ public class Calendar {
 		return calendarManager.createGranuleIdentifier(granule);
 	}
 
-	public String createGranuleLabel(Granule granule) {
+	public String createGranuleLabel(Granule granule) throws TemporalDataException {
 		return calendarManager.createGranuleLabel(granule);
 	}
 
-	public long createInf(Granule granule) {
+	public long createInf(Granule granule) throws TemporalDataException {
 		return calendarManager.createInf(granule);
 	}
 
