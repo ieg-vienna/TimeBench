@@ -26,13 +26,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 	protected java.util.Calendar javaCalendar = null;
 	
 	/**
-	 * The default constructor.
+	 * Constructs a JavaDateCalendarManager. Consider using the
+	 * {@linkplain JavaDateCalendarManager#getDefaultCalendar() singleton} instead.
 	 */
 	public JavaDateCalendarManager() {
 		javaCalendar = java.util.Calendar.getInstance();
 		javaCalendar.setLenient(true);
-	}
-	
+	}	
 	
 	/**
 	 * The granularities enumeration supports a certain number of granularities.
@@ -189,6 +189,7 @@ public class JavaDateCalendarManager implements CalendarManager {
         return result;    	
     }
 
+    
 	public Granule createGranule(long chronon, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
@@ -198,6 +199,14 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return createGranule(calInf,calSup,granularity);
 	}
 	
+	/**
+	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
+	 * {@link Granule} instead.
+	 * @param date the {@link Date} used to generate the granule
+	 * @param granularity granularity the {@link Granularity} to which the granule belongs
+	 * @return the constructed {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */ 
 	public Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
@@ -246,14 +255,22 @@ public class JavaDateCalendarManager implements CalendarManager {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#getGranularityIdentifiers()
+	/**
+	 * Returns an {@link Array} of granularity identifiers that are provided by the calendar.
+	 * @return {@link Array} of granularity identifiers
 	 */
 	@Override
 	public int[] getGranularityIdentifiers() {
 		return new int[] {0,1,2,3,4,5,6,7,8,32767};
 	}
 
+	/**
+	 * Calculate and return the identifier of a {@link Granule}. An identifier is a numeric label given in the context
+	 * of the {@link Granularity}. Consider using the adequate method of
+	 * {@link Granule} instead.
+	 * @return the identifier
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
+	 */
 	@Override
 	public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
 		long result = 0;
@@ -514,18 +531,33 @@ public class JavaDateCalendarManager implements CalendarManager {
 		}
 	}
 
-//	@Override
-//	public Long getSup(Granule granule) throws TemporalDataException {
-//	}
-	
+	/**
+	 * Returns the identifier of the bottom granularity
+	 * @return the bottom granularity identifier
+	 */
 	public int getBottomGranularityIdentifier() {
 		return 0;
 	}
 	
+	/**
+	 * Returns the identifier of the top granularity
+	 * @return the top granularity identifier
+	 */
 	public int getTopGranularityIdentifier() {
 		return 16383;
 	}
 
+	/**
+	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GANULE mode} and
+	 * for a given {@link Granularity}.
+	 * Consider using the adequate constructor of {@link Granule} instead.
+	 * @param inf the chronon that determines the start of the granule constructed
+	 * @param sup the chronon that determines the end of the granule constructed
+	 * @param mode the {@linkplain Granule#MODE_INF_GANULE mode} used to construct the granule
+	 * @param granularity the {@link Granularity} to use
+	 * @return the constructed {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
+	 */
 	@Override
 	public Granule createGranule(long inf, long sup, int mode, Granularity granularity) throws TemporalDataException {
 		switch(mode) {
@@ -543,8 +575,16 @@ public class JavaDateCalendarManager implements CalendarManager {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#createGranules(long, long, double, timeBench.calendar.Granularity)
+	/**
+	 * Constructs several {@link Granule} objects from inf to sup that are at least partly in the given interval with
+	 * a coverage of a least a given fraction and
+	 * for a given {@link Granularity}. Consider using the adequate factory of {@link Granularity} instead.
+	 * @param inf the chronon that determines the start of the {@link Granule} range constructed
+	 * @param sup the chronon that determines the end of the {@link Granule} range constructed
+	 * @param cover the coverage fraction of a granule needed to be included in the result
+	 * @param granularity the {@link Granularity} to use
+	 * @return the constructed {@link Array} of {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
 	@Override
 	public Granule[] createGranules(long inf, long sup, double cover,
@@ -577,9 +617,17 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#createGranules(timeBench.calendar.Granule[], double, timeBench.calendar.Granularity)
+	/**
+	 * Constructs several {@link Granule} objects from other {@link Granule} objects for a given {@link Granularity}
+	 * that can (and most likely
+	 * will) be in a different {@link Granularity}. All {@link Granule} with
+	 * a coverage of a least a given fraction are returned.
+	 * Consider using the adequate factory of {@link Granularity} instead.
+	 * @param Granule[] the {@link Array} of {@link Granule} used as source
+	 * @param cover the coverage fraction of a granule needed to be included in the result
+	 * @param granularity the {@link Granularity} to use
+	 * @return the constructed {@link Array} of {@link Granule}
+	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
 	@Override
 	public Granule[] createGranules(Granule[] granules, double cover,
@@ -595,8 +643,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return (Granule[])result.toArray();
 	}
 
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#createGranuleLabel(timeBench.calendar.Granule)
+	/**
+	 * Calculate and return the human readable label of a {@link Granule}.
+	 * Consider using the adequate method of
+	 * {@link Granule} instead.
+	 * @return the label
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
 	@Override
 	public String createGranuleLabel(Granule granule) throws TemporalDataException {
@@ -627,8 +679,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#createInf(timeBench.calendar.Granule)
+	/**
+	 * Calculate and return the inf of a {@link Granule}.
+	 * @return the inf
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
 	@Override
 	public long createInf(Granule granule) throws TemporalDataException {
@@ -678,9 +732,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see timeBench.calendar.CalendarManager#createSup(timeBench.calendar.Granule)
+	/**
+	 * Calculate and return the sup of a {@link Granule}.
+	 * @return the sup
+	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
 	@Override
 	public long createSup(Granule granule) throws TemporalDataException {

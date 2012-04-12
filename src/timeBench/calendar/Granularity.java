@@ -62,7 +62,6 @@ public class Granularity {
 	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
 	 * {@link Granule} instead.
 	 * @param date the {@link Date} used to generate the granule
-	 * @param granularity granularity the {@link Granularity} to which the granule belongs
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */ 
@@ -122,7 +121,7 @@ public class Granularity {
 
 	/**
 	 * Constructs several {@link Granule} objects from other {@link Granule} objects that can (and most likely
-	 * will) be in a different granularity. All  {@link Granule} with
+	 * will) be in a different granularity. All {@link Granule} with
 	 * a coverage of a least a given fraction are returned.
 	 * @param Granule[] the {@link Array} of {@link Granule} used as source
 	 * @param cover the coverage fraction of a granule needed to be included in the result
@@ -135,7 +134,7 @@ public class Granularity {
 	
 	/**
 	 * Calculate and return the identifier of a {@link Granule}. An identifier is a numeric label given in the context
-	 * of the {@link Granularity}. Consider using the adequate method of
+	 * of the granularity. Consider using the adequate method of
 	 * {@link Granule} instead.
 	 * @return the identifier
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
