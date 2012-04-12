@@ -9,7 +9,7 @@ import timeBench.data.TemporalDataException;
  * For creation of multiple instances, factories are given in {@link Granularity}. 
  * <p>
  * Added:         2011-07-19 / TL<br>
- * Modifications: 2012-04-11 / TL / inf, sup absolte, identifier in context
+ * Modifications: 2012-04-11 / TL / inf, sup absolute, identifier in context
  * </p>
  * 
  * @author Tim Lammarsch

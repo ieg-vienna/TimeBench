@@ -9,7 +9,7 @@ import timeBench.data.TemporalDataException;
  * A granularity of a {@link Calendar}. Contains factories for multiple {@link Granule} instances.  
  * <p>
  * Added:         2011-07-19 / TL<br>
- * Modifications: 2012-04-11 / TL / inf, sup absolte, identifier in context
+ * Modifications: 2012-04-11 / TL / inf, sup absolute, identifier in context
  * </p>
  * 
  * @author Tim Lammarsch

@@ -10,13 +10,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import timeBench.data.TemporalDataException;
 
 /**
- * Currently maps calendar functionality to JavaDataCalendarManager.
- * In the future, will also be able to map to tauZaman and to more than
+ * Currently maps calendar functionality to CalendarManager.
+ * In the future, will be able to map to more than
  * one calendar and/or calendric system.
  * 
  * <p>
  * Added:         2011-07-19 / TL<br>
- * Modifications: 
+ * Modifications: 2012-04-11 / TL / inf, sup absolute, identifier in context, not JavaDate-only
  * </p>
  * 
  * @author Tim Lammarsch
@@ -27,22 +27,25 @@ public class Calendar {
 	private CalendarManager calendarManager = null;	
 	
 	/**
-	 * Default constructor.
-	 * @param calendarManager Link to calendarManager this calendar maps to.
+	 * Constructs a Calendar using a given {@link CalendarManager}.
+	 * @param calendarManager the {@link CalendarManager} the new calendar maps to
 	 */
 	public Calendar(CalendarManager calendarManager) {
 		this.calendarManager = calendarManager;
-	}
-	
+	}	
 	
 	/**
-	 * Provide the discrete time domain of the given calendar and calendarManager as granularity.
-	 * @return The discrete time domain as granularity.
+	 * Provide the discrete time domain of the this calendar as {@link Granularity}.
+	 * @return the discrete time domain as as {@link Granularity}
 	 */
 	public Granularity getDiscreteTimeDomain() {
 		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
 	}
     
+	/**
+	 * Provide the granularity identifiers used by this calendar.
+	 * @return granularity identifiers as {@link Array} of integers
+	 */
 	public int[] getGranularityIdentifiers() {
 		return calendarManager.getGranularityIdentifiers();
 	}
