@@ -13,6 +13,7 @@ import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -69,13 +70,18 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					}
 				}
 			}
-						
-			GenericTemporalElement te = workingDataset.addTemporalElement(0 /* TODO Interval Tree */,0 /* TODO Interval Tree */,
-					32767, 32767, TemporalDataset.PRIMITIVE_INTERVAL);
+			
+			
+			
+			GenericTemporalElement te = workingDataset.addTemporalElement(sourceDataset.getInf(),sourceDataset.getSup(),
+					0, 32767, TemporalDataset.PRIMITIVE_INTERVAL);
 			TemporalObject root = workingDataset.addTemporalObject(te);
 
 			ArrayList<ArrayList<TemporalObject>> currentLeaves = new ArrayList<ArrayList<TemporalObject>>();
 			currentLeaves.add(new ArrayList<TemporalObject>());
+			for(TemporalObject iO : sourceDataset.temporalObjects()) {
+				currentLeaves.get(0).add(iO);
+			}
 			ArrayList<TemporalObject> currentBranches = new ArrayList<TemporalObject>();
 			currentBranches.add(root);
 			for(int i=granularities.length-1; i>=0;i--) {
@@ -89,10 +95,10 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
 						TemporalObject targetBranch = null;
-					    for(int j=futureBranches.size()-1;j>=0;j++) {
+					    for(int j=futureBranches.size()-1;j>=0;j--) {
 					    	TemporalObject potentialBranch = futureBranches.get(j);
 					    	if (potentialBranch.getTemporalElement().asGeneric().getInf() <= inf &&
-					    			potentialBranch.getTemporalElement().asGeneric().getInf() >= sup) {
+					    			potentialBranch.getTemporalElement().asGeneric().getSup() >= sup) {
 					    		targetBranch = potentialBranch;
 					    	    break;
 					    	}
@@ -104,7 +110,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					    	futureLeaves.add(new ArrayList<TemporalObject>());
 					    }
 				    	currentBranches.get(k).linkWithChild(targetBranch);
-				    	futureLeaves.get(futureLeaves.size()).add(currentLeave);
+				    	futureLeaves.get(futureLeaves.size()-1).add(currentLeave);
 					}
 				}
 				if(i==0) {

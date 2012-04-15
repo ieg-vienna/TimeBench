@@ -68,7 +68,7 @@ public class Granule {
 		} else {
 			Granule g2 = granularity.createGranule(inf,sup,mode);
 			this.inf = g2.getInf();
-			this.sup = g2.getInf();
+			this.sup = g2.getSup();
 			this.granularity = granularity;
 		}
 	}
