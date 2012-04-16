@@ -136,7 +136,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 
 	private void aggregate(TemporalObject parent,int level) {
-		if (level < granularities.length-1) {
+		if (level < granularities.length) {
 			for(int i=0; i<level;i++) {
 				System.err.print(" ");
 			}
