@@ -122,7 +122,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					currentLeaves = futureLeaves;
 				}
 			}
-			
+							
 			aggregate(root,0);
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
@@ -136,8 +136,19 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 
 	private void aggregate(TemporalObject parent,int level) {
+		if (level < granularities.length-1) {
+			for(int i=0; i<level;i++) {
+				System.err.print(" ");
+			}
+			System.err.print(timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getInf()) + "-" +
+					timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildCount()+"\n");
+		}
+		int i=0;
 	    for (TemporalObject child : parent.childObjects()) {
+	    	System.err.print(i++ + ":");
 				aggregate(child,level+1);
+				if (i>200)
+					break;
 	    }
 		aggregate(parent,parent.childObjects(),level);
 	}
@@ -166,8 +177,10 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		for(int i=0; i<sourceDataset.getDataColumnCount(); i++) {
 			totalValue[i] /= numObjects[i];
 			if(Double.isNaN(totalValue[i])) {
-				minValues[i][level] = Double.NaN;
-				maxValues[i][level] = Double.NaN;
+				if (level < granularities.length ) {
+					minValues[i][level] = Double.NaN;
+					maxValues[i][level] = Double.NaN;
+				}
 			}
 		}
 	}
