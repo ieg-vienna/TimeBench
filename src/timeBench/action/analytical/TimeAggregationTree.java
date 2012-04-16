@@ -136,19 +136,23 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 
 	private void aggregate(TemporalObject parent,int level) {
-		if (level < granularities.length) {
-			for(int i=0; i<level;i++) {
-				System.err.print(" ");
-			}
-			System.err.print(timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getInf()) + "-" +
-					timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildObjectCount()+"\n");
-		}
-		int i=0;
+		//if (level < granularities.length) {
+			//for(int i=0; i<level;i++) {
+			//	System.err.print(" ");
+			//}
+			//System.err.print(timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getInf()) + "-" +
+			//		timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildObjectCount()+"\n");
+		//}
+		int j=1;
 	    for (TemporalObject child : parent.childObjects()) {
-	    	System.err.print(i++ + ":");
-				aggregate(child,level+1);
-				if (i>200)
-					break;
+			for(int i=0; i<64/Math.pow(2, level+1)*j; i++)
+				System.err.print(" ");
+			j++;
+			System.err.print(child.getTemporalElement().getGranularityId()+" "+child.getTemporalElement().getInf());	    	
+	    }
+	    System.err.print("\n");
+	    for (TemporalObject child : parent.childObjects()) {
+			aggregate(child,level+1);
 	    }
 		aggregate(parent,parent.childObjects(),level);
 	}
