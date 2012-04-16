@@ -115,7 +115,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 				}
 				if(i==0) {
 					for(int j=0; j<futureBranches.size(); j++ ) {
-						aggregate(futureBranches.get(j),futureLeaves.get(j).iterator(),granularities.length);
+						aggregate(futureBranches.get(j),futureLeaves.get(j),granularities.length);
 					}
 				} else {
 					currentBranches = futureBranches;
@@ -139,9 +139,9 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	    for (TemporalObject child : parent.childObjects()) {
 				aggregate(child,level+1);
 	    }
-		aggregate(parent,parent.childObjects().iterator(),level);
+		aggregate(parent,parent.childObjects(),level);
 	}
-	private void aggregate(TemporalObject parent,Iterator<TemporalObject> childs,int level) {		
+	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {		
 		double[] numObjects = new double[sourceDataset.getDataColumnCount()]; 
 		double[] totalValue = new double[sourceDataset.getDataColumnCount()]; 
 		for(int i=0; i<sourceDataset.getDataColumnCount(); i++) {
@@ -149,13 +149,13 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			totalValue[i] = 0;
 		}
 
-        for (TemporalObject temporalObject : parent.childObjects()) {
+        for (TemporalObject temporalObject : childs) {
 			for(int j=0; j<sourceDataset.getDataColumnCount(); j++) {
 				if(sourceDataset.getDataColumn(j).canGetDouble()) {
 					double value = temporalObject.getDouble(j);
 					totalValue[j] += value;
 					numObjects[j]++;
-					if (level >= 0 ) {
+					if (level < granularities.length ) {
 						minValues[j][level] = Math.min(minValues[j][level], value);
 						maxValues[j][level] = Math.max(maxValues[j][level], value);
 					}

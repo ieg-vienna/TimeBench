@@ -159,7 +159,7 @@ public class JavaDateCalendarManager implements CalendarManager {
         				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
         		break;
         	case Week:
-        		result = new int[] { java.util.Calendar.DAY_OF_WEEK,
+        		result = new int[] { // java.util.Calendar.DAY_OF_WEEK, commented out because only works manually
         				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
         				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
         				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
@@ -249,6 +249,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.DECEMBER);
 					break;
 			}
+		} else if(granularity.getIdentifier() == Granularities.Week.intValue) {
+			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 6) % 7;
+			calInf.setTimeInMillis(calInf.getTimeInMillis()-dow*86400000);
+			calSup.setTimeInMillis(calSup.getTimeInMillis()+(6-dow)*86400000);
 		}
 		
 		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),Granule.MODE_FORCE,granularity);
@@ -787,5 +791,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 		}
 		
 		return result;
+	}
+	
+	public static String formatDebugString(long inf) {
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(inf);
+		return String.format("%04d-%02d-%02d, %02d:%02d:%02d,%03d",cal.get(GregorianCalendar.YEAR),cal.get(GregorianCalendar.MONTH)+1,cal.get(GregorianCalendar.DAY_OF_MONTH),
+				cal.get(GregorianCalendar.HOUR_OF_DAY),cal.get(GregorianCalendar.MINUTE),cal.get(GregorianCalendar.SECOND),cal.get(GregorianCalendar.MILLISECOND));
 	}
 }
