@@ -141,7 +141,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 				System.err.print(" ");
 			}
 			System.err.print(timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getInf()) + "-" +
-					timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildCount()+"\n");
+					timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildObjectCount()+"\n");
 		}
 		int i=0;
 	    for (TemporalObject child : parent.childObjects()) {
