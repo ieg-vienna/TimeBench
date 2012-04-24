@@ -83,7 +83,7 @@ public class TextTableTemporalDatasetReader extends
         DateInstantEncoding enc = new DateInstantEncoding("default",
                 temporalColumn);
         enc.setDataColumns(dataColumns.toArray(new String[0]));
-        enc.setGranularity(calendar.getDiscreteTimeDomain());
+        enc.setGranularity(calendar.getBottomGranularity());
         spec.addEncoding(enc);
     }
 
