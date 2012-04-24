@@ -45,7 +45,9 @@ public interface CalendarManager {
 	public int getBottomGranularityIdentifier();
 	
 	/**
-	 * Returns the identifier of the top granularity
+	 * Returns the identifier of the top granularity.  This is the highest possible granularity of the calendar.
+	 * Usually, this is a granularity where one granule is composed of all the time the calendar is defined for.
+	 * Let all calendars that would normally have this be modified so they have one.
 	 * @return the top granularity identifier
 	 */
 	public int getTopGranularityIdentifier();
