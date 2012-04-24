@@ -65,7 +65,7 @@ public class Granularity {
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */ 
-    public Granule createGranule(Date date) throws TemporalDataException {
+    protected Granule createGranule(Date date) throws TemporalDataException {
         return calendar.createGranule(date, this);
     }
 
@@ -79,7 +79,7 @@ public class Granularity {
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-    public Granule createGranule(long inf,long sup,int mode) throws TemporalDataException {
+    protected Granule createGranule(long inf,long sup,int mode) throws TemporalDataException {
 		return calendar.createGranule(inf,sup,mode,this);
 	}
 	
@@ -139,7 +139,7 @@ public class Granularity {
 	 * @return the identifier
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-    public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
+    protected long createGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendar.createGranuleIdentifier(granule);		
 	}
 	
@@ -150,7 +150,7 @@ public class Granularity {
 	 * @return the label
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-    public String createGranuleLabel(Granule granule) throws TemporalDataException {
+    protected String createGranuleLabel(Granule granule) throws TemporalDataException {
 		return calendar.createGranuleLabel(granule);		
 	}
 

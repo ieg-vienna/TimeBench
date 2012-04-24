@@ -190,7 +190,7 @@ public class JavaDateCalendarManager implements CalendarManager {
     }
 
     
-	public Granule createGranule(long chronon, Granularity granularity) throws TemporalDataException {
+    protected Granule createGranule(long chronon, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
 		calInf.setTimeInMillis(chronon);

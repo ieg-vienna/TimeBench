@@ -35,10 +35,11 @@ public class Calendar {
 	}	
 	
 	/**
-	 * Provide the discrete time domain of the this calendar as {@link Granularity}.
-	 * @return the discrete time domain as as {@link Granularity}
+	 * Provide the bottom granularity of the this calendar as {@link Granularity}.
+	 * For many calendars, it consists of the chronons of the discrete time domain.
+	 * @return the bottom granularity as as {@link Granularity}
 	 */
-	public Granularity getDiscreteTimeDomain() {
+	public Granularity getBottomGranularity() {
 		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
 	}
     
@@ -74,7 +75,7 @@ public class Calendar {
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */ 
-	public Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
+    protected Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranule(date,granularity);
 	}
 
@@ -89,7 +90,7 @@ public class Calendar {
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule createGranule(long inf, long sup, int mode,
+    protected Granule createGranule(long inf, long sup, int mode,
 			Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranule(inf,sup,mode, granularity);
 	}
@@ -105,7 +106,7 @@ public class Calendar {
 	 * @return the constructed {@link Array} of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule[] createGranules(long inf, long sup, double cover,
+    protected Granule[] createGranules(long inf, long sup, double cover,
 			Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranules(inf,sup,cover,granularity);
 	}
@@ -122,7 +123,7 @@ public class Calendar {
 	 * @return the constructed {@link Array} of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	 public Granule[] createGranules(Granule[] granules, double cover,
+    protected Granule[] createGranules(Granule[] granules, double cover,
 			Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranules(granules,cover, granularity);
 	}
@@ -134,7 +135,7 @@ public class Calendar {
 	 * @return the identifier
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	 public long createGranuleIdentifier(Granule granule) throws TemporalDataException {
+    protected long createGranuleIdentifier(Granule granule) throws TemporalDataException {
 		return calendarManager.createGranuleIdentifier(granule);
 	}
 
@@ -145,7 +146,7 @@ public class Calendar {
 	 * @return the label
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	 public String createGranuleLabel(Granule granule) throws TemporalDataException {
+    protected String createGranuleLabel(Granule granule) throws TemporalDataException {
 		return calendarManager.createGranuleLabel(granule);
 	}
 
@@ -154,7 +155,7 @@ public class Calendar {
 	 * @return the inf
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public long createInf(Granule granule) throws TemporalDataException {
+    protected long createInf(Granule granule) throws TemporalDataException {
 		return calendarManager.createInf(granule);
 	}
 
@@ -163,7 +164,7 @@ public class Calendar {
 	 * @return the sup
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public long createSup(Granule granule) throws TemporalDataException {
+    protected long createSup(Granule granule) throws TemporalDataException {
 		return calendarManager.createSup(granule);
 	}
 }
