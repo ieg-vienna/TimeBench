@@ -308,7 +308,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             throws SAXException {
         keyAtts.setValue(0, id);
         keyAtts.setValue(1, id);
-        keyAtts.setValue(2, TYPES.get(type));
+        keyAtts.setValue(2, (String) TYPES.get(type));
         hd.startElement(GRAPHML_NS, Tokens.KEY, Tokens.KEY, keyAtts);
         hd.endElement(GRAPHML_NS, Tokens.KEY, Tokens.KEY);
     }

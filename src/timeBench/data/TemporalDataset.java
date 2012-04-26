@@ -518,6 +518,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         
         // TODO predicate to take advantage of interval index
         
+        // TODO temporal objects 
+        
         return indexElementIntervals;
     }
 
