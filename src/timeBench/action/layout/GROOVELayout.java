@@ -129,7 +129,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		}
 		
 		if(granularityLevel+1 < settings.length) {
-			Iterator<NodeItem> iChilds = node.inNeighbors();
+			Iterator<NodeItem> iChilds = node.inNeighbors(); // ???
 			TreeMap<Long,NodeItem> orderedChilds = new TreeMap<Long, NodeItem>();
 			while(iChilds.hasNext()) {
 				NodeItem iChild = iChilds.next();				

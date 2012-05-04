@@ -85,6 +85,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			ArrayList<TemporalObject> currentBranches = new ArrayList<TemporalObject>();
 			currentBranches.add(root);
 			for(int i=granularities.length-1; i>=0;i--) {
+				System.err.println(i);
+				int linked = 0;
 				ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
 				ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
 				for(int k=0; k<currentLeaves.size();k++) {
@@ -108,8 +110,9 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					    	targetBranch = workingDataset.addTemporalObject(newTe);
 					    	futureBranches.add(targetBranch);
 					    	futureLeaves.add(new ArrayList<TemporalObject>());
+					    	currentBranches.get(k).linkWithChild(targetBranch);
+					    	linked++;
 					    }
-				    	currentBranches.get(k).linkWithChild(targetBranch);
 				    	futureLeaves.get(futureLeaves.size()-1).add(currentLeave);
 					}
 				}
@@ -121,6 +124,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					currentBranches = futureBranches;
 					currentLeaves = futureLeaves;
 				}
+				System.err.println(linked);
 			}
 							
 			aggregate(root,0);
@@ -143,14 +147,13 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			//System.err.print(timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getInf()) + "-" +
 			//		timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildObjectCount()+"\n");
 		//}
-		int j=1;
 	    for (TemporalObject child : parent.childObjects()) {
-			for(int i=0; i<64/Math.pow(2, level+1)*j; i++)
-				System.err.print(" ");
-			j++;
-			System.err.print(child.getTemporalElement().getGranularityId()+" "+child.getTemporalElement().getInf());	    	
+			//for(int i=0; i<64/Math.pow(2, level+1); i++)
+				//System.err.print(" ");
+			//System.err.print(child.getTemporalElement().getGranularityId()+" "+child.getTemporalElement().getInf());	    	
 	    }
-	    System.err.print("\n");
+	    //if (parent.getChildObjectCount() > 0)
+	    	//System.err.print("\n");
 	    for (TemporalObject child : parent.childObjects()) {
 			aggregate(child,level+1);
 	    }
@@ -186,6 +189,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					maxValues[i][level] = Double.NaN;
 				}
 			}
+			parent.set(i,totalValue[i]);
 		}
 	}
 
