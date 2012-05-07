@@ -170,7 +170,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
         for (TemporalObject temporalObject : childs) {
 			for(int j=0; j<sourceDataset.getDataColumnCount(); j++) {
 				if(sourceDataset.getDataColumn(j).canGetDouble()) {
-					double value = temporalObject.getDouble(j);
+					double value = sourceDataset.getDataColumn(j).getDouble(temporalObject.getRow());
 					totalValue[j] += value;
 					numObjects[j]++;
 					if (level < granularities.length ) {
@@ -189,7 +189,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					maxValues[i][level] = Double.NaN;
 				}
 			}
-			parent.set(i,totalValue[i]);
+			workingDataset.getDataColumn(i).setDouble(totalValue[i],parent.getRow());
 		}
 	}
 
