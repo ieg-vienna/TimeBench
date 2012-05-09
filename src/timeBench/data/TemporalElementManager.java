@@ -176,10 +176,11 @@ public class TemporalElementManager extends TupleManager {
 
                 // if primitive has changed, invalidate primitives
                 if (col == TemporalElementManager.this.m_table
-                        .getColumnNumber(TemporalElement.KIND))
+                        .getColumnNumber(TemporalElement.KIND)) {
                     for (int r = start; r <= end; ++r) {
                         TemporalElementManager.this.invalidate(r);
                     }
+                }
                 break;
             }
             case EventConstants.DELETE:

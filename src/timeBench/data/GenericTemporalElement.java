@@ -1,6 +1,5 @@
 package timeBench.data;
 
-
 /**
  * Generic temporal element in the relational view. Following the
  * <em>proxy tuple</em> pattern [Heer & Agrawala, 2006] it provides an object
@@ -36,17 +35,56 @@ public class GenericTemporalElement extends TemporalElement {
     protected GenericTemporalElement() {
     }
 
-    public void set(long inf, long sup, int granularityId, int granularityContextId, int kind) {
+    /**
+     * set multiple fields of a temporal element at once.
+     * 
+     * @param inf
+     *            the value of the inf attribute
+     * @param sup
+     *            the value of the sup attribute
+     * @param granularityId
+     *            the granularity id
+     * @param granularityContextId
+     *            the granularity context id
+     */
+    public void set(long inf, long sup, int granularityId,
+            int granularityContextId) {
         if (isValid()) {
             m_table.set(m_row, TemporalElement.INF, inf);
             m_table.set(m_row, TemporalElement.SUP, sup);
             m_table.set(m_row, TemporalElement.GRANULARITY_ID, granularityId);
-            m_table.set(m_row, TemporalElement.GRANULARITY_CONTEXT_ID, granularityContextId);
+            m_table.set(m_row, TemporalElement.GRANULARITY_CONTEXT_ID,
+                    granularityContextId);
+        }
+    }
+
+    /**
+     * set all fields of a temporal element at once.
+     * 
+     * @param inf
+     *            the value of the inf attribute
+     * @param sup
+     *            the value of the sup attribute
+     * @param granularityId
+     *            the granularity id
+     * @param granularityContextId
+     *            the granularity context id
+     * @param kind
+     *            the kind of temporal element
+     */
+    public void set(long inf, long sup, int granularityId,
+            int granularityContextId, int kind) {
+        if (isValid()) {
+            m_table.set(m_row, TemporalElement.INF, inf);
+            m_table.set(m_row, TemporalElement.SUP, sup);
+            m_table.set(m_row, TemporalElement.GRANULARITY_ID, granularityId);
+            m_table.set(m_row, TemporalElement.GRANULARITY_CONTEXT_ID,
+                    granularityContextId);
             m_table.set(m_row, TemporalElement.KIND, kind);
             this.anchoredCache = null;
         }
     }
-    
+
     /**
      * Indicates if the temporal element is anchored in time.
      * 
@@ -158,9 +196,20 @@ public class GenericTemporalElement extends TemporalElement {
     }
 
     /**
+     * Set the granularity context id.
+     * 
+     * @param granularityContextId
+     *            the granularity context id
+     */
+    public void setGranularityContextId(int granularityContextId) {
+        super.setInt(TemporalElement.GRANULARITY_CONTEXT_ID,
+                granularityContextId);
+    }
+
+    /**
      * Set the kind of temporal element.
      * 
-     * @param granularityId
+     * @param kind
      *            the kind of temporal element
      */
     public void setKind(int kind) {

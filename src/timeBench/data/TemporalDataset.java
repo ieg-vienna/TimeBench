@@ -29,6 +29,12 @@ import timeBench.data.util.IntervalTreeIndex;
  * 
  */
 public class TemporalDataset extends Graph implements Lifespan, Cloneable {
+    
+    /**
+     * ID of the first temporal object or temporal element, if it is not
+     * externally set.
+     */
+    private static final long DEFAULT_FIRST_ID = 1l;
 
     /**
      * {@link Graph} of temporal elements
@@ -475,7 +481,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      */
     public TemporalObject addTemporalObject(long temporalElementId) {
         long id = (indexObjects.size() > 0) ? super.getNodeTable().getLong(
-                this.indexObjects.maximum(), TemporalObject.ID) + 1 : 1;
+                this.indexObjects.maximum(), TemporalObject.ID) + 1
+                : DEFAULT_FIRST_ID;
 
         return addTemporalObject(id, temporalElementId);
     }
@@ -491,6 +498,31 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         return addTemporalObject(temporalElement.getId());
     }
 
+    /**
+     * Adds a batch of temporal objects to the temporal dataset. For each
+     * temporal element a new temporal object will be created.
+     * 
+     * @param elements
+     *            an array of temporal elements.
+     * @return an array of proxy tuples for the new temporal objects.
+     */
+    public TemporalObject[] addTemporalObjects(TemporalElement[] elements) {
+        long firstId = (indexObjects.size() > 0) ? super.getNodeTable()
+                .getLong(this.indexObjects.maximum(), TemporalObject.ID) + 1
+                : DEFAULT_FIRST_ID;
+
+        int[] rows = super.getNodeTable().addRows(elements.length);
+        TemporalObject[] objs = new TemporalObject[elements.length];
+
+        for (int i = 0; i < elements.length; i++) {
+            objs[i] = (TemporalObject) super.getNode(rows[i]);
+            objs[i].set(TemporalObject.ID, firstId + i);
+            objs[i].set(TemporalObject.TEMPORAL_ELEMENT_ID, elements[i].getId());
+        }
+
+        return objs;
+    }
+    
     /**
      * Create (if necessary) and return the {@link IntervalIndex} for
      * {@link TemporalElement}s. It helps in querying the elements based on
@@ -554,7 +586,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
             int granularityContextId, int kind) {
         long id = (indexElements.size() > 0) ? temporalElements.getNodeTable()
                 .getLong(this.indexElements.maximum(), TemporalElement.ID) + 1
-                : 1;
+                : DEFAULT_FIRST_ID;
         return addTemporalElementAsRow(id, inf, sup, granularityId,
                 granularityContextId, kind);
     }
@@ -640,6 +672,36 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 granularityContextId, kind);
         return (GenericTemporalElement) this.temporalGenerics.getTuple(row);
 
+    }
+    
+    /**
+     * Adds a batch of temporal elements to the temporal dataset. All will be of
+     * the given kind.
+     * 
+     * @param nTuples
+     *            the number of elements to add.
+     * @param kind
+     *            the kind of the temporal elements.
+     * @return an array of proxy tuples for the new temporal elements.
+     */
+    public GenericTemporalElement[] addTemporalElements(int nTuples, int kind) {
+        Table nodeTable = temporalElements.getNodeTable();
+
+        long firstId = (indexElements.size() > 0) ? nodeTable.getLong(
+                this.indexElements.maximum(), TemporalElement.ID) + 1
+                : DEFAULT_FIRST_ID;
+
+        int[] rows = nodeTable.addRows(nTuples);
+        GenericTemporalElement[] elems = new GenericTemporalElement[nTuples];
+
+        for (int i = 0; i < nTuples; i++) {
+            nodeTable.set(rows[i], TemporalElement.ID, firstId + i);
+            nodeTable.set(rows[i], TemporalElement.KIND, kind);
+            elems[i] = (GenericTemporalElement) this.temporalGenerics
+                    .getTuple(rows[i]);
+        }
+
+        return elems;
     }
     
     /**
