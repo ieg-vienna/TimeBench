@@ -140,20 +140,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 
 	private void aggregate(TemporalObject parent,int level) {
-		//if (level < granularities.length) {
-			//for(int i=0; i<level;i++) {
-			//	System.err.print(" ");
-			//}
-			//System.err.print(timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getInf()) + "-" +
-			//		timeBench.calendar.JavaDateCalendarManager.formatDebugString(parent.getTemporalElement().asGeneric().getSup()) + " / "+parent.getChildObjectCount()+"\n");
-		//}
-	    for (TemporalObject child : parent.childObjects()) {
-			//for(int i=0; i<64/Math.pow(2, level+1); i++)
-				//System.err.print(" ");
-			//System.err.print(child.getTemporalElement().getGranularityId()+" "+child.getTemporalElement().getInf());	    	
-	    }
-	    //if (parent.getChildObjectCount() > 0)
-	    	//System.err.print("\n");
+
 	    for (TemporalObject child : parent.childObjects()) {
 			aggregate(child,level+1);
 	    }
@@ -171,11 +158,13 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			for(int j=0; j<sourceDataset.getDataColumnCount(); j++) {
 				if(sourceDataset.getDataColumn(j).canGetDouble()) {
 					double value = sourceDataset.getDataColumn(j).getDouble(temporalObject.getRow());
-					totalValue[j] += value;
-					numObjects[j]++;
-					if (level < granularities.length ) {
-						minValues[j][level] = Math.min(minValues[j][level], value);
-						maxValues[j][level] = Math.max(maxValues[j][level], value);
+					if (value != -1) {
+						totalValue[j] += value;
+						numObjects[j]++;
+						if (level < granularities.length ) {
+							minValues[j][level] = Math.min(minValues[j][level], value);
+							maxValues[j][level] = Math.max(maxValues[j][level], value);
+						}
 					}
 				}
 			}
