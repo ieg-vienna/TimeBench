@@ -1,5 +1,7 @@
 package timeBench.action.analytical;
 
+import ieg.prefuse.data.DataHelper;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -140,11 +142,12 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	
 
 	private void aggregate(TemporalObject parent,int level) {
-
-	    for (TemporalObject child : parent.childObjects()) {
-			aggregate(child,level+1);
+	    if (parent.getChildCount() > 0) {
+	    	for (TemporalObject child : parent.childObjects()) {
+	    		aggregate(child,level+1);
+	    	}
+	    	aggregate(parent,parent.childObjects(),level);
 	    }
-		aggregate(parent,parent.childObjects(),level);
 	}
 	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {		
 		double[] numObjects = new double[sourceDataset.getDataColumnCount()]; 
@@ -158,7 +161,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			for(int j=0; j<sourceDataset.getDataColumnCount(); j++) {
 				if(sourceDataset.getDataColumn(j).canGetDouble()) {
 					double value = sourceDataset.getDataColumn(j).getDouble(temporalObject.getRow());
-					if (value != -1) {
+					if (!Double.isNaN(value) && value != -1) {
 						totalValue[j] += value;
 						numObjects[j]++;
 						if (level < granularities.length ) {
@@ -178,7 +181,9 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					maxValues[i][level] = Double.NaN;
 				}
 			}
+			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
 			workingDataset.getDataColumn(i).setDouble(totalValue[i],parent.getRow());
+			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
 		}
 	}
 
