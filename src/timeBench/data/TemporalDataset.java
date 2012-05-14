@@ -88,6 +88,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 this.getTemporalElementSchema());
 
         // add temporal objects columns (primary and foreign key)
+        // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
         super.getNodeTable().addColumn(TemporalObject.ID, long.class, -1);
         super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
         
@@ -150,6 +151,12 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         super.getNodeTable().addColumn(name, type, defaultValue);
     }
     
+    /**
+     * Get schema of the data columns in this temporal dataset.
+     * The schema can be used to create a temporal dataset with the  
+     * 
+     * @return schema of the data columns
+     */
     public Schema getDataColumnSchema() {
         Schema dataColumns = new Schema();
         int[] cols = this.getDataColumnIndices();
@@ -168,7 +175,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * @return array of column indices.
      */
     public int[] getDataColumnIndices() {
-        // Warning
+        // WARNING: The methods assumes that the non-data columns have indices 0 and 1 
         final int TEMPORAL_OBJECT_NONDATA_COLUMS = 2;
 
         int[] cols = new int[super.getNodeTable().getColumnCount()
