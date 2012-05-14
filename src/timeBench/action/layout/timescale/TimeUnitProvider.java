@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
 
+//TODO use/replace by calendar package
+
 /**
  * <p>
  * Provides a set of {@link TimeUnit}s used by {@link BasicTimeScale} used

@@ -7,6 +7,8 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import prefuse.data.Tuple;
 
+// TODO replace by calendar package
+
 /**
  * Provides methos to truncate {@link Date}s used by {@link TimeUnit} to 'fit'
  * dates and other utils.

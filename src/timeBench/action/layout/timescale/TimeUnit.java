@@ -9,6 +9,8 @@ import timeBench.util.DateUtil;
 //import at.ac.tuwien.cs.timevis.ui.StatusBar;
 //import at.ac.tuwien.cs.timevis.ui.TimeScaleHeader;
 
+//TODO use/replace by calendar package
+
 /**
  * <p>
  * An TimeUnit represents a unit of time like Milliseconds, 50 Milliseconds,
