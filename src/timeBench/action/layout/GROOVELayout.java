@@ -1,5 +1,7 @@
 package timeBench.action.layout;
 
+import ieg.prefuse.data.DataHelper;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Hashtable;
@@ -89,6 +91,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));
 			
 		double value = node.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));
+		DataHelper.printTable(System.out,datasetProvider.getTemporalDataset().getNodeTable());
 		
 		if (granularityLevel < 0)
 			node.setVisible(false);

@@ -87,7 +87,6 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			ArrayList<TemporalObject> currentBranches = new ArrayList<TemporalObject>();
 			currentBranches.add(root);
 			for(int i=granularities.length-1; i>=0;i--) {
-				System.err.println(i);
 				int linked = 0;
 				ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
 				ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
@@ -126,11 +125,10 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					currentBranches = futureBranches;
 					currentLeaves = futureLeaves;
 				}
-				System.err.println(linked);
 			}
 							
 			aggregate(root,0);
-			DataHelper.printTable(System.out, workingDataset.getNodeTable());
+			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
 		} catch (TemporalDataException e1) {
@@ -150,18 +148,19 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	    	aggregate(parent,parent.childObjects(),level);
 	    }
 	}
-	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {		
-		double[] numObjects = new double[sourceDataset.getDataColumnCount()]; 
-		double[] totalValue = new double[sourceDataset.getDataColumnCount()]; 
-		for(int i=0; i<sourceDataset.getDataColumnCount(); i++) {
+	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {
+		int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
+		double[] numObjects = new double[dataColumnIndices.length]; 
+		double[] totalValue = new double[dataColumnIndices.length]; 
+		for(int i=0; i<dataColumnIndices.length; i++) {
 			numObjects[i] = 0;
 			totalValue[i] = 0;
 		}
 
         for (TemporalObject temporalObject : childs) {
-			for(int j=0; j<sourceDataset.getDataColumnCount(); j++) {
-				if(sourceDataset.getDataColumn(j).canGetDouble()) {
-					double value = sourceDataset.getDataColumn(j).getDouble(temporalObject.getRow());
+			for(int j=0; j<dataColumnIndices.length; j++) {
+				if(temporalObject.canGetDouble(dataColumnIndices[j])) {
+					double value = temporalObject.getDouble(dataColumnIndices[j]);
 					if (!Double.isNaN(value) && value != -1) {
 						totalValue[j] += value;
 						numObjects[j]++;
@@ -174,7 +173,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			}
 		}
 		
-		for(int i=0; i<sourceDataset.getDataColumnCount(); i++) {
+		for(int i=0; i<dataColumnIndices.length; i++) {
 			totalValue[i] /= numObjects[i];
 			if(Double.isNaN(totalValue[i])) {
 				if (level < granularities.length ) {
@@ -183,7 +182,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 				}
 			}
 			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
-			workingDataset.getDataColumn(i).setDouble(totalValue[i],parent.getRow());
+			parent.setDouble(dataColumnIndices[i],totalValue[i]);
 			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
 		}
 	}
