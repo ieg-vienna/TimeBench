@@ -186,16 +186,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         return cols;
     }
     
-    @Deprecated
-    public int getDataColumnCount() {
-        return super.getNodeTable().getColumnCount() - 2;
-    }
-    
-    @Deprecated
-    public Column getDataColumn(int index) {
-        return super.getNodeTable().getColumn(index + 2);
-    }
-
     /**
      * Set tuple managers for temporal elements, temporal primitives, and
      * temporal objects and use them in the underlying data structures.

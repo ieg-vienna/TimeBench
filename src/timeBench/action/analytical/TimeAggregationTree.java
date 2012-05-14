@@ -1,9 +1,6 @@
 package timeBench.action.analytical;
 
-import ieg.prefuse.data.DataHelper;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
@@ -15,7 +12,6 @@ import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;
-import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -61,11 +57,12 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		try {
 			workingDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
 		
-			int columnCount = sourceDataset.getDataColumnCount();
+	        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
+			int columnCount = dataColumnIndices.length;
 			minValues = new double[columnCount][granularities.length];
 			maxValues = new double[columnCount][granularities.length];
 			for(int i=0; i<columnCount;	i++) {
-				if (sourceDataset.getDataColumn(i).canGetDouble()) {
+				if (sourceDataset.getNodeTable().canGetDouble(dataColumnIndices[i])) {
 					for(int j=0; j<granularities.length; j++) {
 						minValues[i][j] = Double.MAX_VALUE;
 						maxValues[i][j] = Double.MIN_VALUE;
