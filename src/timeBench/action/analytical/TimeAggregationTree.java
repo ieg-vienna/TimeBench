@@ -130,6 +130,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			}
 							
 			aggregate(root,0);
+			DataHelper.printTable(System.out, workingDataset.getNodeTable());
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
 		} catch (TemporalDataException e1) {
