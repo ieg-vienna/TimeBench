@@ -93,8 +93,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 this.getTemporalElementSchema());
 
         // add temporal objects columns (primary and foreign key)
-        super.addColumn(TemporalObject.ID, long.class, -1);
-        super.addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
+        super.getNodeTable().addColumn(TemporalObject.ID, long.class, -1);
+        super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
         
         this.dataColumns = new Schema();
 
