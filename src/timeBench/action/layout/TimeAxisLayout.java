@@ -39,7 +39,9 @@ public class TimeAxisLayout extends Layout {
     protected Predicate m_filter = null;
 
     /**
-     * Create a new TimeAxisLayout. Defaults to using the x-axis.
+     * Create a new TimeAxisLayout. Defaults to using the x-axis. A
+     * {@link TimeScale} must be set by calling
+     * {@link TimeLayout#setTimeScale(TimeScale)} to enable this {@link Layout}.
      * 
      * @param group
      *            the data group to layout
@@ -53,13 +55,12 @@ public class TimeAxisLayout extends Layout {
      * 
      * @param group
      *            the data group to layout
-     * @param axis
-     *            the axis type, either {@link prefuse.Constants#X_AXIS} or
-     *            {@link prefuse.Constants#Y_AXIS}.
+     * @param timeScale
+     *            the {@link TimeScale} used to layout items
      */
-    public TimeAxisLayout(String group, int axis) {
+    public TimeAxisLayout(String group, TimeScale timeScale) {
         this(group);
-        setAxis(axis);
+        setTimeScale(timeScale);
     }
 
     /**
@@ -70,12 +71,15 @@ public class TimeAxisLayout extends Layout {
      * @param axis
      *            the axis type, either {@link prefuse.Constants#X_AXIS} or
      *            {@link prefuse.Constants#Y_AXIS}.
+     * @param timeScale
+     *            the {@link TimeScale} used to layout items
      * @param filter
      *            an optional predicate filter for limiting which items to
      *            layout.
      */
-    public TimeAxisLayout(String group, int axis, Predicate filter) {
-        this(group, axis);
+    public TimeAxisLayout(String group, int axis, TimeScale timeScale, Predicate filter) {
+        this(group, timeScale);
+        setAxis(axis);
         setFilter(filter);
     }
 
