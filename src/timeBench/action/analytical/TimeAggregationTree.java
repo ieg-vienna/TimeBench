@@ -56,6 +56,8 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	public void run(double frac) {
 		try {
 			workingDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
+			
+			workingDataset.addColumn("GranuleIdentifier", Granule.class); 
 		
 	        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
 			int columnCount = dataColumnIndices.length;
@@ -84,7 +86,6 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			ArrayList<TemporalObject> currentBranches = new ArrayList<TemporalObject>();
 			currentBranches.add(root);
 			for(int i=granularities.length-1; i>=0;i--) {
-				int linked = 0;
 				ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
 				ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
 				for(int k=0; k<currentLeaves.size();k++) {
@@ -104,12 +105,13 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					    	}
 					    }
 					    if (targetBranch == null) {
-					    	Instant newTe = workingDataset.addInstant(new Granule(inf,sup,granularities[i]));
+					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
+					    	Instant newTe = workingDataset.addInstant(newGranule);
 					    	targetBranch = workingDataset.addTemporalObject(newTe);
+					    	targetBranch.set("GranuleIdentifier", newGranule);
 					    	futureBranches.add(targetBranch);
-					    	futureLeaves.add(new ArrayList<TemporalObject>());
+					    	futureLeaves.add(new ArrayList<TemporalObject>());					    	
 					    	currentBranches.get(k).linkWithChild(targetBranch);
-					    	linked++;
 					    }
 				    	futureLeaves.get(futureLeaves.size()-1).add(currentLeave);
 					}
