@@ -36,7 +36,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	Granularity[] granularities;	
 	double[][] minValues;
 	double[][] maxValues;
-	Double missingValueIdentifier;
+	double missingValueIdentifier;
 
 	/**
 	 * @param data
@@ -161,7 +161,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			for(int j=0; j<dataColumnIndices.length; j++) {
 				if(temporalObject.canGetDouble(dataColumnIndices[j])) {
 					double value = temporalObject.getDouble(dataColumnIndices[j]);
-					if (!Double.isNaN(value) && value != -1) {
+					if (!Double.isNaN(value) && value != missingValueIdentifier) {
 						totalValue[j] += value;
 						numObjects[j]++;
 						if (level < granularities.length ) {
