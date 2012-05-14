@@ -76,11 +76,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     private IntervalIndex indexElementIntervals = null;
     
     /**
-     * additional data fields of {@link TemporalObject}s.
-     */
-    private Schema dataColumns;
-    
-    /**
      * Constructs an empty {@link TemporalDataset}
      */
     public TemporalDataset() {
@@ -96,8 +91,6 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         super.getNodeTable().addColumn(TemporalObject.ID, long.class, -1);
         super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
         
-        this.dataColumns = new Schema();
-
         // add indices
         this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
         this.indexObjectsByElements = super.getNodeTable().index(
@@ -155,21 +148,45 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         }
 
         super.getNodeTable().addColumn(name, type, defaultValue);
-        
-        this.dataColumns.addColumn(name, type, defaultValue);
     }
     
     public Schema getDataColumnSchema() {
-        return (Schema) dataColumns.clone();
+        Schema dataColumns = new Schema();
+        int[] cols = this.getDataColumnIndices();
+        Table table = this.getNodeTable();
+        for (int i = 0; i < cols.length; i++) {
+            dataColumns.addColumn(table.getColumnName(cols[i]), 
+                    table.getColumnType(cols[i]), 
+                    table.getColumn(cols[i]).getDefaultValue());
+        }
+        return dataColumns;
     }
     
+    /**
+     * Get column indices for application-specific data.
+     * 
+     * @return array of column indices.
+     */
+    public int[] getDataColumnIndices() {
+        // Warning
+        final int TEMPORAL_OBJECT_NONDATA_COLUMS = 2;
+
+        int[] cols = new int[super.getNodeTable().getColumnCount()
+                - TEMPORAL_OBJECT_NONDATA_COLUMS];
+        for (int i = 0; i < cols.length; i++) {
+            cols[i] = i + TEMPORAL_OBJECT_NONDATA_COLUMS;
+        }
+        return cols;
+    }
+    
+    @Deprecated
     public int getDataColumnCount() {
-        return dataColumns.getColumnCount();
+        return super.getNodeTable().getColumnCount() - 2;
     }
     
+    @Deprecated
     public Column getDataColumn(int index) {
-        String fieldName = dataColumns.getColumnName(index);
-        return super.getNodeTable().getColumn(fieldName);
+        return super.getNodeTable().getColumn(index + 2);
     }
 
     /**
