@@ -92,7 +92,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));
 			
 		double value = node.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));
-		DataHelper.printTable(System.out,datasetProvider.getTemporalDataset().getNodeTable());
+		//DataHelper.printTable(System.out,datasetProvider.getTemporalDataset().getNodeTable());
 		
 		if (granularityLevel < 0)
 			node.setVisible(false);
@@ -132,24 +132,15 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			}
 		}
 		
-		if(granularityLevel+1 < settings.length) {
+		if(granularityLevel < settings.length) {
 			Iterator<NodeItem> iChilds = node.inNeighbors();
-			TreeMap<Long,NodeItem> orderedChilds = new TreeMap<Long, NodeItem>();
 			int numberOfSubElements = Integer.MIN_VALUE;
 			while(iChilds.hasNext()) {
 				NodeItem iChild = iChilds.next();				
-				orderedChilds.put(((TemporalObject)iChild.getSourceTuple()).getTemporalElement().asGeneric().getInf(), iChild);
+				Granule granule = (Granule)iChild.get("GranuleIdentifier");
 				if(numberOfSubElements == Integer.MIN_VALUE) {
-					Granule granule = (Granule)iChild.get("GranuleIdentifier");
 					numberOfSubElements = (int)(granule.getGranularity().getMaxGranuleIdentifier()-granule.getGranularity().getMinGranuleIdentifier()+1);
 				}
-			}
-			Long iKey = orderedChilds.firstKey();
-			for(int i=0; iKey != null; i++)
-			{
-				NodeItem iChild = orderedChilds.get(iKey);
-				Granule granule = (Granule)iChild.get("GranuleIdentifier");
-				iKey = orderedChilds.higherKey(iKey);
 				Rectangle subPosition = (Rectangle)position.clone();
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
 					subPosition.x += position.width/numberOfSubElements*granule.getIdentifier();
