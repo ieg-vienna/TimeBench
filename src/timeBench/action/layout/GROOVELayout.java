@@ -132,7 +132,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			}
 		}
 		
-		if(granularityLevel < settings.length) {
+		if(granularityLevel + 1 < settings.length) {
 			Iterator<NodeItem> iChilds = node.inNeighbors();
 			int numberOfSubElements = Integer.MIN_VALUE;
 			while(iChilds.hasNext()) {
