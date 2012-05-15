@@ -135,26 +135,27 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		if(granularityLevel+1 < settings.length) {
 			Iterator<NodeItem> iChilds = node.inNeighbors();
 			TreeMap<Long,NodeItem> orderedChilds = new TreeMap<Long, NodeItem>();
+			int numberOfSubElements = Integer.MIN_VALUE;
 			while(iChilds.hasNext()) {
 				NodeItem iChild = iChilds.next();				
 				orderedChilds.put(((TemporalObject)iChild.getSourceTuple()).getTemporalElement().asGeneric().getInf(), iChild);
+				if(numberOfSubElements == Integer.MIN_VALUE) {
+					Granule granule = (Granule)iChild.get("GranuleIdentifier");
+					numberOfSubElements = (int)(granule.getGranularity().getMaxGranuleIdentifier()-granule.getGranularity().getMinGranuleIdentifier()+1);
+				}
 			}
-			int numberOfSubElements = orderedChilds.size();
 			Long iKey = orderedChilds.firstKey();
 			for(int i=0; iKey != null; i++)
 			{
 				NodeItem iChild = orderedChilds.get(iKey);
+				Granule granule = (Granule)iChild.get("GranuleIdentifier");
 				iKey = orderedChilds.higherKey(iKey);
 				Rectangle subPosition = (Rectangle)position.clone();
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
-					Granule granule = (Granule)iChild.get("GranuleIdentifier");
-					granule.getIdentifier();
-					granule.getGranularity().getMinGranuleIdentifier();
-					granule.getGranularity().getMaxGranuleIdentifier();
-					subPosition.x += position.width/numberOfSubElements*i;
+					subPosition.x += position.width/numberOfSubElements*granule.getIdentifier();
 					subPosition.width = position.width/numberOfSubElements;
 				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
-					subPosition.y += position.height/numberOfSubElements*i;
+					subPosition.y += position.height/numberOfSubElements*granule.getIdentifier();
 					subPosition.height = position.height/numberOfSubElements;					
 				}			
 				if (granularityLevel >= 0)
