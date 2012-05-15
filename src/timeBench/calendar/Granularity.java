@@ -171,4 +171,22 @@ public class Granularity {
     public Long createSup(Granule granule) throws TemporalDataException {
 		return calendar.createSup(granule);
 	}
+
+	/**
+	 * Provide the minimum identifier value that granules of this granularity can assume.
+	 * @return the minimum granule identifier value
+	 * @throws TemporalDataException thrown when granularity has illegal identifiers
+	 */
+	public long getMinGranuleIdentifier() throws TemporalDataException {
+		return calendar.getMinGranuleIdentifier(this);		
+	}
+
+	/**
+	 * Provide the maximum identifier value that granules of this granularity can assume.
+	 * @return the maximum granule identifier value
+	 * @throws TemporalDataException thrown when granularity has illegal identifiers
+	 */
+	public long getMaxGranuleIdentifier() throws TemporalDataException {
+		return calendar.getMaxGranuleIdentifier(this);		
+	}
 }

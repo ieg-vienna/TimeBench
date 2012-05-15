@@ -19,6 +19,7 @@ import timeBench.action.analytical.MinMaxValuesProvider;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.Granule;
 import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
 
@@ -146,6 +147,10 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 				iKey = orderedChilds.higherKey(iKey);
 				Rectangle subPosition = (Rectangle)position.clone();
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
+					Granule granule = (Granule)iChild.get("GranuleIdentifier");
+					granule.getIdentifier();
+					granule.getGranularity().getMinGranuleIdentifier();
+					granule.getGranularity().getMaxGranuleIdentifier();
 					subPosition.x += position.width/numberOfSubElements*i;
 					subPosition.width = position.width/numberOfSubElements;
 				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {

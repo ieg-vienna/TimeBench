@@ -801,4 +801,248 @@ public class JavaDateCalendarManager implements CalendarManager {
 		return String.format("%04d-%02d-%02d, %02d:%02d:%02d,%03d",cal.get(GregorianCalendar.YEAR),cal.get(GregorianCalendar.MONTH)+1,cal.get(GregorianCalendar.DAY_OF_MONTH),
 				cal.get(GregorianCalendar.HOUR_OF_DAY),cal.get(GregorianCalendar.MINUTE),cal.get(GregorianCalendar.SECOND),cal.get(GregorianCalendar.MILLISECOND));
 	}
+
+	/**
+	 * Provide the minimum identifier value that granules of a granularity can assume.
+	 * @param granularity the granularity
+	 * @return the minimum granule identifier value
+	 * @throws TemporalDataException thrown when granularity has illegal identifiers
+	 */
+	@Override
+	public long getMinGranuleIdentifier(Granularity granularity) throws TemporalDataException {
+		switch(Granularities.fromInt(granularity.getIdentifier())) {
+			case Millisecond:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Second:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Minute:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Hour:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Day:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Week:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Month:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Quarter:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Year:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+		}
+		
+		return 0;
+	}
+
+	/**
+	 * Provide the maximum identifier value that granules of a granularity can assume.
+	 * @param granularity the granularity
+	 * @return the maximum granule identifier value
+	 * @throws TemporalDataException thrown when granularity has illegal identifiers
+	 */
+	@Override
+	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException {
+		switch(Granularities.fromInt(granularity.getIdentifier())) {
+			case Millisecond:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Second:
+						return 999;
+					case Minute:
+						return 59999;
+					case Hour:
+						return 3599999;
+					case Day:
+						return 86399999;
+					case Week:
+						return 604799999;
+					case Month:
+						return 2678399999L;
+					case Quarter:
+						return 7948799999L;
+					case Year:
+						return 31622399999L;
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 1000;						
+				}
+			case Second:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Minute:
+						return 59;
+					case Hour:
+						return 3599;
+					case Day:
+						return 86399;
+					case Week:
+						return 604799;
+					case Month:
+						return 2678399;
+					case Quarter:
+						return 7948799;
+					case Year:
+						return 31622399;
+					case Calendar:
+					case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+				}
+			case Minute:
+				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+					case Hour:
+						return 59;
+					case Day:
+						return 1439;
+					case Week:
+						return 10079;
+					case Month:
+						return 44639;
+					case Quarter:
+						return 132479;
+					case Year:
+						return 527039;
+					case Calendar:
+						case Top:
+						return Long.MIN_VALUE;
+					default:
+						return 0;						
+			}
+		case Hour:
+			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				case Day:
+					return 23;
+				case Week:
+					return 167;
+				case Month:
+					return 743;
+				case Quarter:
+					return 2207;
+				case Year:
+					return 8783;
+				case Calendar:
+				case Top:
+					return Long.MIN_VALUE;
+				default:
+					return 0;						
+			}
+		case Day:
+			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				case Week:
+					return 6;
+				case Month:
+					return 30;
+				case Quarter:
+					return 91;				
+				case Year:
+					return 365;				
+					case Calendar:
+				case Top:
+					return Long.MIN_VALUE;
+				default:
+					return 0;						
+			}
+		case Week:
+			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				case Month:
+					return 5;
+				case Quarter:
+					return 13;
+				case Year:
+					return 51;				
+				case Calendar:
+				case Top:
+					return Long.MIN_VALUE;
+				default:
+					return 0;						
+			}
+		case Month:
+			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				case Quarter:
+					return 2;
+				case Year:
+					return 11;				
+				case Calendar:
+				case Top:
+					return Long.MIN_VALUE;
+				default:
+					return 0;						
+			}
+		case Quarter:
+			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				case Year:
+					return 3;
+				case Calendar:
+				case Top:
+					return Long.MIN_VALUE;
+				default:
+					return 0;						
+			}
+		case Year:
+			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				case Calendar:
+				case Top:
+					return Long.MIN_VALUE;
+				default:
+					return 0;						
+			}
+	}
+		
+		return 0;
+	}
 }

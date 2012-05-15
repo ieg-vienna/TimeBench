@@ -136,4 +136,20 @@ public interface CalendarManager {
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
 	public long createSup(Granule granule) throws TemporalDataException;
+
+	/**
+	 * Provide the minimum identifier value that granules of a granularity can assume.
+	 * @param granularity the granularity
+	 * @return the minimum granule identifier value
+	 * @throws TemporalDataException  thrown when granularity has illegal identifiers
+	 */
+	public long getMinGranuleIdentifier(Granularity granularity) throws TemporalDataException;
+
+	/**
+	 * Provide the maximum identifier value that granules of a granularity can assume.
+	 * @param granularity the granularity
+	 * @return the maximum granule identifier value
+	 * @throws TemporalDataException thrown when granularity has illegal identifiers
+	 */
+	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException;
 }
