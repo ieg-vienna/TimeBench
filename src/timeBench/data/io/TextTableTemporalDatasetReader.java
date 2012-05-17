@@ -1,8 +1,13 @@
 package timeBench.data.io;
 
+import ieg.util.xml.JaxbMarshaller;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.TreeMap;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 
@@ -37,6 +42,13 @@ public class TextTableTemporalDatasetReader extends
     public TextTableTemporalDatasetReader(TemporalDataColumnSpecification spec) {
         super();
         this.spec = spec;
+    }
+
+    public TextTableTemporalDatasetReader(String xmlFile) throws IOException,
+            JAXBException {
+        super();
+        this.spec = (TemporalDataColumnSpecification) JaxbMarshaller.loadUser(
+                xmlFile, TemporalDataColumnSpecification.class);
     }
 
     @Override
