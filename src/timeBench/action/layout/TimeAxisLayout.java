@@ -10,6 +10,8 @@ import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TupleSet;
 import prefuse.visual.VisualItem;
 import timeBench.action.layout.timescale.TimeScale;
+import timeBench.data.GenericTemporalElement;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -21,8 +23,8 @@ import timeBench.data.TemporalObject;
  * s {@link TimeScale#getPixelForDate(long)}.
  * 
  * <p>
- * Added: 2012-05-14 / AR<br>
- * Modifications: 2012-XX-XX / YY / zzz
+ * Added: 2012-05-14 / AR (based on work by Peter Weishapl)<br>
+ * Modifications: 2012-05-17 / AR / Placement of items on INF, SUP, or middle
  * </p>
  * 
  * @author Rind, peterw
@@ -35,6 +37,8 @@ public class TimeAxisLayout extends Layout {
     protected TimeScale timeScale;
 
     private int m_axis = Constants.X_AXIS;
+
+    private Placement placement = Placement.MIDDLE;
 
     protected Predicate m_filter = null;
 
@@ -77,9 +81,11 @@ public class TimeAxisLayout extends Layout {
      *            an optional predicate filter for limiting which items to
      *            layout.
      */
-    public TimeAxisLayout(String group, int axis, TimeScale timeScale, Predicate filter) {
+    public TimeAxisLayout(String group, int axis, TimeScale timeScale, Placement placement,
+            Predicate filter) {
         this(group, timeScale);
         setAxis(axis);
+        setPlacement(placement);
         setFilter(filter);
     }
 
@@ -120,14 +126,17 @@ public class TimeAxisLayout extends Layout {
      *            the item to layout
      */
     protected void layoutItem(VisualItem vi) {
-        TemporalObject to = (TemporalObject) vi.getSourceTuple();
-        // TODO check inf/sup
-        long time = to.getTemporalElement().getInf();
+        GenericTemporalElement te = ((TemporalObject) vi.getSourceTuple())
+                .getTemporalElement();
+        long time = (placement == Placement.INF) ? te.getInf()
+                : (placement == Placement.SUP) ? te.getSup()
+                        : (te.getInf() + te.getSup()) / 2;
+        int pixel = timeScale.getPixelForDate(time);
 
         if (m_axis == Constants.X_AXIS) {
-            vi.setX(timeScale.getPixelForDate(time));
+            vi.setX(pixel);
         } else {
-            vi.setY(timeScale.getPixelForDate(time));
+            vi.setY(pixel);
         }
     }
 
@@ -189,5 +198,30 @@ public class TimeAxisLayout extends Layout {
      */
     public void setFilter(Predicate filter) {
         m_filter = filter;
+    }
+
+    /**
+     * Get whether the layout should consider the infimum, supremum, or the
+     * middle of a temporal element.
+     * 
+     * @return the placement type of this layout.
+     */
+    public Placement getPlacement() {
+        return placement;
+    }
+
+    /**
+     * Set whether the layout should consider the infimum, supremum, or the
+     * middle of a temporal element.
+     * 
+     * @param placement
+     *            the placement type of this layout.
+     */
+    public void setPlacement(Placement placement) {
+        this.placement = placement;
+    }
+
+    public enum Placement {
+        INF, MIDDLE, SUP
     }
 }
