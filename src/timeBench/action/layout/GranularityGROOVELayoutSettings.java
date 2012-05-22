@@ -9,6 +9,7 @@ public class GranularityGROOVELayoutSettings {
     private int colorCalculation;
     private boolean colorOverlay;
     private int sourceColumn;
+    private int fitting;
 
     @Deprecated
     public GranularityGROOVELayoutSettings() {
@@ -16,13 +17,14 @@ public class GranularityGROOVELayoutSettings {
 
     public GranularityGROOVELayoutSettings(int sourceColumn, int orientation,
             boolean visible, int[] borderWidth, int colorCalculation,
-            boolean colorOverlay) {
+            boolean colorOverlay,int fitting) {
         this.sourceColumn = sourceColumn;
         this.orientation = orientation;
         this.visible = visible;
         this.borderWith = borderWidth;
         this.colorCalculation = colorCalculation;
         this.colorOverlay = colorOverlay;
+        this.fitting = fitting;
     }
 
     /**
@@ -40,6 +42,21 @@ public class GranularityGROOVELayoutSettings {
         this.sourceColumn = sourceColumn;
     }
 
+    /**
+     * @return the way of fitting into space
+     */
+    public int getFitting() {
+        return fitting;
+    }
+
+    /**
+     * @param fitting
+     *            the way of fitting into space
+     */
+    public void setFitting(int fitting) {
+        this.fitting = fitting;
+    }
+    
     public int getOrientation() {
         return orientation;
     }

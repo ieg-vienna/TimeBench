@@ -51,6 +51,8 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	public static final int COLOR_CALCULATION_GLOWING_METAL = 0;
 	public static final int COLOR_CALCULATION_H_BLUE_RED = 1;
 	public static final int COLOR_CALCULATION_L = 2;
+	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
+	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
 	
 	public GROOVELayout(String group,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider,
 			int columnUsed,GranularityGROOVELayoutSettings[] settings) {		
@@ -135,28 +137,40 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		if(granularityLevel + 1 < settings.length) {
 			Iterator<NodeItem> iChilds = node.inNeighbors();
 			int numberOfSubElements = Integer.MIN_VALUE;
+			long minIdent = Long.MAX_VALUE;
+			long maxIdent = Long.MIN_VALUE;
+			if(settings[granularityLevel+1].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
+				while(iChilds.hasNext()) {
+					NodeItem iChild = iChilds.next();
+					Granule granule = (Granule)iChild.get("GranuleIdentifier");
+					minIdent = Math.min(minIdent, granule.getIdentifier());
+					maxIdent = Math.max(maxIdent, granule.getIdentifier());
+				}
+				numberOfSubElements = (int)(maxIdent - minIdent + 1); 
+				iChilds = node.inNeighbors();
+			}
 			while(iChilds.hasNext()) {
 				NodeItem iChild = iChilds.next();				
 				Granule granule = (Granule)iChild.get("GranuleIdentifier");
 				if(numberOfSubElements == Integer.MIN_VALUE) {
-					numberOfSubElements = (int)(granule.getGranularity().getMaxGranuleIdentifier()-granule.getGranularity().getMinGranuleIdentifier()+1);
+					minIdent = granule.getGranularity().getMinGranuleIdentifier();
+					maxIdent = granule.getGranularity().getMaxGranuleIdentifier();
+					numberOfSubElements = (int)(maxIdent - minIdent + 1);
 				}
 				Rectangle subPosition = (Rectangle)position.clone();
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
-					subPosition.x += position.width/numberOfSubElements*granule.getIdentifier();
+					subPosition.x += position.width/numberOfSubElements*(granule.getIdentifier()-minIdent);
 					subPosition.width = position.width/numberOfSubElements;
 				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
-					subPosition.y += position.height/numberOfSubElements*granule.getIdentifier();
+					subPosition.y += position.height/numberOfSubElements*(granule.getIdentifier()-minIdent);
 					subPosition.height = position.height/numberOfSubElements;					
 				}			
-				if (granularityLevel >= 0)
-				{
-					int[] borderWidth = settings[granularityLevel+1].getBorderWith();
-					subPosition.x += borderWidth[0];
-					subPosition.y += borderWidth[1];
-					subPosition.width -= (borderWidth[0] + borderWidth[2]);
-					subPosition.height -= (borderWidth[1] + borderWidth[3]);
-				}
+
+				int[] borderWidth = settings[granularityLevel+1].getBorderWith();
+				subPosition.x += borderWidth[0];
+				subPosition.y += borderWidth[1];
+				subPosition.width -= (borderWidth[0] + borderWidth[2]);
+				subPosition.height -= (borderWidth[1] + borderWidth[3]);
 				layoutGranularity(vg,iChild, subPosition, granularityLevel+1,value);
 			}
 		}

@@ -61,11 +61,11 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		
 	        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
 			int columnCount = dataColumnIndices.length;
-			minValues = new double[columnCount][granularities.length];
-			maxValues = new double[columnCount][granularities.length];
+			minValues = new double[columnCount][granularities.length+1];
+			maxValues = new double[columnCount][granularities.length+1];
 			for(int i=0; i<columnCount;	i++) {
 				if (sourceDataset.getNodeTable().canGetDouble(dataColumnIndices[i])) {
-					for(int j=0; j<granularities.length; j++) {
+					for(int j=0; j<=granularities.length; j++) {
 						minValues[i][j] = Double.MAX_VALUE;
 						maxValues[i][j] = Double.MIN_VALUE;
 					}
@@ -163,7 +163,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					if (!Double.isNaN(value) && value != missingValueIdentifier) {
 						totalValue[j] += value;
 						numObjects[j]++;
-						if (level < granularities.length ) {
+						if (level <= granularities.length ) {
 							minValues[j][level] = Math.min(minValues[j][level], value);
 							maxValues[j][level] = Math.max(maxValues[j][level], value);
 						}
