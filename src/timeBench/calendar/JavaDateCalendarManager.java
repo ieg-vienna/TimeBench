@@ -255,7 +255,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					break;
 			}
 		} else if(granularity.getIdentifier() == Granularities.Week.intValue) {
-			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 6) % 7;
+			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 5) % 7;
 			calInf.setTimeInMillis(calInf.getTimeInMillis()-dow*86400000);
 			calSup.setTimeInMillis(calSup.getTimeInMillis()+(6-dow)*86400000);
 		}
@@ -302,7 +302,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC")); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*86400000 + granule.getInf()%86400000;
+						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)+5%7)*86400000 + granule.getInf()%86400000;
 						break;
 					}
 					case Month: {
@@ -338,7 +338,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*86400 + result % 86400;
+						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)+5%7)*86400 + result % 86400;
 						break;
 					}
 					case Month: {
@@ -369,7 +369,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*1440 + result % 1440;
+						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)+5%7)*1440 + result % 1440;
 						break;
 					}
 					case Month: {
@@ -398,7 +398,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_WEEK)*24 + result % 24;
+						result = (cal.get(GregorianCalendar.DAY_OF_WEEK)+5%7)*24 + result % 24;
 						break;
 					}
 					case Month: {
@@ -423,7 +423,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_WEEK);
+						result = cal.get(GregorianCalendar.DAY_OF_WEEK)+5%7;
 						break;
 					}
 					case Month: {
