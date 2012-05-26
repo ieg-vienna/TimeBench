@@ -15,6 +15,7 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
+import timeBench.test.DebugHelper;
 
 /**
  * 
@@ -130,7 +131,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 							
 			aggregate(root,0);
 			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
-			DataHelper.printGraph(System.out, root,"value");
+			DebugHelper.printTemporalDatasetGraph(System.out, root,"value");
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
 		} catch (TemporalDataException e1) {
