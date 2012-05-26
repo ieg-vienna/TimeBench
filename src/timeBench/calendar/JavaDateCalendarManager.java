@@ -222,6 +222,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	}
 	
 	private Granule createGranule(GregorianCalendar calInf, GregorianCalendar calSup, Granularity granularity) throws TemporalDataException {
+
 		for (int field : buildGranularityListForCreateGranule(granularity)) {
 			calInf.set(field, calInf.getActualMinimum(field));
 			calSup.set(field, calSup.getActualMaximum(field));		
@@ -233,25 +234,33 @@ public class JavaDateCalendarManager implements CalendarManager {
 				case GregorianCalendar.FEBRUARY:
 				case GregorianCalendar.MARCH:
 					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.JANUARY);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
 					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.MARCH);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
 					break;
 				case GregorianCalendar.APRIL:
 				case GregorianCalendar.MAY:
 				case GregorianCalendar.JUNE:
 					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.APRIL);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
 					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.JUNE);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 30);
 					break;
 				case GregorianCalendar.JULY:
 				case GregorianCalendar.AUGUST:
 				case GregorianCalendar.SEPTEMBER:
 					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.JULY);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
 					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.SEPTEMBER);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 30);
 					break;
 				case GregorianCalendar.OCTOBER:
 				case GregorianCalendar.NOVEMBER:
 				case GregorianCalendar.DECEMBER:
 					calInf.set(GregorianCalendar.MONTH,GregorianCalendar.OCTOBER);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
 					calSup.set(GregorianCalendar.MONTH,GregorianCalendar.DECEMBER);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
 					break;
 			}
 		} else if(granularity.getIdentifier() == Granularities.Week.intValue) {
