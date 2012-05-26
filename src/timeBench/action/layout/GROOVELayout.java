@@ -104,8 +104,12 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			double min = Double.NaN;
 			double max = Double.NaN;
 			if (datasetProvider instanceof MinMaxValuesProvider) {
-				min = ((MinMaxValuesProvider)datasetProvider).getMinValue(granularityLevel,settings[granularityLevel].getSourceColumn());
-				max = ((MinMaxValuesProvider)datasetProvider).getMaxValue(granularityLevel,settings[granularityLevel].getSourceColumn());
+				for(int i=0; i<settings.length; i++) {
+					if (settings[i].getColorCalculation() == settings[granularityLevel].getColorCalculation()) {
+						min = ((MinMaxValuesProvider)datasetProvider).getMinValue(i,settings[granularityLevel].getSourceColumn());
+						max = ((MinMaxValuesProvider)datasetProvider).getMaxValue(i,settings[granularityLevel].getSourceColumn());
+					}
+				}
 			}
 
 			switch(settings[granularityLevel].getColorCalculation()) {
