@@ -178,12 +178,6 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		
 		for(int i=0; i<dataColumnIndices.length; i++) {
 			totalValue[i] /= numObjects[i];
-			if(Double.isNaN(totalValue[i])) {
-				if (level < granularities.length ) {
-					minValues[i][level] = Double.NaN;
-					maxValues[i][level] = Double.NaN;
-				}
-			}
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);
 		}
 	}
@@ -200,14 +194,24 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	public Double getMinValue(int level,int index) {
 		if(minValues == null || minValues.length <= index)
 			return null;
-		else
-			return minValues[index][level];
+		else {
+			if(minValues[index][level] == Double.MAX_VALUE)
+				return Double.NaN;
+			else
+				return minValues[index][level];
+		}
+			
 	}
 
 	@Override
 	public Double getMaxValue(int level,int index) {
 		if(maxValues == null || maxValues.length <= index)
 			return null;
-		else
-			return maxValues[index][level];	}
+		else {
+			if(minValues[index][level] == Double.MAX_VALUE)
+				return Double.NaN;
+			else
+				return maxValues[index][level];
+		}
+	}
 }

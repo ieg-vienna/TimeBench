@@ -111,10 +111,10 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			switch(settings[granularityLevel].getColorCalculation()) {
 			case COLOR_CALCULATION_GLOWING_METAL:
 				
-				if (value == -1)
+				if (Double.isNaN(value))
 					node.setFillColor(prefuse.util.ColorLib.gray(127));
 				else
-					node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-min)/(max-min)*1280.0))]);
+					node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-min)/(max-min)*768.0))]);
 				
 				//node.setFillColor(prefuse.util.ColorLib.gray((int)Math.round((value-min)/(max-min)*255.0)));
 				break;
