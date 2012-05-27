@@ -7,7 +7,7 @@ public class GranularityGROOVELayoutSettings {
     private boolean visible;
     private int[] borderWith;
     private int colorCalculation;
-    private boolean colorOverlay;
+    private int colorOverlayLevel;
     private int sourceColumn;
     private int fitting;
 
@@ -17,13 +17,13 @@ public class GranularityGROOVELayoutSettings {
 
     public GranularityGROOVELayoutSettings(int sourceColumn, int orientation,
             boolean visible, int[] borderWidth, int colorCalculation,
-            boolean colorOverlay,int fitting) {
+            int colorOverlayLevel,int fitting) {
         this.sourceColumn = sourceColumn;
         this.orientation = orientation;
         this.visible = visible;
         this.borderWith = borderWidth;
         this.colorCalculation = colorCalculation;
-        this.colorOverlay = colorOverlay;
+        this.colorOverlayLevel = colorOverlayLevel;
         this.fitting = fitting;
     }
 
@@ -115,17 +115,17 @@ public class GranularityGROOVELayoutSettings {
     }
 
     /**
-     * @return the colorOverlay
+     * @return the colorOverlayLevel
      */
-    public boolean isColorOverlay() {
-        return colorOverlay;
+    public int getColorOverlayLevel() {
+        return colorOverlayLevel;
     }
 
     /**
      * @param colorOverlay
-     *            the colorOverlay to set
+     *            the colorOverlayLevel to set
      */
-    public void setColorOverlay(boolean colorOverlay) {
-        this.colorOverlay = colorOverlay;
+    public void setColorOverlayLevel(int colorOverlayLevel) {
+        this.colorOverlayLevel = colorOverlayLevel;
     }
 }

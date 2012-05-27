@@ -73,68 +73,104 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
 		try {
 			layoutGranularity(vg,(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
-					datasetProvider.getTemporalDataset().getRoots()[0])),position,0,0.0);
+					datasetProvider.getTemporalDataset().getRoots()[0])),position,0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	private void calculateColorPart(int level,int currentLevel,NodeItem currentNode, float[] hsb) {	
+		while(currentLevel > level) {
+			currentNode = (NodeItem)currentNode.getParent();
+			currentLevel--;
+		}
+		
+		double value = currentNode.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[currentLevel].getSourceColumn()));
+		double[] minmax = new double[2];
+		getMinMax(currentLevel,minmax);
+		
+		switch(settings[currentLevel].getColorCalculation()) {
+			case COLOR_CALCULATION_H_BLUE_RED:
+				hsb[0] = (float)((value-minmax[0])/(minmax[1]-minmax[0])/3.0+(2.0/3.0));
+				if(Float.isNaN(hsb[0]))
+					hsb[0] = 0.5f;
+				break;
+			case COLOR_CALCULATION_L:
+				hsb[2] = (float)((value-minmax[0])/(minmax[1]-minmax[0]));
+				if(Float.isNaN(hsb[2]))
+					hsb[2] = 0.5f;
+				break;
+		}
+	}
+	
+	private void getMinMax(int level,double[] minmax) {
+		minmax[0] = Double.NaN;
+		minmax[1] = Double.NaN;
+		if (datasetProvider instanceof MinMaxValuesProvider) {
+			for(int i=0; i<settings.length; i++) {
+				if (settings[i].getColorCalculation() == settings[level].getColorCalculation()) {
+					minmax[0] = ((MinMaxValuesProvider)datasetProvider).getMinValue(i,settings[level].getSourceColumn());
+					minmax[1] = ((MinMaxValuesProvider)datasetProvider).getMaxValue(i,settings[level].getSourceColumn());
+				}
+			}
+		}
+	}
 
 	/**
 	 * @throws Exception 
 	 * 
 	 */
-	private void layoutGranularity(VisualGraph vg,NodeItem node,Rectangle position,int granularityLevel,double parentValue) throws Exception {
+	private void layoutGranularity(VisualGraph vg,NodeItem node,Rectangle position,int granularityLevel) throws Exception {
 		node.setStartX(position.getMinX());
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
 		node.setEndY(position.getMaxY());
 		node.setDOI(granularityLevel);
-		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));
-			
-		double value = node.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));
-		//DataHelper.printTable(System.out,datasetProvider.getTemporalDataset().getNodeTable());
+		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));			
 		
 		if (granularityLevel < 0)
 			node.setVisible(false);
 		else {
 			node.setVisible(settings[granularityLevel].isVisible());
 
-			double min = Double.NaN;
-			double max = Double.NaN;
-			if (datasetProvider instanceof MinMaxValuesProvider) {
-				for(int i=0; i<settings.length; i++) {
-					if (settings[i].getColorCalculation() == settings[granularityLevel].getColorCalculation()) {
-						min = ((MinMaxValuesProvider)datasetProvider).getMinValue(i,settings[granularityLevel].getSourceColumn());
-						max = ((MinMaxValuesProvider)datasetProvider).getMaxValue(i,settings[granularityLevel].getSourceColumn());
+			switch(settings[granularityLevel].getColorCalculation()) {			
+				case COLOR_CALCULATION_GLOWING_METAL:
+					double[] minmax = new double[2];
+					getMinMax(granularityLevel,minmax);
+					double value = node.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));					
+					if (Double.isNaN(value))
+						node.setFillColor(prefuse.util.ColorLib.gray(127));
+					else
+						node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-minmax[0])/(minmax[1]-minmax[0])*768.0))]);
+					break;
+				default:
+					float[] hsb = new float[3];
+					hsb[0] = Float.NaN;
+					hsb[1] = Float.NaN;
+					hsb[2] = Float.NaN;
+					if (settings[granularityLevel].getColorOverlayLevel() >= 0) {
+						calculateColorPart(settings[granularityLevel].getColorOverlayLevel(),granularityLevel,node,hsb);
 					}
-				}
-			}
-
-			switch(settings[granularityLevel].getColorCalculation()) {
-			case COLOR_CALCULATION_GLOWING_METAL:
-				
-				if (Double.isNaN(value))
-					node.setFillColor(prefuse.util.ColorLib.gray(127));
-				else
-					node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-min)/(max-min)*768.0))]);
-				
-				//node.setFillColor(prefuse.util.ColorLib.gray((int)Math.round((value-min)/(max-min)*255.0)));
+					calculateColorPart(granularityLevel,granularityLevel,node,hsb);
+					if(Float.isNaN(hsb[0]) && Float.isNaN(hsb[1])) {
+						hsb[0] = 0.0f;
+						hsb[1] = 0.0f;
+					} else if(Float.isNaN(hsb[0]) && Float.isNaN(hsb[2])) {
+						hsb[0] = 1.0f/3.0f;
+						hsb[2] = 0.5f;
+					} else if(Float.isNaN(hsb[1]) && Float.isNaN(hsb[2])) {
+						hsb[1] = 0.5f;
+						hsb[2] = 0.5f;
+					} else if(Float.isNaN(hsb[0])) {
+						hsb[0] = 1.0f/3.0f;
+					} else if(Float.isNaN(hsb[1])) {
+						hsb[1] = 0.5f;
+					} else if(Float.isNaN(hsb[2])) {
+						hsb[2] = 0.5f;
+					}
+					node.setFillColor(prefuse.util.ColorLib.hsb(hsb[0],hsb[1],hsb[2]));
 				break;
-			case COLOR_CALCULATION_H_BLUE_RED:
-				node.setFillColor(prefuse.util.ColorLib.hsb((float)((value-min)/(max-min)/3.0+(2.0/3.0)), 1.0f, 0.5f));
-				break;
-			case COLOR_CALCULATION_L:
-				if (settings[granularityLevel].isColorOverlay()) {
-					node.setFillColor(prefuse.util.ColorLib.hsb((float)((parentValue-min)/(max-min)/3.0+(2.0/3.0)),
-							1.0f,(float)((value-min)/(max-min))));				
-				} else {
-					node.setFillColor(prefuse.util.ColorLib.hsb(0.0f,0.0f,(float)((value-min)/(max-min))));
-				}
-				break;
-			default:
-				node.setFillColor(0);
 			}
 		}
 		
@@ -175,7 +211,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 				subPosition.y += borderWidth[1];
 				subPosition.width -= (borderWidth[0] + borderWidth[2]);
 				subPosition.height -= (borderWidth[1] + borderWidth[3]);
-				layoutGranularity(vg,iChild, subPosition, granularityLevel+1,value);
+				layoutGranularity(vg,iChild, subPosition, granularityLevel+1);
 			}
 		}
 	}
