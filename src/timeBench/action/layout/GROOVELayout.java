@@ -11,9 +11,11 @@ import java.util.TreeMap;
 import prefuse.Display;
 import prefuse.data.Graph;
 import prefuse.data.Node;
+import prefuse.data.Schema;
 import prefuse.data.Tree;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
+import prefuse.util.PrefuseLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
@@ -82,13 +84,20 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		m_vis.removeGroup(group);
 		m_vis.removeGroup(labelGroup);
 		VisualGraph vg = m_vis.addGraph(group, datasetProvider.getTemporalDataset());
-		VisualTree vgl = m_vis.addTree(labelGroup, new Tree());
-		System.out.println(((prefuse.data.CascadedTable) vgl.getNodeTable()).getParentTable());
-		vgl.getNodeTable().addColumn("label", String.class);
+		
+        Schema labelNodeSchema = PrefuseLib.getVisualItemSchema();
+        labelNodeSchema.addColumn(VisualItem.LABEL, String.class);
+		VisualTree vgl = m_vis.addTree(labelGroup, labelNodeSchema);
+		
 		Node root = vgl.addRoot();
 		vgl.addChild(root);
+        vgl.addChild(root);
 		
 		try {
+            System.out.println(vgl.getRoot());
+            System.out.println(vgl.getRoot().getChild(0));
+            System.out.println(vgl.getRoot().getChild(1));
+			
 			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
 					datasetProvider.getTemporalDataset().getRoots()[0])),position,0);
 		} catch (Exception e) {
@@ -223,14 +232,14 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					subPosition.width = position.width/numberOfSubElements;
 					Node targetNode = null;
 					for(int i=0; i<hNode.getChildCount();i++) {
-						if (hNode.getChild(i).getString("label") == granule.getLabel()) {
+						if (hNode.getChild(i).getString(VisualItem.LABEL) == granule.getLabel()) {
 							targetNode = hNode.getChild(i);
 							break;
 						}
 					}
 					if(targetNode == null) {
 						targetNode = vgl.addChild(hNode);
-						targetNode.setString("label", granule.getLabel());
+						targetNode.setString(VisualItem.LABEL, granule.getLabel());
 						((VisualItem)targetNode).setX(subPosition.getCenterX());
 						((VisualItem)targetNode).setY((targetNode.getDepth()-1)*10);
 					}
@@ -241,14 +250,14 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					subPosition.height = position.height/numberOfSubElements;					
 					Node targetNode = null;
 					for(int i=0; i<hNode.getChildCount();i++) {
-						if (vNode.getChild(i).getString("label") == granule.getLabel()) {
+						if (vNode.getChild(i).getString(VisualItem.LABEL) == granule.getLabel()) {
 							targetNode = vNode.getChild(i);
 							break;
 						}
 					}
 					if(targetNode == null) {
 						targetNode = vgl.addChild(vNode);
-						targetNode.setString("label", granule.getLabel());
+						targetNode.setString(VisualItem.LABEL, granule.getLabel());
 						((VisualItem)targetNode).setX((targetNode.getDepth()-1)*10);
 						((VisualItem)targetNode).setY(subPosition.getCenterY());
 					}
