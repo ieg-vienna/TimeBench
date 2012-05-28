@@ -9,12 +9,16 @@ import java.util.Iterator;
 import java.util.TreeMap;
 
 import prefuse.Display;
+import prefuse.data.Graph;
+import prefuse.data.Node;
+import prefuse.data.Tree;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
+import prefuse.visual.VisualTree;
 import timeBench.action.analytical.MinMaxValuesProvider;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
@@ -40,11 +44,10 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	int[] hotPalette;
 	String group = "GROOVE";
 	TemporalDatasetProvider datasetProvider;
-	//boolean[] granularityVisible;
-	//int[] granularityColorCalculation;
-	//boolean[] granularityColorOverlay;
-	//int[] granularityOrientation;
 	GranularityGROOVELayoutSettings[] settings;
+	String labelGroup = "GROOVELabels";
+	int hDepth = 0;
+	int vDepth = 0;
 
 	public static final int ORIENTATION_HORIZONTAL = 0;
 	public static final int ORIENTATION_VERTICAL = 1;
@@ -54,25 +57,39 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
 	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
 	
-	public GROOVELayout(String group,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider,
+	public GROOVELayout(String group,String labelGroup,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider,
 			int columnUsed,GranularityGROOVELayoutSettings[] settings) {		
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		hotPalette = prefuse.util.ColorLib.getHotPalette(768);
 		this.group = group;
+		this.labelGroup = labelGroup;
 		this.datasetProvider = datasetProvider;
 		this.settings = settings;
+		
+		for(int i=1; i<settings.length; i++) {
+			if(settings[i].getOrientation() == ORIENTATION_HORIZONTAL)
+				hDepth++;
+			else if(settings[i].getOrientation() == ORIENTATION_VERTICAL)
+				vDepth++;
+		}
 	}
 	
 	@Override
 	public void run(double frac) {
 		Display display = m_vis.getDisplay(0);	
-		Rectangle position = new Rectangle(new Point(0,0),display.getSize());
+		Rectangle position = new Rectangle(vDepth*10,hDepth*10,display.getWidth()-vDepth*10,display.getHeight()-hDepth*10);
 		
 		m_vis.removeGroup(group);
+		m_vis.removeGroup(labelGroup);
 		VisualGraph vg = m_vis.addGraph(group, datasetProvider.getTemporalDataset());
+		VisualTree vgl = m_vis.addTree(labelGroup, new Tree());
+		System.out.println(((prefuse.data.CascadedTable) vgl.getNodeTable()).getParentTable());
+		vgl.getNodeTable().addColumn("label", String.class);
+		Node root = vgl.addRoot();
+		vgl.addChild(root);
 		
 		try {
-			layoutGranularity(vg,(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
+			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
 					datasetProvider.getTemporalDataset().getRoots()[0])),position,0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -118,10 +135,11 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	}
 
 	/**
+	 * @param vgl 
 	 * @throws Exception 
 	 * 
 	 */
-	private void layoutGranularity(VisualGraph vg,NodeItem node,Rectangle position,int granularityLevel) throws Exception {
+	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel) throws Exception {
 		node.setStartX(position.getMinX());
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
@@ -198,12 +216,44 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					numberOfSubElements = (int)(maxIdent - minIdent + 1);
 				}
 				Rectangle subPosition = (Rectangle)position.clone();
+				Node hTargetNode = null;
+				Node vTargetNode = null;
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
 					subPosition.x += position.width/numberOfSubElements*(granule.getIdentifier()-minIdent);
 					subPosition.width = position.width/numberOfSubElements;
+					Node targetNode = null;
+					for(int i=0; i<hNode.getChildCount();i++) {
+						if (hNode.getChild(i).getString("label") == granule.getLabel()) {
+							targetNode = hNode.getChild(i);
+							break;
+						}
+					}
+					if(targetNode == null) {
+						targetNode = vgl.addChild(hNode);
+						targetNode.setString("label", granule.getLabel());
+						((VisualItem)targetNode).setX(subPosition.getCenterX());
+						((VisualItem)targetNode).setY((targetNode.getDepth()-1)*10);
+					}
+					hTargetNode = targetNode;
+					vTargetNode = vNode;
 				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
 					subPosition.y += position.height/numberOfSubElements*(granule.getIdentifier()-minIdent);
 					subPosition.height = position.height/numberOfSubElements;					
+					Node targetNode = null;
+					for(int i=0; i<hNode.getChildCount();i++) {
+						if (vNode.getChild(i).getString("label") == granule.getLabel()) {
+							targetNode = vNode.getChild(i);
+							break;
+						}
+					}
+					if(targetNode == null) {
+						targetNode = vgl.addChild(vNode);
+						targetNode.setString("label", granule.getLabel());
+						((VisualItem)targetNode).setX((targetNode.getDepth()-1)*10);
+						((VisualItem)targetNode).setY(subPosition.getCenterY());
+					}
+					hTargetNode = targetNode;
+					vTargetNode = vNode;
 				}			
 
 				int[] borderWidth = settings[granularityLevel+1].getBorderWith();
@@ -211,7 +261,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 				subPosition.y += borderWidth[1];
 				subPosition.width -= (borderWidth[0] + borderWidth[2]);
 				subPosition.height -= (borderWidth[1] + borderWidth[3]);
-				layoutGranularity(vg,iChild, subPosition, granularityLevel+1);
+				layoutGranularity(vg,vgl,hTargetNode,vTargetNode,iChild, subPosition, granularityLevel+1);
 			}
 		}
 	}
