@@ -14,7 +14,11 @@ public class RectangleRenderer implements prefuse.render.Renderer {
 	 */
 	public void render(Graphics2D g, VisualItem item) {
 		//System.err.println("["+(int)item.getStartX()+","+(int)item.getStartY()+"]["+(int)item.getEndX()+","+(int)item.getEndY()+"]: "+ColorLib.getColor(item.getStrokeColor()));
-		g.setColor(ColorLib.getColor(item.getFillColor()));
+		if(item.isHighlighted()) {
+			g.setColor(ColorLib.getColor(item.getStartFillColor()));			
+		} else {
+			g.setColor(ColorLib.getColor(item.getFillColor()));
+		}
 		g.fillRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
 		if (ColorLib.alpha(item.getStrokeColor()) > 0) {		
 			g.setColor(ColorLib.getColor(item.getStrokeColor()));

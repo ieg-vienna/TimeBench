@@ -176,6 +176,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					break;
 				default:
 					float[] hsb = new float[3];
+					float[] hsb2 = new float[3];
 					hsb[0] = Float.NaN;
 					hsb[1] = Float.NaN;
 					hsb[2] = Float.NaN;
@@ -186,20 +187,39 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					if(Float.isNaN(hsb[0]) && Float.isNaN(hsb[1])) {
 						hsb[0] = 0.0f;
 						hsb[1] = 0.0f;
+						hsb2[0] = 1.0f/3.0f;
+						hsb2[1] = 1.0f;
+						hsb2[2] = hsb[2];
 					} else if(Float.isNaN(hsb[0]) && Float.isNaN(hsb[2])) {
 						hsb[0] = 1.0f/3.0f;
 						hsb[2] = 0.5f;
+						hsb2[0] = 2.0f/3.0f;
+						hsb2[1] = hsb[1];
+						hsb2[2] = 0.5f;
 					} else if(Float.isNaN(hsb[1]) && Float.isNaN(hsb[2])) {
 						hsb[1] = 0.5f;
 						hsb[2] = 0.5f;
+						hsb2[0] = hsb[0];
+						hsb2[1] = 1.0f;
+						hsb2[2] = 1.0f;
 					} else if(Float.isNaN(hsb[0])) {
 						hsb[0] = 1.0f/3.0f;
+						hsb2[0] = 2.0f/3.0f;
+						hsb2[1] = hsb[1];
+						hsb2[2] = hsb[2];
 					} else if(Float.isNaN(hsb[1])) {
 						hsb[1] = 0.5f;
+						hsb2[0] = hsb[0];
+						hsb2[1] = 1.0f;
+						hsb2[2] = hsb[2];
 					} else if(Float.isNaN(hsb[2])) {
 						hsb[2] = 0.5f;
+						hsb2[0] = hsb[0];
+						hsb2[1] = hsb[1];
+						hsb2[2] = 1.0f;
 					}
 					node.setFillColor(prefuse.util.ColorLib.hsb(hsb[0],hsb[1],hsb[2]));
+					node.setStartFillColor(prefuse.util.ColorLib.hsb(hsb2[0],hsb2[1],hsb2[2]));
 				break;
 			}
 		}
