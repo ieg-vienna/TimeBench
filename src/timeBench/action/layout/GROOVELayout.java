@@ -87,7 +87,12 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
         Schema labelNodeSchema = PrefuseLib.getVisualItemSchema();
         labelNodeSchema.addColumn(VisualItem.LABEL, String.class);
+        Integer defColor = new Integer(ColorLib.gray(150));
+        labelNodeSchema.setInterpolatedDefault(VisualItem.TEXTCOLOR, defColor);
 		VisualTree vgl = m_vis.addTree(labelGroup, labelNodeSchema);
+		
+        
+		
 		
 		Node root = vgl.addRoot();
 		vgl.addChild(root);
