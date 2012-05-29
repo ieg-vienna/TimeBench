@@ -21,7 +21,8 @@ import prefuse.visual.VisualItem;
 public class CascadedLabelRenderer implements prefuse.render.Renderer {
 	public void render(Graphics2D g, VisualItem item) {
 		g.setColor(Color.BLACK);
-		g.drawString(item.getString("label"),(int)item.getX(),(int)item.getY());
+		System.out.println("render " + item.getString(VisualItem.LABEL));
+		g.drawString(item.getString(VisualItem.LABEL),(int)item.getX(),(int)item.getY());
 	}
 
 	/**
@@ -37,6 +38,8 @@ public class CascadedLabelRenderer implements prefuse.render.Renderer {
 	 * @see prefuse.render.Renderer#setBounds(prefuse.visual.VisualItem)
 	 */
 	public void setBounds(VisualItem item) {
-		item.setBounds(item.getStartX(), item.getStartY(), item.getEndX()-item.getStartX()+1, item.getEndY()-item.getStartY()+1);
+		// TODO
+		item.setBounds(item.getX()-10, item.getY()-10, 20, 20);
+        System.out.println("bounds " + item.getX() + " " + item.getY());
 	}
 }
