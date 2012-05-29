@@ -21,6 +21,7 @@ public class AbstractGROOVEControl extends prefuse.controls.ControlAdapter {
 	
 	public AbstractGROOVEControl(String update) {
 		super();
+		this.update = update;
 	}
 	
 //	@Override
