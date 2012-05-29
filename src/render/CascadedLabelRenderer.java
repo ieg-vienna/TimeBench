@@ -20,9 +20,11 @@ import prefuse.visual.VisualItem;
  */
 public class CascadedLabelRenderer implements prefuse.render.Renderer {
 	public void render(Graphics2D g, VisualItem item) {
-		g.setColor(Color.BLACK);
 		System.out.println("render " + item.getString(VisualItem.LABEL));
-		g.drawString(item.getString(VisualItem.LABEL),(int)item.getX(),(int)item.getY());
+		if(item.getString(VisualItem.LABEL) != null) {
+			g.setColor(Color.BLACK);
+			g.drawString(item.getString(VisualItem.LABEL),(int)item.getX(),(int)item.getY());
+		}
 	}
 
 	/**

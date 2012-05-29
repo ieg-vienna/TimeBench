@@ -2,6 +2,7 @@ package timeBench.action.layout;
 
 import ieg.prefuse.data.DataHelper;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Hashtable;
@@ -79,7 +80,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	@Override
 	public void run(double frac) {
 		Display display = m_vis.getDisplay(0);	
-		Rectangle position = new Rectangle(vDepth*10,hDepth*10,display.getWidth()-vDepth*10,display.getHeight()-hDepth*10);
+		Rectangle position = new Rectangle(vDepth*20+10,hDepth*20+10,display.getWidth()-vDepth*20-10,display.getHeight()-hDepth*20-10);
 		
 		m_vis.removeGroup(group);
 		m_vis.removeGroup(labelGroup);
@@ -90,9 +91,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
         Integer defColor = new Integer(ColorLib.gray(150));
         labelNodeSchema.setInterpolatedDefault(VisualItem.TEXTCOLOR, defColor);
 		VisualTree vgl = m_vis.addTree(labelGroup, labelNodeSchema);
-		
-        
-		
 		
 		Node root = vgl.addRoot();
 		vgl.addChild(root);
@@ -109,6 +107,8 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		DataHelper.printGraph(System.out, vgl.getRoot(),null,VisualItem.LABEL);
 	}
 
 	private void calculateColorPart(int level,int currentLevel,NodeItem currentNode, float[] hsb) {	
@@ -232,10 +232,10 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 				Rectangle subPosition = (Rectangle)position.clone();
 				Node hTargetNode = null;
 				Node vTargetNode = null;
+				Node targetNode = null;
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
 					subPosition.x += position.width/numberOfSubElements*(granule.getIdentifier()-minIdent);
 					subPosition.width = position.width/numberOfSubElements;
-					Node targetNode = null;
 					for(int i=0; i<hNode.getChildCount();i++) {
 						if (hNode.getChild(i).getString(VisualItem.LABEL) == granule.getLabel()) {
 							targetNode = hNode.getChild(i);
@@ -244,17 +244,17 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					}
 					if(targetNode == null) {
 						targetNode = vgl.addChild(hNode);
-						targetNode.setString(VisualItem.LABEL, granule.getLabel());
 						((VisualItem)targetNode).setX(subPosition.getCenterX());
-						((VisualItem)targetNode).setY((targetNode.getDepth()-1)*10);
+						((VisualItem)targetNode).setY((targetNode.getDepth()-1)*20);
+						targetNode.setString(VisualItem.LABEL, granule.getLabel());
+						((VisualItem)targetNode).setTextColor(ColorLib.gray(0));
 					}
 					hTargetNode = targetNode;
 					vTargetNode = vNode;
 				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
 					subPosition.y += position.height/numberOfSubElements*(granule.getIdentifier()-minIdent);
 					subPosition.height = position.height/numberOfSubElements;					
-					Node targetNode = null;
-					for(int i=0; i<hNode.getChildCount();i++) {
+					for(int i=0; i<vNode.getChildCount();i++) {
 						if (vNode.getChild(i).getString(VisualItem.LABEL) == granule.getLabel()) {
 							targetNode = vNode.getChild(i);
 							break;
@@ -262,13 +262,14 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					}
 					if(targetNode == null) {
 						targetNode = vgl.addChild(vNode);
-						targetNode.setString(VisualItem.LABEL, granule.getLabel());
-						((VisualItem)targetNode).setX((targetNode.getDepth()-1)*10);
+						((VisualItem)targetNode).setX((targetNode.getDepth()-1)*20);
 						((VisualItem)targetNode).setY(subPosition.getCenterY());
+						targetNode.setString(VisualItem.LABEL, granule.getLabel());
+						((VisualItem)targetNode).setTextColor(ColorLib.gray(0));
 					}
-					hTargetNode = targetNode;
-					vTargetNode = vNode;
-				}			
+					hTargetNode = hNode;
+					vTargetNode = targetNode;
+				}
 
 				int[] borderWidth = settings[granularityLevel+1].getBorderWith();
 				subPosition.x += borderWidth[0];

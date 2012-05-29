@@ -679,12 +679,18 @@ public class JavaDateCalendarManager implements CalendarManager {
 				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week ) {
 					GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 					cal.setTimeInMillis(granule.getInf());
-					cal.getDisplayName(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.LONG, Locale.getDefault());
+					result = cal.getDisplayName(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.LONG, Locale.getDefault());
 				} else
 					result = String.format("%d",granule.getIdentifier()+1);
 				break;
+			case Week:
+				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week) {
+					result = String.format("%d",granule.getIdentifier()); 
+				}
+				else
+					result = String.format("%d",granule.getIdentifier()+1);
 			case Month:
-				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week ) {
+				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Year ) {
 					GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 					cal.setTimeInMillis(granule.getInf());
 					cal.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, Locale.getDefault());
