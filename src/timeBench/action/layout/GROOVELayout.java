@@ -107,8 +107,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		DataHelper.printGraph(System.out, vgl.getRoot(),null,VisualItem.LABEL);
 	}
 
 	private void calculateColorPart(int level,int currentLevel,NodeItem currentNode, float[] hsb) {	

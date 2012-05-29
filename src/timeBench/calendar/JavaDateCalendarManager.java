@@ -499,7 +499,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year:{
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.MONTH) / 4;
+						result = cal.get(GregorianCalendar.MONTH) / 3;
 						break;}
 					default:{
 						result = granule.getInf() / 10368000000L;
