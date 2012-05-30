@@ -13,17 +13,17 @@ public class RectangleRenderer implements prefuse.render.Renderer {
 	 * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
 	 */
 	public void render(Graphics2D g, VisualItem item) {
-		//System.err.println("["+(int)item.getStartX()+","+(int)item.getStartY()+"]["+(int)item.getEndX()+","+(int)item.getEndY()+"]: "+ColorLib.getColor(item.getStrokeColor()));
 		if(item.isHighlighted()) {
-			g.setColor(ColorLib.getColor(item.getStartFillColor()));			
+			item.setStrokeColor(item.getStartFillColor());			
 		} else {
-			g.setColor(ColorLib.getColor(item.getFillColor()));
+			item.setStrokeColor(item.getFillColor());
 		}
+		
+		g.setColor(ColorLib.getColor(item.getFillColor()));
 		g.fillRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
-		if (ColorLib.alpha(item.getStrokeColor()) > 0) {		
-			g.setColor(ColorLib.getColor(item.getStrokeColor()));
-			g.drawRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
-		}
+		
+		g.setColor(ColorLib.getColor(item.getStrokeColor()));
+		g.drawRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
 	}
 
 	/**
