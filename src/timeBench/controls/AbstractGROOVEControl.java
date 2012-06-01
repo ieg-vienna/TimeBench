@@ -140,10 +140,10 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 			TemporalObject patternRoot) {
 		
 		double baseValue = root.getDouble(0)/patternRoot.getDouble(0);
-		
+		searchPatternRecurse(root,patternRoot,baseValue);
 	}
 	
-	private boolean searchPatternRecurse(TemporalObject dataNode, TemporalObject patternNode) {
+	private boolean searchPatternRecurse(TemporalObject dataNode, TemporalObject patternNode,double baseValue) {
 		Granularity granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
 				dataNode.getTemporalElement().asGeneric().getGranularityId(),
 				dataNode.getTemporalElement().asGeneric().getGranularityContextId());
@@ -157,11 +157,11 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 						dataNode.getTemporalElement().asGeneric().getSup(),granularity);
 				Granule patternGranule = new Granule(patternNode.getTemporalElement().asGeneric().getInf(),
 						patternNode.getTemporalElement().asGeneric().getSup(),patternGranularity);
-				//if(granule.getIdentifier() == patternGranule.getIdentifier()) {
-					//if(Math.abs(dataNode.getDouble(0)/patternNode.getDouble(0)-baseValue) < 0.1) {
+				if(granule.getIdentifier() == patternGranule.getIdentifier()) {
+					if(Math.abs(dataNode.getDouble(0)/patternNode.getDouble(0)-baseValue) < 0.1) {
 						
-					//}
-				//}
+					}
+				}
 			} catch (TemporalDataException e) {
 				//TODO Auto-generated catch block
 				e.printStackTrace();
@@ -177,21 +177,31 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	 * @param patternRoot
 	 */
 	private boolean buildPattern(Node data, TemporalDataset pattern, Node current) {
+		boolean result = false;
 		Iterator<Node> i = data.children();
 		while(i.hasNext()) {
 			Node iChild = i.next();
 			TemporalElement el = ((TemporalObject)iChild).getTemporalElement();
-			//TemporalElement newel = pattern.addInstant(el.getGranule()); 
-			TemporalObject newObj = pattern.addTemporalObject(/*newel*/null);
-			if (((VisualItem)iChild).isHighlighted()) {				
-				newObj.setDouble(0,iChild.getDouble(0));
-			}
-			if(!buildPattern(iChild,pattern,newObj)) {
-				;//pattern
-			}
+			try {
+				TemporalElement newel = pattern.addInstant(el.getGranule());
+				TemporalObject newObj = pattern.addTemporalObject(newel);
+				boolean keep = buildPattern(iChild,pattern,newObj);
+				if (((VisualItem)iChild).isHighlighted()) {				
+					newObj.setDouble(0,iChild.getDouble(0));
+					result = true;
+				} else if(keep) {
+					newObj.setDouble(0,Double.NaN);
+					result = true;
+				} else {
+					pattern.removeNode(newObj);
+				}
+			} catch (TemporalDataException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 		}
 		
-		return true;
+		return result;
 	}
 	
 //	private void addTemporalObject(VisualItem item,InputEvent e) {
