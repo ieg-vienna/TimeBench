@@ -4,6 +4,8 @@ import ieg.prefuse.data.DataHelper;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
@@ -29,6 +31,9 @@ import timeBench.test.DebugHelper;
  *
  */
 public class TimeAggregationTree extends prefuse.action.Action implements TemporalDatasetProvider, MinMaxValuesProvider {
+    
+    private final Logger logger = Logger.getLogger(this.getClass());
+    
 	TemporalDataset sourceDataset;
 	TemporalDataset workingDataset;
 	CalendarManager calendarManager;
@@ -57,6 +62,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	 */
 	@Override
 	public void run(double frac) {
+        logger.trace("run -> begin of method");
 		try {
 			workingDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
 			
@@ -74,8 +80,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					}
 				}
 			}
-			
-			
+			logger.debug("run -> after for loop with min max values");
 			
 			GenericTemporalElement te = workingDataset.addTemporalElement(sourceDataset.getInf(),sourceDataset.getSup(),
 					0, 32767, TemporalDataset.PRIMITIVE_INTERVAL);
@@ -86,6 +91,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 			for(TemporalObject iO : sourceDataset.temporalObjects()) {
 				currentLeaves.get(0).add(iO);
 			}
+            logger.debug("run -> after for loop to add all source objects");
 			ArrayList<TemporalObject> currentBranches = new ArrayList<TemporalObject>();
 			currentBranches.add(root);
 			for(int i=granularities.length-1; i>=0;i--) {
@@ -128,6 +134,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					currentLeaves = futureLeaves;
 				}
 			}
+            logger.debug("run -> after for loop over granularities");
 							
 			aggregate(root,0);
 			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
