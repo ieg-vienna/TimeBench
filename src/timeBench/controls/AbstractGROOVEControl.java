@@ -12,16 +12,22 @@ import java.util.Set;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
+import prefuse.data.Node;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
 import prefuse.visual.NodeItem;
+import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
+import timeBench.calendar.Granularity;
+import timeBench.calendar.Granule;
+import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 public class AbstractGROOVEControl extends AbstractBrushControl {	
-	private ArrayList<TemporalObject> brushedObjects;
-	private ArrayList<VisualItem> brushedItems;
+	private ArrayList<VisualItem> selectedItems;
 	String update;
 	
 	public AbstractGROOVEControl(String update) {
@@ -69,20 +75,25 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	@Override
 	public void brushedItemAdded(VisualItem item, MouseEvent e) {
 		item.setHighlighted(true);
-		if(item instanceof NodeItem) {
-			hightlightChilds((NodeItem)item);
-		}
+		selectedItems.add(item);
+		Display d = (Display)e.getComponent();
+		Visualization m_vis = d.getVisualization(); 
+		m_vis.run(update);
+		//if(item instanceof NodeItem) {
+			//addChilds((NodeItem)item);
+		//}
 	}
 
 	/**
 	 * @param item
 	 */
-	private void hightlightChilds(NodeItem item) {
+	private void addChilds(NodeItem item) {
 		Iterator<NodeItem> i = item.children();
 		while( i.hasNext()) {
 			NodeItem iChild = i.next();
 			iChild.setHighlighted(true);
-			hightlightChilds(iChild);
+			selectedItems.add(iChild);
+			addChilds(iChild);
 		}		
 	}
 
@@ -93,6 +104,94 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	public void brushComplete(Set<VisualItem> items, MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		super.mousePressed(e);
+		
+		if(e.getButton() == MouseEvent.BUTTON2) {
+			Display d = (Display) e.getComponent();
+			Visualization v = d.getVisualization();
+			VisualGraph vg = (VisualGraph)v.getVisualGroup("GROOVE");
+			Node root = vg.getNode(0);
+			while(root.getParent() != null)
+				root = root.getParent();
+				TemporalObject toRoot = (TemporalObject)v.getSourceTuple((VisualItem)root);
+			try {
+				TemporalDataset pattern = new TemporalDataset(((TemporalDataset)v.getSourceData(vg)).getDataColumnSchema());
+				TemporalObject patternRoot = pattern.addTemporalObject(pattern.addTemporalElement(0, 0,0,0,0));
+				buildPattern(root,pattern,patternRoot);
+				searchPattern(toRoot,pattern,patternRoot);
+			} catch (TemporalDataException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @param root
+	 * @param pattern
+	 * @param patternRoot
+	 */
+	private void searchPattern(TemporalObject root, TemporalDataset pattern,
+			TemporalObject patternRoot) {
+		
+		double baseValue = root.getDouble(0)/patternRoot.getDouble(0);
+		
+	}
+	
+	private boolean searchPatternRecurse(TemporalObject dataNode, TemporalObject patternNode) {
+		Granularity granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+				dataNode.getTemporalElement().asGeneric().getGranularityId(),
+				dataNode.getTemporalElement().asGeneric().getGranularityContextId());
+		Granularity patternGranularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+				patternNode.getTemporalElement().asGeneric().getGranularityId(),
+				patternNode.getTemporalElement().asGeneric().getGranularityContextId());
+		if (granularity.getIdentifier() == patternGranularity.getIdentifier() &&
+				granularity.getGranularityContextIdentifier() == patternGranularity.getGranularityContextIdentifier()) {
+			try {
+				Granule granule = new Granule(dataNode.getTemporalElement().asGeneric().getInf(),
+						dataNode.getTemporalElement().asGeneric().getSup(),granularity);
+				Granule patternGranule = new Granule(patternNode.getTemporalElement().asGeneric().getInf(),
+						patternNode.getTemporalElement().asGeneric().getSup(),patternGranularity);
+				//if(granule.getIdentifier() == patternGranule.getIdentifier()) {
+					//if(Math.abs(dataNode.getDouble(0)/patternNode.getDouble(0)-baseValue) < 0.1) {
+						
+					//}
+				//}
+			} catch (TemporalDataException e) {
+				//TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		
+		return false;
+	}
+
+	/**
+	 * @param root
+	 * @param patternRoot
+	 */
+	private boolean buildPattern(Node data, TemporalDataset pattern, Node current) {
+		Iterator<Node> i = data.children();
+		while(i.hasNext()) {
+			Node iChild = i.next();
+			TemporalElement el = ((TemporalObject)iChild).getTemporalElement();
+			//TemporalElement newel = pattern.addInstant(el.getGranule()); 
+			TemporalObject newObj = pattern.addTemporalObject(/*newel*/null);
+			if (((VisualItem)iChild).isHighlighted()) {				
+				newObj.setDouble(0,iChild.getDouble(0));
+			}
+			if(!buildPattern(iChild,pattern,newObj)) {
+				;//pattern
+			}
+		}
+		
+		return true;
 	}
 	
 //	private void addTemporalObject(VisualItem item,InputEvent e) {

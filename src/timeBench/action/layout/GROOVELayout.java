@@ -151,7 +151,15 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	 * @throws Exception 
 	 * 
 	 */
-	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel) throws Exception {
+	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel) throws Exception {		
+
+		if(granularityLevel > 0) {
+			position.x += settings[granularityLevel-1].getBorderWith()[0];
+			position.y += settings[granularityLevel-1].getBorderWith()[1];
+			position.width -= (settings[granularityLevel-1].getBorderWith()[0]+settings[granularityLevel].getBorderWith()[2]);
+			position.height -= (settings[granularityLevel-1].getBorderWith()[1]+settings[granularityLevel].getBorderWith()[3]);
+		}
+		
 		node.setStartX(position.getMinX());
 		node.setStartY(position.getMinY());
 		node.setEndX(position.getMaxX());
@@ -289,11 +297,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					vTargetNode = targetNode;
 				}
 
-				int[] borderWidth = settings[granularityLevel+1].getBorderWith();
-				subPosition.x += borderWidth[0];
-				subPosition.y += borderWidth[1];
-				subPosition.width -= (borderWidth[0] + borderWidth[2]);
-				subPosition.height -= (borderWidth[1] + borderWidth[3]);
 				layoutGranularity(vg,vgl,hTargetNode,vTargetNode,iChild, subPosition, granularityLevel+1);
 			}
 		}

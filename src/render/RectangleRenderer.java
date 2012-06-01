@@ -1,5 +1,6 @@
 package render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -13,20 +14,20 @@ public class RectangleRenderer implements prefuse.render.Renderer {
 	 * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
 	 */
 	public void render(Graphics2D g, VisualItem item) {
-		if(item.isHover()) {
+		if(item.isHover() || item.isHighlighted()) {
 			item.setStrokeColor(item.getStartFillColor());			
 		} else {
 			item.setStrokeColor(item.getFillColor());
 		}
 
-		if(item.isHighlighted()) {			
-			g.setColor(ColorLib.getColor(item.getStartFillColor()));
-		} else {
-			g.setColor(ColorLib.getColor(item.getFillColor()));
-		}
+		g.setColor(ColorLib.getColor(item.getFillColor()));
 		g.fillRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
 		
 		g.setColor(ColorLib.getColor(item.getStrokeColor()));
+		if(item.isHighlighted())
+			g.setStroke(new BasicStroke(5));
+		else
+			g.setStroke(new BasicStroke(1));
 		g.drawRect((int)item.getStartX(), (int)item.getStartY(), (int)(item.getEndX()-item.getStartX()+1), (int)(item.getEndY()-item.getStartY()+1));
 	}
 
