@@ -1,8 +1,7 @@
 package timeBench.data.util;
 
-import java.util.ArrayList;
-
 import prefuse.data.Table;
+import prefuse.data.column.ObjectColumn;
 import prefuse.data.event.EventConstants;
 import prefuse.data.event.TableListener;
 import timeBench.calendar.Calendar;
@@ -23,7 +22,7 @@ import timeBench.data.TemporalDataset;
  */
 public class GranuleCache {
 
-    private ArrayList<Granule> granules = new ArrayList<Granule>();
+    private ObjectColumn granules = new ObjectColumn(Granule.class);
 
     private TemporalDataset tmpds;
 
@@ -46,21 +45,21 @@ public class GranuleCache {
      * @throws TemporalDataException
      */
     public Granule getGranule(int row) throws TemporalDataException {
-        granules.ensureCapacity(row);
+        ensureRow(row);
         if (granules.get(row) == null) {
             GenericTemporalElement elem = tmpds.getTemporalElementByRow(row);
             if (elem.isAnchored()) {
                 // TODO reuse granularity objects --> calendar responsible?
                 Granularity g = new Granularity(calendar,
                         elem.getGranularityId(), elem.getGranularityContextId());
-                granules.set(row, new Granule(elem.getInf(), elem.getSup(),
-                        Granule.MODE_INF_GRANULE, g));
+                granules.set(new Granule(elem.getInf(), elem.getSup(),
+                        Granule.MODE_INF_GRANULE, g), row);
             } else {
                 // TODO distinguish unknown from unanchored
-                granules.set(row, null);
+                granules.set(null, row);
             }
         }
-        return granules.get(row);
+        return (Granule) granules.get(row);
     }
 
     public Granule getGranule(long id) throws TemporalDataException {
@@ -69,7 +68,16 @@ public class GranuleCache {
     }
 
     public void addGranule(int row, Granule granule) {
-        granules.set(row, granule);
+        ensureRow(row);
+//        System.out.println("row: " + row + " size: " + granules.getRowCount());
+        granules.set(granule, row);
+    }
+    
+    private void ensureRow(int row) {
+        // TODO check if +1 is necessary
+        if (row >= granules.getRowCount()) {
+            granules.setMaximumRow(row + 1);
+        }
     }
 
     /**
@@ -91,7 +99,9 @@ public class GranuleCache {
                     break;
                 } else {
                     for (int r = start; r <= end; ++r) {
-                        GranuleCache.this.granules.set(r, null);
+                        if (r < GranuleCache.this.granules.getRowCount()) {
+                            GranuleCache.this.granules.set(null, r);
+                        }
                     }
                 }
                 break;
@@ -100,7 +110,9 @@ public class GranuleCache {
                 if (col == EventConstants.ALL_COLUMNS) {
                     // entire rows deleted
                     for (int r = start; r <= end; ++r) {
-                        GranuleCache.this.granules.set(r, null);
+                        if (r < GranuleCache.this.granules.getRowCount()) {
+                            GranuleCache.this.granules.set(null, r);
+                        }
                     }
                 }
                 break;
