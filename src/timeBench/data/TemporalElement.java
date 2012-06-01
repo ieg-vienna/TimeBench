@@ -5,6 +5,7 @@ import ieg.util.lang.CustomIterable;
 import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.tuple.TableNode;
+import timeBench.calendar.Granule;
 
 /**
  * Relational view of the temporal element. Following the <em>proxy tuple</em>
@@ -225,6 +226,19 @@ public abstract class TemporalElement extends TableNode {
      */
     public int getChildElementCount() {
         return super.getInDegree();
+    }
+    
+    /**
+     * Gets the first granule of an anchored temporal element. For an
+     * {@link Instant}, the granule and the instant have the same properties. If
+     * it is unanchored, <tt>null</tt> is returned. Granules are cached.
+     * 
+     * @return the first granule
+     * @throws TemporalDataException
+     * @see timeBench.data.util.GranuleCache
+     */
+    public Granule getGranule() throws TemporalDataException {
+        return tmpds.getGranuleByRow(m_row);
     }
 
     /**

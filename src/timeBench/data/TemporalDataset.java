@@ -14,6 +14,7 @@ import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
 import timeBench.data.expression.AnchoredPredicate;
 import timeBench.data.util.DefaultIntervalComparator;
+import timeBench.data.util.GranuleCache;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.IntervalTreeIndex;
@@ -74,6 +75,11 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * Initialized on demand by {@link #intervalIndex()}.
      */
     private IntervalIndex indexElementIntervals = null;
+    
+    /**
+     * Cache for first granules of temporal elements (Lazy initialization).
+     */
+    private GranuleCache granuleCache; 
     
     /**
      * Constructs an empty {@link TemporalDataset}
@@ -764,10 +770,24 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         return result;
     }
 
+    /**
+     * Add a new instant to the dataset from a granule. This method returns a
+     * proxy tuple of this instant, which is of class {@link Instant}. The
+     * {@link Granule} is cached.
+     * 
+     * @param granule
+     * @return a proxy tuple of the created temporal element
+     * @throws TemporalDataException
+     */
     public Instant addInstant(Granule granule) throws TemporalDataException {
-        return addInstant(granule.getInf(), granule.getSup(), granule
-                .getGranularity().getIdentifier(), granule.getGranularity()
-                .getGranularityContextIdentifier());
+        if (this.granuleCache == null) {
+            granuleCache = new GranuleCache(this);
+        }
+        Instant instant = addInstant(granule.getInf(), granule.getSup(),
+                granule.getGranularity().getIdentifier(), granule
+                        .getGranularity().getGranularityContextIdentifier());
+        granuleCache.addGranule(instant.getRow(), granule);
+        return instant;
     }
 
     public Interval addInterval(Instant begin, Instant end)
@@ -796,6 +816,24 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public Interval addInterval(Span span, Instant end)
             throws TemporalDataException {
         throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Gets the first granule of an anchored temporal element. For an
+     * {@link Instant}, the granule and the instant have the same properties. If
+     * it is unanchored, <tt>null</tt> is returned. Granules are cached.
+     * 
+     * @param row
+     *            temporal element table row number
+     * @return the first granule
+     * @throws TemporalDataException
+     * @see GranuleCache
+     */
+    protected Granule getGranuleByRow(int row) throws TemporalDataException {
+        if (this.granuleCache == null) {
+            granuleCache = new GranuleCache(this);
+        }
+        return granuleCache.getGranule(row);
     }
     
     /**
