@@ -3,6 +3,7 @@ package timeBench.data.util;
 import java.util.ArrayList;
 
 import prefuse.data.Table;
+import prefuse.data.event.EventConstants;
 import prefuse.data.event.TableListener;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManagerFactory;
@@ -14,9 +15,11 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 
 /**
- * Cache for first granules of temporal elements.
+ * Cache for first granules of temporal elements. The cached granules are
+ * automatically removed on changes of the backing temporal element table.
  * 
  * @author Rind
+ * @see timeBench.data.TemporalElement#getGranule()
  */
 public class GranuleCache {
 
@@ -50,11 +53,11 @@ public class GranuleCache {
                 // TODO reuse granularity objects --> calendar responsible?
                 Granularity g = new Granularity(calendar,
                         elem.getGranularityId(), elem.getGranularityContextId());
-                granules.add(row, new Granule(elem.getInf(), elem.getSup(),
+                granules.set(row, new Granule(elem.getInf(), elem.getSup(),
                         Granule.MODE_INF_GRANULE, g));
             } else {
                 // TODO distinguish unknown from unanchored
-                granules.add(row, null);
+                granules.set(row, null);
             }
         }
         return granules.get(row);
@@ -66,7 +69,7 @@ public class GranuleCache {
     }
 
     public void addGranule(int row, Granule granule) {
-        granules.add(row, granule);
+        granules.set(row, granule);
     }
 
     /**
@@ -79,8 +82,31 @@ public class GranuleCache {
 
         @Override
         public void tableChanged(Table t, int start, int end, int col, int type) {
-            // TODO invalidate on row update or delete
+            // switch on the event type
+            switch (type) {
+            case EventConstants.UPDATE: {
+                // do nothing if update on all columns, as this is only
+                // used to indicate a non-measurable update.
+                if (col == EventConstants.ALL_COLUMNS) {
+                    break;
+                } else {
+                    for (int r = start; r <= end; ++r) {
+                        GranuleCache.this.granules.set(r, null);
+                    }
+                }
+                break;
+            }
+            case EventConstants.DELETE:
+                if (col == EventConstants.ALL_COLUMNS) {
+                    // entire rows deleted
+                    for (int r = start; r <= end; ++r) {
+                        GranuleCache.this.granules.set(r, null);
+                    }
+                }
+                break;
+            case EventConstants.INSERT:
+                // nothing to do here
+            } // switch
         }
-
     }
 }

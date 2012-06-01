@@ -820,8 +820,8 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     
     /**
      * Gets the first granule of an anchored temporal element. For an
-     * {@link Instant}, the granule and the instant have the same properties. If
-     * it is unanchored, <tt>null</tt> is returned. Granules are cached.
+     * {@link Instant}, the granule represents the time of the instant. If it is
+     * unanchored, <tt>null</tt> is returned. Granules are cached.
      * 
      * @param row
      *            temporal element table row number
