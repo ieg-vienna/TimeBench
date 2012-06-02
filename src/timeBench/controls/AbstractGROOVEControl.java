@@ -18,16 +18,19 @@ import prefuse.util.ColorLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
+import prefuse.visual.tuple.TableNodeItem;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
+import timeBench.test.DebugHelper;
 
 public class AbstractGROOVEControl extends AbstractBrushControl {	
-	private ArrayList<VisualItem> selectedItems;
+	private ArrayList<VisualItem> selectedItems = new ArrayList<VisualItem>();
 	String update;
 	
 	public AbstractGROOVEControl(String update) {
@@ -106,12 +109,28 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see ieg.prefuse.controls.AbstractBrushControl#itemPressed(prefuse.visual.VisualItem, java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void itemPressed(VisualItem item, MouseEvent e) {
+		// TODO Auto-generated method stub
+		super.itemPressed(item, e);
+		
+		anyPressed(e);
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		super.mousePressed(e);
 		
-		if(e.getButton() == MouseEvent.BUTTON2) {
+		anyPressed(e);
+	}
+	
+	private void anyPressed(MouseEvent e) {
+		
+		if(e.getButton() == MouseEvent.BUTTON3) {
 			Display d = (Display) e.getComponent();
 			Visualization v = d.getVisualization();
 			VisualGraph vg = (VisualGraph)v.getVisualGroup("GROOVE");
@@ -121,13 +140,18 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 				TemporalObject toRoot = (TemporalObject)v.getSourceTuple((VisualItem)root);
 			try {
 				TemporalDataset pattern = new TemporalDataset(((TemporalDataset)v.getSourceData(vg)).getDataColumnSchema());
-				TemporalObject patternRoot = pattern.addTemporalObject(pattern.addTemporalElement(0, 0,0,0,0));
+				GenericTemporalElement te = toRoot.getTemporalElement().asGeneric();
+				TemporalObject patternRoot = pattern.addTemporalObject(pattern.addTemporalElement(te.getInf(),te.getSup(),te.getGranularityId(),
+						te.getGranularityContextId(),te.getKind()));
+				patternRoot.setDouble("value", Double.NaN);
 				buildPattern(root,pattern,patternRoot);
-				searchPattern(toRoot,pattern,patternRoot);
+				DebugHelper.printTemporalDatasetGraph(System.out, patternRoot);
+				searchPattern(v,toRoot,patternRoot);
 			} catch (TemporalDataException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			v.run(update);
 		}
 	}
 
@@ -136,14 +160,14 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	 * @param pattern
 	 * @param patternRoot
 	 */
-	private void searchPattern(TemporalObject root, TemporalDataset pattern,
-			TemporalObject patternRoot) {
+	private void searchPattern(Visualization v,TemporalObject root,TemporalObject patternRoot) {
 		
-		double baseValue = root.getDouble(0)/patternRoot.getDouble(0);
-		searchPatternRecurse(root,patternRoot,baseValue);
+		searchPatternRecurse(v,root,patternRoot,Double.NaN);
 	}
 	
-	private boolean searchPatternRecurse(TemporalObject dataNode, TemporalObject patternNode,double baseValue) {
+	private boolean searchPatternRecurse(Visualization v,TemporalObject dataNode, TemporalObject patternNode,double baseValue) {
+		boolean result = true;
+		
 		Granularity granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
 				dataNode.getTemporalElement().asGeneric().getGranularityId(),
 				dataNode.getTemporalElement().asGeneric().getGranularityContextId());
@@ -158,39 +182,61 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 				Granule patternGranule = new Granule(patternNode.getTemporalElement().asGeneric().getInf(),
 						patternNode.getTemporalElement().asGeneric().getSup(),patternGranularity);
 				if(granule.getIdentifier() == patternGranule.getIdentifier()) {
-					if(Math.abs(dataNode.getDouble(0)/patternNode.getDouble(0)-baseValue) < 0.1) {
-						
+					if (Double.isNaN(baseValue) && !Double.isNaN(patternNode.getDouble("value")))
+						baseValue = dataNode.getDouble("value")/patternNode.getDouble("value");
+					if(Double.isNaN(patternNode.getDouble("value")) || Math.abs(dataNode.getDouble("value")/patternNode.getDouble("value")-baseValue) < 0.1) {
+						ArrayList<Long> identSet = new ArrayList<Long>();
+						for(TemporalObject ipo : patternNode.childObjects()) {
+							for(TemporalObject io : dataNode.childObjects()) {
+								result &= searchPatternRecurse(v,io,ipo,baseValue);
+							}
+							identSet.add(ipo.getTemporalElement().getGranule().getIdentifier());
+						}
+						if (result) {							
+							for(TemporalObject io : dataNode.childObjects()) {
+								if(identSet.contains( io.getTemporalElement().getGranule().getIdentifier())) {
+									v.getVisualItem("GROOVE", io).setHighlighted(true);
+								}
+							}
+						}
+					} else {
+						result = false;
 					}
 				}
 			} catch (TemporalDataException e) {
 				//TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else {
+			for(TemporalObject ipo : patternNode.childObjects())
+				searchPatternRecurse(v,dataNode,ipo,baseValue);
 		}
 
 		
-		return false;
+		return result;
 	}
 
 	/**
 	 * @param root
 	 * @param patternRoot
 	 */
-	private boolean buildPattern(Node data, TemporalDataset pattern, Node current) {
+	private boolean buildPattern(Node data, TemporalDataset pattern, TemporalObject current) {
 		boolean result = false;
 		Iterator<Node> i = data.children();
 		while(i.hasNext()) {
 			Node iChild = i.next();
-			TemporalElement el = ((TemporalObject)iChild).getTemporalElement();
+			TemporalElement el = ((TemporalObject)((TableNodeItem)iChild).getSourceTuple()).getTemporalElement();
 			try {
 				TemporalElement newel = pattern.addInstant(el.getGranule());
 				TemporalObject newObj = pattern.addTemporalObject(newel);
 				boolean keep = buildPattern(iChild,pattern,newObj);
 				if (((VisualItem)iChild).isHighlighted()) {				
-					newObj.setDouble(0,iChild.getDouble(0));
+					newObj.setDouble("value",iChild.getDouble("value"));			
+					current.linkWithChild(newObj);
 					result = true;
 				} else if(keep) {
-					newObj.setDouble(0,Double.NaN);
+					newObj.setDouble("value",Double.NaN);
+					current.linkWithChild(newObj);
 					result = true;
 				} else {
 					pattern.removeNode(newObj);
