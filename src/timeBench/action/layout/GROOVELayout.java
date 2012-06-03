@@ -80,7 +80,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	@Override
 	public void run(double frac) {
 		Display display = m_vis.getDisplay(0);	
-		Rectangle position = new Rectangle(vDepth*20+10,hDepth*20+10,display.getWidth()-vDepth*20-10,display.getHeight()-hDepth*20-10);
+		Rectangle position = new Rectangle(vDepth*60+30,hDepth*20+10,display.getWidth()-vDepth*60-30,display.getHeight()-hDepth*20-10);
 		
 		m_vis.removeGroup(group);
 		m_vis.removeGroup(labelGroup);
@@ -288,7 +288,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					}
 					if(targetNode == null) {
 						targetNode = vgl.addChild(vNode);
-						((VisualItem)targetNode).setX((targetNode.getDepth()-1)*20);
+						((VisualItem)targetNode).setX((targetNode.getDepth()-1)*60);
 						((VisualItem)targetNode).setY(subPosition.getCenterY());
 						targetNode.setString(VisualItem.LABEL, granule.getLabel());
 						((VisualItem)targetNode).setTextColor(ColorLib.gray(0));
