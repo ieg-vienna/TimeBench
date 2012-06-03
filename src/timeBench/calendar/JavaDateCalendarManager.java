@@ -684,11 +684,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 					result = String.format("%d",granule.getIdentifier()+1);
 				break;
 			case Week:
-				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Week) {
+				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Month) {
 					result = String.format("%d",granule.getIdentifier()); 
 				}
 				else
 					result = String.format("%d",granule.getIdentifier()+1);
+				break;
 			case Month:
 				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Year ) {
 					GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
