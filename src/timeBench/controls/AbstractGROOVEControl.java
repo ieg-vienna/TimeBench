@@ -129,6 +129,17 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	}
 	
 	private void anyPressed(MouseEvent e) {
+
+		if(e.getButton() == MouseEvent.BUTTON2) {
+			Display d = (Display) e.getComponent();
+			Visualization v = d.getVisualization();
+			VisualGraph vg = (VisualGraph)v.getVisualGroup("GROOVE");
+			Node root = vg.getNode(0);
+			while(root.getParent() != null)
+				root = root.getParent();
+			TemporalObject toRoot = (TemporalObject)v.getSourceTuple((VisualItem)root);
+			clear(v,toRoot);
+		}
 		
 		if(e.getButton() == MouseEvent.BUTTON3) {
 			Display d = (Display) e.getComponent();
@@ -156,62 +167,74 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	}
 
 	/**
+	 * @param toRoot
+	 */
+	private void clear(Visualization v,TemporalObject toRoot) {
+		v.getVisualItem("GROOVE", toRoot).setHighlighted(false);
+		for(TemporalObject to : toRoot.childObjects())
+			clear(v,to);
+	}
+
+	/**
 	 * @param root
 	 * @param pattern
 	 * @param patternRoot
 	 */
-	private void searchPattern(Visualization v,TemporalObject root,TemporalObject patternRoot) {
-		
-		searchPatternRecurse(v,root,patternRoot,Double.NaN);
-	}
+	private void searchPattern(Visualization v,TemporalObject dataNode,TemporalObject patternNode) {
+//		Granularity granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+//				dataNode.getTemporalElement().asGeneric().getGranularityId(),
+//				dataNode.getTemporalElement().asGeneric().getGranularityContextId());
+//		Granularity patternGranularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+//				patternNode.getTemporalElement().asGeneric().getGranularityId(),
+//				patternNode.getTemporalElement().asGeneric().getGranularityContextId());
+//		if (granularity.getIdentifier() == patternGranularity.getIdentifier() &&
+//				granularity.getGranularityContextIdentifier() == patternGranularity.getGranularityContextIdentifier()) {
+//		}
+//	} else {
+//		for(TemporalObject ipo : patternNode.childObjects())
+//			searchPatternRecurse(v,dataNode,ipo,baseValue);
+//	}
+	
+		if(Double.isNaN(patternNode.getDouble("value"))) {
+			for(TemporalObject iChild : dataNode.childObjects())
+				searchPattern(v,iChild,(TemporalObject)patternNode.getChild(0));
+		} else {
+			searchPatternRecurse(v,dataNode,patternNode,dataNode.getDouble("value")/patternNode.getDouble("value"));
+		}
+	}	
 	
 	private boolean searchPatternRecurse(Visualization v,TemporalObject dataNode, TemporalObject patternNode,double baseValue) {
 		boolean result = true;
 		
-		Granularity granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
-				dataNode.getTemporalElement().asGeneric().getGranularityId(),
-				dataNode.getTemporalElement().asGeneric().getGranularityContextId());
-		Granularity patternGranularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
-				patternNode.getTemporalElement().asGeneric().getGranularityId(),
-				patternNode.getTemporalElement().asGeneric().getGranularityContextId());
-		if (granularity.getIdentifier() == patternGranularity.getIdentifier() &&
-				granularity.getGranularityContextIdentifier() == patternGranularity.getGranularityContextIdentifier()) {
-			try {
-				Granule granule = new Granule(dataNode.getTemporalElement().asGeneric().getInf(),
-						dataNode.getTemporalElement().asGeneric().getSup(),granularity);
-				Granule patternGranule = new Granule(patternNode.getTemporalElement().asGeneric().getInf(),
-						patternNode.getTemporalElement().asGeneric().getSup(),patternGranularity);
-				if(granule.getIdentifier() == patternGranule.getIdentifier()) {
-					if (Double.isNaN(baseValue) && !Double.isNaN(patternNode.getDouble("value")))
-						baseValue = dataNode.getDouble("value")/patternNode.getDouble("value");
-					if(Double.isNaN(patternNode.getDouble("value")) || Math.abs(dataNode.getDouble("value")/patternNode.getDouble("value")-baseValue) < 0.1) {
-						ArrayList<Long> identSet = new ArrayList<Long>();
-						for(TemporalObject ipo : patternNode.childObjects()) {
-							for(TemporalObject io : dataNode.childObjects()) {
-								result &= searchPatternRecurse(v,io,ipo,baseValue);
-							}
-							identSet.add(ipo.getTemporalElement().getGranule().getIdentifier());
-						}
-						if (result) {							
-							for(TemporalObject io : dataNode.childObjects()) {
-								if(identSet.contains( io.getTemporalElement().getGranule().getIdentifier())) {
-									v.getVisualItem("GROOVE", io).setHighlighted(true);
-								}
-							}
-						}
-					} else {
-						result = false;
-					}
-				}
-			} catch (TemporalDataException e) {
-				//TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			for(TemporalObject ipo : patternNode.childObjects())
-				searchPatternRecurse(v,dataNode,ipo,baseValue);
-		}
+		TemporalObject dataParent = (TemporalObject)dataNode.getParent();		
+		TemporalObject patternParent = (TemporalObject)patternNode.getParent();
 
+		ArrayList<TemporalObject> toHighlight = new ArrayList<TemporalObject>();
+		
+		for(TemporalObject ipo : patternParent.childObjects()) {
+			for(TemporalObject io : dataParent.childObjects()) {
+				Granule dataGranule;
+				try {
+					dataGranule = io.getTemporalElement().getGranule();
+					Granule patternGranule = ipo.getTemporalElement().getGranule();
+					if(dataGranule.getIdentifier() == patternGranule.getIdentifier()) {
+						result &= Double.isNaN(ipo.getDouble("value")) || Math.abs(io.getDouble("value")/ipo.getDouble("value")-baseValue) < 0.1;
+						if (result && io.getChildCount() > 0 && ipo.getChildCount() > 0)				
+							result &= searchPatternRecurse(v,(TemporalObject)io.getChild(0),(TemporalObject)ipo.getChild(0),baseValue);
+						if(result && !Double.isNaN(ipo.getDouble("value")))
+							toHighlight.add(io);
+					}
+				} catch (TemporalDataException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		if (result) {
+			for(TemporalObject highlight : toHighlight)
+				v.getVisualItem("GROOVE", highlight).setHighlighted(true);
+		}
 		
 		return result;
 	}
