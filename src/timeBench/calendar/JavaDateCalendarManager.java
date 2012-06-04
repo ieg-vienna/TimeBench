@@ -265,8 +265,19 @@ public class JavaDateCalendarManager implements CalendarManager {
 			}
 		} else if(granularity.getIdentifier() == Granularities.Week.intValue) {
 			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 5) % 7;
-			calInf.setTimeInMillis(calInf.getTimeInMillis()-dow*86400000);
+			calInf.setTimeInMillis(calInf.getTimeInMillis()-dow*86400000);			
+			if(granularity.getGranularityContextIdentifier() == Granularities.Month.intValue &&
+					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) {
+				calInf.set(GregorianCalendar.DAY_OF_MONTH, 1);
+				calInf.set(GregorianCalendar.MONTH, calSup.get(GregorianCalendar.MONTH));
+			}
 			calSup.setTimeInMillis(calSup.getTimeInMillis()+(6-dow)*86400000);
+			if(granularity.getGranularityContextIdentifier() == Granularities.Month.intValue &&
+					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) {
+				calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
+				calSup.set(GregorianCalendar.MONTH, calInf.get(GregorianCalendar.MONTH));
+				calSup.set(GregorianCalendar.DAY_OF_MONTH, calSup.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
+			}
 		}
 		
 		return new Granule(calInf.getTimeInMillis(),calSup.getTimeInMillis(),Granule.MODE_FORCE,granularity);
