@@ -123,7 +123,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			case COLOR_CALCULATION_H_BLUE_RED:
 				hsb[0] = (float)((value-minmax[0])/(minmax[1]-minmax[0])/3.0+(2.0/3.0));
 				if(Float.isNaN(hsb[0]))
-					hsb[0] = 0.5f;
+					hsb[1] = 0f;
 				break;
 			case COLOR_CALCULATION_L:
 				hsb[2] = (float)((value-minmax[0])/(minmax[1]-minmax[0]));
