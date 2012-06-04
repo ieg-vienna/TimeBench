@@ -105,13 +105,13 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 						TemporalObject currentLeave = iCurrentLeaves.get(iCurrentLeaves.size()-1);
 						iCurrentLeaves.remove(iCurrentLeaves.size()-1);
 						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
-						GregorianCalendar test = new GregorianCalendar();
-						test.setTimeZone(TimeZone.getTimeZone("UTC"));
-						test.setTimeInMillis(inf);
-						if (i == 2 && test.get(GregorianCalendar.DAY_OF_MONTH) == 31) {
-						int xxx = 0;
-						xxx++;
-						}
+						//GregorianCalendar test = new GregorianCalendar();
+						//test.setTimeZone(TimeZone.getTimeZone("UTC"));
+						//test.setTimeInMillis(inf);
+						//if (i == 2 && test.get(GregorianCalendar.DAY_OF_MONTH) == 31) {
+						//int xxx = 0;
+						//xxx++;
+						//}
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
 						TemporalObject targetBranch = null;
 					    for(int j=futureBranches.size()-1;j>=0;j--) {
