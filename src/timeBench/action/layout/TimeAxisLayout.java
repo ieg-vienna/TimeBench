@@ -11,6 +11,7 @@ import prefuse.data.tuple.TupleSet;
 import prefuse.visual.VisualItem;
 import timeBench.action.layout.timescale.TimeScale;
 import timeBench.data.GenericTemporalElement;
+import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
@@ -107,6 +108,11 @@ public class TimeAxisLayout extends Layout {
 
         // setMinMax(); TODO get layout bounds
         // get Inf / Sup of TemporalDataset (only temporal objects)
+        
+        // TODO consider only nodes = temporal objects 
+//      if (items instanceof VisualGraph)
+
+        // TODO consider only: visible, anchored objects 
 
         Iterator tuples = items.tuples(m_filter);
         while (tuples.hasNext()) {
