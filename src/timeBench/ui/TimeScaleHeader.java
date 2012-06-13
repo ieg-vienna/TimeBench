@@ -17,6 +17,14 @@ import javax.swing.event.ChangeListener;
 import timeBench.action.layout.timescale.TimeScale;
 import timeBench.action.layout.timescale.TimeUnit;
 
+/**
+ * <p>
+ * Added: 2012-06-13 / AR (based on work by Peter Weishapl)<br>
+ * Modifications: 2012-06-13 / AR / fixed maximum height
+ * </p>
+ * 
+ * @author Alexander Rind (based on work of Peter Weishapl)
+ */
 public class TimeScaleHeader extends JPanel {
     
     private static final long serialVersionUID = -6190939165401154694L;
@@ -54,6 +62,11 @@ public class TimeScaleHeader extends JPanel {
 		int height = getFontMetrics(getFont()).getHeight() * 2;
 		return new Dimension(20, height);
 	}
+
+    public Dimension getMaximumSize() {
+        int height = getFontMetrics(getFont()).getHeight() * 2;
+        return new Dimension(Short.MAX_VALUE, height);
+    }
 
 	public void setTimeScale(TimeScale newTimeScale) {
 		if (timeScale != null) {
