@@ -29,7 +29,7 @@ public class TimeAxisDisplay extends Display {
 
     private AdvancedTimeScale timeScale;
 
-    private boolean panNonTimeAxis = false;
+//    private boolean panNonTimeAxis = true;
 
     public TimeAxisDisplay() {
         super();
@@ -61,9 +61,9 @@ public class TimeAxisDisplay extends Display {
         if (timeScale != null) {
             timeScale.pan((int) dx);
         }
-        if (panNonTimeAxis) {
-            super.panAbs(0, dy);
-        }
+//        if (panNonTimeAxis) {
+//            super.panAbs(0, dy);
+//        }
     }
 
     public synchronized void zoom(Point2D p, double scale) {

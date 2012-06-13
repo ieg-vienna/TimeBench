@@ -72,6 +72,7 @@ public class IntervalAxisLayout extends TimeAxisLayout {
             vi.setX(pixelInf);
             vi.setInt(maxXField, pixelSup);
         } else {
+        	// TODO test y axis layout direction 
             vi.setY(pixelInf);
             vi.setInt(maxXField, pixelSup);
         }
