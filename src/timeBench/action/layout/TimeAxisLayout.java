@@ -8,7 +8,9 @@ import prefuse.Constants;
 import prefuse.action.layout.Layout;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TupleSet;
+import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
+import prefuse.visual.expression.VisiblePredicate;
 import timeBench.action.layout.timescale.TimeScale;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataset;
@@ -35,13 +37,13 @@ public class TimeAxisLayout extends Layout {
 
     protected final Logger log = Logger.getLogger(getClass());
 
-    protected TimeScale timeScale;
+    protected TimeScale timeScale = null;
 
     private int m_axis = Constants.X_AXIS;
 
     private Placement placement = Placement.MIDDLE;
 
-    protected Predicate m_filter = null;
+    protected Predicate m_filter = VisiblePredicate.TRUE;
 
     /**
      * Create a new TimeAxisLayout. Defaults to using the x-axis. A
@@ -49,7 +51,7 @@ public class TimeAxisLayout extends Layout {
      * {@link TimeLayout#setTimeScale(TimeScale)} to enable this {@link Layout}.
      * 
      * @param group
-     *            the data group to layout
+     *            the data group to layout 
      */
     public TimeAxisLayout(String group) {
         super(group);
@@ -64,7 +66,7 @@ public class TimeAxisLayout extends Layout {
      *            the {@link TimeScale} used to layout items
      */
     public TimeAxisLayout(String group, TimeScale timeScale) {
-        this(group);
+        super(group);
         setTimeScale(timeScale);
     }
 
@@ -84,7 +86,8 @@ public class TimeAxisLayout extends Layout {
      */
     public TimeAxisLayout(String group, int axis, TimeScale timeScale, Placement placement,
             Predicate filter) {
-        this(group, timeScale);
+        super(group);
+        setTimeScale(timeScale);
         setAxis(axis);
         setPlacement(placement);
         setFilter(filter);
@@ -96,6 +99,8 @@ public class TimeAxisLayout extends Layout {
     @Override
     public void run(double frac) {
         if (timeScale == null) {
+            // setMinMax(); TODO get layout bounds
+            // get Inf / Sup of TemporalDataset (only temporal objects)
             log.debug("cannot layout without timescale");
             return;
         }
@@ -106,21 +111,16 @@ public class TimeAxisLayout extends Layout {
             return;
         }
 
-        // setMinMax(); TODO get layout bounds
-        // get Inf / Sup of TemporalDataset (only temporal objects)
-        
-        // TODO consider only nodes = temporal objects 
-//      if (items instanceof VisualGraph)
+        // consider only nodes = temporal objects
+        if (items instanceof VisualGraph) {
+            items = ((VisualGraph) items).getNodes();
+        }
 
-        // TODO consider only: visible, anchored objects 
+        // TODO consider only: anchored (visible) objects --> index 
 
         Iterator tuples = items.tuples(m_filter);
         while (tuples.hasNext()) {
             VisualItem item = (VisualItem) tuples.next();
-            // double v = item.getDouble(m_field);
-            // double f = prefuse.util.MathLib.linearInterp(v, min, max);
-            // set(item, f);
-
             layoutItem(item);
         }
     }
