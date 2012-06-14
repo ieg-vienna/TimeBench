@@ -32,7 +32,7 @@ import timeBench.test.DebugHelper;
  * @author Tim Lammarsch
  *
  */
-public class TimeAggregationTree extends prefuse.action.Action implements TemporalDatasetProvider, MinMaxValuesProvider {
+public class GranularityAggregationAction extends prefuse.action.Action implements TemporalDatasetProvider, MinMaxValuesProvider {
     
     private final Logger logger = Logger.getLogger(this.getClass());
     
@@ -49,7 +49,7 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 	 * @param temporalDataset
 	 * @param columnsUsed 
 	 */
-	public TimeAggregationTree(TemporalDataset sourceDataset, CalendarManagers calendarManager,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
+	public GranularityAggregationAction(TemporalDataset sourceDataset, CalendarManagers calendarManager,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
 		this.sourceDataset = sourceDataset;
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		this.granularities = new Granularity[granularities.length];
