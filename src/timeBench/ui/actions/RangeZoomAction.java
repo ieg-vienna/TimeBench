@@ -8,9 +8,17 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
+import timeBench.action.layout.timescale.RangeAdapter;
+
 /**
  * Zooms a given {@link RangeAdapter}, by in/decreasing the interval between
  * it's value and extent, as declared in {@link BoundedRangeModel}.
+ * 
+ * <p>
+ * Added: 2012-05-17 / Peter Weishapl<br>
+ * Modifications: 2010-08-20 / AR / make zoom more smooth at edges of range & set a maximum zoom <br>
+ *                2012-06-14 / AR / constructor with RangeAdapter
+ * </p>
  * 
  * @author peterw
  * 
@@ -39,6 +47,11 @@ public class RangeZoomAction extends AbstractRangeAction {
 				(isZoomIn() ? "zoomplus_on.gif" : "zoomminus_on.gif"))));
 		putValue(ACCELERATOR_KEY, (isZoomIn() ? KeyStroke.getKeyStroke(KeyEvent.VK_UP, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
 				: KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())));
+	}
+	
+	public RangeZoomAction(RangeAdapter rangeModel, int factor) {
+	    this(factor);
+	    super.setRangeModel(rangeModel);
 	}
 
 	// update Alex Rind 2010-Aug-20: make zoom more smooth at edges of range & set a maximum zoom 

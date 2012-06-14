@@ -8,9 +8,17 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
+import timeBench.action.layout.timescale.RangeAdapter;
+
 /**
  * Pans a {@link RangeAdapter} by in/decreasing it's current value, as declared
  * in {@link BoundedRangeModel}.
+ * 
+ * <p>
+ * Added: 2012-05-17 / Peter Weishapl<br>
+ * Modifications: 2010-08-24 / AR / make isLeft() protected<br>
+ *                2012-06-14 / AR / constructor with RangeAdapter
+ * </p>
  * 
  * @author peterw
  * 
@@ -45,6 +53,11 @@ public class RangePanAction extends AbstractRangeAction {
 		putValue(ACCELERATOR_KEY, (isLeft() ? KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
 				: KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())));
 	}
+
+    public RangePanAction(RangeAdapter rangeModel, double d) {
+        this(d);
+        super.setRangeModel(rangeModel);
+    }
 
 	protected boolean isLeft() {
 		return d < 0;
