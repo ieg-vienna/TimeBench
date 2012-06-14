@@ -199,12 +199,21 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 			for(TemporalObject iChild : dataNode.childObjects())
 				searchPattern(v,iChild,(TemporalObject)patternNode.getChild(0));
 		} else {
-			searchPatternRecurse(v,dataNode,patternNode,dataNode.getDouble("value")/patternNode.getDouble("value"));
+			try {
+				searchPatternRecurse(v,dataNode,patternNode,dataNode.getDouble("value")/patternNode.getDouble("value"),
+						patternNode.getTemporalElement().getGranule().getIdentifier()-
+						dataNode.getTemporalElement().getGranule().getIdentifier());
+			} catch (TemporalDataException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}	
 	
-	private boolean searchPatternRecurse(Visualization v,TemporalObject dataNode, TemporalObject patternNode,double baseValue) {
+	private boolean searchPatternRecurse(Visualization v,TemporalObject dataNode,
+			TemporalObject patternNode,double baseValue,Long baseIdentifier) {
 		boolean result = true;
+		int checked = 0;
 		
 		TemporalObject dataParent = (TemporalObject)dataNode.getParent();		
 		TemporalObject patternParent = (TemporalObject)patternNode.getParent();
@@ -217,10 +226,12 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 				try {
 					dataGranule = io.getTemporalElement().getGranule();
 					Granule patternGranule = ipo.getTemporalElement().getGranule();
-					if(dataGranule.getIdentifier() == patternGranule.getIdentifier()) {
+					if((baseIdentifier == null && dataGranule.getIdentifier() == patternGranule.getIdentifier())
+							|| patternGranule.getIdentifier()-dataGranule.getIdentifier() == baseIdentifier) {
 						result &= Double.isNaN(ipo.getDouble("value")) || Math.abs(io.getDouble("value")/ipo.getDouble("value")-baseValue) < 0.1;
+						checked++;
 						if (result && io.getChildCount() > 0 && ipo.getChildCount() > 0)				
-							result &= searchPatternRecurse(v,(TemporalObject)io.getChild(0),(TemporalObject)ipo.getChild(0),baseValue);
+							result &= searchPatternRecurse(v,(TemporalObject)io.getChild(0),(TemporalObject)ipo.getChild(0),baseValue,null);
 						if(result && !Double.isNaN(ipo.getDouble("value")))
 							toHighlight.add(io);
 					}
@@ -231,7 +242,7 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 			}
 		}
 		
-		if (result) {
+		if (result && checked == patternParent.getChildCount()) {
 			for(TemporalObject highlight : toHighlight)
 				v.getVisualItem("GROOVE", highlight).setHighlighted(true);
 		}

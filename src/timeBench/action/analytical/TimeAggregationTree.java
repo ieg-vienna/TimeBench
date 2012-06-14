@@ -68,8 +68,6 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 		try {
 			workingDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
 			
-			workingDataset.addColumn("GranuleIdentifier", Granule.class); 
-		
 	        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
 			int columnCount = dataColumnIndices.length;
 			minValues = new double[columnCount][granularities.length+1];
@@ -126,7 +124,6 @@ public class TimeAggregationTree extends prefuse.action.Action implements Tempor
 					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
 					    	Instant newTe = workingDataset.addInstant(newGranule);
 					    	targetBranch = workingDataset.addTemporalObject(newTe);
-					    	targetBranch.set("GranuleIdentifier", newGranule);
 					    	futureBranches.add(targetBranch);
 					    	futureLeaves.add(new ArrayList<TemporalObject>());					    	
 					    	currentBranches.get(k).linkWithChild(targetBranch);

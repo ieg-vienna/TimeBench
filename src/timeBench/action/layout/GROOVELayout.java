@@ -5,9 +5,12 @@ import ieg.prefuse.data.DataHelper;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.TreeMap;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import prefuse.Display;
 import prefuse.data.Graph;
@@ -27,6 +30,7 @@ import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granule;
+import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
 
@@ -101,11 +105,42 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
             System.out.println(vgl.getRoot().getChild(0));
             System.out.println(vgl.getRoot().getChild(1));
 			
+            ArrayList<Float> relativeSize = new ArrayList<Float>();
+            ArrayList<Long> minIdentifiers = new ArrayList<Long>();
+            ArrayList<Long> maxIdentifiers = new ArrayList<Long>();
+            buildSizeChart(datasetProvider.getTemporalDataset().getTemporalObject(
+					datasetProvider.getTemporalDataset().getRoots()[0]),relativeSize,minIdentifiers,maxIdentifiers,0);
+            
 			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
-					datasetProvider.getTemporalDataset().getRoots()[0])),position,0);
+					datasetProvider.getTemporalDataset().getRoots()[0])),position,0,minIdentifiers,maxIdentifiers);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	private void buildSizeChart(TemporalObject node, ArrayList<Float> relativeSize, ArrayList<Long> minIdentifiers, ArrayList<Long> maxIdentifiers, int level) throws TemporalDataException {
+
+		if(relativeSize.size() <= level)
+			relativeSize.add(0f);
+		if(minIdentifiers.size() <= level)
+			minIdentifiers.add(Long.MAX_VALUE);
+		if(maxIdentifiers.size() <= level)
+			maxIdentifiers.add(Long.MIN_VALUE);
+		if (settings[level].getFitting() == FITTING_DEPENDING_ON_POSSIBLE_VALUES) {
+			minIdentifiers.set(level,node.getTemporalElement().getGranule().getGranularity().getMinGranuleIdentifier());
+			maxIdentifiers.set(level,node.getTemporalElement().getGranule().getGranularity().getMaxGranuleIdentifier());
+		} else {
+			minIdentifiers.set(level, Math.min(minIdentifiers.get(level), node.getTemporalElement().getGranule().getIdentifier()));
+			maxIdentifiers.set(level, Math.max(maxIdentifiers.get(level), node.getTemporalElement().getGranule().getIdentifier()));
+		}		
+		if(node.getChildCount() == 0)
+			relativeSize.add(1f);
+		else {
+			for(TemporalObject o : node.childObjects()) {
+				buildSizeChart(o,relativeSize,minIdentifiers,maxIdentifiers,level+1);
+			}
+			//settings[level]
 		}
 	}
 
@@ -151,7 +186,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	 * @throws Exception 
 	 * 
 	 */
-	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel) throws Exception {		
+	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel,ArrayList<Long> minIdentifiers,ArrayList<Long> maxIdentifiers) throws Exception {		
 
 		if(granularityLevel > 0) {
 			position.x += settings[granularityLevel-1].getBorderWith()[0];
@@ -234,33 +269,16 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
 		if(granularityLevel + 1 < settings.length) {
 			Iterator<NodeItem> iChilds = node.inNeighbors();
-			int numberOfSubElements = Integer.MIN_VALUE;
-			long minIdent = Long.MAX_VALUE;
-			long maxIdent = Long.MIN_VALUE;
-			if(settings[granularityLevel+1].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
-				while(iChilds.hasNext()) {
-					NodeItem iChild = iChilds.next();
-					Granule granule = (Granule)iChild.get("GranuleIdentifier");
-					minIdent = Math.min(minIdent, granule.getIdentifier());
-					maxIdent = Math.max(maxIdent, granule.getIdentifier());
-				}
-				numberOfSubElements = (int)(maxIdent - minIdent + 1); 
-				iChilds = node.inNeighbors();
-			}
 			while(iChilds.hasNext()) {
 				NodeItem iChild = iChilds.next();				
-				Granule granule = (Granule)iChild.get("GranuleIdentifier");
-				if(numberOfSubElements == Integer.MIN_VALUE) {
-					minIdent = granule.getGranularity().getMinGranuleIdentifier();
-					maxIdent = granule.getGranularity().getMaxGranuleIdentifier();
-					numberOfSubElements = (int)(maxIdent - minIdent + 1);
-				}
+				Granule granule = ((TemporalObject)iChild.getSourceTuple()).getTemporalElement().getGranule();
+				int numberOfSubElements = (int)(maxIdentifiers.get(granularityLevel+1)-minIdentifiers.get(granularityLevel+1)+1);
 				Rectangle subPosition = (Rectangle)position.clone();
 				Node hTargetNode = null;
 				Node vTargetNode = null;
 				Node targetNode = null;
 				if (settings[granularityLevel+1].getOrientation() == ORIENTATION_HORIZONTAL) {
-					subPosition.x += position.width/numberOfSubElements*(granule.getIdentifier()-minIdent);
+					subPosition.x += position.width/numberOfSubElements*(granule.getIdentifier()-minIdentifiers.get(granularityLevel+1));
 					subPosition.width = position.width/numberOfSubElements;
 					for(int i=0; i<hNode.getChildCount();i++) {
 						if (hNode.getChild(i).getString(VisualItem.LABEL) == granule.getLabel()) {
@@ -278,7 +296,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					hTargetNode = targetNode;
 					vTargetNode = vNode;
 				} else if (settings[granularityLevel+1].getOrientation() == ORIENTATION_VERTICAL) {
-					subPosition.y += position.height/numberOfSubElements*(granule.getIdentifier()-minIdent);
+					subPosition.y += position.height/numberOfSubElements*(granule.getIdentifier()-minIdentifiers.get(granularityLevel+1));
 					subPosition.height = position.height/numberOfSubElements;					
 					for(int i=0; i<vNode.getChildCount();i++) {
 						if (vNode.getChild(i).getString(VisualItem.LABEL) == granule.getLabel()) {
@@ -297,7 +315,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					vTargetNode = targetNode;
 				}
 
-				layoutGranularity(vg,vgl,hTargetNode,vTargetNode,iChild, subPosition, granularityLevel+1);
+				layoutGranularity(vg,vgl,hTargetNode,vTargetNode,iChild, subPosition, granularityLevel+1,minIdentifiers,maxIdentifiers);
 			}
 		}
 	}
