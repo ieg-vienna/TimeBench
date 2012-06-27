@@ -320,13 +320,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 						result = granule.getInf()%86400000;
 						break;
 					case Week: {
-						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC")); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
 						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*86400000 + granule.getInf()%86400000;
 						break;
 					}
 					case Month: {
-						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC")); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
 						result = cal.get(GregorianCalendar.DAY_OF_MONTH)*86400000 + granule.getInf()%86400000;
 						break;
