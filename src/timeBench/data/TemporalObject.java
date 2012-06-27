@@ -1,5 +1,7 @@
 package timeBench.data;
 
+import java.util.Iterator;
+
 import ieg.util.lang.CustomIterable;
 
 import org.apache.log4j.Logger;
@@ -116,4 +118,19 @@ public class TemporalObject extends TableNode {
                 + super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID)
                 + "]";
     }
+
+	/**
+	 * Returns the level of the TemporalObject if it belongs to a tree. Otherwise,
+	 * and for root nodes, it returns 0.
+	 * @return the tree level
+	 */
+	public int getTreeLevel() {
+		@SuppressWarnings("rawtypes")
+		Iterator parents = super.outNeighbors(); 
+		if (parents.hasNext()) {
+			return ((TemporalObject) parents.next()).getTreeLevel() + 1; 
+		} else {
+			return 0;
+		}
+	}
 }

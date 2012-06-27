@@ -25,13 +25,12 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.VisualTree;
-import timeBench.action.analytical.MinMaxValuesProvider;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granule;
+import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.TemporalDataException;
-import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
 
 /**
@@ -50,7 +49,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	CalendarManager calendarManager;
 	int[] hotPalette;
 	String group = "GROOVE";
-	TemporalDatasetProvider datasetProvider;
+	GranularityAggregationTreeProvider dataProvider;
 	GranularityGROOVELayoutSettings[] settings;
 	String labelGroup = "GROOVELabels";
 	int hDepth = 0;
@@ -64,13 +63,13 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
 	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
 	
-	public GROOVELayout(String group,String labelGroup,CalendarManagers calendarManager,TemporalDatasetProvider datasetProvider,
+	public GROOVELayout(String group,String labelGroup,CalendarManagers calendarManager,GranularityAggregationTreeProvider dataProvider,
 			int columnUsed,GranularityGROOVELayoutSettings[] settings) {		
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		hotPalette = prefuse.util.ColorLib.getHotPalette(768);
 		this.group = group;
 		this.labelGroup = labelGroup;
-		this.datasetProvider = datasetProvider;
+		this.dataProvider = dataProvider;
 		this.settings = settings;
 		
 		for(int i=1; i<settings.length; i++) {
@@ -88,7 +87,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
 		m_vis.removeGroup(group);
 		m_vis.removeGroup(labelGroup);
-		VisualGraph vg = m_vis.addGraph(group, datasetProvider.getTemporalDataset());
+		VisualGraph vg = m_vis.addGraph(group, dataProvider.getGranularityAggregationTree());
 		
         Schema labelNodeSchema = PrefuseLib.getVisualItemSchema();
         labelNodeSchema.addColumn(VisualItem.LABEL, String.class);
@@ -108,11 +107,11 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
             ArrayList<Float> relativeSize = new ArrayList<Float>();
             ArrayList<Long> minIdentifiers = new ArrayList<Long>();
             ArrayList<Long> maxIdentifiers = new ArrayList<Long>();
-            buildSizeChart(datasetProvider.getTemporalDataset().getTemporalObject(
-					datasetProvider.getTemporalDataset().getRoots()[0]),relativeSize,minIdentifiers,maxIdentifiers,0);
+            buildSizeChart(dataProvider.getGranularityAggregationTree().getTemporalObject(
+            		dataProvider.getGranularityAggregationTree().getRoots()[0]),relativeSize,minIdentifiers,maxIdentifiers,0);
             
-			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),(NodeItem)m_vis.getVisualItem(group, datasetProvider.getTemporalDataset().getTemporalObject(
-					datasetProvider.getTemporalDataset().getRoots()[0])),position,0,minIdentifiers,maxIdentifiers);
+			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),(NodeItem)m_vis.getVisualItem(group, dataProvider.getGranularityAggregationTree().getTemporalObject(
+					dataProvider.getGranularityAggregationTree().getRoots()[0])),position,0,minIdentifiers,maxIdentifiers);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -150,7 +149,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			currentLevel--;
 		}
 		
-		double value = currentNode.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[currentLevel].getSourceColumn()));
+		double value = currentNode.getDouble(dataProvider.getGranularityAggregationTree().getDataColumnSchema().getColumnName(settings[currentLevel].getSourceColumn()));
 		double[] minmax = new double[2];
 		getMinMax(currentLevel,minmax);
 		
@@ -170,15 +169,13 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	
 	private void getMinMax(int level,double[] minmax) {
 		minmax[0] = Double.NaN;
-		minmax[1] = Double.NaN;
-		if (datasetProvider instanceof MinMaxValuesProvider) {
+		minmax[1] = Double.NaN;		
 			for(int i=0; i<settings.length; i++) {
 				if (settings[i].getColorCalculation() == settings[level].getColorCalculation()) {
-					minmax[0] = ((MinMaxValuesProvider)datasetProvider).getMinValue(i,settings[level].getSourceColumn());
-					minmax[1] = ((MinMaxValuesProvider)datasetProvider).getMaxValue(i,settings[level].getSourceColumn());
+					minmax[0] = dataProvider.getGranularityAggregationTree().getMinValue(i, settings[level].getSourceColumn());
+					minmax[1] = dataProvider.getGranularityAggregationTree().getMaxValue(i, settings[level].getSourceColumn());
 				}
 			}
-		}
 	}
 
 	/**
@@ -211,7 +208,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 				case COLOR_CALCULATION_GLOWING_METAL:
 					double[] minmax = new double[2];
 					getMinMax(granularityLevel,minmax);
-					double value = node.getDouble(datasetProvider.getTemporalDataset().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));					
+					double value = node.getDouble(dataProvider.getGranularityAggregationTree().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));					
 					if (Double.isNaN(value))
 						node.setFillColor(prefuse.util.ColorLib.gray(127));
 					else

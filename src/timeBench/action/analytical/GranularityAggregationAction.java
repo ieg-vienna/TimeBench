@@ -14,10 +14,11 @@ import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.GenericTemporalElement;
+import timeBench.data.GranularityAggregationTree;
+import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
-import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
 import timeBench.test.DebugHelper;
 
@@ -32,16 +33,14 @@ import timeBench.test.DebugHelper;
  * @author Tim Lammarsch
  *
  */
-public class GranularityAggregationAction extends prefuse.action.Action implements TemporalDatasetProvider, MinMaxValuesProvider {
+public class GranularityAggregationAction extends prefuse.action.Action implements GranularityAggregationTreeProvider {
     
     private final Logger logger = Logger.getLogger(this.getClass());
     
 	TemporalDataset sourceDataset;
-	TemporalDataset workingDataset;
+	GranularityAggregationTree workingDataset;
 	CalendarManager calendarManager;
 	Granularity[] granularities;	
-	double[][] minValues;
-	double[][] maxValues;
 	double missingValueIdentifier;
 
 	/**
@@ -66,20 +65,8 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	public void run(double frac) {
         logger.trace("run -> begin of method");
 		try {
-			workingDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
+			workingDataset = new GranularityAggregationTree(sourceDataset.getDataColumnSchema(),sourceDataset.getDataColumnIndices().length,granularities.length+1);
 			
-	        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
-			int columnCount = dataColumnIndices.length;
-			minValues = new double[columnCount][granularities.length+1];
-			maxValues = new double[columnCount][granularities.length+1];
-			for(int i=0; i<columnCount;	i++) {
-				if (sourceDataset.getNodeTable().canGetDouble(dataColumnIndices[i])) {
-					for(int j=0; j<=granularities.length; j++) {
-						minValues[i][j] = Double.MAX_VALUE;
-						maxValues[i][j] = Double.MIN_VALUE;
-					}
-				}
-			}
 			logger.debug("run -> after for loop with min max values");
 			
 			GenericTemporalElement te = workingDataset.addTemporalElement(sourceDataset.getInf(),sourceDataset.getSup(),
@@ -188,10 +175,6 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		for(int i=0; i<dataColumnIndices.length; i++) {
 			totalValue[i] /= numObjects[i];
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);
-			if (!Double.isNaN(totalValue[i]) && level <= granularities.length ) {
-				minValues[i][level] = Math.min(minValues[i][level], totalValue[i]);
-				maxValues[i][level] = Math.max(maxValues[i][level], totalValue[i]);
-			}
 		}
 		
 	}
@@ -200,32 +183,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	 * @see timeBench.data.relational.TemporalDatasetProvider#getTemporalDataset()
 	 */
 	@Override
-	public TemporalDataset getTemporalDataset() {
+	public GranularityAggregationTree getGranularityAggregationTree() {
 		return workingDataset;
-	}
-
-	@Override
-	public Double getMinValue(int level,int index) {
-		if(minValues == null || minValues.length <= index)
-			return null;
-		else {
-			if(minValues[index][level] == Double.MAX_VALUE)
-				return Double.NaN;
-			else
-				return minValues[index][level];
-		}
-			
-	}
-
-	@Override
-	public Double getMaxValue(int level,int index) {
-		if(maxValues == null || maxValues.length <= index)
-			return null;
-		else {
-			if(minValues[index][level] == Double.MAX_VALUE)
-				return Double.NaN;
-			else
-				return maxValues[index][level];
-		}
 	}
 }

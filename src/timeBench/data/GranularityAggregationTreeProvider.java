@@ -1,6 +1,5 @@
 package timeBench.data;
 
-
 /**
  * Any class can have this interface in order to provide the getTemporalDataset()
  * method to get a relational temporal dataset. It is designed with an action in
@@ -15,6 +14,6 @@ package timeBench.data;
  * @author Tim Lammarsch
  *
  */
-public interface TemporalDatasetProvider {
-	public TemporalDataset getTemporalDataset();
+public interface GranularityAggregationTreeProvider {
+	public GranularityAggregationTree getGranularityAggregationTree();
 }
