@@ -84,6 +84,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			for(int i=granularities.length-1; i>=0;i--) {
 				ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
 				ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
+				int whichChild = 0;
 				for(int k=0; k<currentLeaves.size();k++) {
 					ArrayList<TemporalObject> iCurrentLeaves = currentLeaves.get(k);
 					while(iCurrentLeaves.size() > 0) {
@@ -92,13 +93,11 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 						TemporalObject targetBranch = null;
 						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
-						int whichChild = 0;
 						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
 					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
 					    		targetBranch = potentialBranch;					    		
 					    	    break;
 					    	}
-					    	whichChild++;
 					    }
 					    if (targetBranch == null) {
 					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
@@ -106,9 +105,10 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 					    	targetBranch = workingDataset.addTemporalObject(newTe);
 					    	futureBranches.add(targetBranch);
 					    	futureLeaves.add(new ArrayList<TemporalObject>());					    	
+					    	whichChild++;
 					    	currentBranches.get(k).linkWithChild(targetBranch);
 					    }
-				    	futureLeaves.get(whichChild).add(currentLeave);
+				    	futureLeaves.get(whichChild-1).add(currentLeave);
 					}
 				}
 				if(i==0) {
