@@ -98,7 +98,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				case 8: return Granularities.Year;
 				case 16383: return Granularities.Calendar; 
 				case 32767: return Granularities.Top; 
-				default: throw new TemporalDataException("Unknown Granularity");
+				default: throw new TemporalDataException("Unknown Granularity: " + intValue);
 			}
 		}
 	}
