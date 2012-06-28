@@ -92,11 +92,13 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 						TemporalObject targetBranch = null;
 						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
+						int whichChild = 0;
 						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
 					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
-					    		targetBranch = potentialBranch;
+					    		targetBranch = potentialBranch;					    		
 					    	    break;
 					    	}
+					    	whichChild++;
 					    }
 					    if (targetBranch == null) {
 					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
@@ -106,7 +108,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 					    	futureLeaves.add(new ArrayList<TemporalObject>());					    	
 					    	currentBranches.get(k).linkWithChild(targetBranch);
 					    }
-				    	futureLeaves.get(futureLeaves.size()-1).add(currentLeave);
+				    	futureLeaves.get(whichChild).add(currentLeave);
 					}
 				}
 				if(i==0) {
