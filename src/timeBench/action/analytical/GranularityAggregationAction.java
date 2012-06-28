@@ -163,6 +163,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			}
 		}
 		
+        // TODO skip columns where NOT canSetDouble() e.g. boolean, Object
 		for(int i=0; i<dataColumnIndices.length; i++) {
 			totalValue[i] /= numObjects[i];
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);

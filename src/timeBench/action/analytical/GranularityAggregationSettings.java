@@ -11,6 +11,7 @@ package timeBench.action.analytical;
  * @author Tim Lammarsch
  * 
  */
+// TODO rename to singular or keep all granularities in this class
 public class GranularityAggregationSettings {
 
     // private static final long serialVersionUID = 1380115803468529882L;

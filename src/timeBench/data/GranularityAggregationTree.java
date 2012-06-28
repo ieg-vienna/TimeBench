@@ -22,6 +22,8 @@ public class GranularityAggregationTree extends TemporalDataset {
 	
 
 	public GranularityAggregationTree(Schema dataColumnSchema, int columnCount, int levelCount) throws TemporalDataException {
+	    // TODO handle int columns (canGetDouble but not canSetDouble) -> add as double columns
+	    // TODO handle boolean, Object columns -> exclude?
 		super(dataColumnSchema);
 		
 		minValues = new double[columnCount][levelCount];
