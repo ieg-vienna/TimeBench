@@ -5,6 +5,7 @@ import ieg.util.xml.JaxbMarshaller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import javax.xml.bind.JAXBException;
@@ -59,7 +60,11 @@ public class TextTableTemporalDatasetReader extends
                 : new TemporalDataColumnSpecification();
 
         TableReader tableReader = spec.getTableFormat().getTableReader();
+        // XXX hack to handle prefuse String -> Date conversion in UTC
+        TimeZone oldDefault = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         Table table = tableReader.readTable(is);
+        TimeZone.setDefault(oldDefault);
 
         if (this.spec == null)
             scanTableForSpecification(table, spec);
