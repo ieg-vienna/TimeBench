@@ -1078,4 +1078,16 @@ public class JavaDateCalendarManager implements CalendarManager {
 		
 		return 0;
 	}
+
+	@Override
+	public boolean contains(Granule granule, long chronon) throws TemporalDataException {
+		if(granule.getGranularity().getGranularityContextIdentifier() ==
+				Granularities.Top.intValue || granule.getGranularity().getGranularityContextIdentifier() ==
+						Granularities.Calendar.intValue) {
+			return chronon>=granule.getInf() && chronon<=granule.getSup();
+		} else {
+			Granule g2 = new Granule(chronon,chronon,granule.getGranularity());
+			return granule.getIdentifier() == g2.getIdentifier();
+		}
+	}
 }

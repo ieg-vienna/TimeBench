@@ -89,20 +89,11 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 					while(iCurrentLeaves.size() > 0) {
 						TemporalObject currentLeave = iCurrentLeaves.get(iCurrentLeaves.size()-1);
 						iCurrentLeaves.remove(iCurrentLeaves.size()-1);
-						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
-						//GregorianCalendar test = new GregorianCalendar();
-						//test.setTimeZone(TimeZone.getTimeZone("UTC"));
-						//test.setTimeInMillis(inf);
-						//if (i == 2 && test.get(GregorianCalendar.DAY_OF_MONTH) == 31) {
-						//int xxx = 0;
-						//xxx++;
-						//}
-						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
 						TemporalObject targetBranch = null;
-					    for(int j=futureBranches.size()-1;j>=0;j--) {
-					    	TemporalObject potentialBranch = futureBranches.get(j);
-					    	if (potentialBranch.getTemporalElement().asGeneric().getInf() <= inf &&
-					    			potentialBranch.getTemporalElement().asGeneric().getSup() >= sup) {
+						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
+						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
+						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
+					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
 					    		targetBranch = potentialBranch;
 					    	    break;
 					    	}

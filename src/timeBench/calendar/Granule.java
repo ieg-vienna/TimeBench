@@ -151,4 +151,13 @@ public class Granule {
 			label = granularity.createGranuleLabel(this);
 		return label;
 	}
+
+	/**
+	 * @param inf2
+	 * @return
+	 * @throws TemporalDataException 
+	 */
+	public boolean contains(long chronon) throws TemporalDataException {
+		return granularity.contains(this,chronon);
+	}
 }

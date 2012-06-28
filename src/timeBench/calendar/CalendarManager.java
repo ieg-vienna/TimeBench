@@ -152,4 +152,6 @@ public interface CalendarManager {
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
 	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException;
+
+	public boolean contains(Granule granule, long chronon) throws TemporalDataException;
 }
