@@ -73,6 +73,18 @@ public class TemporalObject extends TableNode {
     }
 
     /**
+     * Get the first or only parent temporal object.
+     * 
+     * @return a temporal object that is parent of this temporal object or
+     *         <tt>null</tt>.
+     */
+    public TemporalObject getFirstParentObject() {
+        @SuppressWarnings("rawtypes")
+        Iterator objs = super.outNeighbors();
+        return objs.hasNext() ? (TemporalObject) objs.next() : null;
+    }
+    
+    /**
      * Get an iterator over all temporal objects that are children of this
      * temporal object.
      * 
@@ -83,6 +95,18 @@ public class TemporalObject extends TableNode {
         return new CustomIterable(super.inNeighbors());
     }
 
+    /**
+     * Get the first or only child temporal object.
+     * 
+     * @return a temporal object that is child of this temporal object or
+     *         <tt>null</tt>.
+     */
+    public TemporalObject getFirstChildObject() {
+        @SuppressWarnings("rawtypes")
+        Iterator objs = super.inNeighbors();
+        return objs.hasNext() ? (TemporalObject) objs.next() : null;
+    }
+    
     /**
      * Gets the number of child temporal objects.
      * 
