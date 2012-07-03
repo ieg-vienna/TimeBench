@@ -119,7 +119,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	}
 
 	private void buildSizeChart(TemporalObject node, ArrayList<Float> relativeSize, ArrayList<Long> minIdentifiers, ArrayList<Long> maxIdentifiers, int level) throws TemporalDataException {
-
+	    // TODO relativeSize is never read
 		if(relativeSize.size() <= level)
 			relativeSize.add(0f);
 		if(minIdentifiers.size() <= level)
