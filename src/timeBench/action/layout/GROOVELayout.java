@@ -1,6 +1,7 @@
 package timeBench.action.layout;
 
 import ieg.prefuse.data.DataHelper;
+import ieg.util.color.CIELUV;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -54,6 +55,8 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	String labelGroup = "GROOVELabels";
 	int hDepth = 0;
 	int vDepth = 0;
+	double minLuminance = CIELUV.getMinLuminanceForChroma(60, 2.2);
+	double maxLuminance = CIELUV.getMaxLuminanceForChroma(60, 2.2);
 
 	public static final int ORIENTATION_HORIZONTAL = 0;
 	public static final int ORIENTATION_VERTICAL = 1;
@@ -143,7 +146,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		}
 	}
 
-	private void calculateColorPart(int level,int currentLevel,NodeItem currentNode, float[] hsb) {	
+	private void calculateColorPart(int level,int currentLevel,NodeItem currentNode, double[] hcl) {	
 		while(currentLevel > level) {
 			currentNode = (NodeItem)currentNode.getParent();
 			currentLevel--;
@@ -155,14 +158,15 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		
 		switch(settings[currentLevel].getColorCalculation()) {
 			case COLOR_CALCULATION_H_BLUE_RED:
-				hsb[0] = (float)((value-minmax[0])/(minmax[1]-minmax[0])/3.0+(2.0/3.0));
-				if(Float.isNaN(hsb[0]))
-					hsb[1] = 0f;
+				hcl[0] = (double)((value-minmax[0])/(minmax[1]-minmax[0])/3.0+(2.0/3.0));
+				System.out.println(value+"->"+hcl[0]);
+				if(Double.isNaN(hcl[0]))
+					hcl[1] = 0f;
 				break;
 			case COLOR_CALCULATION_L:
-				hsb[2] = (float)((value-minmax[0])/(minmax[1]-minmax[0]));
-				if(Float.isNaN(hsb[2]))
-					hsb[2] = 0.5f;
+				hcl[2] = (double)((value-minmax[0])/(minmax[1]-minmax[0])*(maxLuminance-minLuminance)+minLuminance);
+				if(Double.isNaN(hcl[2]))
+					hcl[2] = 0.5*(maxLuminance-minLuminance)+minLuminance;
 				break;
 		}
 	}
@@ -215,51 +219,55 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 						node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-minmax[0])/(minmax[1]-minmax[0])*768.0))]);
 					break;
 				default:
-					float[] hsb = new float[3];
-					float[] hsb2 = new float[3];
-					hsb[0] = Float.NaN;
-					hsb[1] = Float.NaN;
-					hsb[2] = Float.NaN;
+					double[] hcl = new double[3];
+					double[] hcl2 = new double[3];
+					hcl[0] = Double.NaN;
+					hcl[1] = Double.NaN;
+					hcl[2] = Double.NaN;
 					if (settings[granularityLevel].getColorOverlayLevel() >= 0) {
-						calculateColorPart(settings[granularityLevel].getColorOverlayLevel(),granularityLevel,node,hsb);
+						calculateColorPart(settings[granularityLevel].getColorOverlayLevel(),granularityLevel,node,hcl);
 					}
-					calculateColorPart(granularityLevel,granularityLevel,node,hsb);
-					if(Float.isNaN(hsb[0]) && Float.isNaN(hsb[1])) {
-						hsb[0] = 0.0f;
-						hsb[1] = 0.0f;
-						hsb2[0] = 1.0f/3.0f;
-						hsb2[1] = 1.0f;
-						hsb2[2] = hsb[2];
-					} else if(Float.isNaN(hsb[0]) && Float.isNaN(hsb[2])) {
-						hsb[0] = 1.0f/3.0f;
-						hsb[2] = 0.5f;
-						hsb2[0] = 2.0f/3.0f;
-						hsb2[1] = hsb[1];
-						hsb2[2] = 0.5f;
-					} else if(Float.isNaN(hsb[1]) && Float.isNaN(hsb[2])) {
-						hsb[1] = 0.5f;
-						hsb[2] = 0.5f;
-						hsb2[0] = hsb[0];
-						hsb2[1] = 1.0f;
-						hsb2[2] = 1.0f;
-					} else if(Float.isNaN(hsb[0])) {
-						hsb[0] = 1.0f/3.0f;
-						hsb2[0] = 2.0f/3.0f;
-						hsb2[1] = hsb[1];
-						hsb2[2] = hsb[2];
-					} else if(Float.isNaN(hsb[1])) {
-						hsb[1] = 0.5f;
-						hsb2[0] = hsb[0];
-						hsb2[1] = 1.0f;
-						hsb2[2] = hsb[2];
-					} else if(Float.isNaN(hsb[2])) {
-						hsb[2] = 0.5f;
-						hsb2[0] = hsb[0];
-						hsb2[1] = hsb[1];
-						hsb2[2] = 1.0f;
-					}
-					node.setFillColor(prefuse.util.ColorLib.hsb(hsb[0],hsb[1],hsb[2]));
-					node.setStartFillColor(prefuse.util.ColorLib.hsb(hsb2[0],hsb2[1],hsb2[2]));
+					calculateColorPart(granularityLevel,granularityLevel,node,hcl);
+					/*if(Double.isNaN(hcl[0]) && Double.isNaN(hcl[1])) {
+						hcl[0] = 0.0;
+						hcl[1] = 0.0;
+						hcl2[0] = 1.0f/3.0f;
+						hcl2[1] = 1.0f;
+						hcl2[2] = hcl[2];
+					} else if(Double.isNaN(hcl[0]) && Double.isNaN(hcl2[2])) {
+						hcl[0] = 1.0f/3.0f;
+						hcl[2] = 0.5f;
+						hcl2[0] = 2.0f/3.0f;
+						hcl2[1] = hcl[1];
+						hcl2[2] = 0.5f;
+					} else if(Double.isNaN(hcl) && Double.isNaN(hcl2[2])) {
+						hcl[1] = 0.5f;
+						hcl[2] = 0.5f;
+						hcl2[0] = hcl[0];
+						hcl2[1] = 1.0f;
+						hcl2[2] = 1.0f;
+					} else if(Double.isNaN(hcl[0])) {
+						hcl[0] = 1.0f/3.0f;
+						hcl2[0] = 2.0f/3.0f;
+						hcl2[1] = hcl[1];
+						hcl2[2] = hcl[2];
+					} else if(Double.isNaN(hcl)) {
+						hcl[1] = 0.5f;
+						hcl2[0] = hcl[0];
+						hcl2[1] = 1.0f;
+						hcl2[2] = hcl[2];
+					} else if(Double.isNaN(hcl)) {
+						hcl[2] = 0.5f;
+						hcl2[0] = hcl[0];
+						hcl2[1] = hcl[1];
+						hcl2[2] = 1.0f;
+					}*/
+					hcl[1] = 60;	// TODO besser machen
+					if (Double.isNaN(hcl[2]))
+						hcl[2] = (maxLuminance-minLuminance)/2 + minLuminance;
+					int[] rgb = CIELUV.hcl2rgb(hcl[0],hcl[1],hcl[2],2.2);
+					node.setFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
+					node.setStartFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
 				break;
 			}
 		}
