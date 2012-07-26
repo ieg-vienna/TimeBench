@@ -1,7 +1,7 @@
 package timeBench.action.layout;
 
 import ieg.prefuse.data.DataHelper;
-import ieg.util.color.CIELUV;
+import ieg.util.color.HCL;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -55,8 +55,8 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	String labelGroup = "GROOVELabels";
 	int hDepth = 0;
 	int vDepth = 0;
-	double minLuminance = CIELUV.getMinLuminanceForChroma(60, 2.2);
-	double maxLuminance = CIELUV.getMaxLuminanceForChroma(60, 2.2);
+	double minLuminance = HCL.getMinLuminanceForChroma(60, 2.2);
+	double maxLuminance = HCL.getMaxLuminanceForChroma(60, 2.2);
 
 	public static final int ORIENTATION_HORIZONTAL = 0;
 	public static final int ORIENTATION_VERTICAL = 1;
@@ -265,9 +265,9 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					hcl[1] = 60;	// TODO besser machen
 					if (Double.isNaN(hcl[2]))
 						hcl[2] = (maxLuminance-minLuminance)/2 + minLuminance;
-					int[] rgb = CIELUV.hcl2rgb(hcl[0],hcl[1],hcl[2],2.2);
-					node.setFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
-					node.setStartFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
+					int[] rgb = HCL.hcl2rgb(hcl[0],hcl[1],hcl[2],2.2);
+					//node.setFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
+					//node.setStartFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
 				break;
 			}
 		}
