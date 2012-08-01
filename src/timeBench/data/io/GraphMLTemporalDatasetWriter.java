@@ -30,8 +30,8 @@ import timeBench.data.TemporalObject;
  * writes a {@link TemporalDataset} to XML using the GraphML language. It is
  * implemented with SAX using JAXP.
  * 
- * TODO root elements
  * TODO calendar
+ * TODO handle default values of data columns
  * 
  * <p>
  * GraphML only supports attributes of primitive types and string. Only
@@ -50,6 +50,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     public static final String GRAPHML_NS = "http://graphml.graphdrawing.org/xmlns";
     public static final String OBJECT_PREFIX = "o";
     public static final String ELEMENT_PREFIX = "t";
+    public static final String ROOT = "root";
 
     private TransformerHandler hd = null;
 
@@ -134,6 +135,9 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             writeGraphEdges(tmpds.getTemporalElements(),
                     TemporalElement.ID, ELEMENT_PREFIX,
                     edgeAtts);
+            
+            // *** root objects ***
+            writeRoots(tmpds, nodeAtts, edgeAtts);
 
             // *** epilogue ***
             hd.endElement(GRAPHML_NS, Tokens.GRAPH, Tokens.GRAPH);
@@ -170,20 +174,19 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
                 "node");
 
         // key elements for predefined field values
-        writeGraphMLKey(TemporalElement.INF, long.class, keyAtts);
-        writeGraphMLKey(TemporalElement.SUP, long.class, keyAtts);
-        writeGraphMLKey(TemporalElement.GRANULARITY_ID, int.class, keyAtts);
-        writeGraphMLKey(TemporalElement.GRANULARITY_CONTEXT_ID, int.class,
+        writeGraphMLKey("_" + TemporalElement.INF, long.class, keyAtts);
+        writeGraphMLKey("_" + TemporalElement.SUP, long.class, keyAtts);
+        writeGraphMLKey("_" + TemporalElement.GRANULARITY_ID, int.class, keyAtts);
+        writeGraphMLKey("_" + TemporalElement.GRANULARITY_CONTEXT_ID, int.class,
                 keyAtts);
-        writeGraphMLKey(TemporalElement.KIND, int.class, keyAtts);
+        writeGraphMLKey("_" + TemporalElement.KIND, int.class, keyAtts);
 
         // key elements for application-specific field values
-        Schema dataElements = tmpds.getNodeTable().getSchema();
+        Schema dataElements = tmpds.getDataColumnSchema(); 
         for (int i = 0; i < dataElements.getColumnCount(); i++) {
             String name = dataElements.getColumnName(i);
-            // predefined columns are handled differently
-            if (!(TemporalObject.ID.equals(name) || TemporalObject.TEMPORAL_ELEMENT_ID
-                    .equals(name))) {
+            // column names starting with "_" are reserved
+            if (! name.startsWith("_")) {
                 writeGraphMLKey(name, dataElements.getColumnType(i), keyAtts);
             }
         }
@@ -205,15 +208,15 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             hd.startElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE, nodeAtts);
 
             // data elements for predefined field values
-            writeGraphMLData(TemporalElement.INF, Long.toString(te.getInf()),
+            writeGraphMLData("_" + TemporalElement.INF, Long.toString(te.getInf()),
                     dataAtts);
-            writeGraphMLData(TemporalElement.SUP, Long.toString(te.getSup()),
+            writeGraphMLData("_" + TemporalElement.SUP, Long.toString(te.getSup()),
                     dataAtts);
-            writeGraphMLData(TemporalElement.GRANULARITY_ID,
+            writeGraphMLData("_" + TemporalElement.GRANULARITY_ID,
                     Integer.toString(te.getGranularityId()), dataAtts);
-            writeGraphMLData(TemporalElement.GRANULARITY_CONTEXT_ID,
+            writeGraphMLData("_" + TemporalElement.GRANULARITY_CONTEXT_ID,
                     Integer.toString(te.getGranularityContextId()), dataAtts);
-            writeGraphMLData(TemporalElement.KIND,
+            writeGraphMLData("_" + TemporalElement.KIND,
                     Integer.toString(te.getKind()), dataAtts);
 
             hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
@@ -239,8 +242,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             for (int i = 0; i < tObj.getColumnCount(); i++) {
                 String name = tObj.getColumnName(i);
                 // predefined columns are handled differently
-                if (!(TemporalObject.ID.equals(name) || TemporalObject.TEMPORAL_ELEMENT_ID
-                        .equals(name))) {
+                if (! name.startsWith("_")) {
                     writeGraphMLData(name, tObj.getString(i), dataAtts);
                 }
             }
@@ -263,11 +265,11 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             long objId = tObj.getId();
             long elId = tObj.getTemporalElement().getId();
 
-            writeGraphMLEdge(ELEMENT_PREFIX + elId, OBJECT_PREFIX + objId,
+            writeGraphMLEdge(OBJECT_PREFIX + objId, ELEMENT_PREFIX + elId,
                     edgeAtts);
         }
     }
-
+    
     /**
      * generate edge elements for all edges in a graph.
      * 
@@ -290,6 +292,28 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             long tId = graph.getNodeTable().getLong(tRow, idField);
 
             writeGraphMLEdge(prefix + sId, prefix + tId, edgeAtts);
+        }
+    }
+
+    /**
+     * generate a fake node that has edges from all root objects.
+     * 
+     * @param tmpds
+     * @param nodeAtts
+     * @param edgeAtts
+     * @throws SAXException
+     */
+    private void writeRoots(TemporalDataset tmpds, AttributesImpl nodeAtts,
+            AttributesImpl edgeAtts) throws SAXException {
+        long[] roots = tmpds.getRoots();
+        if (roots.length > 0) {
+            nodeAtts.setValue(0, ROOT);
+            hd.startElement("", Tokens.NODE, Tokens.NODE, nodeAtts);
+            hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
+
+            for (long objId : roots) {
+                writeGraphMLEdge(OBJECT_PREFIX + objId, ROOT, edgeAtts);
+            }
         }
     }
 
