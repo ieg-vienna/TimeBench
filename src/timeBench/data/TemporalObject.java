@@ -117,9 +117,9 @@ public class TemporalObject extends TableNode {
     }
     
     /**
-     * Links a TemporalObject as child to this Temporalobject.
+     * Links a TemporalObject as child to this TemporalObject.
      * 
-     * @param child The Temporal Object that will be added as child.
+     * @param child The TemporalObject that will be added as child.
      */
     public void linkWithChild(TemporalObject child) {
         super.m_graph.addEdge(child, this);

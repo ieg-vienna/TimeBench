@@ -789,6 +789,13 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         granuleCache.addGranule(instant.getRow(), granule);
         return instant;
     }
+    
+    public Span addSpan(long length, int granularityId) {
+        int row = this.addTemporalElementAsRow(length, length, granularityId,
+                -1, TemporalDataset.PRIMITIVE_SPAN);
+        Span result = (Span) this.temporalPrimitives.getTuple(row);
+        return result;
+    }
 
     public Interval addInterval(Instant begin, Instant end)
             throws TemporalDataException {
@@ -802,20 +809,68 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
                 TemporalDataset.PRIMITIVE_INTERVAL);
 
         // add edges to temporal element graph
-        this.getTemporalElements().addEdge(begin, interval);
-        this.getTemporalElements().addEdge(end, interval);
+        interval.linkWithChild(begin);
+        interval.linkWithChild(end);
 
         return (Interval) interval.asPrimitive();
     }
     
     public Interval addInterval(Instant begin, Span span)
             throws TemporalDataException {
-        throw new UnsupportedOperationException();
+        
+        // TODO replace this with some calendar magic
+        long sup;
+        if (span.getGranularityId() == timeBench.calendar.JavaDateCalendarManager.Granularities.Day.toInt()) {
+            sup = begin.getSup() + (span.getLength() - 1) * 24 * 3600 * 1000;
+        }  else {
+            throw new UnsupportedOperationException();
+        }
+        
+        GenericTemporalElement interval = addTemporalElement(begin.getInf(),
+                sup, begin.getGranularityId(),
+                begin.getGranularityContextId(),
+                TemporalDataset.PRIMITIVE_INTERVAL);
+
+        // add edges to temporal element graph
+        interval.linkWithChild(begin);
+        interval.linkWithChild(span);
+
+        return (Interval) interval.asPrimitive();
     }
     
     public Interval addInterval(Span span, Instant end)
             throws TemporalDataException {
         throw new UnsupportedOperationException();
+    }
+    
+    public AnchoredTemporalElement addAnchoredSet(TemporalElement... elements) throws TemporalDataException {
+        TemporalElement anchor = null;
+        long inf = Long.MAX_VALUE;
+        long sup = Long.MIN_VALUE;
+
+        for (TemporalElement el : elements) {
+            if (el.isAnchored()) {
+                anchor = el;
+                inf = Math.min(inf, el.getLong(TemporalElement.INF));
+                sup = Math.max(sup, el.getLong(TemporalElement.SUP));
+            }
+        }
+
+        if (anchor == null) {
+            throw new TemporalDataException(
+                    "Anchored set needs at least one anchored child.");
+        }
+
+        GenericTemporalElement set = addTemporalElement(inf, sup,
+                anchor.getGranularityId(), anchor.getGranularityContextId(),
+                TemporalDataset.PRIMITIVE_SET);
+
+        // add edges to temporal element graph
+        for (TemporalElement el : elements) {
+            set.linkWithChild(el);
+        }
+
+        return (AnchoredTemporalElement) set.asPrimitive();
     }
     
     /**

@@ -229,6 +229,15 @@ public abstract class TemporalElement extends TableNode {
     }
     
     /**
+     * Links a TemporalElement as child to this TemporalElement.
+     * 
+     * @param child The TemporalElement that will be added as child.
+     */
+    public void linkWithChild(TemporalElement child) {
+        super.m_graph.addEdge(child, this);
+    } 
+
+    /**
      * Gets the first granule of an anchored temporal element. For an
      * {@link Instant}, the granule represents the time of the instant. If it is
      * unanchored, <tt>null</tt> is returned. Granules are cached.
