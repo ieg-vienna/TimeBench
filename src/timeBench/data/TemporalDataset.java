@@ -36,7 +36,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * ID of the first temporal object or temporal element, if it is not
      * externally set.
      */
-    private static final long DEFAULT_FIRST_ID = 1l;
+    private static final long DEFAULT_FIRST_ID = 0l;
 
     /**
      * {@link Graph} of temporal elements
