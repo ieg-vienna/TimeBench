@@ -65,7 +65,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	public void run(double frac) {
         logger.trace("run -> begin of method");
 		try {
-			workingDataset = new GranularityAggregationTree(sourceDataset.getDataColumnSchema(),sourceDataset.getDataColumnIndices().length,granularities.length+1);
+			workingDataset = new GranularityAggregationTree(sourceDataset.getDataColumnSchema(),granularities.length+1);
 			
 			logger.debug("run -> after for loop with min max values");
 			
@@ -169,6 +169,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		for(int i=0; i<dataColumnIndices.length; i++) {
 			totalValue[i] /= numObjects[i];
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			parent.setInt(GranularityAggregationTree.DEPTH,level);
 		}
 		
 	}

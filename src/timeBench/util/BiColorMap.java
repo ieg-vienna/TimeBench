@@ -26,6 +26,10 @@ public class BiColorMap {
 
         int idx1 = (int)(palette.length * (val1-minValue1)/(maxValue1-minValue1));
         int idx2 = (int)(palette[0].length * (val2-minValue2)/(maxValue2-minValue2));
+        if (idx1 < 0 || idx2 < 0 || idx1>= palette.length || idx2>=palette[0].length) {
+        	int i =0;
+        	i = i +1;
+        }
         return palette[idx1][idx2];
     }
     

@@ -1,5 +1,7 @@
 package timeBench.data;
 
+import java.util.ArrayList;
+
 import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
@@ -37,7 +39,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * externally set.
      */
     private static final long DEFAULT_FIRST_ID = 0l;
-
+    
     /**
      * {@link Graph} of temporal elements
      */
@@ -47,6 +49,11 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     private long[] roots = null; // if we have a forest or tree of temporal
                                  // objects, null for tables
 
+    /**
+     * here, derived classes can add their own non-data columns
+     */
+    protected String[] additionalNonDataColums = new String[0];
+    
     /**
      * tuple manager for primitives (e.g., {@link Instance})
      */
@@ -184,12 +191,32 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     public int[] getDataColumnIndices() {
         // WARNING: The methods assumes that the non-data columns have indices 0 and 1 
         final int TEMPORAL_OBJECT_NONDATA_COLUMS = 2;
+        int[] cols;
 
-        int[] cols = new int[super.getNodeTable().getColumnCount()
-                - TEMPORAL_OBJECT_NONDATA_COLUMS];
-        for (int i = 0; i < cols.length; i++) {
-            cols[i] = i + TEMPORAL_OBJECT_NONDATA_COLUMS;
+        if (additionalNonDataColums.length == 0) {        
+        	cols = new int[super.getNodeTable().getColumnCount()
+        	                     - TEMPORAL_OBJECT_NONDATA_COLUMS];
+        	for (int i = 0; i < cols.length; i++) {
+        		cols[i] = i + TEMPORAL_OBJECT_NONDATA_COLUMS;
+        	}
+        } else {
+        	ArrayList<Integer> removedlist = new ArrayList<Integer>();                	
+    		for(String iAdditionalNonDataColumn : additionalNonDataColums) {
+            	for (int i = TEMPORAL_OBJECT_NONDATA_COLUMS; i < getNodeTable().getColumnCount(); i++) {        	            		        	
+        			if(getNodeTable().getColumnName(i) == iAdditionalNonDataColumn) {
+        				removedlist.add(i);
+        				break;
+        			}
+        		}
+    		}
+    		cols = new int[super.getNodeTable().getColumnCount() - TEMPORAL_OBJECT_NONDATA_COLUMS - removedlist.size()];
+    		int j=0;
+        	for (int i = TEMPORAL_OBJECT_NONDATA_COLUMS; i < getNodeTable().getColumnCount(); i++) {
+        		if(!removedlist.contains(i))
+        			cols[j++] = i;
+        	}
         }
+        
         return cols;
     }
     

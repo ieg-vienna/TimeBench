@@ -20,23 +20,28 @@ public class GranularityAggregationTree extends TemporalDataset {
 	double[][] minValues;
 	double[][] maxValues;
 	
-
-	public GranularityAggregationTree(Schema dataColumnSchema, int columnCount, int levelCount) throws TemporalDataException {
+    public static final String DEPTH = "_depth";
+    
+	public GranularityAggregationTree(Schema dataColumnSchema, int levelCount) throws TemporalDataException {
 	    // TODO handle int columns (canGetDouble but not canSetDouble) -> add as double columns
 	    // TODO handle boolean, Object columns -> exclude?
+
 		super(dataColumnSchema);
 		
-		minValues = new double[columnCount][levelCount];
-		maxValues = new double[columnCount][levelCount];
-		int i2=0;
-		for(int i : getDataColumnIndices()) {
-			if (getNodeTable().canGetDouble(i)) {
+		addColumn(DEPTH, Integer.TYPE);
+		additionalNonDataColums = new String[] {DEPTH};
+		
+		minValues = new double[dataColumnSchema.getColumnCount()][levelCount];
+		maxValues = new double[dataColumnSchema.getColumnCount()][levelCount];
+		int l=0;
+		for(int k : getDataColumnIndices()) {
+			if (getNodeTable().canGetDouble(k)) {
 				for(int j=0; j<levelCount; j++) {
-					minValues[i2][j] = Double.MAX_VALUE;
-					maxValues[i2][j] = Double.MIN_VALUE;
+					minValues[l][j] = Double.MAX_VALUE;
+					maxValues[l][j] = Double.MIN_VALUE;
 				}
 			}
-			i2++;
+			l++;
 		}
 		
 		getNodeTable().addTableListener(new GranularityAggregationTreeListener());
@@ -63,6 +68,10 @@ public class GranularityAggregationTree extends TemporalDataset {
 			else
 				return maxValues[index][level];
 		}
+	}
+	
+	public int getMaxDepth() {
+		return minValues.length;
 	}
 	
 	class GranularityAggregationTreeListener implements TableListener {

@@ -1,12 +1,25 @@
 package timeBench.action.assignment;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import prefuse.Constants;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
+import prefuse.data.CascadedTable;
+import prefuse.data.Graph;
+import prefuse.data.Table;
+import prefuse.data.expression.ColumnExpression;
+import prefuse.data.expression.ComparisonPredicate;
+import prefuse.data.expression.NumericLiteral;
+import prefuse.data.expression.Predicate;
+import prefuse.data.tuple.TupleSet;
+import prefuse.data.util.FilterIteratorFactory;
+import prefuse.util.DataLib;
 import prefuse.util.MathLib;
+import prefuse.util.PrefuseLib;
 import prefuse.visual.VisualItem;
+import timeBench.data.GranularityAggregationTree;
 import timeBench.util.BiColorMap;
 import timeBench.util.ColorLib;
 
@@ -24,20 +37,29 @@ import timeBench.util.ColorLib;
 public class OverlayDataColorAction extends DataColorAction {
 	protected int[][] m_palette; 
 	protected int m_type1,m_type2;
-    protected BiColorMap m_cmap;
+    protected BiColorMap m_cmap = new BiColorMap(null,0.0,1.0,0.0,1.0);
+    protected double[][] m_dist;
+    protected boolean m_dist_separation;
+    protected int[] m_levels;
+    protected Map[] m_omaps;
+    protected GranularityAggregationTree m_tree = null;
+    protected String m_group_without_terror;
 	
     public OverlayDataColorAction(String group, String dataField, 
-            int dataType, String colorField)
+            int dataType, String colorField, boolean distSeparation,int[] levels)
     {
-    	super(group, dataField,dataType,colorField);
+    	super(PrefuseLib.getGroupName(group, Graph.NODES), dataField,dataType,colorField);    	
     	setDataType(dataType);
     	setDataField(dataField);
+    	m_dist_separation = distSeparation;
+    	m_levels = levels;
+    	m_group_without_terror = group;
     }
 
     public OverlayDataColorAction(String group, String dataField, 
-    		int dataType, String colorField, int[][] palette)
+    		int dataType, String colorField, boolean distSeparation, int[] levels, int[][] palette)
     {
-    	this(group, dataField,dataType,colorField);
+    	this(group, dataField,dataType,colorField,distSeparation,levels);
     	m_palette = palette;
     }
     
@@ -47,6 +69,8 @@ public class OverlayDataColorAction extends DataColorAction {
         
         int[][] palette = m_palette;
              
+    	m_tree = (GranularityAggregationTree)m_vis.getSourceData(m_group_without_terror);    	
+        
         // switch up scale if necessary
         m_tempScale = m_scale;
         if ( m_scale == Constants.QUANTILE_SCALE && m_bins <= 0 ) {
@@ -61,17 +85,17 @@ public class OverlayDataColorAction extends DataColorAction {
         switch ( m_type ) {
         case Constants.NOMINAL:
         case Constants.ORDINAL:
-            m_dist = getDistribution();
+            m_dist = getDistributions();
             size = m_omap.size();
             palette = (m_palette!=null ? m_palette : createBiPalette(size));
             m_cmap.setColorPalette(palette);
-            m_cmap.setMinValue1(m_dist[0]);
-            m_cmap.setMaxValue1(m_dist[1]);
-            m_cmap.setMinValue2(m_dist[0]);
-            m_cmap.setMaxValue2(m_dist[1]);
+            m_cmap.setMinValue1(m_dist[0][0]);
+            m_cmap.setMaxValue1(m_dist[0][1]);
+            m_cmap.setMinValue2(m_dist[1][0]);
+            m_cmap.setMaxValue2(m_dist[1][1]);
             return;
         case Constants.NUMERICAL:
-            m_dist = getDistribution();
+            m_dist = getDistributions();
             size = m_bins > 0 ? m_bins : size;
             palette = (m_palette!=null ? m_palette : createBiPalette(size));
             m_cmap.setColorPalette(palette);
@@ -81,6 +105,48 @@ public class OverlayDataColorAction extends DataColorAction {
             m_cmap.setMaxValue2(1.0);
             return;
         }    
+    }
+    
+    protected double[][] getDistributions() {
+    	int level0,level1;
+    	if (m_dist_separation) {
+    		level0 = Math.max(0,m_levels[1]-1);
+    		level1 = m_tree.getMaxDepth();
+    	} else {
+    		level0 = m_tree.getMaxDepth();    		
+    		level1 = m_tree.getMaxDepth();    		
+    	}
+        TupleSet ts = m_vis.getVisualGroup(m_group);
+        Predicate pred0 = new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level0));
+        TupleSet ts0 = new CascadedTable((Table)ts, pred0);  
+        Predicate pred1 = new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level1));
+        TupleSet ts1 = new CascadedTable((Table)ts, pred1);
+        double[][] result = new double[2][];
+
+        if ( m_type == Constants.NUMERICAL ) {
+            m_omaps = null;
+            if ( m_scale == Constants.QUANTILE_SCALE && m_bins > 0 ) {
+                double[] values0 = DataLib.toDoubleArray(ts0.tuples(), m_dataField);               
+                double[] values1 = DataLib.toDoubleArray(ts1.tuples(), m_dataField);               
+                result[0] = MathLib.quantiles(m_bins, values0);
+                result[1] = MathLib.quantiles(m_bins, values1);
+                return result;
+            } else {
+                double[][] dist = new double[2][2];
+                dist[0][0] = DataLib.min(ts0, m_dataField).getDouble(m_dataField);
+                dist[0][1] = DataLib.max(ts0, m_dataField).getDouble(m_dataField);
+                dist[1][0] = DataLib.min(ts1, m_dataField).getDouble(m_dataField);
+                dist[1][1] = DataLib.max(ts1, m_dataField).getDouble(m_dataField);
+                return dist;
+            }
+        } else {
+            if ( m_olist == null ) { 
+                m_omaps = new Map[2];
+                m_omaps[0] = DataLib.ordinalMap(ts0, m_dataField);
+                m_omaps[1] = DataLib.ordinalMap(ts1, m_dataField);
+            }
+            return new double[][] { { 0, m_omaps[0].size()-1 },{ 0, m_omaps[1].size()-1 } };
+        }
     }
     
     protected int[][] createBiPalette(int size) {
@@ -94,7 +160,7 @@ public class OverlayDataColorAction extends DataColorAction {
         }
     } 
     
-    /*@Override
+    @Override
     public int getColor(VisualItem item) {
         // check for any cascaded rules first
         Object o = lookup(item);
@@ -110,14 +176,22 @@ public class OverlayDataColorAction extends DataColorAction {
         }
         
         // otherwise perform data-driven assignment
+        double f0 = Double.NaN,f1 = Double.NaN;
         switch ( m_type ) {
         case Constants.NUMERICAL:
-            double v = item.getDouble(m_dataField);
-            double f = MathLib.interp(m_scale, v, m_dist);
-            return m_cmap.getColor(f);
+        	if(item.getInt(GranularityAggregationTree.DEPTH) >= m_levels[0]) {
+        		double v = item.getDouble(m_dataField);
+        		f0 = MathLib.interp(m_scale, v, m_dist[0]);
+        	}
+        	if(item.getInt(GranularityAggregationTree.DEPTH) >= m_levels[1]) {
+        		double v = item.getDouble(m_dataField);
+        		f1 = MathLib.interp(m_scale, v, m_dist[1]);
+        	}
+            return m_cmap.getColor(f0,f1);
         default:
-            Integer idx = (Integer)m_omap.get(item.get(m_dataField));
-            return m_cmap.getColor(idx.doubleValue());
+            Integer idx0 = (Integer)m_omaps[0].get(item.get(m_dataField));
+            Integer idx1 = (Integer)m_omaps[1].get(item.get(m_dataField));
+            return m_cmap.getColor(idx0.doubleValue(),idx1.doubleValue());
         }
-    }*/
+    }
 }
