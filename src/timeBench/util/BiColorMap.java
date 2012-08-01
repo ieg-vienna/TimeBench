@@ -15,21 +15,18 @@ public class BiColorMap {
     }
     
     public int getColor(double val1,double val2) {
-    	if (val1 < minValue1)
-    		val1 = minValue1;
-    	else if (val1 > maxValue1)
-    		val1 = maxValue1;
-    	if (val2 < minValue2)
-    		val2 = minValue2;
-    	else if (val2 > maxValue2)
-    		val2 = maxValue2;
-
         int idx1 = (int)(palette.length * (val1-minValue1)/(maxValue1-minValue1));
         int idx2 = (int)(palette[0].length * (val2-minValue2)/(maxValue2-minValue2));
-        if (idx1 < 0 || idx2 < 0 || idx1>= palette.length || idx2>=palette[0].length) {
-        	int i =0;
-        	i = i +1;
-        }
+
+        if (idx1<0)
+        	idx1=0;
+        if (idx2<0)
+        	idx2=0;
+        if (idx1>=palette.length)
+        	idx1=palette.length-1;
+        if (idx2>=palette[0].length)
+        	idx2=palette[0].length-1;
+        
         return palette[idx1][idx2];
     }
     
