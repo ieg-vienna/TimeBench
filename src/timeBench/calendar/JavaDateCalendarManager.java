@@ -740,7 +740,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier()*360000;
 				break;
 			case Day:
-				result = granule.getIdentifier()*8640000;
+			    // Warning does not handle day light saving time 
+				result = granule.getIdentifier()*86400000;
 				break;
 			case Week:
 				result = granule.getIdentifier()*60480000;
@@ -793,7 +794,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier()*360000+359999;
 				break;
 			case Day:
-				result = granule.getIdentifier()*8640000+8639999;
+				result = granule.getIdentifier()*86400000+86399999;
 				break;
 			case Week:
 				result = granule.getIdentifier()*60480000+60479999;

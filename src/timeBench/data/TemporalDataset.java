@@ -11,6 +11,7 @@ import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
+import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.expression.AnchoredPredicate;
 import timeBench.data.util.DefaultIntervalComparator;
@@ -817,15 +818,25 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     
     public Interval addInterval(Instant begin, Span span)
             throws TemporalDataException {
-        
-        // TODO replace this with some calendar magic
-        long sup;
-        if (span.getGranularityId() == timeBench.calendar.JavaDateCalendarManager.Granularities.Day.toInt()) {
-            sup = begin.getSup() + (span.getLength() - 1) * 24 * 3600 * 1000;
-        }  else {
-            throw new UnsupportedOperationException();
+
+        // TODO change granularities to solve more general cases
+        if (span.getGranularityId() != begin.getGranularityId()) {
+            throw new TemporalDataException(
+                    "Begin and span need to be the same granularity");
         }
-        
+
+        Granule granule = begin.getGranule();
+        Granularity granularity = granule.getGranularity();
+
+        if (!granularity.isInTopContext()) {
+            throw new TemporalDataException(
+                    "Granularity must be in top context");
+        }
+
+        long endId = granule.getIdentifier() + span.getLength() - 1;
+        granule = new Granule(endId, granularity);
+        long sup = granule.getSup();
+
         GenericTemporalElement interval = addTemporalElement(begin.getInf(),
                 sup, begin.getGranularityId(),
                 begin.getGranularityContextId(),

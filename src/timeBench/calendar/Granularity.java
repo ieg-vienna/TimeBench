@@ -58,6 +58,11 @@ public class Granularity {
 		return contextIdentifier;
 	}
 	
+	public boolean isInTopContext() {
+	    // TODO bitte Tim implementieren, damit ich nicht immer mit JavaDateCalendarManager vergleichen muss
+	    return true;
+	}
+	
 	/**
 	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
 	 * {@link Granule} instead.
