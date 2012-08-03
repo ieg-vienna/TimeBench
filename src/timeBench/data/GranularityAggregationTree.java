@@ -71,7 +71,7 @@ public class GranularityAggregationTree extends TemporalDataset {
 	}
 	
 	public int getMaxDepth() {
-		return minValues.length;
+		return minValues[0].length-1;
 	}
 	
 	class GranularityAggregationTreeListener implements TableListener {

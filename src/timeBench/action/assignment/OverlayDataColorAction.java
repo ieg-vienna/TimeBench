@@ -1,5 +1,7 @@
 package timeBench.action.assignment;
 
+import ieg.prefuse.data.expression.IsNanPredicate;
+
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -9,8 +11,10 @@ import prefuse.action.assignment.DataColorAction;
 import prefuse.data.CascadedTable;
 import prefuse.data.Graph;
 import prefuse.data.Table;
+import prefuse.data.expression.AndPredicate;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
+import prefuse.data.expression.NotPredicate;
 import prefuse.data.expression.NumericLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TupleSet;
@@ -18,6 +22,7 @@ import prefuse.data.util.FilterIteratorFactory;
 import prefuse.util.DataLib;
 import prefuse.util.MathLib;
 import prefuse.util.PrefuseLib;
+import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import timeBench.data.GranularityAggregationTree;
 import timeBench.util.BiColorMap;
@@ -40,26 +45,26 @@ public class OverlayDataColorAction extends DataColorAction {
     protected BiColorMap m_cmap = new BiColorMap(null,0.0,1.0,0.0,1.0);
     protected double[][] m_dist;
     protected boolean m_dist_separation;
-    protected int[] m_levels;
+    protected int m_separation_level;
     protected Map[] m_omaps;
     protected GranularityAggregationTree m_tree = null;
     protected String m_group_without_terror;
 	
     public OverlayDataColorAction(String group, String dataField, 
-            int dataType, String colorField, boolean distSeparation,int[] levels)
+            int dataType, String colorField, boolean distSeparation,int separationLevel)
     {
     	super(PrefuseLib.getGroupName(group, Graph.NODES), dataField,dataType,colorField);    	
     	setDataType(dataType);
     	setDataField(dataField);
     	m_dist_separation = distSeparation;
-    	m_levels = levels;
+    	m_separation_level = separationLevel;
     	m_group_without_terror = group;
     }
 
     public OverlayDataColorAction(String group, String dataField, 
-    		int dataType, String colorField, boolean distSeparation, int[] levels, int[][] palette)
+    		int dataType, String colorField, boolean distSeparation, int separationLevel, int[][] palette)
     {
-    	this(group, dataField,dataType,colorField,distSeparation,levels);
+    	this(group, dataField,dataType,colorField,distSeparation,separationLevel);
     	m_palette = palette;
     }
     
@@ -110,16 +115,19 @@ public class OverlayDataColorAction extends DataColorAction {
     protected double[][] getDistributions() {
     	int level0,level1;
     	if (m_dist_separation) {
-    		level0 = Math.max(0,m_levels[1]-1);
+    		level0 = Math.max(0,m_separation_level-1);
     		level1 = m_tree.getMaxDepth();
     	} else {
     		level0 = m_tree.getMaxDepth();    		
     		level1 = m_tree.getMaxDepth();    		
     	}
         TupleSet ts = m_vis.getVisualGroup(m_group);
-        Predicate pred0 = new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level0));
+        Predicate prednan = new NotPredicate(new IsNanPredicate(new ColumnExpression(m_dataField)));        
+        Predicate pred0 = new AndPredicate(prednan,  
+        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level0)));        
         TupleSet ts0 = new CascadedTable((Table)ts, pred0);  
-        Predicate pred1 = new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level1));
+        Predicate pred1 = new AndPredicate(prednan,
+        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level1)));
         TupleSet ts1 = new CascadedTable((Table)ts, pred1);
         double[][] result = new double[2][];
 
@@ -179,13 +187,18 @@ public class OverlayDataColorAction extends DataColorAction {
         double f0 = Double.NaN,f1 = Double.NaN;
         switch ( m_type ) {
         case Constants.NUMERICAL:
-        	if(item.getInt(GranularityAggregationTree.DEPTH) >= m_levels[0]) {
-        		double v = item.getDouble(m_dataField);
-        		f0 = MathLib.interp(m_scale, v, m_dist[0]);
-        	}
-        	if(item.getInt(GranularityAggregationTree.DEPTH) >= m_levels[1]) {
+        	if(item.getInt(GranularityAggregationTree.DEPTH) >= m_separation_level) {
+        		VisualItem parent = item;
+        		while(parent.getInt(GranularityAggregationTree.DEPTH) >= m_separation_level)
+        			parent = (VisualItem)(((NodeItem)parent).getParent());
         		double v = item.getDouble(m_dataField);
         		f1 = MathLib.interp(m_scale, v, m_dist[1]);
+        		v = parent.getDouble(m_dataField);
+        		f0 = MathLib.interp(m_scale, v, m_dist[0]);
+        	} else {
+        		double v = item.getDouble(m_dataField);
+        		f0 = MathLib.interp(m_scale, v, m_dist[0]);
+        		f1 = 0.5;
         	}
             return m_cmap.getColor(f0,f1);
         default:

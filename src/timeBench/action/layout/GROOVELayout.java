@@ -266,7 +266,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 					if (Double.isNaN(hcl[2]))
 						hcl[2] = (maxLuminance-minLuminance)/2 + minLuminance;
 					int[] rgb = HCL.hcl2rgb(hcl[0],hcl[1],hcl[2],2.2);
-					//node.setFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
+					node.setFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
 					//node.setStartFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
 				break;
 			}
