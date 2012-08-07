@@ -164,9 +164,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	 */
 	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel,ArrayList<Long> minIdentifiers,ArrayList<Long> maxIdentifiers) throws Exception {		
 
-		if(granularityLevel > 0)
-			return;
-		
 		if(granularityLevel > 0) {
 			position.x += settings[granularityLevel-1].getBorderWith()[0];
 			position.y += settings[granularityLevel-1].getBorderWith()[1];
@@ -174,8 +171,8 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			position.height -= (settings[granularityLevel-1].getBorderWith()[1]+settings[granularityLevel].getBorderWith()[3]);
 		}
 		
-		node.setX(position.getX());
-		node.setY(position.getY());
+		node.setX(position.getCenterX());
+		node.setY(position.getCenterY());
 		node.setSizeX(position.getWidth());
 		node.setSizeY(position.getHeight());
 		node.setDOI(granularityLevel);
