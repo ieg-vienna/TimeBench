@@ -145,31 +145,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			//settings[level]
 		}
 	}
-
-	private void calculateColorPart(int level,int currentLevel,NodeItem currentNode, double[] hcl) {	
-		while(currentLevel > level) {
-			currentNode = (NodeItem)currentNode.getParent();
-			currentLevel--;
-		}
-		
-		double value = currentNode.getDouble(dataProvider.getGranularityAggregationTree().getDataColumnSchema().getColumnName(settings[currentLevel].getSourceColumn()));
-		double[] minmax = new double[2];
-		getMinMax(currentLevel,minmax);
-		
-		switch(settings[currentLevel].getColorCalculation()) {
-			case COLOR_CALCULATION_H_BLUE_RED:
-				hcl[0] = (double)((value-minmax[0])/(minmax[1]-minmax[0])/3.0+(2.0/3.0));
-				System.out.println(value+"->"+hcl[0]);
-				if(Double.isNaN(hcl[0]))
-					hcl[1] = 0f;
-				break;
-			case COLOR_CALCULATION_L:
-				hcl[2] = (double)((value-minmax[0])/(minmax[1]-minmax[0])*(maxLuminance-minLuminance)+minLuminance);
-				if(Double.isNaN(hcl[2]))
-					hcl[2] = 0.5*(maxLuminance-minLuminance)+minLuminance;
-				break;
-		}
-	}
 	
 	private void getMinMax(int level,double[] minmax) {
 		minmax[0] = Double.NaN;
@@ -189,6 +164,9 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	 */
 	private void layoutGranularity(VisualGraph vg,VisualTree vgl, Node hNode,Node vNode, NodeItem node,Rectangle position,int granularityLevel,ArrayList<Long> minIdentifiers,ArrayList<Long> maxIdentifiers) throws Exception {		
 
+		if(granularityLevel > 0)
+			return;
+		
 		if(granularityLevel > 0) {
 			position.x += settings[granularityLevel-1].getBorderWith()[0];
 			position.y += settings[granularityLevel-1].getBorderWith()[1];
@@ -196,81 +174,12 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 			position.height -= (settings[granularityLevel-1].getBorderWith()[1]+settings[granularityLevel].getBorderWith()[3]);
 		}
 		
-		node.setStartX(position.getMinX());
-		node.setStartY(position.getMinY());
-		node.setEndX(position.getMaxX());
-		node.setEndY(position.getMaxY());
+		node.setX(position.getX());
+		node.setY(position.getY());
+		node.setSizeX(position.getWidth());
+		node.setSizeY(position.getHeight());
 		node.setDOI(granularityLevel);
 		node.setStrokeColor(ColorLib.rgba(0, 0, 0, 0));			
-		
-		if (granularityLevel < 0)
-			node.setVisible(false);
-		else {
-			node.setVisible(settings[granularityLevel].isVisible());
-
-			switch(settings[granularityLevel].getColorCalculation()) {			
-				case COLOR_CALCULATION_GLOWING_METAL:
-					double[] minmax = new double[2];
-					getMinMax(granularityLevel,minmax);
-					double value = node.getDouble(dataProvider.getGranularityAggregationTree().getDataColumnSchema().getColumnName(settings[granularityLevel].getSourceColumn()));					
-					if (Double.isNaN(value))
-						node.setFillColor(prefuse.util.ColorLib.gray(127));
-					else
-						node.setFillColor(hotPalette[Math.min(767,(int)Math.round((value-minmax[0])/(minmax[1]-minmax[0])*768.0))]);
-					break;
-				default:
-					double[] hcl = new double[3];
-					double[] hcl2 = new double[3];
-					hcl[0] = Double.NaN;
-					hcl[1] = Double.NaN;
-					hcl[2] = Double.NaN;
-					if (settings[granularityLevel].getColorOverlayLevel() >= 0) {
-						calculateColorPart(settings[granularityLevel].getColorOverlayLevel(),granularityLevel,node,hcl);
-					}
-					calculateColorPart(granularityLevel,granularityLevel,node,hcl);
-					/*if(Double.isNaN(hcl[0]) && Double.isNaN(hcl[1])) {
-						hcl[0] = 0.0;
-						hcl[1] = 0.0;
-						hcl2[0] = 1.0f/3.0f;
-						hcl2[1] = 1.0f;
-						hcl2[2] = hcl[2];
-					} else if(Double.isNaN(hcl[0]) && Double.isNaN(hcl2[2])) {
-						hcl[0] = 1.0f/3.0f;
-						hcl[2] = 0.5f;
-						hcl2[0] = 2.0f/3.0f;
-						hcl2[1] = hcl[1];
-						hcl2[2] = 0.5f;
-					} else if(Double.isNaN(hcl) && Double.isNaN(hcl2[2])) {
-						hcl[1] = 0.5f;
-						hcl[2] = 0.5f;
-						hcl2[0] = hcl[0];
-						hcl2[1] = 1.0f;
-						hcl2[2] = 1.0f;
-					} else if(Double.isNaN(hcl[0])) {
-						hcl[0] = 1.0f/3.0f;
-						hcl2[0] = 2.0f/3.0f;
-						hcl2[1] = hcl[1];
-						hcl2[2] = hcl[2];
-					} else if(Double.isNaN(hcl)) {
-						hcl[1] = 0.5f;
-						hcl2[0] = hcl[0];
-						hcl2[1] = 1.0f;
-						hcl2[2] = hcl[2];
-					} else if(Double.isNaN(hcl)) {
-						hcl[2] = 0.5f;
-						hcl2[0] = hcl[0];
-						hcl2[1] = hcl[1];
-						hcl2[2] = 1.0f;
-					}*/
-					hcl[1] = 60;	// TODO besser machen
-					if (Double.isNaN(hcl[2]))
-						hcl[2] = (maxLuminance-minLuminance)/2 + minLuminance;
-					int[] rgb = HCL.hcl2rgb(hcl[0],hcl[1],hcl[2],2.2);
-					node.setFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
-					//node.setStartFillColor(prefuse.util.ColorLib.rgb(rgb[0],rgb[1],rgb[2]));
-				break;
-			}
-		}
 		
 		if(granularityLevel + 1 < settings.length) {
 			Iterator<NodeItem> iChilds = node.inNeighbors();
