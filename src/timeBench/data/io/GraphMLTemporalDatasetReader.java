@@ -9,6 +9,7 @@ import prefuse.data.Node;
 import prefuse.data.io.DataIOException;
 import prefuse.data.io.GraphMLReader.Tokens;
 import timeBench.data.Edge;
+import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 
@@ -48,6 +49,8 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (TemporalDataException e) {
+			e.printStackTrace();
 		}
 		finally{
 			try {
@@ -66,15 +69,17 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     * @throws XMLStreamException
     * @throws FactoryConfigurationError
     * @throws IOException
+    * @throws TemporalDataException 
+    * @throws DataIOException 
     */
-    private void mainReader(InputStream is) throws XMLStreamException, FactoryConfigurationError, IOException
+    private void mainReader(InputStream is) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException, DataIOException
     {    	
     	XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(is);
     	
     	//Objects needed for operation
     	int event;
     	String nextType = null;
-    	boolean rootIndicator = false;
+    	String lastAttribute = null;
     	boolean orderCheckDone = false;
     	HashMap<String, String> dataMap = new HashMap<String, String>();
     	ArrayList<Long> rootList = new ArrayList<Long>();
@@ -88,23 +93,25 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			//Determines if an element starts and after that the type of the element			
 			case XMLEvent.START_ELEMENT:
 				if(!(orderCheckDone))
-					orderCheck(reader);
+					orderCheckDone = orderCheck(reader);
+				
+				lastAttribute = reader.getAttributeValue(0);
 				
 				if("root".equals(reader.getAttributeValue(0)) || "root".equals(reader.getAttributeValue(1))) {
 					if(Tokens.EDGE.equals(reader.getLocalName())){
 						long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1,2), 10);
 						rootList.add(rootID);
 					}
-					rootIndicator = true;
 				}					
 				else if(Tokens.KEY.equals(reader.getLocalName())) 
 					configReader(reader);
 				else if(Tokens.NODE.equals(reader.getLocalName()))
-					dataMap.put("ID", reader.getAttributeValue(0));			
+					dataMap.put("ID", reader.getAttributeValue(0));
 				else if(Tokens.DATA.equals(reader.getLocalName()))
 					nextType = reader.getAttributeValue(0);
 				else if(Tokens.EDGE.equals(reader.getLocalName()))
 					edgeList.add(new Edge(reader.getAttributeValue(0), reader.getAttributeValue(1)));
+				
 				break;
 				
 			//Value saved to the HashMap to later add it as a bulk	
@@ -117,7 +124,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				
 			//When the element ends, call the appropriate method to add it to the TemporalDataset
 			case XMLEvent.END_ELEMENT:
-				if(Tokens.NODE.equals(reader.getLocalName()) && !(rootIndicator)){
+				if(Tokens.NODE.equals(reader.getLocalName()) && !("root".equals(lastAttribute))){
 					if(dataMap.size() == 6) {
 						createTemporalElement(dataMap);
 						dataMap.clear();
@@ -126,7 +133,6 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 						createTemporalObject(dataMap);
 						dataMap.clear();
 					}
-					rootIndicator = false;
 				}
 				break;
 			case XMLEvent.END_DOCUMENT:
@@ -221,37 +227,34 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     }
     
     /**
-     * Checks if all the TemporalObject of an TemporalDataset are anchored to a TemporalElement. If not, it throws the ???_Exception.
+     * Checks if all the TemporalObject of an TemporalDataset are anchored to a TemporalElement. If not, it throws the TemporalDataException.
      * @return
+     * @throws TemporalDataException 
      */
-    private boolean checkTemporalObjects()
+    private void checkTemporalObjects() throws TemporalDataException
     {
-    	boolean conform = true;
-    	
     	for (TemporalObject to : tds.temporalObjects()) {
 			if(to.getTemporalElement() == null)
 			{
-				System.out.println("ERROR. 1 or more TemporalObject isn't/aren't anchored to a TemporalElement.");
-				conform = false;
+				throw new TemporalDataException(this.toString());
 			}
 		}
-    	
-    	return conform;
     }
     
     /**
-     * Checks if the key elements are defined before the graph. If not, it throws the ???_Exception.
+     * Checks if the key elements are defined before the graph. If not, it throws the DataIOException.
      * @param reader
      * @return
+     * @throws DataIOException 
      */
-    private boolean orderCheck(XMLStreamReader reader)
+    private boolean orderCheck(XMLStreamReader reader) throws DataIOException
     {
     	if(Tokens.KEY.equals(reader.getLocalName()))
     		return true;
-    	else {
-			//throw exception?
-    		System.out.println("WRONG ORDER OF KEYS AND GRAPH");
-    		return false;
+    	else if (Tokens.GRAPH.equals(reader.getLocalName())) {
+			throw new DataIOException(this.toString());
 		}
+    	else 
+    		return false;
     }
 }
