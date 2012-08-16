@@ -1091,4 +1091,14 @@ public class JavaDateCalendarManager implements CalendarManager {
 			return granule.getIdentifier() == g2.getIdentifier();
 		}
 	}
+	
+	@Override
+	public long getStartOfTime() {
+		return Long.MIN_VALUE;
+	}
+	
+	@Override
+	public long getEndOfTime() {
+		return Long.MAX_VALUE;
+	}
 }
