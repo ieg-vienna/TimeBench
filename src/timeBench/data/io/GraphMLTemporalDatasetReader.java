@@ -28,8 +28,7 @@ import javax.xml.stream.events.XMLEvent;
  * 
  * @author Alexander Rind, Sascha Plessberger
  */
-public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader {
-	
+public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader {	
 	/**
 	 * TemporalDataset to be filled and accessible via the readData method.
 	 */
@@ -78,8 +77,10 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	
     	//Objects needed for operation
     	int event;
-    	String nextType = null;
-    	String lastAttribute = null;
+    	int elementAttributeCount = 0;
+    	String nextDataType = null;
+    	String lastID = null;
+    	boolean edgedefault = false;
     	boolean orderCheckDone = false;
     	HashMap<String, String> dataMap = new HashMap<String, String>();
     	ArrayList<Long> rootList = new ArrayList<Long>();
@@ -95,37 +96,43 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				if(!(orderCheckDone))
 					orderCheckDone = orderCheck(reader);
 				
-				lastAttribute = reader.getAttributeValue(0);
+				lastID = reader.getAttributeValue(null, Tokens.ID);
 				
-				if("root".equals(reader.getAttributeValue(0)) || "root".equals(reader.getAttributeValue(1))) {
+				if("root".equals(lastID) || "root".equals(reader.getAttributeValue(null, Tokens.TARGET))) {
 					if(Tokens.EDGE.equals(reader.getLocalName())){
 						long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1,2), 10);
 						rootList.add(rootID);
 					}
 				}					
-				else if(Tokens.KEY.equals(reader.getLocalName())) 
-					configReader(reader);
+				else if(Tokens.KEY.equals(reader.getLocalName()))
+					elementAttributeCount += configReader(reader);
 				else if(Tokens.NODE.equals(reader.getLocalName()))
-					dataMap.put("ID", reader.getAttributeValue(0));
+					dataMap.put("ID", lastID);
 				else if(Tokens.DATA.equals(reader.getLocalName()))
-					nextType = reader.getAttributeValue(0);
+					nextDataType = reader.getAttributeValue(null, Tokens.KEY);
 				else if(Tokens.EDGE.equals(reader.getLocalName()))
-					edgeList.add(new Edge(reader.getAttributeValue(0), reader.getAttributeValue(1)));
-				
+					edgeList.add(new Edge(reader.getAttributeValue(null, Tokens.SOURCE), reader.getAttributeValue(null, Tokens.TARGET)));
+				else if(Tokens.GRAPH.equals(reader.getLocalName())) {
+					if("directed".equals(reader.getAttributeValue(null, Tokens.EDGEDEF)))
+						edgedefault = true;
+				}
 				break;
 				
 			//Value saved to the HashMap to later add it as a bulk	
 			case XMLEvent.CHARACTERS:
-				if(nextType != null){				
-					dataMap.put(nextType, reader.getText());
-					nextType = null;
+				if(nextDataType != null){	
+					if(nextDataType.startsWith("_"))
+						dataMap.put(nextDataType.split("_")[1], reader.getText());
+					else
+						dataMap.put(nextDataType, reader.getText());
+					nextDataType = null;
 				}
 				break;
 				
 			//When the element ends, call the appropriate method to add it to the TemporalDataset
 			case XMLEvent.END_ELEMENT:
-				if(Tokens.NODE.equals(reader.getLocalName()) && !("root".equals(lastAttribute))){
-					if(dataMap.size() == 6) {
+				if(Tokens.NODE.equals(reader.getLocalName()) && !("root".equals(lastID))){
+					if(dataMap.size() >= elementAttributeCount) {
 						createTemporalElement(dataMap);
 						dataMap.clear();
 					}
@@ -135,9 +142,11 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 					}
 				}
 				break;
+			//When the file ends, the edges are created and the latest compatibility checks are being made
 			case XMLEvent.END_DOCUMENT:
 				createEdges(edgeList, rootList);
 				checkTemporalObjects();
+				checkDirected(edgedefault);
 				break;
 
 			default:
@@ -148,26 +157,36 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     
     /**
      * Determines the content of a key element and configures the TemporalDataset accordingly.
+     * Returns the Number of elements defined for a TemporalElement.
      * 
      * @param reader
      * @throws XMLStreamException
      * @throws FactoryConfigurationError
      * @throws IOException
      */
-    private void configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException
-    {    
-    	if(!("_".equals(reader.getAttributeValue(0).substring(0,1)))) {
+    private int configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException
+    {
+    	if(reader.getAttributeValue(null, Tokens.ID).startsWith(prefuse.util.PrefuseConfig.getConfig().getProperty("data.visual.fieldPrefix")))
+    		return 1;
+		else {
 			Class type = null;
-			if("string".equals(reader.getAttributeValue(2)))
+			String typeString = reader.getAttributeValue(null, Tokens.ATTRTYPE);
+		
+			if("string".equals(typeString))
 				type = String.class;
-			if("int".equals(reader.getAttributeValue(2)))
+			else if("int".equals(typeString))
 				type = Integer.class;
-			if("long".equals(reader.getAttributeValue(2)))
+			else if("long".equals(typeString))
 				type = Long.class;
-			if("double".equals(reader.getAttributeValue(2)))
+			else if("double".equals(typeString))
 				type = Double.class;
+			else if("float".equals(typeString))
+				type = Float.class;
+			else if("boolean".equals(typeString))
+				type = Boolean.class;
 			
-			tds.addColumn(reader.getAttributeValue(1), type);
+			tds.addColumn(reader.getAttributeValue(null, Tokens.ATTRNAME), type);
+			return 0;
     	}
     }
     
@@ -177,12 +196,12 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private void createTemporalElement(HashMap<String, String> dataMap)
     {
-    	int id = Integer.parseInt(dataMap.get("ID").substring(1, 2));
-		long inf = Long.parseLong(dataMap.get("_inf"), 10);
-		long sup = Long.parseLong(dataMap.get("_sup"), 10);
-		int granularityID = Integer.parseInt(dataMap.get("_granularityID"));
-		int granularityContextID = Integer.parseInt(dataMap.get("_granularityContextID"));
-		int kind = Integer.parseInt(dataMap.get("_kind"));
+    	int id = Integer.parseInt(dataMap.get("ID").split("t")[1]);
+		long inf = Long.parseLong(dataMap.get("inf"), 10);
+		long sup = Long.parseLong(dataMap.get("sup"), 10);
+		int granularityID = Integer.parseInt(dataMap.get("granularityID"));
+		int granularityContextID = Integer.parseInt(dataMap.get("granularityContextID"));
+		int kind = Integer.parseInt(dataMap.get("kind"));
 		
 		tds.addTemporalElement(id, inf, sup, granularityID, granularityContextID, kind);
     }
@@ -193,10 +212,34 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private void createTemporalObject(HashMap<String, String> dataMap)
     {
+    	String currentCol = null;
+		Class currentType = null;
+		
     	Node node = tds.addNode();
 		node.set(TemporalObject.ID, Integer.parseInt(dataMap.get("ID").substring(1, 2)));
-		node.set("name", dataMap.get("name"));
-		node.set("value", Double.parseDouble(dataMap.get("value")));
+		
+		for (int j = 0; j < tds.getDataColumnSchema().getColumnCount(); j++) {
+			currentCol = tds.getDataColumnSchema().getColumnName(j);
+			currentType = tds.getDataColumnSchema().getColumnType(j);
+			
+			if(String.class.equals(currentType))
+				node.set(currentCol, dataMap.get(currentCol));
+			else if(Integer.class.equals(currentType))
+				node.set(currentCol, Integer.parseInt(dataMap.get(currentCol)));
+			else if(Double.class.equals(currentType))
+				node.set(currentCol, Double.parseDouble(dataMap.get(currentCol)));
+			else if(Long.class.equals(currentType))
+				node.set(currentCol, Long.parseLong(dataMap.get(currentCol)));
+			else if(Float.class.equals(currentType))
+				node.set(currentCol, Float.parseFloat(dataMap.get(currentCol)));
+			else if(Boolean.class.equals(currentType))
+			{
+				if("true".equals(dataMap.get(currentCol)))
+					node.set(currentCol, true);
+				else
+					node.set(currentCol, false);
+			}				
+		}
     }
     
     /**
@@ -234,10 +277,11 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     private void checkTemporalObjects() throws TemporalDataException
     {
     	for (TemporalObject to : tds.temporalObjects()) {
-			if(to.getTemporalElement() == null)
+			if(!to.getTemporalElement().isAnchored())
 			{
-				throw new TemporalDataException(this.toString());
+				throw new TemporalDataException("Unanchored TemporalObject!");
 			}
+
 		}
     }
     
@@ -252,9 +296,20 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	if(Tokens.KEY.equals(reader.getLocalName()))
     		return true;
     	else if (Tokens.GRAPH.equals(reader.getLocalName())) {
-			throw new DataIOException(this.toString());
+			throw new DataIOException("Expected key-element first!");
 		}
     	else 
     		return false;
+    }
+    
+    /**
+     * Checks if the edgedefault and the tds.isDirected() are the same, if not, the edgedefault in the graphML is deemed as incorrect and throws a TemporalDataException.
+     * @param edgedefault
+     * @throws TemporalDataException
+     */
+    private void checkDirected(boolean edgefault) throws TemporalDataException
+    {
+    	if(edgefault != tds.isDirected())
+    		throw new TemporalDataException("edgedefault incorrect!");
     }
 }
