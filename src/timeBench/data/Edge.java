@@ -41,6 +41,12 @@ public class Edge {
 		}
 	}
 	
+	public interface Tokens {
+		 public static final String TEMP_ELEMENT 	= "element";
+		 public static final String TEMP_OBJECT 	= "object";
+	}
+	
+	
 	/**
 	 * Returns the type of the starting point of an edge.
 	 * @return

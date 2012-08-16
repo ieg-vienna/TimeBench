@@ -11,6 +11,7 @@ import prefuse.data.io.GraphMLReader.Tokens;
 import timeBench.data.Edge;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 import javax.xml.stream.*;
@@ -32,7 +33,26 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 	/**
 	 * TemporalDataset to be filled and accessible via the readData method.
 	 */
-	private static TemporalDataset tds = new TemporalDataset();
+	private static TemporalDataset tds 				= new TemporalDataset();
+	
+	
+	//Constants for the use in class
+	//TODO: maybe some already existent and unnecessary defined here?
+	private static String TEMP_ELEMENT_ATTR_PREFIX  = prefuse.util.PrefuseConfig.getConfig().getProperty("data.visual.fieldPrefix");
+	private static String TEMP_ELEMENT_ID_PREFIX 	= 	     "t";
+	
+	private static String CLASS_STRING				=   "string";
+	private static String CLASS_INT					=      "int";
+	private static String CLASS_DOUBLE				=   "double";
+	private static String CLASS_FLOAT				=    "float";
+	private static String CLASS_LONG				=     "long";
+	private static String CLASS_BOOLEAN				=  "boolean";
+	
+	private static String ROOT 						= 	  "root";
+	
+	private static String GRAPH_DIRECTED			= "directed";
+	
+	private static String BOOLEAN_TRUE				=  	  "true";
 	
 	/**
 	 * Returns the TemporalDataset read from a GraphML file.
@@ -78,6 +98,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	//Objects needed for operation
     	int event;
     	int elementAttributeCount = 0;
+    	int graphCounter = 0;
     	String nextDataType = null;
     	String lastID = null;
     	boolean edgedefault = false;
@@ -98,7 +119,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				
 				lastID = reader.getAttributeValue(null, Tokens.ID);
 				
-				if("root".equals(lastID) || "root".equals(reader.getAttributeValue(null, Tokens.TARGET))) {
+				if(ROOT.equals(lastID) || ROOT.equals(reader.getAttributeValue(null, Tokens.TARGET))) {
 					if(Tokens.EDGE.equals(reader.getLocalName())){
 						long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1,2), 10);
 						rootList.add(rootID);
@@ -107,22 +128,25 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				else if(Tokens.KEY.equals(reader.getLocalName()))
 					elementAttributeCount += configReader(reader);
 				else if(Tokens.NODE.equals(reader.getLocalName()))
-					dataMap.put("ID", lastID);
+					dataMap.put(TemporalElement.ID, lastID);
 				else if(Tokens.DATA.equals(reader.getLocalName()))
 					nextDataType = reader.getAttributeValue(null, Tokens.KEY);
 				else if(Tokens.EDGE.equals(reader.getLocalName()))
 					edgeList.add(new Edge(reader.getAttributeValue(null, Tokens.SOURCE), reader.getAttributeValue(null, Tokens.TARGET)));
 				else if(Tokens.GRAPH.equals(reader.getLocalName())) {
-					if("directed".equals(reader.getAttributeValue(null, Tokens.EDGEDEF)))
+					if(GRAPH_DIRECTED.equals(reader.getAttributeValue(null, Tokens.EDGEDEF)))
 						edgedefault = true;
+					if(graphCounter > 0)
+						throw new DataIOException("Unexpected graph element detected.");
+					graphCounter++;
 				}
 				break;
 				
 			//Value saved to the HashMap to later add it as a bulk	
 			case XMLEvent.CHARACTERS:
 				if(nextDataType != null){	
-					if(nextDataType.startsWith("_"))
-						dataMap.put(nextDataType.split("_")[1], reader.getText());
+					if(nextDataType.startsWith(TEMP_ELEMENT_ATTR_PREFIX))
+						dataMap.put(nextDataType.split(TEMP_ELEMENT_ATTR_PREFIX)[1], reader.getText());
 					else
 						dataMap.put(nextDataType, reader.getText());
 					nextDataType = null;
@@ -131,7 +155,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				
 			//When the element ends, call the appropriate method to add it to the TemporalDataset
 			case XMLEvent.END_ELEMENT:
-				if(Tokens.NODE.equals(reader.getLocalName()) && !("root".equals(lastID))){
+				if(Tokens.NODE.equals(reader.getLocalName()) && !(ROOT.equals(lastID))){
 					if(dataMap.size() >= elementAttributeCount) {
 						createTemporalElement(dataMap);
 						dataMap.clear();
@@ -166,23 +190,23 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private int configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException
     {
-    	if(reader.getAttributeValue(null, Tokens.ID).startsWith(prefuse.util.PrefuseConfig.getConfig().getProperty("data.visual.fieldPrefix")))
+    	if(reader.getAttributeValue(null, Tokens.ID).startsWith(TEMP_ELEMENT_ATTR_PREFIX))
     		return 1;
 		else {
 			Class type = null;
 			String typeString = reader.getAttributeValue(null, Tokens.ATTRTYPE);
 		
-			if("string".equals(typeString))
+			if(CLASS_STRING.equals(typeString))
 				type = String.class;
-			else if("int".equals(typeString))
+			else if(CLASS_INT.equals(typeString))
 				type = Integer.class;
-			else if("long".equals(typeString))
+			else if(CLASS_LONG.equals(typeString))
 				type = Long.class;
-			else if("double".equals(typeString))
+			else if(CLASS_DOUBLE.equals(typeString))
 				type = Double.class;
-			else if("float".equals(typeString))
+			else if(CLASS_FLOAT.equals(typeString))
 				type = Float.class;
-			else if("boolean".equals(typeString))
+			else if(CLASS_BOOLEAN.equals(typeString))
 				type = Boolean.class;
 			
 			tds.addColumn(reader.getAttributeValue(null, Tokens.ATTRNAME), type);
@@ -196,12 +220,12 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private void createTemporalElement(HashMap<String, String> dataMap)
     {
-    	int id = Integer.parseInt(dataMap.get("ID").split("t")[1]);
-		long inf = Long.parseLong(dataMap.get("inf"), 10);
-		long sup = Long.parseLong(dataMap.get("sup"), 10);
-		int granularityID = Integer.parseInt(dataMap.get("granularityID"));
-		int granularityContextID = Integer.parseInt(dataMap.get("granularityContextID"));
-		int kind = Integer.parseInt(dataMap.get("kind"));
+    	int id = Integer.parseInt(dataMap.get(TemporalElement.ID).split(TEMP_ELEMENT_ID_PREFIX)[1]);
+		long inf = Long.parseLong(dataMap.get(TemporalElement.INF), 10);
+		long sup = Long.parseLong(dataMap.get(TemporalElement.SUP), 10);
+		int granularityID = Integer.parseInt(dataMap.get(TemporalElement.GRANULARITY_ID));
+		int granularityContextID = Integer.parseInt(dataMap.get(TemporalElement.GRANULARITY_CONTEXT_ID));
+		int kind = Integer.parseInt(dataMap.get(TemporalElement.KIND));
 		
 		tds.addTemporalElement(id, inf, sup, granularityID, granularityContextID, kind);
     }
@@ -216,7 +240,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 		Class currentType = null;
 		
     	Node node = tds.addNode();
-		node.set(TemporalObject.ID, Integer.parseInt(dataMap.get("ID").substring(1, 2)));
+		node.set(TemporalObject.ID, Integer.parseInt(dataMap.get(TemporalElement.ID).substring(1, 2)));
 		
 		for (int j = 0; j < tds.getDataColumnSchema().getColumnCount(); j++) {
 			currentCol = tds.getDataColumnSchema().getColumnName(j);
@@ -234,7 +258,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				node.set(currentCol, Float.parseFloat(dataMap.get(currentCol)));
 			else if(Boolean.class.equals(currentType))
 			{
-				if("true".equals(dataMap.get(currentCol)))
+				if(BOOLEAN_TRUE.equals(dataMap.get(currentCol)))
 					node.set(currentCol, true);
 				else
 					node.set(currentCol, false);
@@ -251,7 +275,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	for(Edge e : edgeList)
     	{
     		if(e.GetSourceType().equals(e.GetTagetType())) {
-    			if("element".equals(e.GetSourceType()))
+    			if(Edge.Tokens.TEMP_ELEMENT.equals(e.GetSourceType()))
     				tds.getTemporalElements().addEdge(e.getSourceIdAsInt(), e.getTargetIdAsInt());    				
     			else
     				tds.addEdge(tds.getTemporalObject(e.getSourceIdAsLong()), tds.getTemporalObject(e.getTargetIdAsLong()));
