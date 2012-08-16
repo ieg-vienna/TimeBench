@@ -22,10 +22,23 @@ public class Edge {
 	public Edge(String source, String target) {
 		this.sourceType = source.substring(0, 1);
     	this.targetType = target.substring(0, 1);
-    	this.lSource = Long.parseLong(source.substring(1, 2), 10);
-    	this.iSource = Integer.parseInt(source.substring(1, 2));
-        this.lTarget = Long.parseLong(target.substring(1, 2), 10);
-        this.iTarget = Integer.parseInt(target.substring(1, 2));
+    	
+    	if("t".equals(sourceType)) {
+    		this.lSource = Long.parseLong(source.split("t")[1], 10);
+        	this.iSource = Integer.parseInt(source.split("t")[1]);
+    	}
+    	else {
+    		this.lSource = Long.parseLong(source.split(sourceType)[1], 10);
+        	this.iSource = Integer.parseInt(source.split(sourceType)[1]);
+		}
+    	if("t".equals(targetType)) {
+    		this.lTarget = Long.parseLong(target.split("t")[1], 10);
+        	this.iTarget = Integer.parseInt(target.split("t")[1]);
+    	}
+    	else {
+    		this.lTarget = Long.parseLong(target.split(targetType)[1], 10);
+        	this.iTarget = Integer.parseInt(target.split(targetType)[1]);
+		}
 	}
 	
 	/**
