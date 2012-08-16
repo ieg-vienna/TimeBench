@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<key id="_inf" attr.name="_inf" attr.type="long" for="node"/>
+<key id="_sup" attr.name="_sup" attr.type="long" for="node"/>
+<key id="_granularityID" attr.name="_granularityID" attr.type="int" for="node"/>
+<key id="_granularityContextID" attr.name="_granularityContextID" attr.type="int" for="node"/>
+<key id="_kind" attr.name="_kind" attr.type="int" for="node"/>
+<key id="glucose" attr.name="glucose" attr.type="int" for="node"/>
+<key id="weight" attr.name="weight" attr.type="int" for="node"/>
+<key id="exercise" attr.name="exercise" attr.type="string" for="node"/>
+<graph id="temporalData" edgedefault="directed">
+<node id="t0">
+<data key="_inf">1293753600000</data>
+<data key="_sup">1293839999999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t1">
+<data key="_inf">978220800000</data>
+<data key="_sup">978307199999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t2">
+<data key="_inf">1293882180000</data>
+<data key="_sup">1293882180000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t3">
+<data key="_inf">1296478800000</data>
+<data key="_sup">1296478800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t4">
+<data key="_inf">1293882180000</data>
+<data key="_sup">1296478800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">3</data>
+</node>
+<node id="t5">
+<data key="_inf">1293840000000</data>
+<data key="_sup">1293926399999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t6">
+<data key="_inf">941328000000</data>
+<data key="_sup">941414399999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t7">
+<data key="_inf">1293951660000</data>
+<data key="_sup">1293951660000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t8">
+<data key="_inf">1294678800000</data>
+<data key="_sup">1294678800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t9">
+<data key="_inf">1293951660000</data>
+<data key="_sup">1294678800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">3</data>
+</node>
+<node id="t10">
+<data key="_inf">1293926400000</data>
+<data key="_sup">1294012799999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t11">
+<data key="_inf">1304121600000</data>
+<data key="_sup">1304207999999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t12">
+<data key="_inf">1294077600000</data>
+<data key="_sup">1294077600000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t13">
+<data key="_inf">1298890800000</data>
+<data key="_sup">1298890800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t14">
+<data key="_inf">1294077600000</data>
+<data key="_sup">1298890800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">3</data>
+</node>
+<node id="t15">
+<data key="_inf">1294012800000</data>
+<data key="_sup">1294099199999</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t16">
+<data key="_inf">-931132800000</data>
+<data key="_sup">-931046400001</data>
+<data key="_granularityID">4</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t17">
+<data key="_inf">1294138800000</data>
+<data key="_sup">1294138800000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t18">
+<data key="_inf">1304269200000</data>
+<data key="_sup">1304269200000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">2</data>
+</node>
+<node id="t19">
+<data key="_inf">1294138800000</data>
+<data key="_sup">1304269200000</data>
+<data key="_granularityID">0</data>
+<data key="_granularityContextID">0</data>
+<data key="_kind">3</data>
+</node>
+<node id="o1">
+<data key="glucose">120</data>
+<data key="weight">89</data>
+<data key="exercise">bi"k,e</data>
+</node>
+<node id="o2">
+<data key="glucose">120</data>
+<data key="weight">89</data>
+<data key="exercise">bi"k,e</data>
+</node>
+<node id="o3">
+<data key="glucose">140</data>
+<data key="weight">88</data>
+<data key="exercise">none</data>
+</node>
+<node id="o4">
+<data key="glucose">140</data>
+<data key="weight">88</data>
+<data key="exercise">none</data>
+</node>
+<node id="o5">
+<data key="glucose">145</data>
+<data key="weight">92</data>
+<data key="exercise">none</data>
+</node>
+<node id="o6">
+<data key="glucose">145</data>
+<data key="weight">92</data>
+<data key="exercise">none</data>
+</node>
+<node id="o7">
+<data key="glucose">142</data>
+<data key="weight">90</data>
+<data key="exercise">run</data>
+</node>
+<node id="o8">
+<data key="glucose">142</data>
+<data key="weight">90</data>
+<data key="exercise">run</data>
+</node>
+<edge source="o1" target="t0"/>
+<edge source="o2" target="t4"/>
+<edge source="o3" target="t5"/>
+<edge source="o4" target="t9"/>
+<edge source="o5" target="t10"/>
+<edge source="o6" target="t14"/>
+<edge source="o7" target="t15"/>
+<edge source="o8" target="t19"/>
+<edge source="t2" target="t4"/>
+<edge source="t3" target="t4"/>
+<edge source="t7" target="t9"/>
+<edge source="t8" target="t9"/>
+<edge source="t12" target="t14"/>
+<edge source="t13" target="t14"/>
+<edge source="t17" target="t19"/>
+<edge source="t18" target="t19"/>
+</graph>
+</graphml>
