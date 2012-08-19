@@ -1,4 +1,4 @@
-package timeBench.data;
+package timeBench.data.io;
 
 /**
  * Edge object for handling Edge-related data from a GraphML file in an easy way.
@@ -6,13 +6,15 @@ package timeBench.data;
  * @author Sascha Plessberger
  *
  */
-public class Edge {
+class Edge {
 	private String sourceType;
 	private String targetType;
 	private long lSource;
 	private long lTarget;
 	private int iSource;
 	private int iTarget;
+	
+	// TODO why are int saved; AFAIK only long are neeeded?
 	
 	/**
 	 * Constructor
@@ -41,6 +43,7 @@ public class Edge {
 		}
 	}
 	
+	// TODO consider enum (feature was not available when prefuse was developed)
 	public interface Tokens {
 		 public static final String TEMP_ELEMENT 	= "element";
 		 public static final String TEMP_OBJECT 	= "object";
