@@ -53,20 +53,22 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 	
 	/**
 	 * Returns the TemporalDataset read from a GraphML file.
+	 * @throws TemporalDataException 
 	 * @see timeBench.data.io.AbstractTemporalDatasetReader#readData(java.io.InputStream)
 	 */
     @Override
-    public TemporalDataset readData(InputStream is) throws DataIOException {
+    public TemporalDataset readData(InputStream is) throws DataIOException, TemporalDataException {
 		try {
 			mainReader(is);
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
+			throw new DataIOException(e);
 		} catch (FactoryConfigurationError e) {
 			e.printStackTrace();
+            throw new DataIOException(e);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (TemporalDataException e) {
-			e.printStackTrace();
+            throw new DataIOException(e);
 		}
 		finally{
 			try {
