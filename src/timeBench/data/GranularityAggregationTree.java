@@ -28,7 +28,7 @@ public class GranularityAggregationTree extends TemporalDataset {
 
 		super(dataColumnSchema);
 		
-		addColumn(DEPTH, Integer.TYPE);
+		super.getNodeTable().addColumn(DEPTH, Integer.TYPE);
 		additionalNonDataColums = new String[] {DEPTH};
 		
 		minValues = new double[dataColumnSchema.getColumnCount()][levelCount];
