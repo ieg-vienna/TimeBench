@@ -39,7 +39,6 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 	//Constants for the use in class
 	//TODO: maybe some already existent and unnecessary defined here?
 	private static String TEMP_ELEMENT_ATTR_PREFIX  = prefuse.util.PrefuseConfig.getConfig().getProperty("data.visual.fieldPrefix");
-	private static String TEMP_ELEMENT_ID_PREFIX 	= 	     "t";
 	
 	private static String CLASS_STRING				=   "string";
 	private static String CLASS_INT					=      "int";
@@ -99,7 +98,8 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	int graphCounter = 0;
     	String nextFieldName = null;
     	String lastID = null;
-    	boolean edgedefault = false;
+        // TODO check edge directed || edgedefault -- each edge must be directed either by default or separately --> not needed now 
+//    	boolean edgedefault = false;
     	boolean orderCheckDone = false;
     	HashMap<String, String> dataMap = new HashMap<String, String>();
     	ArrayList<Long> rootList = new ArrayList<Long>();
@@ -131,11 +131,11 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				else if(Tokens.DATA.equals(reader.getLocalName()))
 					nextFieldName = reader.getAttributeValue(null, Tokens.KEY);
 				else if(Tokens.EDGE.equals(reader.getLocalName()))
-				    // TODO check edge directed || edgedefault -- each edge must be directed either by default or separately --> not needed now 
 					edgeList.add(new Edge(reader.getAttributeValue(null, Tokens.SOURCE), reader.getAttributeValue(null, Tokens.TARGET)));
 				else if(Tokens.GRAPH.equals(reader.getLocalName())) {
-					if(GRAPH_DIRECTED.equals(reader.getAttributeValue(null, Tokens.EDGEDEF)))
-						edgedefault = true;
+					if(! GRAPH_DIRECTED.equals(reader.getAttributeValue(null, Tokens.EDGEDEF)))
+                        throw new DataIOException("Graph is not directed. (At the moment only edgedefault is supported.)");
+//						edgedefault = true;
 					if(graphCounter > 0) {
 						throw new DataIOException("Unexpected graph element detected.");
 					}
@@ -225,7 +225,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private void createTemporalElement(HashMap<String, String> dataMap)
     {
-    	int id = Integer.parseInt(dataMap.get(TemporalElement.ID).split(TEMP_ELEMENT_ID_PREFIX)[1]);
+    	int id = Integer.parseInt(dataMap.get(TemporalElement.ID).split(GraphMLTemporalDatasetWriter.ELEMENT_PREFIX)[1]);
 		long inf = Long.parseLong(dataMap.get(TemporalElement.INF), 10);
 		long sup = Long.parseLong(dataMap.get(TemporalElement.SUP), 10);
 		int granularityID = Integer.parseInt(dataMap.get(TemporalElement.GRANULARITY_ID));
@@ -279,17 +279,15 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     {
     	for(Edge e : edgeList)
     	{
-    		if(e.GetSourceType().equals(e.GetTagetType())) {
-    			if(Edge.Tokens.TEMP_ELEMENT.equals(e.GetSourceType()))
-    			    // TODO bug addEdge() uses row number not id
-    				tds.getTemporalElements().addEdge(e.getSourceIdAsInt(), e.getTargetIdAsInt());    				
+    		if(e.getSourceType().equals(e.getTargetType())) {
+    			if(NodeType.ELEMENT.equals(e.getSourceType()))
+    				tds.getTemporalElements().addEdge(tds.getTemporalElement(e.getSourceId()), tds.getTemporalObject(e.getTargetId()));    				
     			else
-                    // TODO bug addEdge() uses row number not id
-    				tds.addEdge(tds.getTemporalObject(e.getSourceIdAsLong()), tds.getTemporalObject(e.getTargetIdAsLong()));
+    				tds.addEdge(tds.getTemporalObject(e.getSourceId()), tds.getTemporalObject(e.getTargetId()));
     		}
     		else {
-    			Node node = tds.getTemporalObject(e.getSourceIdAsLong());
-    			node.set(TemporalObject.TEMPORAL_ELEMENT_ID, e.getTargetIdAsLong());
+    			Node node = tds.getTemporalObject(e.getSourceId());
+    			node.set(TemporalObject.TEMPORAL_ELEMENT_ID, e.getTargetId());
     		}
     	}
     	
@@ -331,5 +329,91 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 		}
     	else 
     		return false;
+    }
+    
+    enum NodeType {
+        OBJECT, ELEMENT;
+
+        /**
+         * determines the type of a node by the prefix of its id.
+         * 
+         * @param prefix
+         *            node id starting with the prefix (e.g., "o2") or only the
+         *            prefix ("t").
+         * @return
+         */
+        static NodeType byPrefix(String prefix) {
+            String p = prefix.substring(0, 1);
+            if (GraphMLTemporalDatasetWriter.ELEMENT_PREFIX.equals(prefix))
+                return ELEMENT;
+            else if (GraphMLTemporalDatasetWriter.OBJECT_PREFIX.equals(prefix))
+                return OBJECT;
+            else
+                return null;
+        }
+    }
+
+    /**
+     * Edge object for handling Edge-related data from a GraphML file in an easy
+     * way.
+     * 
+     * @author Sascha Plessberger, Alexander Rind
+     * 
+     */
+    class Edge {
+        private NodeType sourceType;
+        private NodeType targetType;
+        private long sourceId;
+        private long targetId;
+
+        /**
+         * Constructor
+         * 
+         * @param source
+         * @param target
+         */
+        public Edge(String source, String target) {
+            this.sourceType = NodeType.byPrefix(source);
+            this.targetType = NodeType.byPrefix(target);
+
+            sourceId = Long.parseLong(source.substring(1), 10);
+            targetId = Long.parseLong(target.substring(1), 10);
+        }
+
+        /**
+         * Returns the type of the starting point of an edge.
+         * 
+         * @return
+         */
+        public NodeType getSourceType() {
+            return sourceType;
+        }
+
+        /**
+         * Returns the type of the ending point of an edge.
+         * 
+         * @return
+         */
+        public NodeType getTargetType() {
+            return targetType;
+        }
+
+        /**
+         * Returns the Source ID as a long.
+         * 
+         * @return
+         */
+        public long getSourceId() {
+            return sourceId;
+        }
+
+        /**
+         * Returns the Target ID as a long.
+         * 
+         * @return
+         */
+        public long getTargetId() {
+            return targetId;
+        }
     }
 }
