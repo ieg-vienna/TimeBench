@@ -159,6 +159,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			case XMLEvent.END_ELEMENT:
 				if(Tokens.NODE.equals(reader.getLocalName()) && !(ROOT.equals(lastID))){
 				    // TODO bug! temporal object can have 5 or more data fields 
+				    // if (NodeType.ELEMENT == NodeType.byPrefix(lastID)) {
 					if(dataMap.size() >= elementAttributeCount) {
 						createTemporalElement(dataMap);
 						dataMap.clear();
@@ -340,13 +341,14 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
          * @param prefix
          *            node id starting with the prefix (e.g., "o2") or only the
          *            prefix ("t").
-         * @return
+         * @return the NodeType or <tt>null</tt>
          */
         static NodeType byPrefix(String prefix) {
-            String p = prefix.substring(0, 1);
-            if (GraphMLTemporalDatasetWriter.ELEMENT_PREFIX.equals(prefix))
+            if (prefix == null)
+                return null;
+            if (prefix.startsWith(GraphMLTemporalDatasetWriter.ELEMENT_PREFIX))
                 return ELEMENT;
-            else if (GraphMLTemporalDatasetWriter.OBJECT_PREFIX.equals(prefix))
+            if (prefix.startsWith(GraphMLTemporalDatasetWriter.OBJECT_PREFIX))
                 return OBJECT;
             else
                 return null;
