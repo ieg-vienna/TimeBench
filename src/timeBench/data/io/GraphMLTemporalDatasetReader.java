@@ -301,20 +301,19 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     }
     
     /**
-     * Checks if all the TemporalObject of an TemporalDataset are anchored to a TemporalElement. If not, it throws the TemporalDataException.
-     * @return
-     * @throws TemporalDataException 
+     * Checks if all the TemporalObject of an TemporalDataset have a
+     * TemporalElement. If not, it throws the TemporalDataException.
+     * 
+     * @throws TemporalDataException
      */
-    private void checkTemporalObjects() throws TemporalDataException
-    {
-    	for (TemporalObject to : tds.temporalObjects()) {
-    		// TODO anchored has a different meaning 
-			if(!to.getTemporalElement().isAnchored())
-			{
-				throw new TemporalDataException("Unanchored TemporalObject!");
-			}
-
-		}
+    private void checkTemporalObjects() throws TemporalDataException {
+        for (TemporalObject to : tds.temporalObjects()) {
+            if (to.getTemporalElement() == null) {
+                throw new TemporalDataException(
+                        "TemporalObject without a TemporalElement: "
+                                + to.getId());
+            }
+        }
     }
     
     /**
