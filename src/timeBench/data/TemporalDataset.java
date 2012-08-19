@@ -155,11 +155,9 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
             throws TemporalDataException {
         // check that schema does not interfere with primary and foreign key
         // schema.getColumnIndex(s) would build a HashMap --> less efficient
-        if (name.equals(TemporalObject.ID)
-                || name.equals(TemporalObject.TEMPORAL_ELEMENT_ID)) {
-            throw new TemporalDataException("The column names \""
-                    + TemporalObject.ID + "\" and \""
-                    + TemporalObject.TEMPORAL_ELEMENT_ID + "\" are reserved.");
+        if (name == null || name.startsWith("_")) {
+            throw new TemporalDataException("The column names starting with "
+                    + "\"_\" are reserved.");
         }
 
         super.getNodeTable().addColumn(name, type, defaultValue);
