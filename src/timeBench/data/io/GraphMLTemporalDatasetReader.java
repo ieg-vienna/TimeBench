@@ -249,8 +249,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
         Class currentType = null;
 		
     	Node node = tds.addNode();
-    	// TODO bug: fails on "o1100"! ->  substring(1)
-		node.set(TemporalObject.ID, Integer.parseInt(dataMap.get(TemporalElement.ID).substring(1, 2)));
+		node.set(TemporalObject.ID, Integer.parseInt(dataMap.get(TemporalElement.ID).substring(1)));
 		
 		for (int j = 0; j < tds.getDataColumnSchema().getColumnCount(); j++) {
 			currentCol = tds.getDataColumnSchema().getColumnName(j);
