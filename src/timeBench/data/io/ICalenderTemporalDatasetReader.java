@@ -2,23 +2,33 @@ package timeBench.data.io;
 
 import java.awt.List;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.print.DocFlavor.STRING;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
+
+import org.quartz.utils.counter.Counter;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.component.VJournal;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.RDate;
+import net.fortuna.ical4j.model.property.RRule;
 
 import prefuse.data.io.DataIOException;
 import prefuse.data.parser.DataParseException;
@@ -83,7 +93,7 @@ public class ICalenderTemporalDatasetReader extends
 		
 		if (calender.getCalendarScale() != null && calender.getCalendarScale() != CalScale.GREGORIAN) {
 			
-			throw new DataIOException("Calendar is not gregorian!");
+			throw new TemporalDataException("Calendar is not gregorian!");
 		}
 
 		// Extracting only those components which match
@@ -100,6 +110,9 @@ public class ICalenderTemporalDatasetReader extends
 	 * @return temporalDataSet - returns a TemporalDataSet containing all the
 	 *         data (Temp.Elements & Temp.Objects) of each component contained
 	 *         in the given componentList
+	 * @throws ParseException 
+	 * @throws URISyntaxException 
+	 * @throws IOException 
 	 */
 	private TemporalDataset readComponent(ComponentList componentList) {
 
@@ -140,9 +153,13 @@ public class ICalenderTemporalDatasetReader extends
 	 * Checks if the specified values exist in the component, 
 	 * adds them to Temporal Elements/Objects and, 
 	 * where required, uses default values for non-existent fields
+	 * @throws ParseException 
+	 * @throws URISyntaxException 
+	 * @throws IOException 
 	 */
 	private void fillEvent(VEvent event) {
-
+		
+	
 		
 		//getting start and end dates of the event
 		//and calculating the appropriate granularityID
@@ -150,7 +167,12 @@ public class ICalenderTemporalDatasetReader extends
 				.getDate() : new Date(0L);
 		Date dEnd = (checkNull(event.getEndDate())) ? event.getEndDate()
 				.getDate() : new Date(Long.MAX_VALUE);
-
+				
+				
+		if (checkNull(event.getProperty(Property.RRULE)) || checkNull(event.getProperty(Property.RDATE))){
+			checkRecurrences(event, dStart);
+		}
+				
 		granularityId = determineGranularity(dStart, dEnd);
 
 		
@@ -187,7 +209,7 @@ public class ICalenderTemporalDatasetReader extends
 	 * where required, uses default values for non-existent fields
 	 */
 	private void fillJournal(VJournal journal) {
-
+		
 		Date dStamp = (checkNull(journal.getDateStamp())) ? journal
 				.getDateStamp().getDate() : new Date(0L);
 
@@ -237,6 +259,36 @@ public class ICalenderTemporalDatasetReader extends
 		
 	}
 
+	
+	private void checkRecurrences (VEvent event, Date startDate) {
+		
+		int counter = 0;
+		Recur recur = (Recur) ((RRule)event.getProperty(Property.RRULE)).getRecur();
+		
+		Date nextDate = recur.getNextDate(startDate, startDate);
+		
+		while (nextDate != null && counter < 50){
+			
+			try {
+				VEvent textEvent =  event.getOccurrence(recur.getNextDate(startDate, startDate));
+				fillEvent(textEvent);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			
+			nextDate = recur.getNextDate(nextDate, nextDate);
+			
+			counter++;
+		}
+		
+		
+	}
+	
 	/**
 	 * @param obj - The object to be checked
 	 * @return returns a boolean which is FALSE if the given object IS NULL
