@@ -32,23 +32,12 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 	/**
 	 * TemporalDataset to be filled and accessible via the readData method.
 	 */
-    // TODO why static? consider the class is used twice, or the same object is used twice -> member variable and initialize in readData()
-	private static TemporalDataset tds 				= new TemporalDataset();
+	private TemporalDataset tds 					= new TemporalDataset();
 	
 	
 	//Constants for the use in class
-	//TODO: maybe some already existent and unnecessary defined here?
 	private static String TEMP_ELEMENT_ATTR_PREFIX  = prefuse.util.PrefuseConfig.getConfig().getProperty("data.visual.fieldPrefix");
-	
-	private static String CLASS_STRING				=   "string";
-	private static String CLASS_INT					=      "int";
-	private static String CLASS_DOUBLE				=   "double";
-	private static String CLASS_FLOAT				=    "float";
-	private static String CLASS_LONG				=     "long";
-	private static String CLASS_BOOLEAN				=  "boolean";
-	
 	private static String ROOT 						= 	  "root";
-	
 	private static String GRAPH_DIRECTED			= "directed";
 	
 	/**
@@ -96,13 +85,12 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	
     	//Objects needed for operation
     	int event;
-    	int elementAttributeCount = 0;
     	int graphCounter = 0;
     	String nextFieldName = null;
     	String lastID = null;
+    	String oldElement = null;
         // TODO check edge directed || edgedefault -- each edge must be directed either by default or separately --> not needed now 
 //    	boolean edgedefault = false;
-    	boolean orderCheckDone = false;
     	HashMap<String, String> dataMap = new HashMap<String, String>();
     	ArrayList<Long> rootList = new ArrayList<Long>();
     	ArrayList<Edge> edgeList = new ArrayList<Edge>();
@@ -114,23 +102,26 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			switch (event) {
 			//Determines if an element starts and after that the type of the element			
 			case XMLEvent.START_ELEMENT:
-			    // TODO only checks once, but then the flag is true; how about key -> graph -> key
-				if(!(orderCheckDone))
-					orderCheckDone = orderCheck(reader);
+				if(Tokens.KEY.equals(reader.getLocalName()) && oldElement != null) {
+		    		if(Tokens.GRAPH.equals(oldElement))
+		    			throw new DataIOException("Element KEY is not expected.");
+		    	}
 				
-				lastID = reader.getAttributeValue(null, Tokens.ID);
+				oldElement = reader.getLocalName();
+				if(reader.getAttributeValue(null, Tokens.ID) != null)
+					lastID = reader.getAttributeValue(null, Tokens.ID);
 				
 				if(ROOT.equals(lastID) || ROOT.equals(reader.getAttributeValue(null, Tokens.TARGET))) {
 					if(Tokens.EDGE.equals(reader.getLocalName())){
-						long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1,2), 10);
+						long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1), 10);
 						rootList.add(rootID);
 					}
 				}					
 				else if(Tokens.KEY.equals(reader.getLocalName()))
-					elementAttributeCount += configReader(reader);
+					configReader(reader);
 				else if(Tokens.NODE.equals(reader.getLocalName()))
 					dataMap.put(TemporalElement.ID, lastID);
-				else if(Tokens.DATA.equals(reader.getLocalName()))
+				else if(Tokens.DATA.equals(reader.getLocalName()) && reader.getAttributeValue(null, Tokens.KEY) != null)
 					nextFieldName = reader.getAttributeValue(null, Tokens.KEY);
 				else if(Tokens.EDGE.equals(reader.getLocalName()))
 					edgeList.add(new Edge(reader.getAttributeValue(null, Tokens.SOURCE), reader.getAttributeValue(null, Tokens.TARGET)));
@@ -148,6 +139,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			//Value saved to the HashMap to later add it as a bulk	
 			case XMLEvent.CHARACTERS:
 			    // TODO check the StAX API if it is possible that an element content is more than one character events -> concatenate, no overwrite  
+				// StAX does not see the second set of characters of data split by another tag as a CHARACTERS event. Therefore I see no possibility to achieve this so far.
 				if(nextFieldName != null){	
 					if(nextFieldName.startsWith(TEMP_ELEMENT_ATTR_PREFIX))
 						dataMap.put(nextFieldName.split(TEMP_ELEMENT_ATTR_PREFIX)[1], reader.getText());
@@ -160,17 +152,17 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			//When the element ends, call the appropriate method to add it to the TemporalDataset
 			case XMLEvent.END_ELEMENT:
 				if(Tokens.NODE.equals(reader.getLocalName()) && !(ROOT.equals(lastID))){
-				    // TODO bug! temporal object can have 5 or more data fields 
-				    // if (NodeType.ELEMENT == NodeType.byPrefix(lastID)) {
-					if(dataMap.size() >= elementAttributeCount) {
+				    if (NodeType.ELEMENT == NodeType.byPrefix(lastID)) {
 						createTemporalElement(dataMap);
 						dataMap.clear();
 					}
-					else {
+					else if (NodeType.OBJECT == NodeType.byPrefix(lastID)) {
 						createTemporalObject(dataMap);
 						dataMap.clear();
 					}
 				}
+				if(Tokens.GRAPH.equals(reader.getLocalName()))
+					oldElement = Tokens.GRAPH;
 				break; // END_ELEMENT
 				
 			//When the file ends, the edges are created and the latest compatibility checks are being made
@@ -181,7 +173,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 
 			default:
 				break;
-			}
+			}	
 		}
     }
     
@@ -195,30 +187,27 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      * @throws IOException
      * @throws TemporalDataException 
      */
-    private int configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException
+    private void configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException
     {
-    	if(reader.getAttributeValue(null, Tokens.ID).startsWith(TEMP_ELEMENT_ATTR_PREFIX))
-    		return 1;
-		else {
+    	if(!reader.getAttributeValue(null, Tokens.ID).startsWith(TEMP_ELEMENT_ATTR_PREFIX)) {
 			@SuppressWarnings("rawtypes")
             Class type = null;
 			String typeString = reader.getAttributeValue(null, Tokens.ATTRTYPE);
 		
-			if(CLASS_STRING.equals(typeString))
+			if(Tokens.STRING.equals(typeString))
 				type = String.class;
-			else if(CLASS_INT.equals(typeString))
+			else if(Tokens.INT.equals(typeString))
 				type = Integer.class;
-			else if(CLASS_LONG.equals(typeString))
+			else if(Tokens.LONG.equals(typeString))
 				type = Long.class;
-			else if(CLASS_DOUBLE.equals(typeString))
+			else if(Tokens.DOUBLE.equals(typeString))
 				type = Double.class;
-			else if(CLASS_FLOAT.equals(typeString))
+			else if(Tokens.FLOAT.equals(typeString))
 				type = Float.class;
-			else if(CLASS_BOOLEAN.equals(typeString))
+			else if(Tokens.BOOLEAN.equals(typeString))
 				type = Boolean.class;
 			
 			tds.addDataColumn(reader.getAttributeValue(null, Tokens.ATTRNAME), type, null);
-			return 0;
     	}
     }
     
@@ -283,7 +272,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	{
     		if(e.getSourceType().equals(e.getTargetType())) {
     			if(NodeType.ELEMENT.equals(e.getSourceType()))
-    				tds.getTemporalElements().addEdge(tds.getTemporalElement(e.getSourceId()), tds.getTemporalObject(e.getTargetId()));    				
+    				tds.getTemporalElements().addEdge((int)e.getSourceId(),(int)e.getTargetId());    				
     			else
     				tds.addEdge(tds.getTemporalObject(e.getSourceId()), tds.getTemporalObject(e.getTargetId()));
     		}
@@ -314,23 +303,6 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
                                 + to.getId());
             }
         }
-    }
-    
-    /**
-     * Checks if the key elements are defined before the graph. If not, it throws the DataIOException.
-     * @param reader
-     * @return
-     * @throws DataIOException 
-     */
-    private boolean orderCheck(XMLStreamReader reader) throws DataIOException
-    {
-    	if(Tokens.KEY.equals(reader.getLocalName()))
-    		return true;
-    	else if (Tokens.GRAPH.equals(reader.getLocalName())) {
-			throw new DataIOException("Expected key-element first!");
-		}
-    	else 
-    		return false;
     }
     
     enum NodeType {
