@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import prefuse.data.io.DataIOException;
+import prefuse.data.parser.DataParseException;
 import prefuse.util.io.IOLib;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;

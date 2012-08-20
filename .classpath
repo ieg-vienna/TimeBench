@@ -8,5 +8,18 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ieg-prefuse"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/prefuse-vienna"/>
+	<classpathentry kind="lib" path="/external/lib/ical4j-1.0.3.jar"/>
+	<classpathentry kind="lib" path="/external/lib/backport-util-concurrent-3.1.jar"/>
+	<classpathentry kind="lib" path="/external/lib/commons-codec-1.5.jar"/>
+	<classpathentry kind="lib" path="/external/lib/commons-lang-2.6.jar" sourcepath="/external/src/commons-lang-2.6-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/lang/api-2.6/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/external/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/external/lib/groovy-all-1.8.5.jar"/>
+	<classpathentry kind="lib" path="/external/lib/jta-1.1.jar"/>
+	<classpathentry kind="lib" path="/external/lib/quartz-1.8.4.jar"/>
+	<classpathentry kind="lib" path="/external/lib/slf4j-api-1.6.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
