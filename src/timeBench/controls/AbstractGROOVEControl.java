@@ -156,7 +156,6 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 						te.getGranularityContextId(),te.getKind()));
 				patternRoot.setDouble("value", Double.NaN);
 				buildPattern(root,pattern,patternRoot);
-				DebugHelper.printTemporalDatasetGraph(System.out, patternRoot);
 				searchPattern(v,toRoot,patternRoot);
 			} catch (TemporalDataException e1) {
 				// TODO Auto-generated catch block

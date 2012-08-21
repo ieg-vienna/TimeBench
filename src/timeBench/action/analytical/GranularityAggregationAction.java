@@ -123,8 +123,6 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
             logger.debug("run -> after for loop over granularities");
 							
 			aggregate(root,0);
-			//DataHelper.printTable(System.out, workingDataset.getNodeTable());
-			DebugHelper.printTemporalDatasetGraph(System.out, root,"value");
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
 		} catch (TemporalDataException e1) {

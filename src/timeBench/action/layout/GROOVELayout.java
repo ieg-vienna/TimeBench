@@ -102,11 +102,7 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		vgl.addChild(root);
         vgl.addChild(root);
 		
-		try {
-            System.out.println(vgl.getRoot());
-            System.out.println(vgl.getRoot().getChild(0));
-            System.out.println(vgl.getRoot().getChild(1));
-			
+		try {	
             ArrayList<Float> relativeSize = new ArrayList<Float>();
             ArrayList<Long> minIdentifiers = new ArrayList<Long>();
             ArrayList<Long> maxIdentifiers = new ArrayList<Long>();
@@ -146,17 +142,6 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 		}
 	}
 	
-	private void getMinMax(int level,double[] minmax) {
-		minmax[0] = Double.NaN;
-		minmax[1] = Double.NaN;		
-			for(int i=0; i<settings.length; i++) {
-				if (settings[i].getColorCalculation() == settings[level].getColorCalculation()) {
-					minmax[0] = dataProvider.getGranularityAggregationTree().getMinValue(i, settings[level].getSourceColumn());
-					minmax[1] = dataProvider.getGranularityAggregationTree().getMaxValue(i, settings[level].getSourceColumn());
-				}
-			}
-	}
-
 	/**
 	 * @param vgl 
 	 * @throws Exception 
