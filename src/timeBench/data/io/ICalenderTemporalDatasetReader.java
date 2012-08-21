@@ -1,43 +1,32 @@
 package timeBench.data.io;
 
-import java.awt.List;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
-
-import javax.print.DocFlavor.STRING;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
-
-import org.quartz.utils.counter.Counter;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.DateList;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.component.VJournal;
-import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStamp;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.ExDate;
+import net.fortuna.ical4j.model.property.ExRule;
 import net.fortuna.ical4j.model.property.RDate;
 import net.fortuna.ical4j.model.property.RRule;
-
 import prefuse.data.io.DataIOException;
-import prefuse.data.parser.DataParseException;
-import prefuse.data.parser.DateParser;
-import prefuse.data.tuple.TupleManager;
-import timeBench.calendar.Granularity;
-import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager.Granularities;
-import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
@@ -60,9 +49,11 @@ public class ICalenderTemporalDatasetReader extends
 	private String m_componentType;
 
 	private TemporalDataset dataset;
-	private TemporalElement element;
-	private TemporalObject object;
+	private TemporalElement tempElement;
+	private TemporalObject tempObject;
 
+	private int maxRecurrences = 50;
+	
 	// The (final) value of granularityContextId which is used
 	// throughout the fill-methods for all temporalElements
 	private final int granularityContextId = Granularities.Top.toInt();
@@ -75,6 +66,21 @@ public class ICalenderTemporalDatasetReader extends
 	public ICalenderTemporalDatasetReader(String componentType) {
 		m_componentType = componentType;
 		dataset = new TemporalDataset();
+	}
+	
+	
+	/**
+	 * @param aCount - the maximum number of processed recurrences
+	 */
+	public void setMaxRecurrences (int aCount){
+		this.maxRecurrences = aCount;
+	}
+	
+	/**
+	 * @return the maximum number of processed recurrences
+	 */
+	public int getMaxRecurrences () {
+		return maxRecurrences;
 	}
 
 	@Override
@@ -124,6 +130,9 @@ public class ICalenderTemporalDatasetReader extends
 		dataset.addColumn(SUMMARY, String.class, "");
 		dataset.addColumn(UID, String.class, "");
 
+		
+		//iterate through the componentList and process every
+		//component according to its type (event, journal, freebusy)
 		for (int i = 0; i < componentList.size(); i++) {
 
 			if (m_componentType == Component.VEVENT) {
@@ -159,8 +168,6 @@ public class ICalenderTemporalDatasetReader extends
 	 */
 	private void fillEvent(VEvent event) {
 		
-	
-		
 		//getting start and end dates of the event
 		//and calculating the appropriate granularityID
 		Date dStart = (checkNull(event.getStartDate())) ? event.getStartDate()
@@ -169,21 +176,27 @@ public class ICalenderTemporalDatasetReader extends
 				.getDate() : new Date(Long.MAX_VALUE);
 				
 				
-		if (checkNull(event.getProperty(Property.RRULE)) || checkNull(event.getProperty(Property.RDATE))){
-			checkRecurrences(event, dStart);
+		//check if the event occurs more than once
+		//in that case recursively add each occurrence
+		if (checkNull(event.getProperty(Property.RRULE))) {
+			checkRecurrences(event, dStart, dEnd);
 		}
-				
+		if (checkNull(event.getProperty(Property.RDATE))) {
+			checkRDates(event, dStart, dEnd);
+		}
+		
+		//calculate the appropriate granularityId
 		granularityId = determineGranularity(dStart, dEnd);
 
 		
 		//add a new temporalElement to the temporalDataSet
-		element = dataset.addTemporalElement(dStart.getTime(), dEnd.getTime(),
+		tempElement = dataset.addTemporalElement(dStart.getTime(), dEnd.getTime(),
 				granularityId, granularityContextId,
 				TemporalDataset.PRIMITIVE_INTERVAL);
 
 		// Creating the temporalObject and linking it to a
 		// temporalElement
-		object = dataset.addTemporalObject(element);
+		tempObject = dataset.addTemporalObject(tempElement);
 		
 		//getting attributes from the event 
 		//if an attribute is null a default value is used instead
@@ -194,11 +207,11 @@ public class ICalenderTemporalDatasetReader extends
 		String uid = (checkNull(event.getUid())) ? event.getUid().getValue() : "";
 
 		//add the attributes to the temoparlObject
-		object.set(CREATED, created);
-		object.set(DESCRIPTION, description);
-		object.set(LOCATION, location);
-		object.set(SUMMARY, summary);
-		object.set(UID, uid);
+		tempObject.set(CREATED, created);
+		tempObject.set(DESCRIPTION, description);
+		tempObject.set(LOCATION, location);
+		tempObject.set(SUMMARY, summary);
+		tempObject.set(UID, uid);
 	}
 
 	/**
@@ -210,26 +223,36 @@ public class ICalenderTemporalDatasetReader extends
 	 */
 	private void fillJournal(VJournal journal) {
 		
+		//see fillEvent for detailed description
+		
 		Date dStamp = (checkNull(journal.getDateStamp())) ? journal
 				.getDateStamp().getDate() : new Date(0L);
 
+				
+		if (checkNull(journal.getProperty(Property.RRULE))){
+			checkRecurrences(journal, dStamp, dStamp);
+		}
+		if (checkNull(journal.getProperty(Property.RDATE))) {
+			checkRDates(journal, dStamp, dStamp);
+		}
+				
 		granularityId = 2;
 
-		element = dataset.addTemporalElement(dStamp.getTime(),
+		tempElement = dataset.addTemporalElement(dStamp.getTime(),
 				dStamp.getTime(), granularityId, granularityContextId,
 				TemporalDataset.PRIMITIVE_INSTANT);
 
-		object = dataset.addTemporalObject(element);
+		tempObject = dataset.addTemporalObject(tempElement);
 		
 		Date created = (checkNull(journal.getCreated())) ? journal.getCreated().getDate() : new Date(0L);
 		String description = (checkNull(journal.getDescription())) ? journal.getDescription().getValue() : "";
 		String summary = (checkNull(journal.getSummary())) ? journal.getSummary().getValue() : "";
 		String uid = (checkNull(journal.getUid())) ? journal.getUid().getValue() : "";
 		
-		object.set(CREATED, created);
-		object.set(DESCRIPTION, description);
-		object.set(SUMMARY, summary);
-		object.set(UID, uid);
+		tempObject.set(CREATED, created);
+		tempObject.set(DESCRIPTION, description);
+		tempObject.set(SUMMARY, summary);
+		tempObject.set(UID, uid);
 
 	}
 
@@ -242,51 +265,238 @@ public class ICalenderTemporalDatasetReader extends
 	 */
 	private void fillFreeBusy(VFreeBusy freeBusy) {
 		
+		//see fillEvent for detailed description
+		
 		Date dStart = (checkNull(freeBusy.getStartDate())) ? freeBusy.getStartDate().getDate() : new Date(0L);
 		Date dEnd = (checkNull(freeBusy.getEndDate())) ? freeBusy.getEndDate().getDate() : new Date(Long.MAX_VALUE);
 
 		granularityId = determineGranularity(dStart, dEnd);
 
-		element = dataset.addTemporalElement(dStart.getTime(),
+		tempElement = dataset.addTemporalElement(dStart.getTime(),
 				dEnd.getTime(), granularityId, granularityContextId,
 				TemporalDataset.PRIMITIVE_INTERVAL);
 
-		object = dataset.addTemporalObject(element);
+		tempObject = dataset.addTemporalObject(tempElement);
 		
 		String uid = (checkNull(freeBusy.getUid())) ? freeBusy.getUid().getValue() : "";
 		
-		object.set(UID, uid);
+		tempObject.set(UID, uid);
 		
 	}
 
 	
-	private void checkRecurrences (VEvent event, Date startDate) {
+	/**
+	 * @param component - takes the original event from which the needed properties are extracted
+	 * @return PropertyList - a list containing all the properties from the original event
+	 */
+	private PropertyList getPropertyList(Component component) {
+		PropertyList list = new PropertyList();
 		
-		int counter = 0;
-		Recur recur = (Recur) ((RRule)event.getProperty(Property.RRULE)).getRecur();
 		
-		Date nextDate = recur.getNextDate(startDate, startDate);
-		
-		while (nextDate != null && counter < 50){
+		if (component instanceof VEvent) {
 			
-			try {
-				VEvent textEvent =  event.getOccurrence(recur.getNextDate(startDate, startDate));
-				fillEvent(textEvent);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
-				e.printStackTrace();
+			VEvent tempEvent = (VEvent) component;
+			
+			if (checkNull(tempEvent.getCreated()))
+				list.add(tempEvent.getCreated());
+		
+			if (checkNull(tempEvent.getDescription()))
+					list.add(tempEvent.getDescription());
+		
+			if (checkNull(tempEvent.getLocation()))
+				list.add(tempEvent.getLocation());
+		
+			if (checkNull(tempEvent.getSummary()))
+				list.add(tempEvent.getSummary());
+		
+			if (checkNull(tempEvent.getUid()))
+				list.add(tempEvent.getUid());
+			
+		} else if (component instanceof VJournal) {
+			
+			VJournal tempJournal = (VJournal) component;
+			
+			if (checkNull(tempJournal.getCreated()))
+				list.add(tempJournal.getCreated());
+		
+			if (checkNull(tempJournal.getDescription()))
+					list.add(tempJournal.getDescription());
+			
+			if (checkNull(tempJournal.getSummary()))
+				list.add(tempJournal.getSummary());
+		
+			if (checkNull(tempJournal.getUid()))
+				list.add(tempJournal.getUid());
+			
+		}
+		
+		return list;
+	}
+	
+	
+	/**
+	 * @param component - the component which has multiple occurrences
+	 * @param startDate - the startDate of the given event
+	 * @param endDate - the endDate of the given event
+	 */
+	private void checkRDates (Component component, Date startDate, Date endDate) {
+		
+		DateList dateList = (DateList) ((RDate)component.getProperty(Property.RDATE)).getDates();
+		dateList.remove(startDate);
+		
+		Recur exRecur = null;
+		DateList exDateList = null;
+		
+		if (checkNull(component.getProperty(Property.EXRULE))) {
+			exRecur = (Recur) ((ExRule)component.getProperty(Property.EXRULE)).getRecur();
+		}
+		
+		if (checkNull(component.getProperty(Property.EXDATE))) {
+			exDateList = (DateList) ((ExDate)component.getProperty(Property.EXDATE)).getDates();
+		}
+		
+		
+		Date nextException = null;
+		
+		if (checkNull(exRecur))
+			nextException = exRecur.getNextDate(startDate, startDate);
+		
+		long duration = endDate.getTime() - startDate.getTime();
+		
+		Outer:
+		for (int i = 0; i < dateList.size(); i++) {
+			
+			Date date = (Date)dateList.get(i);
+			
+			if (checkNull(exRecur) && nextException.getTime() == date.getTime()) {
+				nextException = exRecur.getNextDate(date, date);
+				continue;
 			}
 			
+			if (checkNull(exDateList)) {
+				for (int j = 0; j < exDateList.size(); j++) {
+					if (((Date)exDateList.get(j)).getTime() == date.getTime()) {
+						continue Outer;
+					}
+				}
+			}
 			
+			fillSingleComponent(component, date, duration);
+		}
+	}
+	
+	
+	/**
+	 * @param component - the component which has multiple occurrences
+	 * @param startDate - the startDate of the given event
+	 * @param endDate - the endDate of the given event
+	 */
+	private void checkRecurrences (Component component, Date startDate, Date endDate) {
+		
+		int counter = 0;
+		
+		//get the recurrence of the given component
+		
+		Recur recur = (Recur) ((RRule)component.getProperty(Property.RRULE)).getRecur();
+		Recur exRecur = null;
+		DateList exDateList = null;
+		
+		if (checkNull(component.getProperty(Property.EXRULE))) {
+			exRecur = (Recur) ((ExRule)component.getProperty(Property.EXRULE)).getRecur();
+		}
+		
+		if (checkNull(component.getProperty(Property.EXDATE))) {
+			exDateList = (DateList) ((ExDate)component.getProperty(Property.EXDATE)).getDates();
+		}
+		
+		//if the recurrence has the COUNT property set it will be added X times to 
+		//the temporalDataSet - otherwise it will be added 50 times (default)
+		setMaxRecurrences((recur.getCount() > -1) ? recur.getCount() -1 : 50);
+		
+		//get the next occurrence 
+		Date nextDate = recur.getNextDate(startDate, startDate);
+		Date nextException = null;
+		
+		if (checkNull(exRecur))
+			nextException = exRecur.getNextDate(startDate, startDate);
+		
+		//find out the original duration of the event/journal
+		long duration = endDate.getTime() - startDate.getTime();
+		
+		Outer:
+		while (counter < getMaxRecurrences()){
+				
+			
+			if (checkNull(exRecur) && nextException.getTime() == nextDate.getTime()) {
+				nextException = exRecur.getNextDate(nextDate, nextDate);
+				nextDate = recur.getNextDate(nextDate, nextDate);
+				counter++;
+				continue;
+			}
+			
+			if (checkNull(exDateList))
+			{
+				for (int i = 0; i < exDateList.size(); i++) {
+					if (((Date)exDateList.get(i)).getTime() == nextDate.getTime()) {
+						nextDate = recur.getNextDate(nextDate, nextDate);
+						counter++;
+						continue Outer;
+					}
+				}
+			}
+				
+			
+			fillSingleComponent(component, nextDate, duration);
+			
+			//get the next occurrence
 			nextDate = recur.getNextDate(nextDate, nextDate);
 			
 			counter++;
 		}
 		
 		
+	}
+	
+	
+	/**
+	 * @param component - the component to be filled
+	 * @param date - the startDate that will be assigned to the component
+	 * @param duration - the duration (only relevant for events)
+	 */
+	private void fillSingleComponent(Component component, Date date, long duration)
+	{
+		
+		//copy all the properties from the original component
+		PropertyList list = getPropertyList(component);
+		
+		//if the component is an event perform event-specific actions
+		if (component instanceof VEvent) {
+			
+			//the new endDate of this single event will
+			//be the previously calculated duration in combination
+			//with the current startDate
+			Date newEndDate = new DateTime(date.getTime() + duration);
+			
+			//add new dates to the property list
+			list.add(new DtStart(date));
+			list.add(new DtEnd(newEndDate));
+			
+			//create a new event with the properties of the property list
+			//and add it to the temporalDataSet
+			VEvent singleEvent = new VEvent(list);
+			fillEvent(singleEvent);
+			
+		} else if (component instanceof VJournal) {  //otherwise perfom journal-specific actions
+			
+			//set the time stamp of the new journal
+			//to the current nextDate (occurrence)
+			list.add(new DtStamp((DateTime)date));
+			
+			//create a new journal with the properties
+			//and add it to the temporalDataSet
+			VJournal singleJournal = new VJournal(list);
+			fillJournal(singleJournal);
+		}
 	}
 	
 	/**
@@ -338,7 +548,7 @@ public class ICalenderTemporalDatasetReader extends
 		} else {
 
 			// If even the seconds of the given dates
-			// do not match retun the value 1 (Seconds)
+			// do not match return the value 1 (Seconds)
 			granularityId = 1;
 		}
 
