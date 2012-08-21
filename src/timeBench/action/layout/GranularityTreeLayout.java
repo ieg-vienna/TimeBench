@@ -33,7 +33,7 @@ public class GranularityTreeLayout extends Layout {
     
     protected boolean[] axisActive = new boolean[Constants.AXIS_COUNT];
     
-    Hashtable<Integer,double[]> additionalVisualItemInformation = new Hashtable<Integer, double[]>(); // size x,y before size stretching, half border size
+    HashMap<Integer,double[]> additionalVisualItemInformation = new HashMap<Integer, double[]>(); // size x,y before size stretching, half border size
 
     GranularityTreeLayoutSettings[] settings;
 
@@ -57,56 +57,64 @@ public class GranularityTreeLayout extends Layout {
         
         try {
 			calculateSizes(root);
-		} catch (TemporalDataException e) {
+        
+			Rectangle2D bounds = this.getLayoutBounds();
+        	VisualItem visRoot = m_vis.getVisualItem(m_group, root);
+        	double xFactor = bounds.getWidth() / additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS];
+        	double yFactor = bounds.getHeight() / additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS];      
+        
+        	if (xFactor < yFactor)
+        	{
+        		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * xFactor;
+        		bounds.setRect(bounds.getX(),bounds.getY()+(bounds.getHeight()-newHeight)/2,bounds.getWidth(),newHeight);
+        		calculatePositions(root,0,bounds,xFactor);
+        	} else {
+        		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * yFactor;
+        		bounds.setRect(bounds.getX()+(bounds.getWidth()-newWidth)/2,bounds.getY(),bounds.getHeight(),newWidth);
+            	calculatePositions(root,0,bounds,yFactor);
+        	}       
+
+            DataHelper.printGraph(System.out, (NodeItem)visRoot, null, VisualItem.X,VisualItem.Y,VisualItem.SIZE,VisualItem.SIZEY);
+        } catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        Rectangle2D bounds = this.getLayoutBounds();
-        VisualItem visRoot = m_vis.getVisualItem(m_group, root);
-        double xFactor = bounds.getWidth() / visRoot.getSizeX();
-        double yFactor = bounds.getHeight() / visRoot.getSizeY();      
-      
-        if (xFactor < yFactor)
-        {
-        	double newHeight = visRoot.getSizeY() * xFactor;
-        	bounds.setRect(bounds.getX(),bounds.getY()+(bounds.getHeight()-newHeight)/2,bounds.getWidth(),newHeight);
-            calculatePositions(root,0,bounds,xFactor);
-        } else {
-        	double newWidth = visRoot.getSizeX() * yFactor;
-        	bounds.setRect(bounds.getX()+(bounds.getWidth()-newWidth)/2,bounds.getY(),bounds.getHeight(),newWidth);
-            calculatePositions(root,0,bounds,yFactor);
-        }
-
-        DataHelper.printGraph(System.out, (NodeItem)visRoot, null, VisualItem.X,VisualItem.Y,VisualItem.SIZE,VisualItem.SIZEY);
     }
 
     /**
 	 * @param root
+     * @throws TemporalDataException 
 	 */
-	private void calculatePositions(TemporalObject node,int level,Rectangle2D bounds,double factor) {
+	private void calculatePositions(TemporalObject node,int level,Rectangle2D bounds,double factor) throws TemporalDataException {
 		
     	VisualItem visualNode = m_vis.getVisualItem(m_group, node);
     	
+    	double[] aviivn = additionalVisualItemInformation.get(visualNode.getRow());
+    	
     	if (axisActive[Constants.X_AXIS]) {
     		setX(visualNode,null,bounds.getCenterX());
-    		PrefuseLib.setSizeX(visualNode,null,visualNode.getSizeX()*factor);
+    		PrefuseLib.setSizeX(visualNode,null,aviivn[Constants.X_AXIS]*factor);
     	}
     	if (axisActive[Constants.Y_AXIS]) {
     		setY(visualNode,null,bounds.getCenterY());
-    		PrefuseLib.setSizeY(visualNode,null,visualNode.getSizeY()*factor);
+    		PrefuseLib.setSizeY(visualNode,null,aviivn[Constants.Y_AXIS]*factor);
     	}
 		
+    	double xbase = bounds.getX() + aviivn[Constants.AXIS_COUNT+Constants.X_AXIS]*factor;
+    	double ybase = bounds.getY() + aviivn[Constants.AXIS_COUNT+Constants.Y_AXIS]*factor;
         if (level < depth) {
-        	double x = bounds.getX();
-        	double y = bounds.getY();
-            for (TemporalObject o : node.childObjects()) {           
+            for (TemporalObject o : node.childObjects()) {
+            	double x = xbase;
+            	double y = ybase;
             	VisualItem vo = m_vis.getVisualItem(m_group, o);
-            	calculatePositions(o, level + 1, new Rectangle2D.Double(x,y,vo.getSizeX()*factor,vo.getSizeY()*factor) ,factor);
+            	double[] aviivo = additionalVisualItemInformation.get(vo.getRow());
             	if(settings[level].getTargetAxis() == Constants.X_AXIS)
-            		x+=vo.getSizeX()*factor;
+            		x += (o.getTemporalElement().getGranule().getIdentifier()-minIdentifiers[level]) * aviivo[Constants.X_AXIS]*factor;
             	if(settings[level].getTargetAxis() == Constants.Y_AXIS)
-            		y+=vo.getSizeY()*factor;
+            		y += (o.getTemporalElement().getGranule().getIdentifier()-minIdentifiers[level]) * aviivo[Constants.Y_AXIS]*factor;
+            	calculatePositions(o, level + 1, new Rectangle2D.Double(x,
+            			y,
+            			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor) ,factor);
             }
         }
         
@@ -120,6 +128,8 @@ public class GranularityTreeLayout extends Layout {
 
         TemporalObject node = root;
         for (int level = 0; level < depth; level++) {
+            node = node.getFirstChildObject();
+        	
         	if ( !settings[level].isIgnore() ) {
         	
         		if (null == node) {
@@ -137,9 +147,7 @@ public class GranularityTreeLayout extends Layout {
         			maxIdentifiers[level] = node.getTemporalElement().getGranule()
         					.getGranularity().getMaxGranuleIdentifier();
         		}
-        	}
-            
-            node = node.getFirstChildObject();
+        	}          
         }
 
         calculateSizesRecursion(root, 0);
@@ -155,16 +163,18 @@ public class GranularityTreeLayout extends Layout {
                 if (level + 1 < depth)
                 	calculateSizesRecursion(o, level + 1);
                 VisualItem vo = m_vis.getVisualItem(m_group, o);
+                double[] aviivo = additionalVisualItemInformation.get(vo.getRow());
+                if (aviivo == null) {
+                	aviivo = new double[Constants.AXIS_COUNT*2];
+                	additionalVisualItemInformation.put(vo.getRow(),aviivo);
+                }
                 // TODO - Nothing right now, but edit here when implementing more axes than x,y
-                double[] subSize = new double[] { vo.getSizeX(),vo.getSizeY()};
+                double[] subSize = new double[] { aviivo[0], aviivo[1] };
                 for(int i=0; i<Constants.AXIS_COUNT; i++) {
-                	if (Double.isNaN(subSize[i]) || subSize[i] == 0) {
+                	if (Double.isNaN(subSize[i]) || subSize[i] == 0) {                		
                 		subSize[i] = 1.0;
-                		if (i == Constants.X_AXIS)
-                			PrefuseLib.setSizeX(vo, null, subSize[i]);
-                		else if (i == Constants.Y_AXIS)
-                			PrefuseLib.setSizeY(vo, null, subSize[i]);
-                	}
+                		aviivo[i] = subSize[i];
+                	}                	
                 	if (settings[level].getTargetAxis() == i && !settings[level].isIgnore()) 
                 		size[settings[level].getTargetAxis()] += subSize[i];
                		else
@@ -172,20 +182,20 @@ public class GranularityTreeLayout extends Layout {
                 }
             }
             if(settings[level].getFitting() == FITTING_DEPENDING_ON_POSSIBLE_VALUES)
-            	size[settings[level].getTargetAxis()] *= (((double)(maxIdentifiers[level] - minIdentifiers[level]))/((double)node.getChildCount()));
-        
-        for(int i=0; i<size.length; i++)
-        	size[i] += 2*settings[level].getBorder()*size[i];
-        
-       	if(settings[level].getTargetAxis() == Constants.X_AXIS)
-       		axisActive[Constants.X_AXIS] = true;
-       	if(settings[level].getTargetAxis() == Constants.Y_AXIS)
-       		axisActive[Constants.Y_AXIS] = true;
-       	if(axisActive[Constants.X_AXIS])
-       		PrefuseLib.setSizeX(visualNode,null,size[Constants.X_AXIS]);
-       	if(axisActive[Constants.Y_AXIS])
-       		PrefuseLib.setSizeY(visualNode,null,size[Constants.Y_AXIS]);
-    	
+            	size[settings[level].getTargetAxis()] *= (((double)(maxIdentifiers[level] - minIdentifiers[level] + 1))/((double)node.getChildCount()));
+
+       	axisActive[settings[level].getTargetAxis()] = true;
+       	double[] aviivn = additionalVisualItemInformation.get(visualNode.getRow());
+       	if(aviivn == null) {
+       		aviivn = new double[Constants.AXIS_COUNT*2];
+       		additionalVisualItemInformation.put(visualNode.getRow(),aviivn);
+       	}
+                 	
+        for(int i=0; i<size.length; i++) {
+           	aviivn[Constants.AXIS_COUNT+i] = settings[level].getBorder();
+        	aviivn[i] = size[i] + 2*aviivn[Constants.AXIS_COUNT+i];
+        }
+           	
     	if (level > 0 && !settings[level-1].isIgnore() && settings[level-1].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
             minIdentifiers[level-1] = Math.min(minIdentifiers[level-1], node
                     .getTemporalElement().getGranule().getIdentifier());
