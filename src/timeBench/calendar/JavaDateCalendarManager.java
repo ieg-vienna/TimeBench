@@ -355,6 +355,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						break;
 					case Day:
 						result %= 86400;
+						break;
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
@@ -521,6 +522,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				break;
 			case Year:
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+				cal.setTimeInMillis(granule.getInf());
 				result = cal.get(GregorianCalendar.YEAR);
 				break;
 		}
