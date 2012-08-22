@@ -747,7 +747,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier()*86400000;
 				break;
 			case Week:
-				result = granule.getIdentifier()*60480000;
+				result = granule.getIdentifier()*604800000;
 				break;
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -794,13 +794,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier()*60000+59999;
 				break;
 			case Hour:
-				result = granule.getIdentifier()*360000+359999;
+				result = granule.getIdentifier()*3600000+3599999;
 				break;
 			case Day:
 				result = granule.getIdentifier()*86400000+86399999;
 				break;
 			case Week:
-				result = granule.getIdentifier()*60480000+60479999;
+				result = granule.getIdentifier()*604800000+604799999;
 				break;
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
