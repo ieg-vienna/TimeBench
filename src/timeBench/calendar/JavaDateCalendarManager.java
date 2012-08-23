@@ -753,14 +753,14 @@ public class JavaDateCalendarManager implements CalendarManager {
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
-				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12));
 				result = cal.getTimeInMillis();
 				break;}
 			case Quarter:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
-				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3));
 				result = cal.getTimeInMillis();
 				break;}
 			case Year:{
@@ -806,19 +806,19 @@ public class JavaDateCalendarManager implements CalendarManager {
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
-				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
-				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L-1L;
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12));
+				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH))*8640000L-1L;
 				break;}
 			case Quarter:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
-				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
-				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L-1L;
+				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3));
+				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH))*8640000L-1L;
 				cal.add(GregorianCalendar.MONTH, 1);
-				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L;
+				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH))*8640000L;
 				cal.add(GregorianCalendar.MONTH, 1);
-				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L;
+				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH))*8640000L;
 				break;}
 			case Year:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
