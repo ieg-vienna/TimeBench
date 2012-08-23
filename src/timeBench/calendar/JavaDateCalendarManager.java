@@ -337,7 +337,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400000L + granule.getInf()%86400000L;
+						result = (cal.get(GregorianCalendar.DAY_OF_YEAR)-1)*86400000L + granule.getInf()%86400000L;
 						break;
 					}
 					default:
@@ -374,7 +374,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400L + result % 86400L;
+						result = (cal.get(GregorianCalendar.DAY_OF_YEAR)-1)*86400L + result % 86400L;
 						break;
 					}
 				}
@@ -406,7 +406,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*1440L + result % 1440L;
+						result = (cal.get(GregorianCalendar.DAY_OF_YEAR)-1)*1440L + result % 1440L;
 						break;
 					}
 				}
@@ -435,7 +435,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*24 + result % 24;
+						result = (cal.get(GregorianCalendar.DAY_OF_YEAR)-1)*24 + result % 24;
 						break;
 					}
 				}
@@ -460,7 +460,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR);
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)-1;
 						break;
 					}
 					default:
@@ -484,7 +484,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+						result = cal.get(GregorianCalendar.WEEK_OF_YEAR)-1;
 						break;
 						}
 					default:
@@ -515,15 +515,17 @@ public class JavaDateCalendarManager implements CalendarManager {
 						result = cal.get(GregorianCalendar.MONTH) / 3;
 						break;}
 					default:{
-						result = granule.getInf() / 10368000000L;
-						break;
-					}
+						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+						cal.setTimeInMillis(granule.getInf());
+						result = (cal.get(GregorianCalendar.YEAR)-1970) * 4 +
+								cal.get(GregorianCalendar.MONTH) / 3;
+						break;}
 				}
 				break;
 			case Year:
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(granule.getInf());
-				result = cal.get(GregorianCalendar.YEAR);
+				result = cal.get(GregorianCalendar.YEAR)-1970;
 				break;
 		}
 		
@@ -711,6 +713,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 					result = cal.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, Locale.getDefault());
 				} else
 					result = String.format("%d",granule.getIdentifier()+1);
+				break;
+			case Year:
+				result = String.format("%d",granule.getIdentifier()+1970);
 				break;
 			default:
 				result = String.format("%d",granule.getIdentifier()+1);
