@@ -265,13 +265,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 			}
 		} else if(granularity.getIdentifier() == Granularities.Week.intValue) {
 			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 5) % 7;
-			calInf.setTimeInMillis(calInf.getTimeInMillis()-dow*86400000);			
+			calInf.setTimeInMillis(calInf.getTimeInMillis()-dow*86400000L);			
 			if(granularity.getGranularityContextIdentifier() == Granularities.Month.intValue &&
 					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) {
 				calInf.set(GregorianCalendar.DAY_OF_MONTH, 1);
 				calInf.set(GregorianCalendar.MONTH, calSup.get(GregorianCalendar.MONTH));
 			}
-			calSup.setTimeInMillis(calSup.getTimeInMillis()+(6-dow)*86400000);
+			calSup.setTimeInMillis(calSup.getTimeInMillis()+(6-dow)*86400000L);
 			if(granularity.getGranularityContextIdentifier() == Granularities.Month.intValue &&
 					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) {
 				calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
@@ -308,36 +308,36 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Millisecond:
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
 					case Second:
-						result = granule.getInf()%1000;
+						result = granule.getInf()%1000L;
 						break;
 					case Minute:
-						result = granule.getInf()%60000;
+						result = granule.getInf()%60000L;
 						break;
 					case Hour:
-						result = granule.getInf()%3600000;
+						result = granule.getInf()%3600000L;
 						break;
 					case Day:
-						result = granule.getInf()%86400000;
+						result = granule.getInf()%86400000L;
 						break;
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*86400000 + granule.getInf()%86400000;
+						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*86400000L + granule.getInf()%86400000L;
 						break;
 					}
 					case Month: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.DAY_OF_MONTH)-1)*86400000 + granule.getInf()%86400000;
+						result = (cal.get(GregorianCalendar.DAY_OF_MONTH)-1)*86400000L + granule.getInf()%86400000L;
 						break;
 					}
 					case Quarter: 
-						result = getDayInQuarter(granule.getInf())*86400000 + granule.getInf()%86400000;
+						result = getDayInQuarter(granule.getInf())*86400000L + granule.getInf()%86400000L;
 						break;
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400000 + granule.getInf()%86400000;
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400000L + granule.getInf()%86400000L;
 						break;
 					}
 					default:
@@ -345,42 +345,42 @@ public class JavaDateCalendarManager implements CalendarManager {
 				}
 				break;
 			case Second:
-				result = granule.getInf()/1000;
+				result = granule.getInf()/1000L;
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
 					case Minute:
-						result %= 60;
+						result %= 60L;
 						break;
 					case Hour:
-						result %= 3600;
+						result %= 3600L;
 						break;
 					case Day:
-						result %= 86400;
+						result %= 86400L;
 						break;
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*86400 + result % 86400;
+						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*86400L + result % 86400L;
 						break;
 					}
 					case Month: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.DAY_OF_MONTH)-1)*86400 + result % 86400;
+						result = (cal.get(GregorianCalendar.DAY_OF_MONTH)-1)*86400L + result % 86400L;
 						break;
 					}
 					case Quarter: 
-						result = getDayInQuarter(granule.getInf())*86400 + result % 86400;
+						result = getDayInQuarter(granule.getInf())*86400L + result % 86400L;
 						break;
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400 + result % 86400;
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*86400L + result % 86400L;
 						break;
 					}
 				}
 				break;
 			case Minute:
-				result = granule.getInf()/60000;
+				result = granule.getInf()/60000L;
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
 					case Hour:
 						result %= 60;
@@ -391,28 +391,28 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Week: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*1440 + result % 1440;
+						result = ((cal.get(GregorianCalendar.DAY_OF_WEEK)+5)%7)*1440L + result % 1440L;
 						break;
 					}
 					case Month: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = (cal.get(GregorianCalendar.DAY_OF_MONTH)-1)*1440 + result % 1440;
+						result = (cal.get(GregorianCalendar.DAY_OF_MONTH)-1)*1440L + result % 1440L;
 						break;
 					}
 					case Quarter: 
-						result = getDayInQuarter(granule.getInf())*1440 + result % 1440;
+						result = getDayInQuarter(granule.getInf())*1440L + result % 1440L;
 						break;
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*1440 + result % 1440;
+						result = cal.get(GregorianCalendar.DAY_OF_YEAR)*1440L + result % 1440L;
 						break;
 					}
 				}
 				break;
 			case Hour:
-				result = granule.getInf()/3600000;
+				result = granule.getInf()/3600000L;
 				switch(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
 					case Day:
 						result %= 24;
@@ -464,7 +464,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						break;
 					}
 					default:
-						result = granule.getInf() / 86400000;
+						result = granule.getInf() / 86400000L;
 				}
 				break;
 			case Week:
@@ -488,7 +488,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						break;
 						}
 					default:
-						result = granule.getInf() / 60480000;
+						result = granule.getInf() / 60480000L;
 						break;
 				}
 				break;
@@ -734,17 +734,17 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier();
 				break;
 			case Second:
-				result = granule.getIdentifier()*1000;
+				result = granule.getIdentifier()*1000L;
 				break;
 			case Minute:
-				result = granule.getIdentifier()*60000;
+				result = granule.getIdentifier()*60000L;
 				break;
 			case Hour:
-				result = granule.getIdentifier()*3600000;
+				result = granule.getIdentifier()*3600000L;
 				break;
 			case Day:
 			    // Warning does not handle day light saving time 
-				result = granule.getIdentifier()*86400000;
+				result = granule.getIdentifier()*86400000L;
 				break;
 			case Week:
 				result = granule.getIdentifier()*604800000;
@@ -788,43 +788,43 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier();
 				break;
 			case Second:
-				result = granule.getIdentifier()*1000+999;
+				result = granule.getIdentifier()*1000L+999L;
 				break;
 			case Minute:
-				result = granule.getIdentifier()*60000+59999;
+				result = granule.getIdentifier()*60000L+59999L;
 				break;
 			case Hour:
-				result = granule.getIdentifier()*3600000+3599999;
+				result = granule.getIdentifier()*3600000L+3599999L;
 				break;
 			case Day:
-				result = granule.getIdentifier()*86400000+86399999;
+				result = granule.getIdentifier()*86400000L+86399999L;
 				break;
 			case Week:
-				result = granule.getIdentifier()*604800000+604799999;
+				result = granule.getIdentifier()*604800000+604799999L;
 				break;
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/12+1970));
 				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%12+1));
-				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000-1;
+				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L-1L;
 				break;}
 			case Quarter:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()/4+1970));
 				cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3+1));
-				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000-1;
+				result = cal.getTimeInMillis()+(cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L-1L;
 				cal.add(GregorianCalendar.MONTH, 1);
-				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000;
+				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L;
 				cal.add(GregorianCalendar.MONTH, 1);
-				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000;
+				result += (cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)-1)*8640000L;
 				break;}
 			case Year:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(0);
 				cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier()+1970));
-				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_YEAR)*8640000-1;
+				result = cal.getTimeInMillis()+cal.getActualMaximum(GregorianCalendar.DAY_OF_YEAR)*8640000L-1L;
 				break;}
 		}
 		
@@ -937,15 +937,15 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Millisecond:
 				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 					case Second:
-						return 999;
+						return 999L;
 					case Minute:
-						return 59999;
+						return 59999L;
 					case Hour:
-						return 3599999;
+						return 3599999L;
 					case Day:
-						return 86399999;
+						return 86399999L;
 					case Week:
-						return 604799999;
+						return 604799999L;
 					case Month:
 						return 2678399999L;
 					case Quarter:
@@ -956,24 +956,24 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Top:
 						return Long.MIN_VALUE;
 					default:
-						return 1000;						
+						return 1000L;						
 				}
 			case Second:
 				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 					case Minute:
-						return 59;
+						return 59L;
 					case Hour:
-						return 3599;
+						return 3599L;
 					case Day:
-						return 86399;
+						return 86399L;
 					case Week:
-						return 604799;
+						return 604799L;
 					case Month:
-						return 2678399;
+						return 2678399L;
 					case Quarter:
-						return 7948799;
+						return 7948799L;
 					case Year:
-						return 31622399;
+						return 31622399L;
 					case Calendar:
 					case Top:
 						return Long.MIN_VALUE;
@@ -983,17 +983,17 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Minute:
 				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 					case Hour:
-						return 59;
+						return 59L;
 					case Day:
-						return 1439;
+						return 1439L;
 					case Week:
-						return 10079;
+						return 10079L;
 					case Month:
-						return 44639;
+						return 44639L;
 					case Quarter:
-						return 132479;
+						return 132479L;
 					case Year:
-						return 527039;
+						return 527039L;
 					case Calendar:
 						case Top:
 						return Long.MIN_VALUE;
@@ -1003,15 +1003,15 @@ public class JavaDateCalendarManager implements CalendarManager {
 		case Hour:
 			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 				case Day:
-					return 23;
+					return 23L;
 				case Week:
-					return 167;
+					return 167L;
 				case Month:
-					return 743;
+					return 743L;
 				case Quarter:
-					return 2207;
+					return 2207L;
 				case Year:
-					return 8783;
+					return 8783L;
 				case Calendar:
 				case Top:
 					return Long.MIN_VALUE;
@@ -1021,13 +1021,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 		case Day:
 			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 				case Week:
-					return 6;
+					return 6L;
 				case Month:
-					return 30;
+					return 30L;
 				case Quarter:
-					return 91;				
+					return 91L;				
 				case Year:
-					return 365;				
+					return 365L;				
 					case Calendar:
 				case Top:
 					return Long.MIN_VALUE;
@@ -1037,11 +1037,11 @@ public class JavaDateCalendarManager implements CalendarManager {
 		case Week:
 			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 				case Month:
-					return 5;
+					return 5L;
 				case Quarter:
-					return 13;
+					return 13L;
 				case Year:
-					return 51;				
+					return 51L;				
 				case Calendar:
 				case Top:
 					return Long.MIN_VALUE;
@@ -1051,9 +1051,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 		case Month:
 			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 				case Quarter:
-					return 2;
+					return 2L;
 				case Year:
-					return 11;				
+					return 11L;				
 				case Calendar:
 				case Top:
 					return Long.MIN_VALUE;
@@ -1063,7 +1063,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 		case Quarter:
 			switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
 				case Year:
-					return 3;
+					return 3L;
 				case Calendar:
 				case Top:
 					return Long.MIN_VALUE;
