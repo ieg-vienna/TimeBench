@@ -477,10 +477,26 @@ public class JavaDateCalendarManager implements CalendarManager {
 						}
 					case Quarter: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.WEEK_OF_YEAR) / 4;
-						break;
+						int weekCounter = 0;
+						int originalQuarter = cal.get(cal.get(GregorianCalendar.MONTH) / 4);
+						switch(cal.get(GregorianCalendar.DAY_OF_WEEK)) {
+						case GregorianCalendar.MONDAY:
+						case GregorianCalendar.TUESDAY:
+						case GregorianCalendar.WEDNESDAY:
+						case GregorianCalendar.THURSDAY:
+							weekCounter = -1;
+							break;
+						default:
+							weekCounter = 0;
 						}
+						long chronon = granule.getInf();
+						while(cal.get(cal.get(GregorianCalendar.MONTH) / 4) == originalQuarter) {
+							weekCounter++;
+							chronon -= 604800000L; 
+							cal.setTimeInMillis(chronon);
+						}
+						result = weekCounter;
+						break;}
 					case Year: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
@@ -488,7 +504,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						break;
 						}
 					default:
-						result = granule.getInf() / 60480000L;
+						result = granule.getInf() / 604800000L;
 						break;
 				}
 				break;
