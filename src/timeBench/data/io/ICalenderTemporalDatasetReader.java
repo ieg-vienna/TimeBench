@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -36,15 +39,15 @@ public class ICalenderTemporalDatasetReader extends
 		AbstractTemporalDatasetReader {
 
 	public static final String EVENT = Component.VEVENT;
-	// public static final String TODO = Component.VTODO;
+	// public static final String xTODO = Component.VTODO;
 	public static final String JOURNAL = Component.VJOURNAL;
 	public static final String FREEBUSY = Component.VFREEBUSY;
 
-	private static final String CREATED = "created";
-	private static final String DESCRIPTION = "description";
-	private static final String LOCATION = "location";
-	private static final String SUMMARY = "summary";
-	private static final String UID = "uid";
+	private final String CREATED = "created";
+	private final String DESCRIPTION = "description";
+	private final String LOCATION = "location";
+	private final String SUMMARY = "summary";
+	private final String UID = "uid";
 
 	private String m_componentType;
 
@@ -52,7 +55,7 @@ public class ICalenderTemporalDatasetReader extends
 	private TemporalElement tempElement;
 	private TemporalObject tempObject;
 
-	private int maxRecurrences = 50;
+	private final int maxRecurrences = 50;
 	
 	// The (final) value of granularityContextId which is used
 	// throughout the fill-methods for all temporalElements
@@ -68,25 +71,11 @@ public class ICalenderTemporalDatasetReader extends
 		dataset = new TemporalDataset();
 	}
 	
-	
-	/**
-	 * @param aCount - the maximum number of processed recurrences
-	 */
-	public void setMaxRecurrences (int aCount){
-		this.maxRecurrences = aCount;
-	}
-	
-	/**
-	 * @return the maximum number of processed recurrences
-	 */
-	public int getMaxRecurrences () {
-		return maxRecurrences;
-	}
 
 	@Override
 	public TemporalDataset readData(InputStream is) throws DataIOException,
 			TemporalDataException {
-
+		
 		Calendar calender = null;
 
 		// Building a calendar object from the given FileStream 
@@ -116,19 +105,20 @@ public class ICalenderTemporalDatasetReader extends
 	 * @return temporalDataSet - returns a TemporalDataSet containing all the
 	 *         data (Temp.Elements & Temp.Objects) of each component contained
 	 *         in the given componentList
+	 * @throws TemporalDataException 
 	 * @throws ParseException 
 	 * @throws URISyntaxException 
 	 * @throws IOException 
 	 */
-	private TemporalDataset readComponent(ComponentList componentList) {
+	private TemporalDataset readComponent(ComponentList componentList) throws TemporalDataException {
 
 		// Adding several new columns to the temporalDataSet to
 		// present data occurring in different types of iCalendar entries
-		dataset.addColumn(CREATED, Date.class, new Date(0L));
-		dataset.addColumn(DESCRIPTION, String.class, "");
-		dataset.addColumn(LOCATION, String.class, "");
-		dataset.addColumn(SUMMARY, String.class, "");
-		dataset.addColumn(UID, String.class, "");
+		dataset.addDataColumn(CREATED, Date.class, new Date(0L));
+		dataset.addDataColumn(DESCRIPTION, String.class, "");
+		dataset.addDataColumn(LOCATION, String.class, "");
+		dataset.addDataColumn(SUMMARY, String.class, "");
+		dataset.addDataColumn(UID, String.class, "");
 
 		
 		//iterate through the componentList and process every
@@ -172,6 +162,7 @@ public class ICalenderTemporalDatasetReader extends
 		//and calculating the appropriate granularityID
 		Date dStart = (checkNull(event.getStartDate())) ? event.getStartDate()
 				.getDate() : new Date(0L);
+				
 		Date dEnd = (checkNull(event.getEndDate())) ? event.getEndDate()
 				.getDate() : new Date(Long.MAX_VALUE);
 				
@@ -201,10 +192,10 @@ public class ICalenderTemporalDatasetReader extends
 		//getting attributes from the event 
 		//if an attribute is null a default value is used instead
 		Date created = (checkNull(event.getCreated())) ? event.getCreated().getDate() : new Date(0L);
-		String description = (checkNull(event.getDescription())) ? event.getDescription().getValue() : "";
-		String location = (checkNull(event.getLocation())) ? event.getLocation().getValue() : "";
-		String summary = (checkNull(event.getSummary())) ? event.getSummary().getValue() : "";
-		String uid = (checkNull(event.getUid())) ? event.getUid().getValue() : "";
+		String description = (checkNull(event.getDescription())) ? event.getDescription().getValue() : null;
+		String location = (checkNull(event.getLocation())) ? event.getLocation().getValue() : null;
+		String summary = (checkNull(event.getSummary())) ? event.getSummary().getValue() : null;
+		String uid = (checkNull(event.getUid())) ? event.getUid().getValue() : null;
 
 		//add the attributes to the temoparlObject
 		tempObject.set(CREATED, created);
@@ -245,15 +236,14 @@ public class ICalenderTemporalDatasetReader extends
 		tempObject = dataset.addTemporalObject(tempElement);
 		
 		Date created = (checkNull(journal.getCreated())) ? journal.getCreated().getDate() : new Date(0L);
-		String description = (checkNull(journal.getDescription())) ? journal.getDescription().getValue() : "";
-		String summary = (checkNull(journal.getSummary())) ? journal.getSummary().getValue() : "";
-		String uid = (checkNull(journal.getUid())) ? journal.getUid().getValue() : "";
+		String description = (checkNull(journal.getDescription())) ? journal.getDescription().getValue() : null;
+		String summary = (checkNull(journal.getSummary())) ? journal.getSummary().getValue() : null;
+		String uid = (checkNull(journal.getUid())) ? journal.getUid().getValue() : null;
 		
 		tempObject.set(CREATED, created);
 		tempObject.set(DESCRIPTION, description);
 		tempObject.set(SUMMARY, summary);
 		tempObject.set(UID, uid);
-
 	}
 
 	/**
@@ -278,7 +268,7 @@ public class ICalenderTemporalDatasetReader extends
 
 		tempObject = dataset.addTemporalObject(tempElement);
 		
-		String uid = (checkNull(freeBusy.getUid())) ? freeBusy.getUid().getValue() : "";
+		String uid = (checkNull(freeBusy.getUid())) ? freeBusy.getUid().getValue() : null;
 		
 		tempObject.set(UID, uid);
 		
@@ -394,6 +384,7 @@ public class ICalenderTemporalDatasetReader extends
 	private void checkRecurrences (Component component, Date startDate, Date endDate) {
 		
 		int counter = 0;
+		int recurrences_count;
 		
 		//get the recurrence of the given component
 		
@@ -411,7 +402,8 @@ public class ICalenderTemporalDatasetReader extends
 		
 		//if the recurrence has the COUNT property set it will be added X times to 
 		//the temporalDataSet - otherwise it will be added 50 times (default)
-		setMaxRecurrences((recur.getCount() > -1) ? recur.getCount() -1 : 50);
+		
+		recurrences_count = (recur.getCount() > -1) ? recur.getCount() -1 : maxRecurrences;
 		
 		//get the next occurrence 
 		Date nextDate = recur.getNextDate(startDate, startDate);
@@ -424,7 +416,7 @@ public class ICalenderTemporalDatasetReader extends
 		long duration = endDate.getTime() - startDate.getTime();
 		
 		Outer:
-		while (counter < getMaxRecurrences()){
+		while (counter < recurrences_count){
 				
 			
 			if (checkNull(exRecur) && nextException.getTime() == nextDate.getTime()) {
@@ -522,25 +514,32 @@ public class ICalenderTemporalDatasetReader extends
 	private int determineGranularity(Date dStart, Date dEnd) {
 
 		int granularityId = 2;
+		
+		java.util.Calendar cStart = java.util.Calendar.getInstance();
+		cStart.setTime(dStart);
+		
+		java.util.Calendar cEnd = java.util.Calendar.getInstance();
+		cEnd.setTime(dEnd);
 
+		
 		// Determine to which extent the different attributes of
 		// the dates are zero and set granularityId to a fitting value
 		// (see JavaDateCalendarManager.Granularities for according
 		// value-definitions)
-		if (dStart.getSeconds() == 0 && dEnd.getSeconds() == 0) {
-			granularityId = 2;
+		if (cStart.get(java.util.Calendar.SECOND) == 0 && cEnd.get(java.util.Calendar.SECOND) == 0) {
+			granularityId = Granularities.Minute.toInt();
 
-			if (dStart.getMinutes() == 0 && dEnd.getMinutes() == 0) {
-				granularityId = 3;
+			if (cStart.get(java.util.Calendar.MINUTE) == 0 && cEnd.get(java.util.Calendar.MINUTE) == 0) {
+				granularityId = Granularities.Hour.toInt();
 
-				if (dStart.getHours() == 0 && dEnd.getHours() == 0) {
-					granularityId = 4;
+				if (cStart.get(java.util.Calendar.HOUR) == 0 && cEnd.get(java.util.Calendar.HOUR) == 0) {
+					granularityId = Granularities.Day.toInt();
 
-					if (dStart.getDay() == 0 && dEnd.getDay() == 0) {
-						granularityId = 6;
+					if (cStart.get(java.util.Calendar.DAY_OF_MONTH) == 0 && cEnd.get(java.util.Calendar.DAY_OF_MONTH) == 0) {
+						granularityId = Granularities.Month.toInt();
 
-						if (dStart.getMonth() == 0 && dEnd.getMonth() == 0) {
-							granularityId = 8;
+						if (cStart.get(java.util.Calendar.MONTH) == 0 && cEnd.get(java.util.Calendar.MONTH) == 0) {
+							granularityId = Granularities.Year.toInt();
 						}
 					}
 				}
@@ -549,7 +548,7 @@ public class ICalenderTemporalDatasetReader extends
 
 			// If even the seconds of the given dates
 			// do not match return the value 1 (Seconds)
-			granularityId = 1;
+			granularityId = Granularities.Second.toInt();
 		}
 
 		return granularityId;
