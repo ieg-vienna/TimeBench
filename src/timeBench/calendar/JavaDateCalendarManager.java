@@ -269,10 +269,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 			calInf.setTimeInMillis(oldInf-dow*86400000L);
 			long oldSup = calSup.getTimeInMillis();
 			calSup.setTimeInMillis(oldSup+(6-dow)*86400000L);
-			if((granularity.getGranularityContextIdentifier() == Granularities.Month.intValue ||
-				granularity.getGranularityContextIdentifier() == Granularities.Quarter.intValue ||
-				granularity.getGranularityContextIdentifier() == Granularities.Year.intValue) &&
-				calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) {
+			if((granularity.getGranularityContextIdentifier() == Granularities.Month.intValue &&
+				calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) ||
+				(granularity.getGranularityContextIdentifier() == Granularities.Quarter.intValue &&
+				calInf.get(GregorianCalendar.MONTH) / 3 != calSup.get(GregorianCalendar.MONTH) / 3) ||
+				(granularity.getGranularityContextIdentifier() == Granularities.Year.intValue) &&
+				calInf.get(GregorianCalendar.YEAR) != calSup.get(GregorianCalendar.YEAR)) {
 				GregorianCalendar calBorder = new GregorianCalendar();
 				calBorder.setTimeZone(TimeZone.getTimeZone("UTC"));
 				calBorder.setTimeInMillis(calInf.getTimeInMillis());
