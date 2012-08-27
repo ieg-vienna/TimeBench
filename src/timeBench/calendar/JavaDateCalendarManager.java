@@ -273,13 +273,23 @@ public class JavaDateCalendarManager implements CalendarManager {
 				granularity.getGranularityContextIdentifier() == Granularities.Quarter.intValue ||
 				granularity.getGranularityContextIdentifier() == Granularities.Year.intValue) &&
 				calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) {
-				if (oldInf - calInf.getTimeInMillis() < calSup.getTimeInMillis() - oldSup) {
+				GregorianCalendar calBorder = new GregorianCalendar();
+				calBorder.setTimeZone(TimeZone.getTimeZone("UTC"));
+				calBorder.setTimeInMillis(calInf.getTimeInMillis());
+				calBorder.set(GregorianCalendar.DAY_OF_MONTH, 1);
+				calBorder.add(GregorianCalendar.MONTH,1);
+				boolean front = oldSup < calBorder.getTimeInMillis();
+				if (!front)
+					front = calBorder.getTimeInMillis() - oldInf > oldSup - calBorder.getTimeInMillis();
+				if (front) {
 					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
 					calSup.set(GregorianCalendar.MONTH, calInf.get(GregorianCalendar.MONTH));
+					calSup.set(GregorianCalendar.YEAR, calInf.get(GregorianCalendar.YEAR));
 					calSup.set(GregorianCalendar.DAY_OF_MONTH, calSup.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
 				} else {
 					calInf.set(GregorianCalendar.DAY_OF_MONTH, 1);
 					calInf.set(GregorianCalendar.MONTH, calSup.get(GregorianCalendar.MONTH));
+					calInf.set(GregorianCalendar.YEAR, calSup.get(GregorianCalendar.YEAR));
 				}
 			}
 		}
@@ -484,23 +494,25 @@ public class JavaDateCalendarManager implements CalendarManager {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
 						int weekCounter = 0;
-						int originalQuarter = cal.get(cal.get(GregorianCalendar.MONTH) / 4);
+						if (cal.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.MONDAY)
+							weekCounter--;
+						int originalQuarter = cal.get(GregorianCalendar.MONTH) / 3;
+						long chronon = granule.getInf();
+						while(cal.get(GregorianCalendar.MONTH) / 3 == originalQuarter) {
+							weekCounter++;
+							chronon -= 604800000L; 
+							cal.setTimeInMillis(chronon);
+						}
+						cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
+						cal.add(GregorianCalendar.MONTH,1);
 						switch(cal.get(GregorianCalendar.DAY_OF_WEEK)) {
 						case GregorianCalendar.MONDAY:
 						case GregorianCalendar.TUESDAY:
 						case GregorianCalendar.WEDNESDAY:
 						case GregorianCalendar.THURSDAY:
-							weekCounter = -1;
-							break;
-						default:
-							weekCounter = 0;
-						}
-						long chronon = granule.getInf();
-						while(cal.get(cal.get(GregorianCalendar.MONTH) / 4) == originalQuarter) {
 							weekCounter++;
-							chronon -= 604800000L; 
-							cal.setTimeInMillis(chronon);
 						}
+
 						result = weekCounter;
 						break;}
 					case Year: {
@@ -510,7 +522,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						break;
 						}
 					default:
-						result = granule.getInf() / 604800000L;
+						result = (granule.getInf() + 259200000L) / 604800000L; // Add the 3 days of week zero that were not in 1970
 						break;
 				}
 				break;
