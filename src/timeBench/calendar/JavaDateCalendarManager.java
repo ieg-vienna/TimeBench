@@ -734,7 +734,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 					result = String.format("%d",granule.getIdentifier()+1);
 				break;
 			case Week:
-				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Month) {
+				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Month || 
+					Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Quarter ) {
 					result = String.format("%d",granule.getIdentifier()); 
 				}
 				else
