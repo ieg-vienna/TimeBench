@@ -93,22 +93,34 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 						TemporalObject targetBranch = null;
 						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
+			    		whichChild = 0;
+			    		for(int l=0; l<k; l++)
+			    			whichChild += currentBranches.get(l).getChildCount(); 
 						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
 					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
-					    		targetBranch = potentialBranch;					    		
+					    		if(currentBranches.get(k).getChildCount() == 7) {
+					    			int x = 0;
+					    			x++;
+					    		}
+					    		targetBranch = potentialBranch;
 					    	    break;
 					    	}
+				    	    whichChild++;
 					    }
 					    if (targetBranch == null) {
+				    		if(currentBranches.get(k).getChildCount() == 7) {
+				    			int x = 0;
+				    			x++;
+				    		}
 					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
 					    	Instant newTe = workingDataset.addInstant(newGranule);
 					    	targetBranch = workingDataset.addTemporalObject(newTe);
 					    	futureBranches.add(targetBranch);
 					    	futureLeaves.add(new ArrayList<TemporalObject>());					    	
-					    	whichChild++;
+					    	whichChild = futureLeaves.size() - 1;
 					    	currentBranches.get(k).linkWithChild(targetBranch);
 					    }
-				    	futureLeaves.get(whichChild-1).add(currentLeave);
+				    	futureLeaves.get(whichChild).add(currentLeave);
 					}
 				}
 				if(i==0) {
@@ -125,6 +137,8 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			aggregate(root,0);
 		
 			workingDataset.setRoots(new long[] { root.getId() } );
+			
+			DebugHelper.printTemporalDatasetGraph(System.out, root);
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
