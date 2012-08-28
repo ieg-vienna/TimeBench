@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -61,7 +58,7 @@ public class ICalenderTemporalDatasetReader extends
 	// throughout the fill-methods for all temporalElements
 	private final int granularityContextId = Granularities.Top.toInt();
 	private int granularityId;
-
+	
 	public ICalenderTemporalDatasetReader() {
 		this(ICalenderTemporalDatasetReader.EVENT);
 	}
@@ -159,12 +156,15 @@ public class ICalenderTemporalDatasetReader extends
 	private void fillEvent(VEvent event) {
 		
 		//getting start and end dates of the event
-		//and calculating the appropriate granularityID
 		Date dStart = (checkNull(event.getStartDate())) ? event.getStartDate()
 				.getDate() : new Date(0L);
 				
+				
 		Date dEnd = (checkNull(event.getEndDate())) ? event.getEndDate()
 				.getDate() : new Date(Long.MAX_VALUE);
+				
+				
+				
 				
 				
 		//check if the event occurs more than once
@@ -259,7 +259,7 @@ public class ICalenderTemporalDatasetReader extends
 		
 		Date dStart = (checkNull(freeBusy.getStartDate())) ? freeBusy.getStartDate().getDate() : new Date(0L);
 		Date dEnd = (checkNull(freeBusy.getEndDate())) ? freeBusy.getEndDate().getDate() : new Date(Long.MAX_VALUE);
-
+		
 		granularityId = determineGranularity(dStart, dEnd);
 
 		tempElement = dataset.addTemporalElement(dStart.getTime(),
@@ -520,7 +520,6 @@ public class ICalenderTemporalDatasetReader extends
 		
 		java.util.Calendar cEnd = java.util.Calendar.getInstance();
 		cEnd.setTime(dEnd);
-
 		
 		// Determine to which extent the different attributes of
 		// the dates are zero and set granularityId to a fitting value
@@ -554,21 +553,4 @@ public class ICalenderTemporalDatasetReader extends
 		return granularityId;
 	}
 
-	// TODO PARSING (NOT USED)
-	// else if (m_componentType == Component.VTODO) {
-	//
-	// granularityId = 2;
-	//
-	// element = dataset.addTemporalElement(
-	// ((VToDo) componentList.get(i)).getDateStamp().getDate()
-	// .getTime(), ((VToDo) componentList.get(i))
-	// .getDateStamp().getDate().getTime(),
-	// granularityId, granularityContextId,
-	// TemporalDataset.PRIMITIVE_INSTANT);
-	//
-	// object = dataset.addTemporalObject(element);
-	// object.set(ORGANIZER, String.valueOf(((VToDo) componentList
-	// .get(i)).getOrganizer().getValue()));
-	// object.set(SUMMARY, String.valueOf(((VToDo) componentList
-	// .get(i)).getSummary().getValue()));
 }
