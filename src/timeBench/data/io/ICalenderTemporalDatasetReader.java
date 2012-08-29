@@ -582,22 +582,17 @@ public class ICalenderTemporalDatasetReader extends
 		java.util.Calendar cEnd = java.util.Calendar.getInstance();
 		cEnd.setTime(dEnd);
 
-		// Determine to which extent the different attributes of
-		// the dates are zero and set granularityId to a fitting value
+		// Determine if the 'second' value of the dates
+		// are zero and set granularityId to a fitting value
 		// (see JavaDateCalendarManager.Granularities for according
 		// value-definitions)
 		if (cStart.get(java.util.Calendar.SECOND) == 0
 				&& cEnd.get(java.util.Calendar.SECOND) == 0) {
 			granularityId = Granularities.Minute.toInt();
 
-			if (cStart.get(java.util.Calendar.MINUTE) == 0
-					&& cEnd.get(java.util.Calendar.MINUTE) == 0) {
-				granularityId = Granularities.Hour.toInt();
-				
-			}
 		} else {
-			// If even the seconds of the given dates
-			// do not match return the value 1 (Seconds)
+			// If the seconds of the given dates
+			// do not equal zero return the value 1 (Seconds)
 			granularityId = Granularities.Second.toInt();
 		}
 
