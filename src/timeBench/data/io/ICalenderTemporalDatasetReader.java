@@ -593,21 +593,7 @@ public class ICalenderTemporalDatasetReader extends
 			if (cStart.get(java.util.Calendar.MINUTE) == 0
 					&& cEnd.get(java.util.Calendar.MINUTE) == 0) {
 				granularityId = Granularities.Hour.toInt();
-
-				if (cStart.get(java.util.Calendar.HOUR) == 0
-						&& cEnd.get(java.util.Calendar.HOUR) == 0) {
-					granularityId = Granularities.Day.toInt();
-
-					if (cStart.get(java.util.Calendar.DAY_OF_MONTH) == 0
-							&& cEnd.get(java.util.Calendar.DAY_OF_MONTH) == 0) {
-						granularityId = Granularities.Month.toInt();
-
-						if (cStart.get(java.util.Calendar.MONTH) == 0
-								&& cEnd.get(java.util.Calendar.MONTH) == 0) {
-							granularityId = Granularities.Year.toInt();
-						}
-					}
-				}
+				
 			}
 		} else {
 			// If even the seconds of the given dates
