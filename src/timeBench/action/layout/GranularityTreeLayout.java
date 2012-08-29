@@ -162,6 +162,12 @@ public class GranularityTreeLayout extends Layout {
             for (TemporalObject o : node.childObjects()) {
                 if (level + 1 < depth)
                 	calculateSizesRecursion(o, level + 1);
+                
+            	if (!settings[level].isIgnore() && settings[level].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
+                    minIdentifiers[level] = Math.min(minIdentifiers[level], o.getTemporalElement().getGranule().getIdentifier());
+                    maxIdentifiers[level] = Math.max(maxIdentifiers[level], o.getTemporalElement().getGranule().getIdentifier());
+                }
+                
                 VisualItem vo = m_vis.getVisualItem(m_group, o);
                 double[] aviivo = additionalVisualItemInformation.get(vo.getRow());
                 if (aviivo == null) {
@@ -194,13 +200,6 @@ public class GranularityTreeLayout extends Layout {
         for(int i=0; i<size.length; i++) {
            	aviivn[Constants.AXIS_COUNT+i] = settings[level].getBorder();
         	aviivn[i] = size[i] + 2*aviivn[Constants.AXIS_COUNT+i];
-        }
-           	
-    	if (level > 0 && !settings[level-1].isIgnore() && settings[level-1].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
-            minIdentifiers[level-1] = Math.min(minIdentifiers[level-1], node
-                    .getTemporalElement().getGranule().getIdentifier());
-            maxIdentifiers[level-1] = Math.max(maxIdentifiers[level-1], node
-                    .getTemporalElement().getGranule().getIdentifier());
-        }    	
+        }           	
     }
 }
