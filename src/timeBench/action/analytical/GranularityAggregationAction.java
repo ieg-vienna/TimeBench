@@ -98,20 +98,12 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			    			whichChild += currentBranches.get(l).getChildCount(); 
 						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
 					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
-					    		if(currentBranches.get(k).getChildCount() == 7) {
-					    			int x = 0;
-					    			x++;
-					    		}
 					    		targetBranch = potentialBranch;
 					    	    break;
 					    	}
 				    	    whichChild++;
 					    }
 					    if (targetBranch == null) {
-				    		if(currentBranches.get(k).getChildCount() == 7) {
-				    			int x = 0;
-				    			x++;
-				    		}
 					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
 					    	Instant newTe = workingDataset.addInstant(newGranule);
 					    	targetBranch = workingDataset.addTemporalObject(newTe);
