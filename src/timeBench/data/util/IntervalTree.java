@@ -26,20 +26,17 @@
 
 package timeBench.data.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import prefuse.data.Table;
 import prefuse.data.column.Column;
-import prefuse.util.collections.IntIterator;
 
 /**
  * Implements an interval tree as described in Section 14.3 of <i>Introduction
  * to Algorithms</i>, Second edition.
  */
 
-public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
+public class IntervalTree  extends RedBlackTree {
 
 	/**
 	 * Inner class for an interval tree node, extending a red-black tree node
@@ -94,58 +91,23 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 		@Override
 		public int compareTo(timeBench.data.util.BinarySearchTree.Node o) {
 			Node n = (Node) o;
-			return comparator.compare(this.getLow(), this.getHigh(), n.getLow(), n.getHigh());
+			return comparator.compare(this.getLow(), this.getHigh(),
+					n.getLow(), n.getHigh());
 		}
 
 	}
 
-	protected Table table;
-	protected IntIterator rows;
 	protected Column colLo;
 	protected Column colHi;
-	protected int colLoInx;
-	protected int colHiInx;
 	protected IntervalComparator comparator;
 
-	public IntervalTreeIndex(Table table, IntIterator rows, Column colLo,
+	public IntervalTree(Table table, Column colLo,
 			Column colHi, IntervalComparator comparator) {
 		setNil(new Node(-1));
 		root = nil;
-		this.table = table;
-		this.rows = rows;
 		this.colLo = colLo;
 		this.colHi = colHi;
 		this.comparator = comparator;
-		index();
-	}
-
-	private int getColLoIndex() {
-		if (!(table.getColumn(colLoInx) == colLo)) {
-			colLoInx = table.getColumnNumber(colLo);
-		}
-		return colLoInx;
-	}
-
-	@SuppressWarnings("unused")
-	private int getColHiIndex() {
-		if (!(table.getColumn(colHiInx) == colHi)) {
-			colHiInx = table.getColumnNumber(colHi);
-		}
-		return colHiInx;
-	}
-
-	/**
-	 * @see prefuse.data.util.Index#index()
-	 */
-	public void index() {
-
-		// iterate over all valid values, adding them to the index
-		int idxLo = getColLoIndex();
-
-		while (rows.hasNext()) {
-			int r = rows.nextInt();
-			insert(table.getColumnRow(r, idxLo));
-		}
 	}
 
 	/**
@@ -156,7 +118,7 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	 *            Handle to the node being left rotated.
 	 */
 	protected void leftRotate(RedBlackTree.Node handle) {
-		Node x = (Node) handle;
+		Node  x = (Node) handle;
 		Node y = x.getRight();
 
 		super.leftRotate(x);
@@ -195,11 +157,12 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 	 * @throws ClassCastException
 	 *             if <code>data</code> is not an <code>Interval</code> object.
 	 */
-	public Object insert(int row) {
+	public Node insert(int row) {
 		Node z = new Node(row);
 		treeInsert(z);
 		return z;
 	}
+
 
 	/**
 	 * Inserts a node, updating the <code>max</code> fields of its ancestors
@@ -240,78 +203,7 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 		super.delete(handle);
 	}
 
-	/**
-	 * Finds the intervals that overlap with a given value. 
-	 * The intervals are returned in a sorted order (using the provided {@link IntervalComparator}).
-	 * @param value
-	 *            The value to search with.
-	 * @return A handle to a node that overlaps with <code>k</code>, or the
-	 *         sentinel <code>nil</code> if no interval in the tree overlaps
-	 *         with <code>k</code>.
-	 * @throws ClassCastException
-	 *             if <code>k</code> is not an <code>Interval</code> object.
-	 */
-	public IntIterator rows(long value) {
-		final List<Node> result = new ArrayList<Node>();
-		search(value, (Node) root, result);
-		Collections.sort(result);		
-		return new NodesIntIterator(result);
-	}
-
-	private void search(long value, Node node, List<Node> result) {
-		if (node != nil && value < node.max) {
-			search(value, node.getLeft(), result);
-			if (node.getLow() <= value && value <= node.getHigh()) {
-				result.add(node);
-			}
-			search(value, node.getRight(), result);
-		}
-	}
-
-	/**
-	 * Finds the intervals that overlaps with a given interval.
-	 * The intervals are returned in a sorted order (using the provided {@link IntervalComparator}).
-	 * 
-	 * @param interval
-	 *            The interval to overlap with.
-	 * @return A handle to a node that overlaps with <code>k</code>, or the
-	 *         sentinel <code>nil</code> if no interval in the tree overlaps
-	 *         with <code>k</code>.
-	 * @throws ClassCastException
-	 *             if <code>k</code> is not an <code>Interval</code> object.
-	 */
-	public IntIterator rows(long low, long high) {
-		final List<Node> result = new ArrayList<Node>();
-		search(low, high, (Node) root, result);
-		Collections.sort(result);
-		return new NodesIntIterator(result);
-	}
-
-	private static class NodesIntIterator extends IntIterator {
-		int index = 0;
-		final List<Node> result;
-
-		NodesIntIterator(List<Node> result) {
-			this.result = result;
-		}
-
-		@Override
-		public void remove() {
-		}
-
-		@Override
-		public boolean hasNext() {
-			return index < result.size();
-		}
-
-		@Override
-		public int nextInt() {
-			return result.get(index++).row;
-		}
-
-	}
-
-	private void search(long low, long high, Node node, List<Node> result) {
+	public void search(long low, long high, Node node, List<Node> result) {
 		if (node != nil && low < node.max) {
 			search(low, high, node.getLeft(), result);
 			if (comparator.match(low, high, node.getLow(), node.getHigh())) {
@@ -321,20 +213,13 @@ public class IntervalTreeIndex extends RedBlackTree implements IntervalIndex {
 		}
 	}
 
-	@Override
-	public int maximum() {
-	    // problem: underlying data structure is sorted by INF
-	    throw new UnsupportedOperationException("contact Bilal oder Alex :)");
+	public void search(long value, Node node, List<Node> result) {
+		if (node != nil && value < node.max) {
+			search(value, node.getLeft(), result);
+			if (node.getLow() <= value && value <= node.getHigh()) {
+				result.add(node);
+			}
+			search(value, node.getRight(), result);
+		}
 	}
-	
-	@Override
-	public IntervalComparator getComparator() {
-		return comparator;
-	}
-
-	@Override
-	public int size() {
-		return table.getRowCount();
-	}
-
 }

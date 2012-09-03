@@ -1,6 +1,9 @@
 package timeBench.data.util;
 
+import java.util.Iterator;
+
 import prefuse.util.collections.IntIterator;
+import timeBench.data.TemporalObject;
 
 // TODO pass comparator for each query not for building the tree
 
@@ -12,11 +15,6 @@ import prefuse.util.collections.IntIterator;
  */
 public interface IntervalIndex {
 
-    /**
-     * Perform an initial indexing of a data column.
-     */
-    public void index();
-    
     /**
      * Get the comparator used to compare column data values.
      * @return the sort comparator
@@ -58,4 +56,8 @@ public interface IntervalIndex {
      */
     public IntIterator rows(long val);
     
+	Iterator<TemporalObject> temporalObjects(long value);
+	
+	Iterator<TemporalObject> temporalObjects(long low, long high);
+
 }

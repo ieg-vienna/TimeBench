@@ -1,13 +1,12 @@
 package timeBench.data;
 
-import java.util.ArrayList;
-
 import ieg.util.lang.CustomIterable;
+
+import java.util.ArrayList;
 
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
-import prefuse.data.column.Column;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
@@ -20,7 +19,7 @@ import timeBench.data.util.DefaultIntervalComparator;
 import timeBench.data.util.GranuleCache;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
-import timeBench.data.util.IntervalTreeIndex;
+import timeBench.data.util.TemporalIndex;
 
 /**
  * This class maintains data structures that encompass a temporal dataset. It
@@ -583,21 +582,13 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         if (indexElementIntervals != null) {
             return indexElementIntervals; // already indexed
         }
-
-        Table elements = this.temporalElements.getNodeTable();
-        Column colLo = elements.getColumn(TemporalElement.INF);
-        Column colHi = elements.getColumn(TemporalElement.SUP);
-        IntIterator rows = elements.rows(new AnchoredPredicate());
         IntervalComparator comparator = new DefaultIntervalComparator();
-        indexElementIntervals = new IntervalTreeIndex(elements, rows, colLo,
-                colHi, comparator);
-
-        // TODO keep interval index up-to-date
+        indexElementIntervals = new TemporalIndex(this, new AnchoredPredicate(), comparator);
         
+
         // TODO predicate to take advantage of interval index
         
-        // TODO temporal objects 
-        
+
         return indexElementIntervals;
     }
 
