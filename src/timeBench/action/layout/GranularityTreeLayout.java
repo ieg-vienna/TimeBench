@@ -3,11 +3,13 @@ package timeBench.action.layout;
 import prefuse.Constants;
 import prefuse.action.GroupAction;
 import prefuse.action.layout.Layout;
+import prefuse.data.query.NumberRangeModel;
 import prefuse.util.PrefuseLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
 import ieg.prefuse.data.DataHelper;
+import ieg.prefuse.data.query.NestedNumberRangeModel;
 
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -32,6 +34,8 @@ public class GranularityTreeLayout extends Layout {
     protected long[] maxIdentifiers;
     
     protected boolean[] axisActive = new boolean[Constants.AXIS_COUNT];
+    
+    protected NumberRangeModel[] rangeModels = new NumberRangeModel[Constants.AXIS_COUNT];
     
     HashMap<Integer,double[]> additionalVisualItemInformation = new HashMap<Integer, double[]>(); // size x,y before size stretching, half border size
 
@@ -58,19 +62,34 @@ public class GranularityTreeLayout extends Layout {
         try {
 			calculateSizes(root);
         
+			for(int i=0; i<Constants.AXIS_COUNT; i++) {
+				double size = additionalVisualItemInformation.get(root.getRow())[i];
+				if (rangeModels[i] == null) 
+					rangeModels[i] = new NumberRangeModel(0,size,0,size);
+				else if (((Number)rangeModels[i].getMaxValue()).doubleValue() != size)
+					rangeModels[i].setMaxValue(size);
+			}
+			
 			Rectangle2D bounds = this.getLayoutBounds();
         	VisualItem visRoot = m_vis.getVisualItem(m_group, root);
-        	double xFactor = bounds.getWidth() / additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS];
-        	double yFactor = bounds.getHeight() / additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS];      
+        	// calculate back the bullshit from NumberRangeModel.updateRange()
+        	double xFactor = bounds.getWidth() * 10000.0 / rangeModels[Constants.X_AXIS].getExtent() / ((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue();        			
+        	double yFactor = bounds.getHeight() * 10000.0 / rangeModels[Constants.Y_AXIS].getExtent() / ((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue();      
         
         	if (xFactor < yFactor)
         	{
         		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * xFactor;
-        		bounds.setRect(bounds.getX(),bounds.getY()+(bounds.getHeight()-newHeight)/2,bounds.getWidth(),newHeight);
+        		bounds.setRect(bounds.getX()+((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue()*xFactor,
+        				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue()*xFactor
+        				+(bounds.getHeight()-newHeight)/2,
+        				bounds.getWidth(),newHeight);
         		calculatePositions(root,0,bounds,xFactor);
         	} else {
         		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * yFactor;
-        		bounds.setRect(bounds.getX()+(bounds.getWidth()-newWidth)/2,bounds.getY(),bounds.getHeight(),newWidth);
+        		bounds.setRect(bounds.getX()+((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*yFactor
+        				+(bounds.getWidth()-newWidth)/2,
+        				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
+        				bounds.getHeight(),newWidth);
             	calculatePositions(root,0,bounds,yFactor);
         	}       
 
@@ -100,8 +119,8 @@ public class GranularityTreeLayout extends Layout {
     		PrefuseLib.setSizeY(visualNode,null,aviivn[Constants.Y_AXIS]*factor);
     	}
 		
-    	double xbase = bounds.getX() + aviivn[Constants.AXIS_COUNT+Constants.X_AXIS]*factor;
-    	double ybase = bounds.getY() + aviivn[Constants.AXIS_COUNT+Constants.Y_AXIS]*factor;
+    	double xbase = bounds.getX() + (aviivn[Constants.AXIS_COUNT+Constants.X_AXIS])*factor;
+    	double ybase = bounds.getY() + (aviivn[Constants.AXIS_COUNT+Constants.Y_AXIS])*factor;
         if (level < depth) {
             for (TemporalObject o : node.childObjects()) {
             	double x = xbase;
@@ -114,7 +133,7 @@ public class GranularityTreeLayout extends Layout {
             		y += (o.getTemporalElement().getGranule().getIdentifier()-minIdentifiers[level]) * aviivo[Constants.Y_AXIS]*factor;
             	calculatePositions(o, level + 1, new Rectangle2D.Double(x,
             			y,
-            			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor) ,factor);
+            			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor),factor);
             }
         }
         
