@@ -5,9 +5,11 @@ import prefuse.action.GroupAction;
 import prefuse.action.layout.Layout;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.util.PrefuseLib;
+import prefuse.util.ui.ValuedRangeModel;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
+import ieg.prefuse.RangeModelTransformationProvider;
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.data.query.NestedNumberRangeModel;
 
@@ -21,7 +23,7 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalObject;
 import timeBench.test.DebugHelper;
 
-public class GranularityTreeLayout extends Layout {
+public class GranularityTreeLayout extends Layout implements RangeModelTransformationProvider {
 
 	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
 	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
@@ -36,6 +38,8 @@ public class GranularityTreeLayout extends Layout {
     protected boolean[] axisActive = new boolean[Constants.AXIS_COUNT];
     
     protected NumberRangeModel[] rangeModels = new NumberRangeModel[Constants.AXIS_COUNT];
+    
+    protected Rectangle2D rootBounds;
     
     HashMap<Integer,double[]> additionalVisualItemInformation = new HashMap<Integer, double[]>(); // size x,y before size stretching, half border size
 
@@ -83,6 +87,7 @@ public class GranularityTreeLayout extends Layout {
         				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue()*xFactor
         				+(bounds.getHeight()-newHeight)/2,
         				bounds.getWidth(),newHeight);
+        		rootBounds = (Rectangle2D)bounds.clone();
         		calculatePositions(root,0,bounds,xFactor);
         	} else {
         		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * yFactor;
@@ -90,6 +95,7 @@ public class GranularityTreeLayout extends Layout {
         				+(bounds.getWidth()-newWidth)/2,
         				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
         				bounds.getHeight(),newWidth);
+        		rootBounds = (Rectangle2D)bounds.clone();
             	calculatePositions(root,0,bounds,yFactor);
         	}       
 
@@ -221,4 +227,50 @@ public class GranularityTreeLayout extends Layout {
         	aviivn[i] = size[i] + 2*aviivn[Constants.AXIS_COUNT+i];
         }           	
     }
+
+	/* (non-Javadoc)
+	 * @see ieg.prefuse.RangeModelTransformationProvider#getAxes()
+	 */
+	@Override
+	public int[] getAxes() {		
+		int numActive = 0;
+		for(int i=0; i<axisActive.length; i++) {
+			if(axisActive[i])
+				numActive++;
+		}
+		int[] result = new int[numActive];
+		 numActive = 0;
+		for(int i=0; i<axisActive.length; i++) {
+			if(axisActive[i]) {
+				result[numActive] = i;
+				numActive++;
+			};
+		}
+		
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see ieg.prefuse.RangeModelTransformationProvider#getRangeModel(int)
+	 */
+	@Override
+	public ValuedRangeModel getRangeModel(int axis) {
+		return rangeModels[axis];
+	}
+
+	/* (non-Javadoc)
+	 * @see ieg.prefuse.RangeModelTransformationProvider#getMinPosition(int)
+	 */
+	@Override
+	public Double getMinPosition(int axis) {
+		return axis == Constants.X_AXIS ? rootBounds.getMinX() : rootBounds.getMinY();
+	}
+
+	/* (non-Javadoc)
+	 * @see ieg.prefuse.RangeModelTransformationProvider#getMaxPosition(int)
+	 */
+	@Override
+	public Double getMaxPosition(int axis) {
+		return axis == Constants.Y_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
+	}
 }
