@@ -6,6 +6,7 @@ package timeBench.action.analytical;
  * <p>
  * Added: 2011-12-12 / TL<br>
  * Modifications:
+ * 2012-09-09 / MB
  * </p>
  * 
  * @author Tim Lammarsch
@@ -17,6 +18,7 @@ public class GranularityAggregationSettings {
     // private static final long serialVersionUID = 1380115803468529882L;
     private int identifier;
     private int contextIdentifier;
+    private GranularityAggregationFunction aggFct;
 
     /**
      * The parameterless constructor is only for serialization.
@@ -34,6 +36,19 @@ public class GranularityAggregationSettings {
     public GranularityAggregationSettings(int identifier, int contextIdentifier) {
         this.identifier = identifier;
         this.contextIdentifier = contextIdentifier;
+        aggFct = new GranularityAggregationMean();
+    }
+    
+    /**
+     * The constructor has to provide the granularity information and the Aggregation Function for the Granularity
+     * 
+     * @param identifier
+     * @param contextIdentifier
+     */
+    public GranularityAggregationSettings(int identifier, int contextIdentifier, GranularityAggregationFunction agg) {
+        this.identifier = identifier;
+        this.contextIdentifier = contextIdentifier;
+        aggFct = agg;
     }
 
     /**
@@ -65,4 +80,19 @@ public class GranularityAggregationSettings {
     public void setContextIdentifier(int contextIdentifier) {
         this.contextIdentifier = contextIdentifier;
     }
+
+    /**
+     * @return the aggregation function object
+     */
+	public GranularityAggregationFunction getAggregationFct() {
+		return aggFct;
+	}
+	
+	/**
+     * @param aggregationFct
+     *            Function to use for the granularity aggregation
+     */
+	public void setAggregationFct(GranularityAggregationFunction aggregationFct) {
+		this.aggFct = aggregationFct;
+	}
 }

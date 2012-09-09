@@ -1,10 +1,6 @@
 package timeBench.action.analytical;
 
-import ieg.prefuse.data.DataHelper;
-
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
@@ -42,6 +38,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	CalendarManager calendarManager;
 	Granularity[] granularities;	
 	double missingValueIdentifier;
+	GranularityAggregationFunction[] aggFct;
 
 	/**
 	 * @param data
@@ -52,11 +49,15 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		this.sourceDataset = sourceDataset;
 		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		this.granularities = new Granularity[granularities.length];
+		aggFct = new GranularityAggregationFunction[granularities.length];
 		for(int i=0; i<granularities.length; i++) {
 			this.granularities[i] = new Granularity(this.calendarManager.getDefaultCalendar(),granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
+			aggFct[i] = granularities[i].getAggregationFct();
 		}
 		this.missingValueIdentifier = missingValueIdentifier;	
+		//aggFkt = new GranularityAggregationMean();
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see prefuse.action.Action#run(double)
@@ -117,7 +118,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 				}
 				if(i==0) {
 					for(int j=0; j<futureBranches.size(); j++ ) {
-						aggregate(futureBranches.get(j),futureLeaves.get(j),granularities.length);
+						aggregate(futureBranches.get(j),futureLeaves.get(j),granularities.length-1);
 					}
 				} else {
 					currentBranches = futureBranches;
@@ -150,28 +151,29 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	}
 	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {
 		int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
-		double[] numObjects = new double[dataColumnIndices.length]; 
-		double[] totalValue = new double[dataColumnIndices.length]; 
-		for(int i=0; i<dataColumnIndices.length; i++) {
-			numObjects[i] = 0;
-			totalValue[i] = 0;
-		}
-
-        for (TemporalObject temporalObject : childs) {
-			for(int j=0; j<dataColumnIndices.length; j++) {
-				if(temporalObject.canGetDouble(dataColumnIndices[j])) {
-					double value = temporalObject.getDouble(dataColumnIndices[j]);
-					if (!Double.isNaN(value) && value != missingValueIdentifier) {
-						totalValue[j] += value;
-						numObjects[j]++;
-					}
-				}
-			}
-		}
+//		double[] numObjects = new double[dataColumnIndices.length]; 
+//		double[] totalValue = new double[dataColumnIndices.length]; 
+//		for(int i=0; i<dataColumnIndices.length; i++) {
+//			numObjects[i] = 0;
+//			totalValue[i] = 0;
+//		}
+//
+//        for (TemporalObject temporalObject : childs) {
+//			for(int j=0; j<dataColumnIndices.length; j++) {
+//				if(temporalObject.canGetDouble(dataColumnIndices[j])) {
+//					double value = temporalObject.getDouble(dataColumnIndices[j]);
+//					if (!Double.isNaN(value) && value != missingValueIdentifier) {
+//						totalValue[j] += value;
+//						numObjects[j]++;
+//					}
+//				}
+//			}
+//		}
 		
+		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
         // TODO skip columns where NOT canSetDouble() e.g. boolean, Object
 		for(int i=0; i<dataColumnIndices.length; i++) {
-			totalValue[i] /= numObjects[i];
+			//totalValue[i] /= numObjects[i];
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);
 			parent.setInt(GranularityAggregationTree.DEPTH,level);
 		}
