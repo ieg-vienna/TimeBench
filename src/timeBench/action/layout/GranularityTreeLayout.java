@@ -80,6 +80,9 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         	double xFactor = bounds.getWidth() * 10000.0 / rangeModels[Constants.X_AXIS].getExtent() / ((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue();        			
         	double yFactor = bounds.getHeight() * 10000.0 / rangeModels[Constants.Y_AXIS].getExtent() / ((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue();      
         
+        	// wenn beide faktoren kleiner k dann depth um eins reduzieren (durchgehen ob überall verwendet) und
+        	// und nochmal calculateSizes
+        	
         	if (xFactor < yFactor)
         	{
         		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * xFactor;
