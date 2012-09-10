@@ -21,5 +21,6 @@
 	<classpathentry kind="lib" path="/external/lib/jta-1.1.jar"/>
 	<classpathentry kind="lib" path="/external/lib/quartz-1.8.4.jar"/>
 	<classpathentry kind="lib" path="/external/lib/slf4j-api-1.6.4.jar"/>
+	<classpathentry kind="lib" path="/external/lib/RserveEngine.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
