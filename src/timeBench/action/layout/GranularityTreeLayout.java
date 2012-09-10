@@ -82,24 +82,22 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         
         	if (xFactor < yFactor)
         	{
+        		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * xFactor;
         		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * xFactor;
-        		bounds.setRect(bounds.getX()+((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue()*xFactor,
-        				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue()*xFactor
-        				+(bounds.getHeight()-newHeight)/2,
-        				bounds.getWidth(),newHeight);
+        		bounds.setRect(bounds.getX()-((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*xFactor,
+        				bounds.getY()-((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*xFactor,
+        				newWidth,newHeight);
         		rootBounds = (Rectangle2D)bounds.clone();
         		calculatePositions(root,0,bounds,xFactor);
         	} else {
         		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * yFactor;
-        		bounds.setRect(bounds.getX()+((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*yFactor
-        				+(bounds.getWidth()-newWidth)/2,
-        				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
-        				bounds.getHeight(),newWidth);
+        		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * yFactor;
+        		bounds.setRect(bounds.getX()-((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*yFactor,
+        				bounds.getY()-((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
+        				newWidth,newHeight);
         		rootBounds = (Rectangle2D)bounds.clone();
             	calculatePositions(root,0,bounds,yFactor);
         	}       
-
-            DataHelper.printGraph(System.out, (NodeItem)visRoot, null, VisualItem.X,VisualItem.Y,VisualItem.SIZE,VisualItem.SIZEY);
         } catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -271,6 +269,6 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 	 */
 	@Override
 	public Double getMaxPosition(int axis) {
-		return axis == Constants.Y_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
+		return axis == Constants.X_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
 	}
 }
