@@ -199,10 +199,6 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
                 	calculateSizesRecursion(o, level + 1);
                 
             	if (!settings[level].isIgnore() && settings[level].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
-            		if (minIdentifiers.length <= level) {
-            			int bremsen;
-            			bremsen = 0;
-            		}
                     minIdentifiers[level] = Math.min(minIdentifiers[level], o.getTemporalElement().getGranule().getIdentifier());
                     maxIdentifiers[level] = Math.max(maxIdentifiers[level], o.getTemporalElement().getGranule().getIdentifier());
                 }
