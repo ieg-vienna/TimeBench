@@ -41,15 +41,17 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
     
     protected Rectangle2D rootBounds;
     
-    HashMap<Integer,double[]> additionalVisualItemInformation = new HashMap<Integer, double[]>(); // size x,y before size stretching, half border size
+    protected double minSize;	//minimum size of a "pixel"
+    
+    HashMap<Integer,double[]> additionalVisualItemInformation; // size x,y before size stretching, half border size
 
     GranularityTreeLayoutSettings[] settings;
 
     public GranularityTreeLayout(String group,
-            GranularityTreeLayoutSettings[] settings) {
+            GranularityTreeLayoutSettings[] settings, double minSize) {
         super(group);
         this.settings = settings;
-        this.depth = settings.length;
+        this.minSize = minSize;
     }
 
     @Override
@@ -62,26 +64,33 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         for(int i=0; i<Constants.AXIS_COUNT; i++) {
         	axisActive[i] = false;
         }
-        
+                
         try {
-			calculateSizes(root);
         
-			for(int i=0; i<Constants.AXIS_COUNT; i++) {
-				double size = additionalVisualItemInformation.get(root.getRow())[i];
-				if (rangeModels[i] == null) 
-					rangeModels[i] = new NumberRangeModel(0,size,0,size);
-				else if (((Number)rangeModels[i].getMaxValue()).doubleValue() != size)
-					rangeModels[i].setMaxValue(size);
-			}
+        	double xFactor = 0;
+        	double yFactor = 0;
+    		Rectangle2D bounds = this.getLayoutBounds();
+    		VisualItem visRoot = m_vis.getVisualItem(m_group, root);
+        	
+            this.depth = settings.length+1;
+        	do {
+        		depth--;
+        		additionalVisualItemInformation = new HashMap<Integer, double[]>();	// reset
+        		
+        		calculateSizes(root);
+        
+        		for(int i=0; i<Constants.AXIS_COUNT; i++) {
+        			double size = additionalVisualItemInformation.get(root.getRow())[i];
+        			if (rangeModels[i] == null) 
+        				rangeModels[i] = new NumberRangeModel(0,size,0,size);
+        			else if (((Number)rangeModels[i].getMaxValue()).doubleValue() != size)
+        				rangeModels[i].setMaxValue(size);
+        		}
 			
-			Rectangle2D bounds = this.getLayoutBounds();
-        	VisualItem visRoot = m_vis.getVisualItem(m_group, root);
-        	// calculate back the bullshit from NumberRangeModel.updateRange()
-        	double xFactor = bounds.getWidth() * 10000.0 / rangeModels[Constants.X_AXIS].getExtent() / ((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue();        			
-        	double yFactor = bounds.getHeight() * 10000.0 / rangeModels[Constants.Y_AXIS].getExtent() / ((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue();      
-        
-        	// wenn beide faktoren kleiner k dann depth um eins reduzieren (durchgehen ob überall verwendet) und
-        	// und nochmal calculateSizes
+        		xFactor = bounds.getWidth() * 10000.0 / rangeModels[Constants.X_AXIS].getExtent() / ((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue();        			
+        		yFactor = bounds.getHeight() * 10000.0 / rangeModels[Constants.Y_AXIS].getExtent() / ((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue();      
+
+        	} while ( Math.min(xFactor, yFactor) < minSize );
         	
         	if (xFactor < yFactor)
         	{
@@ -190,6 +199,10 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
                 	calculateSizesRecursion(o, level + 1);
                 
             	if (!settings[level].isIgnore() && settings[level].getFitting() == FITTING_FULL_AVAILABLE_SPACE) {
+            		if (minIdentifiers.length <= level) {
+            			int bremsen;
+            			bremsen = 0;
+            		}
                     minIdentifiers[level] = Math.min(minIdentifiers[level], o.getTemporalElement().getGranule().getIdentifier());
                     maxIdentifiers[level] = Math.max(maxIdentifiers[level], o.getTemporalElement().getGranule().getIdentifier());
                 }
