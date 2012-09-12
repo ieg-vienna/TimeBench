@@ -179,6 +179,48 @@ public abstract class TemporalElement extends TableNode {
     }
     
     /**
+     * returns the first instant of temporal element.
+     * for instants, return this.
+     * for intervals, return begin.     
+     * for others, does not interpret the semantics, just goes down to first child and tries again
+     * 
+     * @return the first instant
+     * @throws TemporalDataException 
+     */
+    public Instant getFirstInstant() throws TemporalDataException {
+    	if (this instanceof Instant) {
+    		return (Instant)this;
+    	} else if (this instanceof Interval) {
+    		((Interval)this).getBegin();	// TODO check if this is implemented yet
+    	} else if (this.getFirstChild() != null) {
+    		return ((TemporalElement)this.getFirstChild()).getFirstInstant();
+    	}
+    	
+    	return null;
+    }
+    
+    /**
+     * returns the last instant of temporal element.
+     * for instants, return this.
+     * for intervals, return end.     
+     * for others, does not interpret the semantics, just goes down to first child and tries again
+     * 
+     * @return the first instant
+     * @throws TemporalDataException 
+     */
+    public Instant getLastInstant() throws TemporalDataException {
+    	if (this instanceof Instant) {
+    		return (Instant)this;
+    	} else if (this instanceof Interval) {
+    		((Interval)this).getEnd();	// TODO check if this is implemented yet
+    	} else if (this.getLastChild() != null) {
+    		return ((TemporalElement)this.getLastChild()).getLastInstant();
+    	}
+    	
+    	return null;
+    }
+    
+    /**
      * Get an iterator over all temporal objects occurring with this temporal 
      * element.
      * 
