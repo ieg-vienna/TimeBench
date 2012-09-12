@@ -10,6 +10,7 @@ import timeBench.data.TemporalObject;
 public class RAggregationFunction implements GranularityAggregationFunction {
 	String rAggregationFunction = "mean";
 	REngine engine;
+	boolean ignoreMissings = false;
 	
 	public RAggregationFunction(REngine eng) {
 		engine = eng;
@@ -18,6 +19,17 @@ public class RAggregationFunction implements GranularityAggregationFunction {
 	public RAggregationFunction(REngine eng, String fct) {
 		engine = eng;
 		rAggregationFunction = fct;
+	}
+	
+	public RAggregationFunction(REngine eng, String fct, boolean ignoreMissings) {
+		engine = eng;
+		rAggregationFunction = fct;
+		this.ignoreMissings = ignoreMissings;
+	}
+	
+	public RAggregationFunction(REngine eng, boolean ignoreMissings) {
+		engine = eng;
+		this.ignoreMissings = ignoreMissings;
 	}
 
 	@Override
@@ -34,9 +46,16 @@ public class RAggregationFunction implements GranularityAggregationFunction {
 			for(int j=0; j<dataColumnIndices.length; j++) {
 				if(temporalObject.canGetDouble(dataColumnIndices[j])) {
 					double value = temporalObject.getDouble(dataColumnIndices[j]);
-					data += value+", ";
-					if (childcount == 1)
-						firstvalues[j] = value;
+					if (!Double.isNaN(value) && value != missingValueIdentifier)
+						data += value+", ";
+					else
+						data += "NA, ";
+					if (childcount == 1) {
+						if (!Double.isNaN(value) && value != missingValueIdentifier)
+							firstvalues[j] = value;
+						else
+							firstvalues[j] = Double.NaN;
+					}
 				}
 			}
 		}
@@ -51,7 +70,8 @@ public class RAggregationFunction implements GranularityAggregationFunction {
 			engine.parseAndEval("x <- "+data);
 			engine.parseAndEval("x <- matrix(x, ncol="+dataColumnIndices.length+", byrow=TRUE)");
 			engine.parseAndEval("x <- data.frame(x)");
-			double[] result = engine.parseAndEval("sapply(x,"+rAggregationFunction+")", null, true).asDoubles();
+			String aggFct = new String("sapply(x,"+rAggregationFunction+", na.rm="+Boolean.toString(ignoreMissings).toUpperCase()+")");
+			double[] result = engine.parseAndEval(aggFct, null, true).asDoubles();
 			return result;
 		} catch (REngineException e) {
 			e.printStackTrace();
