@@ -18,7 +18,7 @@ public class GranularityAggregationSettings {
     // private static final long serialVersionUID = 1380115803468529882L;
     private int identifier;
     private int contextIdentifier;
-    private GranularityAggregationFunction aggFct;
+    private transient GranularityAggregationFunction aggFct;
 
     /**
      * The parameterless constructor is only for serialization.
