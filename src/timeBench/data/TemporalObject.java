@@ -157,4 +157,73 @@ public class TemporalObject extends TableNode {
 			return 0;
 		}
 	}
+	
+	public Object getMin(int idx) {
+		return getMin(this.getColumnName(idx));
+	}
+
+	public void setMin(int idx, Object value) {
+		setMin(this.getColumnName(idx),value);
+	}
+
+	public Object getMax(int idx) {
+		return getMax(this.getColumnName(idx));
+	}
+
+	public void setMax(int idx, Object value) {
+		setMax(this.getColumnName(idx),value);
+	}
+
+	public int getKind(int idx) {
+		return getKind(this.getColumnName(idx));
+	}
+
+	public void setKind(int idx, int value) {
+		setKind(this.getColumnName(idx),value);
+	}
+	
+	public Object getMin(String field) {
+		String minField = field+".minValue";
+		ensureFieldExistence(minField,m_table.getSchema().getColumnType(field));
+		return get(minField);
+	}
+	
+	public void setMin(String field, Object value) {
+		String minField = field+".minValue";
+		ensureFieldExistence(minField,m_table.getSchema().getColumnType(field));
+		set(minField,value);
+	}
+
+	public Object getMax(String field) {
+		String maxField = field+".maxValue";
+		ensureFieldExistence(maxField,m_table.getSchema().getColumnType(field));
+		return get(maxField);
+	}
+
+	public void setMax(String field, Object value) {
+		String maxField = field+".maxValue";
+		ensureFieldExistence(maxField,m_table.getSchema().getColumnType(field));
+		set(maxField,value);
+	}
+	
+	public int getKind(String field) {
+		String kindField = field+".kind";
+		ensureFieldExistence(kindField,m_table.getSchema().getColumnType(field));
+		return getInt(kindField);
+	}
+	
+	public void setKind(String field, int value) {
+		String kindField = field+".kind";
+		ensureFieldExistence(kindField,m_table.getSchema().getColumnType(field));
+		setInt(kindField,value);
+	}
+	
+	private void ensureFieldExistence(String field,Class type) {
+		
+		Class existingType = m_table.getSchema().getColumnType(field);
+		if (existingType == null)
+			this.m_table.addColumn(field, type);
+		else if (existingType != type)		
+			throw new IllegalStateException("Field "+field+" exists but is of the wrong type");		
+	}	
 }
