@@ -68,21 +68,35 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		try {
 			workingDataset = new GranularityAggregationTree(sourceDataset.getDataColumnSchema(),granularities.length+1);
 			
-			logger.debug("run -> after for loop with min max values");
-			
-			GenericTemporalElement te = workingDataset.addTemporalElement(sourceDataset.getInf(),sourceDataset.getSup(),
-					0, 32767, TemporalDataset.PRIMITIVE_INTERVAL);
-			TemporalObject root = workingDataset.addTemporalObject(te);
 
-			ArrayList<ArrayList<TemporalObject>> currentLeaves = new ArrayList<ArrayList<TemporalObject>>();
-			currentLeaves.add(new ArrayList<TemporalObject>());
-			for(TemporalObject iO : sourceDataset.temporalObjects()) {
-				currentLeaves.get(0).add(iO);
-			}
-            logger.debug("run -> after for loop to add all source objects");
 			ArrayList<TemporalObject> currentBranches = new ArrayList<TemporalObject>();
-			currentBranches.add(root);
-			for(int i=granularities.length-1; i>=0;i--) {
+			ArrayList<ArrayList<TemporalObject>> currentLeaves = new ArrayList<ArrayList<TemporalObject>>();
+			
+			for(TemporalObject iO : sourceDataset.temporalObjects()) {
+				long inf = iO.getTemporalElement().asGeneric().getGranule().getInf();
+				int i = 0;
+				for(TemporalObject iB : currentBranches) {
+					if (iB.getTemporalElement().asGeneric().getGranule().contains(inf)) {
+		    			currentLeaves.get(i).add(iO);
+		    			break;
+					}
+					i++;
+				}
+				if(i >= currentBranches.size()) {
+			    	Granule newGranule = new Granule(inf,inf,granularities[0]); 
+			    	Instant newTe = workingDataset.addInstant(newGranule);
+			    	currentBranches.add(workingDataset.addTemporalObject(newTe));
+			    	ArrayList<TemporalObject> leaves = new ArrayList<TemporalObject>();
+			    	leaves.add(iO);
+			    	currentLeaves.add(leaves);
+				}
+			}
+			
+			long[] roots = new long[currentBranches.size()];
+			for(int i=0; i<currentBranches.size(); i++)
+				roots[i] = currentBranches.get(i).getId();
+						
+			for(int i=1; i<granularities.length;i++) {
 				ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
 				ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
 				int whichChild = 0;
@@ -116,7 +130,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 				    	futureLeaves.get(whichChild).add(currentLeave);
 					}
 				}
-				if(i==0) {
+				if(i==granularities.length-1) {
 					for(int j=0; j<futureBranches.size(); j++ ) {
 						aggregate(futureBranches.get(j),futureLeaves.get(j),granularities.length-1);
 					}
@@ -128,11 +142,12 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 
             logger.debug("run -> after for loop over granularities");
             
-			aggregate(root,0);
+            for(long iRoot : roots)
+            	aggregate(workingDataset.getTemporalObject(iRoot),0);
 			
-			workingDataset.setRoots(new long[] { root.getId() } );
+			workingDataset.setRoots(roots);
 			
-			DebugHelper.printTemporalDatasetGraph(System.out, root);
+			DebugHelper.printTemporalDatasetGraph(System.out, workingDataset.getTemporalObject(roots[0]));
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

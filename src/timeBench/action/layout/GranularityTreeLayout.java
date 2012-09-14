@@ -41,15 +41,17 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
     
     protected Rectangle2D rootBounds;
     
-    HashMap<Integer,double[]> additionalVisualItemInformation = new HashMap<Integer, double[]>(); // size x,y before size stretching, half border size
+    protected double minSize;	//minimum size of a "pixel"
+    
+    HashMap<Integer,double[]> additionalVisualItemInformation; // size x,y before size stretching, half border size
 
     GranularityTreeLayoutSettings[] settings;
 
     public GranularityTreeLayout(String group,
-            GranularityTreeLayoutSettings[] settings) {
+            GranularityTreeLayoutSettings[] settings, double minSize) {
         super(group);
         this.settings = settings;
-        this.depth = settings.length;
+        this.minSize = minSize;
     }
 
     @Override
@@ -62,44 +64,52 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         for(int i=0; i<Constants.AXIS_COUNT; i++) {
         	axisActive[i] = false;
         }
-        
+                
         try {
-			calculateSizes(root);
         
-			for(int i=0; i<Constants.AXIS_COUNT; i++) {
-				double size = additionalVisualItemInformation.get(root.getRow())[i];
-				if (rangeModels[i] == null) 
-					rangeModels[i] = new NumberRangeModel(0,size,0,size);
-				else if (((Number)rangeModels[i].getMaxValue()).doubleValue() != size)
-					rangeModels[i].setMaxValue(size);
-			}
+        	double xFactor = 0;
+        	double yFactor = 0;
+    		Rectangle2D bounds = this.getLayoutBounds();
+    		VisualItem visRoot = m_vis.getVisualItem(m_group, root);
+        	
+            this.depth = settings.length+1;
+        	do {
+        		depth--;
+        		additionalVisualItemInformation = new HashMap<Integer, double[]>();	// reset
+        		
+        		calculateSizes(root);
+        
+        		for(int i=0; i<Constants.AXIS_COUNT; i++) {
+        			double size = additionalVisualItemInformation.get(root.getRow())[i];
+        			if (rangeModels[i] == null) 
+        				rangeModels[i] = new NumberRangeModel(0,size,0,size);
+        			else if (((Number)rangeModels[i].getMaxValue()).doubleValue() != size)
+        				rangeModels[i].setMaxValue(size);
+        		}
 			
-			Rectangle2D bounds = this.getLayoutBounds();
-        	VisualItem visRoot = m_vis.getVisualItem(m_group, root);
-        	// calculate back the bullshit from NumberRangeModel.updateRange()
-        	double xFactor = bounds.getWidth() * 10000.0 / rangeModels[Constants.X_AXIS].getExtent() / ((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue();        			
-        	double yFactor = bounds.getHeight() * 10000.0 / rangeModels[Constants.Y_AXIS].getExtent() / ((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue();      
-        
+        		xFactor = bounds.getWidth() * 10000.0 / rangeModels[Constants.X_AXIS].getExtent() / ((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue();        			
+        		yFactor = bounds.getHeight() * 10000.0 / rangeModels[Constants.Y_AXIS].getExtent() / ((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue();      
+
+        	} while ( Math.min(xFactor, yFactor) < minSize );
+        	
         	if (xFactor < yFactor)
         	{
+        		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * xFactor;
         		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * xFactor;
-        		bounds.setRect(bounds.getX()+((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.X_AXIS].getMaxValue()).doubleValue()*xFactor,
-        				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()/10000.0*((Number)rangeModels[Constants.Y_AXIS].getMaxValue()).doubleValue()*xFactor
-        				+(bounds.getHeight()-newHeight)/2,
-        				bounds.getWidth(),newHeight);
+        		bounds.setRect(bounds.getX()-((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*xFactor,
+        				bounds.getY()-((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*xFactor,
+        				newWidth,newHeight);
         		rootBounds = (Rectangle2D)bounds.clone();
         		calculatePositions(root,0,bounds,xFactor);
         	} else {
         		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * yFactor;
-        		bounds.setRect(bounds.getX()+((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*yFactor
-        				+(bounds.getWidth()-newWidth)/2,
-        				bounds.getY()+((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
-        				bounds.getHeight(),newWidth);
+        		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * yFactor;
+        		bounds.setRect(bounds.getX()-((Number)rangeModels[Constants.X_AXIS].getLowValue()).doubleValue()*yFactor,
+        				bounds.getY()-((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
+        				newWidth,newHeight);
         		rootBounds = (Rectangle2D)bounds.clone();
             	calculatePositions(root,0,bounds,yFactor);
         	}       
-
-            DataHelper.printGraph(System.out, (NodeItem)visRoot, null, VisualItem.X,VisualItem.Y,VisualItem.SIZE,VisualItem.SIZEY);
         } catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -271,6 +281,6 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 	 */
 	@Override
 	public Double getMaxPosition(int axis) {
-		return axis == Constants.Y_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
+		return axis == Constants.X_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
 	}
 }

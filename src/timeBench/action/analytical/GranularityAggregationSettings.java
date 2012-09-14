@@ -92,7 +92,7 @@ public class GranularityAggregationSettings {
      * @param aggregationFct
      *            Function to use for the granularity aggregation
      */
-	public void setAggregationFct(GranularityAggregationFunction aggregationFct) {
+	public  void setAggregationFct(GranularityAggregationFunction aggregationFct) {
 		this.aggFct = aggregationFct;
 	}
 }
