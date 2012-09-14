@@ -183,6 +183,15 @@ public class JavaDateCalendarManager implements CalendarManager {
         				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
         				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
         		break;
+        	case Calendar:
+        	case Top:
+        		result = new int[] {  
+        				java.util.Calendar.DAY_OF_YEAR,
+        				java.util.Calendar.AM_PM, java.util.Calendar.HOUR,
+        				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
+        				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND,
+        				java.util.Calendar.YEAR };
+        		break;
         	default:
         		throw new TemporalDataException("Granularity not implemented yet");
         }
