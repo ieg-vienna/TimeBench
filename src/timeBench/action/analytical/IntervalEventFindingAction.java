@@ -94,15 +94,36 @@ public class IntervalEventFindingAction extends Action {
 	 */
 	private boolean satisfies(TemporalObject source, TemporalObject template)
 			throws TemporalDataException {
-
+		
 		for (int i : templateDataset.getDataColumnIndices()) {
-			Object value = template.get(i);
-			if (value != null) {
-				if (source.getColumnType(i) != template.getColumnType(i))
-					return false;
-				if (!source.get(i).equals(template.get(i)))
-					return false;
-			}
+			if (template.getKind(i) == TemporalObject.TEMPLATE) {			
+				Object value = template.get(i);
+				if (value != null) {
+					if (source.getColumnType(i) != template.getColumnType(i))
+						return false;
+					if (!source.get(i).equals(template.get(i)))
+						return false;
+				}
+				if (template.getMin(i) != null) {
+					if (source.canGetDouble(i) && source.getDouble(i) < (double)(Double)template.getMin(i))
+						return false;
+					if (source.canGetFloat(i) && source.getFloat(i) < (float)(Float)template.getMin(i))
+						return false;
+					if (source.canGetInt(i) && source.getInt(i) < (int)(Integer)template.getMin(i))
+						return false;
+					if (source.canGetLong(i) && source.getLong(i) < (long)(Long)template.getMin(i))
+						return false;
+				}
+				if (template.getMax(i) != null) {
+					if (source.canGetDouble(i) && source.getDouble(i) > (double)(Double)template.getMax(i))
+						return false;
+					if (source.canGetFloat(i) && source.getFloat(i) > (float)(Float)template.getMax(i))
+						return false;
+					if (source.canGetInt(i) && source.getInt(i) > (int)(Integer)template.getMax(i))
+						return false;
+					if (source.canGetLong(i) && source.getLong(i) > (long)(Long)template.getMax(i))
+						return false;
+				}
 			TemporalElement teTemplate = template.getTemporalElement();
 			TemporalElement teSource = source.getTemporalElement();
 			if (teTemplate.getGranularityId() >= 0 && teTemplate.getGranularityId() != teSource.getGranularityId())
@@ -116,6 +137,7 @@ public class IntervalEventFindingAction extends Action {
 					(teTemplate.getFirstInstant().getGranule().getInf() > teSource.getFirstInstant().getGranule().getInf() ||
 					teTemplate.getLastInstant().getGranule().getSup() < teSource.getLastInstant().getGranule().getSup()))
 				return false;
+			}
 		}
 
 		return true;
