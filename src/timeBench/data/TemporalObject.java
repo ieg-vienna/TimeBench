@@ -184,8 +184,10 @@ public class TemporalObject extends TableNode {
 	
 	public Object getMin(String field) {
 		String minField = field+".minValue";
-		ensureFieldExistence(minField,m_table.getSchema().getColumnType(field));
-		return get(minField);
+		if (getColumnIndex(minField) >= 0)
+			return this.get(minField);
+		else
+			return null;
 	}
 	
 	public void setMin(String field, Object value) {
@@ -196,8 +198,10 @@ public class TemporalObject extends TableNode {
 
 	public Object getMax(String field) {
 		String maxField = field+".maxValue";
-		ensureFieldExistence(maxField,m_table.getSchema().getColumnType(field));
-		return get(maxField);
+		if (getColumnIndex(maxField) >= 0)
+			return get(maxField);
+		else
+			return null;
 	}
 
 	public void setMax(String field, Object value) {
@@ -206,15 +210,19 @@ public class TemporalObject extends TableNode {
 		set(maxField,value);
 	}
 	
+	public static final int INVALID = -1;
 	public static final int MEASURED_DATA = 0x00;
 	public static final int COMPUTER_GENERATED_DATA = 0x01;
 	public static final int USER_GENERATED_DATA = 0x02;
-	public static final int TEMPLATE = 0x10;
+	
+	public static final int TEMPLATE_ = 0x10;
 	
 	public int getKind(String field) {
 		String kindField = field+".kind";
-		ensureFieldExistence(kindField,m_table.getSchema().getColumnType(field));
-		return getInt(kindField);
+		if (getColumnIndex(kindField) >= 0)
+			return getInt(kindField);
+		else
+			return INVALID;
 	}
 	
 	public void setKind(String field, int value) {

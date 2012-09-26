@@ -26,6 +26,7 @@ public class IntervalEventFindingAction extends Action {
 	TemporalDataset sourceDataset;
 	TemporalDataset templateDataset;
 	TemporalDataset eventDataset;
+
 	Schema eventSchema = new Schema(new String[] { "class", "label" },
 			new Class[] { Long.class, String.class });
 
@@ -96,7 +97,7 @@ public class IntervalEventFindingAction extends Action {
 			throws TemporalDataException {
 		
 		for (int i : templateDataset.getDataColumnIndices()) {
-			if (template.getKind(i) == TemporalObject.TEMPLATE) {			
+			if (template.getKind(i) == 0) {			
 				Object value = template.get(i);
 				if (value != null) {
 					if (source.getColumnType(i) != template.getColumnType(i))
@@ -124,23 +125,31 @@ public class IntervalEventFindingAction extends Action {
 					if (source.canGetLong(i) && source.getLong(i) > (long)(Long)template.getMax(i))
 						return false;
 				}
-			TemporalElement teTemplate = template.getTemporalElement();
+			/*TemporalElement teTemplate = template.getTemporalElement();
 			TemporalElement teSource = source.getTemporalElement();
-			if (teTemplate.getGranularityId() >= 0 && teTemplate.getGranularityId() != teSource.getGranularityId())
-				return false;
-			if (teTemplate.getGranularityContextId() >= 0 && teTemplate.getGranularityContextId() != teSource.getGranularityContextId())
-				return false;
+			if (teTemplate.getKind() >= 0x10) {
+				if (teTemplate.getGranularityId() != teSource.getGranularityId())
+					return false;
+				if (teTemplate.getGranularityContextId() != teSource.getGranularityContextId())
+					return false;
+				if (teTemplate.getKind() == TemporalElement.INSTANT_TEMPLATE || teTemplate.getKind() == TemporalElement.INTERVAL_TEMPLATE) {
 			if (teTemplate.getGranule().getIdentifier() != Long.MIN_VALUE
 					&& teTemplate.getGranule().getIdentifier() != teSource.getGranule().getIdentifier())
 				return false;
 			if (teTemplate.getFirstInstant().getGranule().getInf() != Long.MIN_VALUE &&
 					(teTemplate.getFirstInstant().getGranule().getInf() > teSource.getFirstInstant().getGranule().getInf() ||
 					teTemplate.getLastInstant().getGranule().getSup() < teSource.getLastInstant().getGranule().getSup()))
-				return false;
+				return false;*/				
 			}
 		}
 
 		return true;
 	}
 
+	/**
+	 * @return the eventDataset
+	 */
+	public TemporalDataset getEventDataset() {
+		return eventDataset;
+	}
 }
