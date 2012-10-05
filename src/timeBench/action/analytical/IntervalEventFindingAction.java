@@ -4,7 +4,12 @@ import java.util.ArrayList;
 
 import prefuse.action.Action;
 import prefuse.data.Schema;
+import prefuse.data.expression.Predicate;
+import timeBench.calendar.Granularity;
+import timeBench.calendar.Granule;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.Instant;
+import timeBench.data.Span;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
@@ -47,24 +52,24 @@ public class IntervalEventFindingAction extends Action {
 			eventDataset = new TemporalDataset(eventSchema);
 
 			ArrayList<Long> potentialEvents = new ArrayList<Long>();
-			ArrayList<Instant> potentialStartingPoints = new ArrayList<Instant>();
-			ArrayList<Instant> potentialEndingPoints = new ArrayList<Instant>();
+			ArrayList<ArrayList<TemporalObject>> potentialObjectLists = new ArrayList<ArrayList<TemporalObject>>();
 
 			for (TemporalObject iSource : sourceDataset.temporalObjects()) {
 				for (TemporalObject iTemplate : templateDataset.temporalObjects()) {
 					for (int i = 0; i < potentialEvents.size(); i++) {
-						if (satisfies(iSource,templateDataset.getTemporalObject(potentialEvents.get(i)))) {
-							potentialEndingPoints.set(i, iSource.getTemporalElement().getLastInstant());
+						if (satisfies(potentialObjectLists.get(i),iSource,templateDataset.getTemporalObject(potentialEvents.get(i)))) {
+							potentialObjectLists.get(i).add(iSource);
 						} else {
 							potentialEvents.remove(i);
-							potentialStartingPoints.remove(i);
+							potentialObjectLists.remove(i);
 							i--;
 						}
 					}
-					if (satisfies(iSource, iTemplate)) {
+					ArrayList<TemporalObject> newList = new ArrayList<TemporalObject>();
+					newList.add(iSource);
+					if (satisfies(newList, iSource, iTemplate)) {
 						potentialEvents.add(iTemplate.getId());
-						potentialStartingPoints.add(iSource.getTemporalElement().getFirstInstant());
-						potentialEndingPoints.add(iSource.getTemporalElement().getLastInstant());
+						potentialObjectLists.add(newList);
 					}
 				}
 			}
@@ -72,10 +77,14 @@ public class IntervalEventFindingAction extends Action {
 			for (int i = 0; i < potentialEvents.size(); i++) {
 				TemporalElement element;
 				element = eventDataset.addInterval(
-						eventDataset.addInstant(potentialStartingPoints.get(i).getInf(),potentialStartingPoints.get(i).getSup(),
-								potentialStartingPoints.get(i).getGranularityId(),potentialStartingPoints.get(i).getGranularityContextId()),
-						eventDataset.addInstant(potentialEndingPoints.get(i).getInf(), potentialEndingPoints.get(i).getSup(),
-								potentialEndingPoints.get(i).getGranularityId(),potentialEndingPoints.get(i).getGranularityContextId()));
+						eventDataset.addInstant(potentialObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getInf(),
+								potentialObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getSup(),
+								potentialObjectLists.get(i).get(0).getTemporalElement().getGranularityId(),
+								potentialObjectLists.get(i).get(0).getTemporalElement().getGranularityContextId()),
+								eventDataset.addInstant(potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getInf(),
+										potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getSup(),
+										potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getGranularityId(),
+										potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getGranularityContextId()));
 				TemporalObject object = eventDataset.addTemporalObject(element);
 				object.setLong("class", potentialEvents.get(i));
 				object.setString("label", "e" + i);
@@ -93,55 +102,108 @@ public class IntervalEventFindingAction extends Action {
 	 * @return
 	 * @throws TemporalDataException
 	 */
-	private boolean satisfies(TemporalObject source, TemporalObject template)
+	private boolean satisfies(ArrayList<TemporalObject> checkedObjects,TemporalObject source, TemporalObject template)
 			throws TemporalDataException {
 		
-		for (int i : templateDataset.getDataColumnIndices()) {
-			if (template.getKind(i) == 0) {			
-				Object value = template.get(i);
-				if (value != null) {
-					if (source.getColumnType(i) != template.getColumnType(i))
-						return false;
-					if (!source.get(i).equals(template.get(i)))
-						return false;
-				}
-				if (template.getMin(i) != null) {
-					if (source.canGetDouble(i) && source.getDouble(i) < (double)(Double)template.getMin(i))
-						return false;
-					if (source.canGetFloat(i) && source.getFloat(i) < (float)(Float)template.getMin(i))
-						return false;
-					if (source.canGetInt(i) && source.getInt(i) < (int)(Integer)template.getMin(i))
-						return false;
-					if (source.canGetLong(i) && source.getLong(i) < (long)(Long)template.getMin(i))
-						return false;
-				}
-				if (template.getMax(i) != null) {
-					if (source.canGetDouble(i) && source.getDouble(i) > (double)(Double)template.getMax(i))
-						return false;
-					if (source.canGetFloat(i) && source.getFloat(i) > (float)(Float)template.getMax(i))
-						return false;
-					if (source.canGetInt(i) && source.getInt(i) > (int)(Integer)template.getMax(i))
-						return false;
-					if (source.canGetLong(i) && source.getLong(i) > (long)(Long)template.getMax(i))
-						return false;
-				}
-			/*TemporalElement teTemplate = template.getTemporalElement();
-			TemporalElement teSource = source.getTemporalElement();
-			if (teTemplate.getKind() >= 0x10) {
-				if (teTemplate.getGranularityId() != teSource.getGranularityId())
-					return false;
-				if (teTemplate.getGranularityContextId() != teSource.getGranularityContextId())
-					return false;
-				if (teTemplate.getKind() == TemporalElement.INSTANT_TEMPLATE || teTemplate.getKind() == TemporalElement.INTERVAL_TEMPLATE) {
-			if (teTemplate.getGranule().getIdentifier() != Long.MIN_VALUE
-					&& teTemplate.getGranule().getIdentifier() != teSource.getGranule().getIdentifier())
+		Object o = template.get(TemporalObject.PREDICATES_COLUMN);
+		if (o instanceof Predicate) {
+			if(!((Predicate)o).getBoolean(source))
 				return false;
-			if (teTemplate.getFirstInstant().getGranule().getInf() != Long.MIN_VALUE &&
-					(teTemplate.getFirstInstant().getGranule().getInf() > teSource.getFirstInstant().getGranule().getInf() ||
-					teTemplate.getLastInstant().getGranule().getSup() < teSource.getLastInstant().getGranule().getSup()))
-				return false;*/				
-			}
 		}
+		if (o instanceof Predicate[]) {
+			for(Predicate iP : (Predicate[])o)
+			if(!iP.getBoolean(source))
+				return false;
+		}
+		
+		TemporalElement teTemplate = template.getTemporalElement();
+		TemporalElement teStart = checkedObjects.get(0).getTemporalElement();
+		TemporalElement teSource = source.getTemporalElement();
+		switch(teTemplate.getKind()) {
+		case TemporalElement.TEMPLATE_AFTER_INSTANT_INSTANT:
+		case TemporalElement.TEMPLATE_AFTER_INTERVAL_INSTANT:
+		case TemporalElement.TEMPLATE_AFTER_INTERVAL_INTERVAL:
+			if (teStart.getFirstInstant().getInf() <= teTemplate.getLastInstant().getSup())
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_ASLONGAS_INTERVAL_SPAN:
+		case TemporalElement.TEMPLATE_ASLONGAS_RECURRING_INTERVAL_SPAN:
+			if(!(teTemplate instanceof Span))
+				return false;
+			if (((Span)teTemplate).getLength() != teSource.asGeneric().getSup()-teStart.asGeneric().getInf()+1)
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_ASLONGAS_SPAN_SPAN:
+			if(!(teTemplate instanceof Span))
+				return false;
+			if(!(teTemplate instanceof Span))
+				return false;
+			long totalLength = 0;
+			for(TemporalObject iO : checkedObjects) {
+				if (!(iO.getTemporalElement().asPrimitive() instanceof Span))
+					return false;
+				totalLength += ((Span)iO.getTemporalElement().asPrimitive()).getLength();				
+			}				
+			if (((Span)teTemplate).getLength() != totalLength)
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_BEFORE_INSTANT_INSTANT:
+		case TemporalElement.TEMPLATE_BEFORE_INTERVAL_INSTANT:
+		case TemporalElement.TEMPLATE_BEFORE_INTERVAL_INTERVAL:
+			if(teSource.getLastInstant().getSup() >= teTemplate.getFirstInstant().getInf())
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_DURING_INSTANT_INSTANT:
+		case TemporalElement.TEMPLATE_DURING_INTERVAL_INTERVAL:
+			if(teStart.getFirstInstant().getInf() < teTemplate.getFirstInstant().getInf())
+				return false;
+			if(teSource.getLastInstant().getSup() > teTemplate.getLastInstant().getSup())
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_DURING_RECURRING_INTERVAL_RECURRING_INTERVAL:	{
+			Granularity g = teTemplate.getGranule().getGranularity();
+			for(TemporalObject iO : checkedObjects) {
+				if (g.getIdentifier() != iO.getTemporalElement().getGranule().getGranularity().getIdentifier() ||
+						g.getGranularityContextIdentifier() != iO.getTemporalElement().getGranule().getGranularity().getGranularityContextIdentifier())
+					return false;
+			}
+			long inf = checkedObjects.get(0).getTemporalElement().getFirstInstant().getInf();
+			long sup = checkedObjects.get(checkedObjects.size()-1).getTemporalElement().getLastInstant().getSup();
+			Granule[] possible = g.createGranules(teTemplate.getFirstInstant().getInf(), teTemplate.getLastInstant().getSup());
+			for(Granule iG : g.createGranules(inf, sup)) {
+				boolean found = false;
+				for(Granule iG2 : possible) {
+					if ( iG.getIdentifier() == iG2.getIdentifier()) {
+						found = true;
+						break;
+					}					
+				}
+				if (!found)
+					return false;
+			}
+			break;
+		}
+		case TemporalElement.TEMPLATE_FINISHES_INSTANT_INSTANT:
+		case TemporalElement.TEMPLATE_FINISHES_INTERVAL_INSTANT:
+		case TemporalElement.TEMPLATE_FINISHES_INTERVAL_INTERVAL:
+			if (teTemplate.getLastInstant().getSup() != teSource.getLastInstant().getSup())
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_FINISHES_RECURRING_INSTANT_RECURRING_INSTANT:
+		case TemporalElement.TEMPLATE_FINISHES_RECURRING_INTERVAL_RECURRING_INSTANT:
+			Granularity g = teTemplate.getGranule().getGranularity();
+			for(TemporalObject iO : checkedObjects) {
+				if (g.getIdentifier() != iO.getTemporalElement().getGranule().getGranularity().getIdentifier() ||
+						g.getGranularityContextIdentifier() != iO.getTemporalElement().getGranule().getGranularity().getGranularityContextIdentifier())
+					return false;
+			}
+			long sup = checkedObjects.get(checkedObjects.size()-1).getTemporalElement().getLastInstant().getSup();
+			if (new Granule(sup,sup,Granule.MODE_SUP_GRANULE,g).getIdentifier() != teTemplate.getGranule().getIdentifier())
+				return false;
+			break;
+		case TemporalElement.TEMPLATE_OUTSIDE_INSTANT_INSTANT:
+			break;
+		}		
 
 		return true;
 	}

@@ -210,13 +210,15 @@ public class TemporalObject extends TableNode {
 		set(maxField,value);
 	}
 	
+	public static final String PREDICATES_COLUMN = "_predicates";
+	
 	public static final int INVALID = -1;
 	public static final int MEASURED_DATA = 0x00;
 	public static final int COMPUTER_GENERATED_DATA = 0x01;
 	public static final int USER_GENERATED_DATA = 0x02;
 	
 	public static final int TEMPLATE_ = 0x10;
-	
+		
 	public int getKind(String field) {
 		String kindField = field+".kind";
 		if (getColumnIndex(kindField) >= 0)

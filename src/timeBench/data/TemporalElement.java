@@ -179,7 +179,6 @@ public abstract class TemporalElement extends TableNode {
     public static final int TEMPLATE_AFTER_INTERVAL_INSTANT                              = 0x01010302;    
     public static final int TEMPLATE_STARTS_INTERVAL_INSTANT                             = 0x01020302;
     public static final int TEMPLATE_FINISHES_INTERVAL_INSTANT                           = 0x01030302;
-    public static final int TEMPLATE_DURING_INTERVAL_INSTANT                             = 0x01040302;
     public static final int TEMPLATE_OUTSIDE_INTERVAL_INSTANT                            = 0x01050302;
     public static final int TEMPLATE_OVERLAP_START_INTERVAL_INSTANT                      = 0x01060302;
     public static final int TEMPLATE_OVERLAP_FINISH_INTERVAL_INSTANT                     = 0x01070302;
@@ -195,13 +194,12 @@ public abstract class TemporalElement extends TableNode {
     public static final int TEMPLATE_ASLONGAS_INTERVAL_SPAN     		                 = 0x01100300;
     public static final int TEMPLATE_STARTS_RECURRING_INSTANT_RECURRING_INSTANT          = 0x01021212;
     public static final int TEMPLATE_FINISHES_RECURRING_INSTANT_RECURRING_INSTANT        = 0x01031212;
-    public static final int TEMPLATE_DURING_RECURRING_INSTANT_RECURRING_INSTANT          = 0x01041212;
     public static final int TEMPLATE_OUTSIDE_RECURRING_INSTANT_RECURRING_INSTANT         = 0x01041212;
     public static final int TEMPLATE_OVERLAP_START_RECURRING_INSTANT_RECURRING_INSTANT   = 0x01061212;
     public static final int TEMPLATE_OVERLAP_FINISH_RECURRING_INSTANT_RECURRING_INSTANT  = 0x01071212;
     public static final int TEMPLATE_STARTS_RECURRING_INTERVAL_RECURRING_INSTANT         = 0x01021312;
     public static final int TEMPLATE_FINISHES_RECURRING_INTERVAL_RECURRING_INSTANT       = 0x01031312;
-    public static final int TEMPLATE_DURING_RECURRING_INTERVAL_RECURRING_INSTANT         = 0x01041312;
+    public static final int TEMPLATE_DURING_RECURRING_INTERVAL_RECURRING_INTERVAL        = 0x01041313;
     public static final int TEMPLATE_OUTSIDE_RECURRING_INTERVAL_RECURRING_INSTANT        = 0x01041312;
     public static final int TEMPLATE_OVERLAP_START_RECURRING_INTERVAL_RECURRING_INSTANT  = 0x01061312;
     public static final int TEMPLATE_OVERLAP_FINISH_RECURRING_INTERVAL_RECURRING_INSTANT = 0x01071312;
