@@ -990,6 +990,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 		switch(Granularities.fromInt(granularity.getIdentifier())) {
 			case Millisecond:
 				switch(Granularities.fromInt(granularity.getGranularityContextIdentifier())) {
+				    case Millisecond:
+				        return 0L;
 					case Second:
 						return 999L;
 					case Minute:
