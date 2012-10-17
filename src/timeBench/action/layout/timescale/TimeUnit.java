@@ -6,8 +6,8 @@ import java.util.Date;
 
 import timeBench.util.DateUtil;
 
-//import at.ac.tuwien.cs.timevis.ui.StatusBar;
-//import at.ac.tuwien.cs.timevis.ui.TimeScaleHeader;
+import timeBench.ui.TimeScaleStatusBar;
+import timeBench.ui.TimeScaleHeader;
 
 //TODO use/replace by calendar package
 
@@ -22,7 +22,7 @@ import timeBench.util.DateUtil;
  * </p>
  * <p>
  * An TimeUnit essentially consists of
- * <li>a name like "Month", "Quartal" or "50 Milliseconds"</li>
+ * <li>a name like "Month", "Quarter" or "50 Milliseconds"</li>
  * <li>a couple of {@link DateFormat}s which should be used to format
  * {@link Date}s at this TimeUnit.
  * <ul>
@@ -47,7 +47,6 @@ import timeBench.util.DateUtil;
  * @author peterw
  * @see BasicTimeScale
  * @see TimeScaleHeader
- * @see DefaultAccuracyList
  */
 public class TimeUnit implements Comparable<TimeUnit> {
 	private Long maxLengthInMillis;
@@ -91,8 +90,7 @@ public class TimeUnit implements Comparable<TimeUnit> {
 	 * {@link Calendar} field is Calendar.SECOND and the factor is 5, the
 	 * maxLengthInMillis of the TimeUnit will be 5000. The name therefore should
 	 * be "5 Seconds", the shortFormat could be "ss", the longformat "HH:mm:ss"
-	 * and the fullFormat "dd.MM yyyy HH:mm:ss.SSS". These are the values used
-	 * in {@link DefaultAccuracyList}.
+	 * and the fullFormat "dd.MM yyyy HH:mm:ss.SSS".
 	 * </p>
 	 * <p>
 	 * The field param is furthermore used to calculate dates fitting into this
@@ -169,10 +167,10 @@ public class TimeUnit implements Comparable<TimeUnit> {
 		case Calendar.MILLISECOND:
 			break;
 		case Calendar.WEEK_OF_YEAR:
-			maxLength = (long) 1000 * 60 * 60 * 25 * 7;
-			break;
-		case Calendar.YEAR:
-			maxLength = (long) 1000 * 60 * 60 * 24 * 366;
+            maxLength = (long) 1000l * 60 * 60 * 25 * 7 * factor;
+            break;
+        case Calendar.YEAR:
+            maxLength = (long) 1000l * 60 * 60 * 24 * 366 * factor;
 			break;
 		default:
 			throw new IllegalArgumentException("unsupported field");
@@ -211,7 +209,7 @@ public class TimeUnit implements Comparable<TimeUnit> {
 	 * </p>
 	 * 
 	 * @see AdvancedTimeScale
-	 * @see StatusBar
+	 * @see TimeScaleStatusBar
 	 * @return the name of this TimeUnit
 	 */
 	public String getName() {

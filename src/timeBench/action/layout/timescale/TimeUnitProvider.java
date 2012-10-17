@@ -92,8 +92,11 @@ public class TimeUnitProvider {
 
 		SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
 		SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
-
 		tup.add(new TimeUnit("Years", Calendar.YEAR, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new TimeUnit("Decades", Calendar.YEAR, 10, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new TimeUnit("Centuries", Calendar.YEAR, 100, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new TimeUnit("Millennia", Calendar.YEAR, 1000, yearFormatShort, yearFormatLong, yearFormatLong));
+        // TODO better short format for centuries and millennia 
 
 		return tup;
 	}
@@ -104,7 +107,7 @@ public class TimeUnitProvider {
 	 * 
 	 * @param timeUnit
 	 *            the next more accurate {@link TimeUnit} than the returned one
-	 * @return the next less accureate {@link TimeUnit} than the given one
+	 * @return the next less accurate {@link TimeUnit} than the given one
 	 */
 	public TimeUnit getLonger(TimeUnit timeUnit) {
 		int index = timeUnits.indexOf(timeUnit) + 1;
@@ -162,7 +165,7 @@ public class TimeUnitProvider {
 	 * @param minimumPixelPerUnit
 	 *            the minimum number of milliseconds that can used to display
 	 *            one {@link TimeUnit}
-	 * @return the {@link TimeUnit} that best fits the given criterias
+	 * @return the {@link TimeUnit} that best fits the given criteria
 	 */
 	public TimeUnit getBest(double millisPerPixel, int minimumPixelPerUnit) {
 		double millisPerUnit = millisPerPixel * minimumPixelPerUnit;
