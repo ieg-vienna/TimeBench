@@ -238,6 +238,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 		}
 		
 		if(granularity.getIdentifier() == Granularities.Quarter.intValue) {
+		    // calInf DAY_OF_MONTH is already at 1
+            // calSup DAY_OF_MONTH needs to be set to 1 first 
+		    // because last day may change (e.g., 31 March --June--> 1 July) 
 			switch(calInf.get(GregorianCalendar.MONTH)) {
 				case GregorianCalendar.JANUARY:
 				case GregorianCalendar.FEBRUARY:
