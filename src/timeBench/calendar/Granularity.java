@@ -1,6 +1,5 @@
 package timeBench.calendar;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import timeBench.data.TemporalDataException;
@@ -59,8 +58,8 @@ public class Granularity {
 	}
 	
 	public boolean isInTopContext() {
-	    // TODO bitte Tim implementieren, damit ich nicht immer mit JavaDateCalendarManager vergleichen muss
-	    return true;
+	    // TODO Tim please check if this is correct or there is a better way
+	    return contextIdentifier == calendar.getBottomGranularity().contextIdentifier;
 	}
 	
 	/**
@@ -75,12 +74,12 @@ public class Granularity {
     }
 
 	/**
-	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GANULE mode}.
+	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE mode}.
 	 * Consider using the adequate constructor of
 	 * {@link Granule} instead.
 	 * @param inf the chronon that determines the start of the granule constructed
 	 * @param sup the chronon that determines the end of the granule constructed
-	 * @param mode the {@linkplain Granule#MODE_INF_GANULE mode} used to construct the granule
+	 * @param mode the {@linkplain Granule#MODE_INF_GRANULE mode} used to construct the granule
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
