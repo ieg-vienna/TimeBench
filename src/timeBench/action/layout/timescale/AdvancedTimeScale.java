@@ -35,7 +35,7 @@ public class AdvancedTimeScale extends BasicTimeScale {
 	 *            best fitting {@link TimeUnit}
 	 */
 	public AdvancedTimeScale(TimeUnitProvider timeUnitProvider) {
-		this(new Date().getTime(), new Date().getTime() + TimeUnit.getMaxLength(Calendar.DAY_OF_MONTH, 1), 1);
+		this(new Date().getTime(), new Date().getTime() + GregorianTimeUnit.getMaxLength(Calendar.DAY_OF_MONTH, 1), 1);
 	}
 
 	/**

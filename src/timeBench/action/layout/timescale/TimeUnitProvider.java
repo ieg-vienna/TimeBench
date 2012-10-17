@@ -46,56 +46,56 @@ public class TimeUnitProvider {
 
 		SimpleDateFormat milliFormat = new SimpleDateFormat("SSS");
 		SimpleDateFormat milliFormatFull = new SimpleDateFormat(dataformat + " HH:mm:ss.SSS");
-		tup.add(new TimeUnit("50 Milliseconds", Calendar.MILLISECOND, 50, milliFormat, milliFormat, milliFormatFull));
+		tup.add(new GregorianTimeUnit("50 Milliseconds", Calendar.MILLISECOND, 50, milliFormat, milliFormat, milliFormatFull));
 
 		SimpleDateFormat secondFormatShort = new SimpleDateFormat("ss");
 		SimpleDateFormat secondFormatLong = new SimpleDateFormat("HH:mm:ss");
-		tup.add(new TimeUnit("Seconds", Calendar.SECOND, secondFormatShort, secondFormatLong, milliFormatFull));
-		tup.add(new TimeUnit("5 Seconds", Calendar.SECOND, 5, secondFormatShort, secondFormatLong, milliFormatFull));
-		tup.add(new TimeUnit("15 Seconds", Calendar.SECOND, 15, secondFormatShort, secondFormatLong, milliFormatFull));
+		tup.add(new GregorianTimeUnit("Seconds", Calendar.SECOND, secondFormatShort, secondFormatLong, milliFormatFull));
+		tup.add(new GregorianTimeUnit("5 Seconds", Calendar.SECOND, 5, secondFormatShort, secondFormatLong, milliFormatFull));
+		tup.add(new GregorianTimeUnit("15 Seconds", Calendar.SECOND, 15, secondFormatShort, secondFormatLong, milliFormatFull));
 
 		SimpleDateFormat minuteFormatShort = new SimpleDateFormat("mm");
 		SimpleDateFormat minuteFormatLong = new SimpleDateFormat("HH:mm");
 		SimpleDateFormat minuteFormatFull = new SimpleDateFormat(dataformat + " HH:mm:ss");
-		tup.add(new TimeUnit("Minutes", Calendar.MINUTE, minuteFormatShort, minuteFormatLong, minuteFormatFull));
-		tup.add(new TimeUnit("5 Minutes", Calendar.MINUTE, 5, minuteFormatShort, minuteFormatLong, minuteFormatFull));
-		tup.add(new TimeUnit("15 Minutes", Calendar.MINUTE, 15, minuteFormatShort, minuteFormatLong, minuteFormatFull));
+		tup.add(new GregorianTimeUnit("Minutes", Calendar.MINUTE, minuteFormatShort, minuteFormatLong, minuteFormatFull));
+		tup.add(new GregorianTimeUnit("5 Minutes", Calendar.MINUTE, 5, minuteFormatShort, minuteFormatLong, minuteFormatFull));
+		tup.add(new GregorianTimeUnit("15 Minutes", Calendar.MINUTE, 15, minuteFormatShort, minuteFormatLong, minuteFormatFull));
 
 		SimpleDateFormat hourFormatShort = new SimpleDateFormat("HH");
 		SimpleDateFormat hourFormatLong = new SimpleDateFormat("dd.MM HH:mm");
-		tup.add(new TimeUnit("Hours", Calendar.HOUR, hourFormatShort, hourFormatLong, minuteFormatFull));
-		tup.add(new TimeUnit("4 Hours", Calendar.HOUR, 4, hourFormatShort, hourFormatLong, minuteFormatFull));
+		tup.add(new GregorianTimeUnit("Hours", Calendar.HOUR, hourFormatShort, hourFormatLong, minuteFormatFull));
+		tup.add(new GregorianTimeUnit("4 Hours", Calendar.HOUR, 4, hourFormatShort, hourFormatLong, minuteFormatFull));
 
 		SimpleDateFormat dayFormatShort = new SimpleDateFormat("dd");
 		DateFormat dayFormatLong = DateFormat.getDateInstance();
 		SimpleDateFormat dayFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
 
-		tup.add(new TimeUnit("Days", Calendar.DAY_OF_MONTH, dayFormatShort, dayFormatLong, dayFormatFull));
+		tup.add(new GregorianTimeUnit("Days", Calendar.DAY_OF_MONTH, dayFormatShort, dayFormatLong, dayFormatFull));
 		SimpleDateFormat weekFormatShort = new SimpleDateFormat("w");
 
 		String weekPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Woche" : "Week";
 		SimpleDateFormat weekFormatLong = new SimpleDateFormat("'" + weekPrefix + "' w");
 		SimpleDateFormat weekFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
-		tup.weekUnit = new TimeUnit("Weeks", Calendar.WEEK_OF_YEAR, weekFormatShort, weekFormatLong, weekFormatFull);
+		tup.weekUnit = new GregorianTimeUnit("Weeks", Calendar.WEEK_OF_YEAR, weekFormatShort, weekFormatLong, weekFormatFull);
 		tup.add(tup.weekUnit);
 
 		SimpleDateFormat monthFormatShort = new SimpleDateFormat("MMM");
 		SimpleDateFormat monthFormatLong = new SimpleDateFormat("MMMMM yy");
 		SimpleDateFormat monthFormatFull = new SimpleDateFormat(dataformat);
-		tup.add(new TimeUnit("Months", Calendar.MONTH, monthFormatShort, monthFormatLong, monthFormatFull));
+		tup.add(new GregorianTimeUnit("Months", Calendar.MONTH, monthFormatShort, monthFormatLong, monthFormatFull));
 
 		String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
 		DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
 		DateFormat quarterFormatLong = new QuarterDateFormat(true, quarterPrefix, false);
 		DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
-		tup.add(new TimeUnit("Quartals", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
+		tup.add(new GregorianTimeUnit("Quartals", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
 
 		SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
 		SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
-		tup.add(new TimeUnit("Years", Calendar.YEAR, yearFormatShort, yearFormatLong, monthFormatFull));
-        tup.add(new TimeUnit("Decades", Calendar.YEAR, 10, yearFormatShort, yearFormatLong, monthFormatFull));
-        tup.add(new TimeUnit("Centuries", Calendar.YEAR, 100, yearFormatShort, yearFormatLong, monthFormatFull));
-        tup.add(new TimeUnit("Millennia", Calendar.YEAR, 1000, yearFormatShort, yearFormatLong, yearFormatLong));
+		tup.add(new GregorianTimeUnit("Years", Calendar.YEAR, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GregorianTimeUnit("Decades", Calendar.YEAR, 10, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GregorianTimeUnit("Centuries", Calendar.YEAR, 100, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GregorianTimeUnit("Millennia", Calendar.YEAR, 1000, yearFormatShort, yearFormatLong, yearFormatLong));
         // TODO better short format for centuries and millennia 
 
 		return tup;
