@@ -2,6 +2,8 @@ package timeBench.calendar;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import timeBench.data.TemporalDataException;
 
 /**
@@ -197,4 +199,13 @@ public class Granularity {
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {		
 		return calendar.contains(granule,chronon);
 	}
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("id", identifier).
+                append("context", contextIdentifier).
+                append("cal", calendar).
+                toString();
+    }
 }

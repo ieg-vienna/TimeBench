@@ -1,11 +1,11 @@
 package timeBench.calendar;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import timeBench.data.TemporalDataException;
 
@@ -191,4 +191,11 @@ public class Calendar {
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {
 		return calendarManager.contains(granule,chronon);
 	}
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("manager", calendarManager.getClass().getSimpleName()).
+                toString();
+    }
 }
