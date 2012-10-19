@@ -72,9 +72,45 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
     	TemporalElement teEnd = history.get(history.size()-1);
 				
 		switch(m_op) {
+		case BEFORE:
+			if(teEnd.getLastInstant().getSup() >= teTemplate.getFirstInstant().getInf())
+				return false;
+			break;
 		case AFTER:
 			if (teStart.getFirstInstant().getInf() <= teTemplate.getLastInstant().getSup())
 				return false;
+			break;
+		case STARTS:
+			if (teTemplate.getKind() == TemporalElement.RECURRING_INSTANT || teTemplate.getKind() == TemporalElement.RECURRING_INTERVAL) {
+				Granularity g = teTemplate.getGranule().getGranularity();
+				for(TemporalElement iTe : history) {
+					if (g.getIdentifier() != iTe.getGranule().getGranularity().getIdentifier() ||
+							g.getGranularityContextIdentifier() != iTe.getGranule().getGranularity().getGranularityContextIdentifier())
+						return false;
+				}
+				long sup = history.get(history.size()-1).getLastInstant().getSup();
+				if (new Granule(sup,sup,Granule.MODE_SUP_GRANULE,g).getIdentifier() != teTemplate.getGranule().getIdentifier())
+					return false;
+			} else {			
+				if (teTemplate.getLastInstant().getSup() != teEnd.getLastInstant().getSup())
+					return false;
+			}
+			break;
+		case FINISHES:
+			if (teTemplate.getKind() == TemporalElement.RECURRING_INSTANT || teTemplate.getKind() == TemporalElement.RECURRING_INTERVAL) {
+				Granularity g = teTemplate.getGranule().getGranularity();
+				for(TemporalElement iTe : history) {
+					if (g.getIdentifier() != iTe.getGranule().getGranularity().getIdentifier() ||
+							g.getGranularityContextIdentifier() != iTe.getGranule().getGranularity().getGranularityContextIdentifier())
+						return false;
+				}
+				long sup = history.get(history.size()-1).getLastInstant().getSup();
+				if (new Granule(sup,sup,Granule.MODE_SUP_GRANULE,g).getIdentifier() != teTemplate.getGranule().getIdentifier())
+					return false;
+			} else {			
+				if (teTemplate.getLastInstant().getSup() != teEnd.getLastInstant().getSup())
+					return false;
+			}
 			break;
 		case ASLONGAS:
 			if(!(teTemplate instanceof Span))
@@ -84,10 +120,6 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 				total += (iTe instanceof Span) ? ((Span)iTe).getLength() : iTe.getLastInstant().getSup()-iTe.getFirstInstant().getInf() + 1;
 			}
 			if (((Span)teTemplate).getLength() != total)
-				return false;
-			break;
-		case BEFORE:
-			if(teEnd.getLastInstant().getSup() >= teTemplate.getFirstInstant().getInf())
 				return false;
 			break;
 		case DURING:
@@ -116,22 +148,6 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 				if(teStart.getFirstInstant().getInf() < teTemplate.getFirstInstant().getInf())
 					return false;
 				if(teEnd.getLastInstant().getSup() > teTemplate.getLastInstant().getSup())
-					return false;
-			}
-			break;
-		case FINISHES:
-			if (teTemplate.getKind() == TemporalElement.RECURRING_INSTANT || teTemplate.getKind() == TemporalElement.RECURRING_INTERVAL) {
-				Granularity g = teTemplate.getGranule().getGranularity();
-				for(TemporalElement iTe : history) {
-					if (g.getIdentifier() != iTe.getGranule().getGranularity().getIdentifier() ||
-							g.getGranularityContextIdentifier() != iTe.getGranule().getGranularity().getGranularityContextIdentifier())
-						return false;
-				}
-				long sup = history.get(history.size()-1).getLastInstant().getSup();
-				if (new Granule(sup,sup,Granule.MODE_SUP_GRANULE,g).getIdentifier() != teTemplate.getGranule().getIdentifier())
-					return false;
-			} else {			
-				if (teTemplate.getLastInstant().getSup() != teEnd.getLastInstant().getSup())
 					return false;
 			}
 			break;
