@@ -911,11 +911,11 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * @throws TemporalDataException
      * @see GranuleCache
      */
-    protected Granule getGranuleByRow(int row) throws TemporalDataException {
+    protected Granule[] getGranulesByRow(int row) throws TemporalDataException {
         if (this.granuleCache == null) {
             granuleCache = new GranuleCache(this);
         }
-        return granuleCache.getGranule(row);
+        return granuleCache.getGranules(row);
     }
     
     /**

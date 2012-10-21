@@ -344,7 +344,19 @@ public abstract class TemporalElement extends TableNode {
      * @see timeBench.data.util.GranuleCache
      */
     public Granule getGranule() throws TemporalDataException {
-        return tmpds.getGranuleByRow(m_row);
+        return getGranules()[0];
+    }
+    
+    /**
+     * Gets a list of granules of an anchored temporal element. If it is
+     * unanchored, <tt>null</tt> is returned. Granules are cached.
+     * 
+     * @return the first granule
+     * @throws TemporalDataException
+     * @see timeBench.data.util.GranuleCache
+     */
+    public Granule[] getGranules() throws TemporalDataException {
+        return tmpds.getGranulesByRow(m_row);
     }
 
     /**

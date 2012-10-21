@@ -44,7 +44,7 @@ public class GranuleCache {
      * @return
      * @throws TemporalDataException
      */
-    public Granule getGranule(int row) throws TemporalDataException {
+    public Granule[] getGranules(int row) throws TemporalDataException {
         ensureRow(row);
         if (granules.get(row) == null) {
             GenericTemporalElement elem = tmpds.getTemporalElementByRow(row);
@@ -52,14 +52,13 @@ public class GranuleCache {
                 // TODO reuse granularity objects --> calendar responsible?
                 Granularity g = new Granularity(calendar,
                         elem.getGranularityId(), elem.getGranularityContextId());
-                granules.set(new Granule(elem.getInf(), elem.getSup(),
-                        Granule.MODE_INF_GRANULE, g), row);
+                granules.set(g.createGranules(elem.getInf(), elem.getSup()), row);
             } else {
                 // TODO distinguish unknown from unanchored
                 granules.set(null, row);
             }
         }
-        return (Granule) granules.get(row);
+        return (Granule[]) granules.get(row);
     }
 
     public Granule getGranule(long id) throws TemporalDataException {
