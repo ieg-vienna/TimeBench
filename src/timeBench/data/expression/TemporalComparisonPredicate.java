@@ -153,8 +153,24 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 			break;
 		case OVERLAPS:
 			if (teTemplate.getKind() == TemporalElement.RECURRING_INSTANT || teTemplate.getKind() == TemporalElement.RECURRING_INTERVAL) {
+				for(Granule i1 : teTemplate.getGranules()) {
+					for(TemporalElement i2 : history) {
+						for(Granule i3 : i2.getGranules()) {
+							if (i1.getIdentifier() == i3.getIdentifier()) {
+								return true;
+							}
+						}
+					}
+				}
 			} else {
-				
+				for(TemporalElement i2 : history) {
+					for(Granule i3 : i2.getGranules()) {
+						if (teTemplate.getFirstInstant().getInf() > i3.getInf() ||
+							teTemplate.getLastInstant().getSup() < i3.getSup()) {
+							return true;
+						}
+					}
+				}
 			}
 			break;
 		case ASLONGAS:
