@@ -5,15 +5,14 @@ import ieg.util.QuarterDateFormat;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.calendar.JavaDateCalendarManager.Granularities;
-
-//TODO use/replace by calendar package
 
 /**
  * <p>
@@ -31,7 +30,7 @@ import timeBench.calendar.JavaDateCalendarManager.Granularities;
  */
 public class TimeUnitProvider {
 	private TimeUnit weekUnit;
-	private final LinkedList<TimeUnit> timeUnits = new LinkedList<TimeUnit>();
+	private final SortedSet<TimeUnit> timeUnits = new TreeSet<TimeUnit>();
 
 	/**
 	 * <p>
@@ -191,10 +190,14 @@ public class TimeUnitProvider {
 	 * @return the next less accurate {@link TimeUnit} than the given one
 	 */
 	public TimeUnit getLonger(TimeUnit timeUnit) {
-		int index = timeUnits.indexOf(timeUnit) + 1;
-		if (index < timeUnits.size()) {
-			return timeUnits.get(index);
-		}
+	    Iterator<TimeUnit>  i = timeUnits.tailSet(timeUnit).iterator();
+	    if (i.hasNext()) {
+	        i.next();
+	        if (i.hasNext()) {
+	            return i.next();
+	        }
+	    }
+	    
 		return null;
 	}
 
@@ -204,7 +207,7 @@ public class TimeUnitProvider {
 	 * @return the least accurate {@link TimeUnit}
 	 */
 	public TimeUnit getLongest() {
-		return timeUnits.getLast();
+		return timeUnits.last();
 	}
 
 	/**
@@ -213,7 +216,7 @@ public class TimeUnitProvider {
 	 * @return the most accurate {@link TimeUnit}
 	 */
 	public TimeUnit getShortest() {
-		return timeUnits.getFirst();
+		return timeUnits.first();
 	}
 
 	/**
@@ -294,6 +297,5 @@ public class TimeUnitProvider {
 
 	protected void add(TimeUnit timeUnit) {
 		timeUnits.add(timeUnit);
-		Collections.sort(timeUnits);
 	}
 }
