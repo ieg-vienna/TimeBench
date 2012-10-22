@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
 
+import timeBench.calendar.Granularity;
+import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.JavaDateCalendarManager.Granularities;
+
 //TODO use/replace by calendar package
 
 /**
@@ -39,6 +43,11 @@ public class TimeUnitProvider {
 	 * @author Peter Weishapl
 	 */
 	public static TimeUnitProvider createDefaultTimeUnitProvider() {
+//	    return createGregorianTimeUnitProvider();
+        return createGranularityTimeUnitProvider();
+	}
+	
+	public static TimeUnitProvider createGregorianTimeUnitProvider() {
 		TimeUnitProvider tup = new TimeUnitProvider();
 		
 		// handle two languages (e.g., for MouseTracker)
@@ -88,7 +97,7 @@ public class TimeUnitProvider {
 		DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
 		DateFormat quarterFormatLong = new QuarterDateFormat(true, quarterPrefix, false);
 		DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
-		tup.add(new GregorianTimeUnit("Quartals", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
+		tup.add(new GregorianTimeUnit("Quarters", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
 
 		SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
 		SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
@@ -100,6 +109,78 @@ public class TimeUnitProvider {
 
 		return tup;
 	}
+
+    public static TimeUnitProvider createGranularityTimeUnitProvider() {
+        TimeUnitProvider tup = new TimeUnitProvider();
+        
+        timeBench.calendar.Calendar cal = JavaDateCalendarManager.getSingleton().calendar();
+        Granularity ms = new Granularity(cal, Granularities.Millisecond.toInt(), Granularities.Top.toInt());
+        Granularity sec = new Granularity(cal, Granularities.Second.toInt(), Granularities.Top.toInt());
+        Granularity min = new Granularity(cal, Granularities.Minute.toInt(), Granularities.Top.toInt());
+        Granularity hour = new Granularity(cal, Granularities.Hour.toInt(), Granularities.Top.toInt());
+        Granularity day = new Granularity(cal, Granularities.Day.toInt(), Granularities.Top.toInt());
+        Granularity week = new Granularity(cal, Granularities.Week.toInt(), Granularities.Top.toInt());
+        Granularity month = new Granularity(cal, Granularities.Month.toInt(), Granularities.Top.toInt());
+        Granularity quarter = new Granularity(cal, Granularities.Quarter.toInt(), Granularities.Top.toInt());
+        Granularity year = new Granularity(cal, Granularities.Year.toInt(), Granularities.Top.toInt());
+        
+        // handle two languages (e.g., for MouseTracker)
+        String dataformat = (Locale.getDefault().getLanguage() == "de") ? "dd.MM yyyy" : "MMM d, yyyy";
+
+        SimpleDateFormat milliFormat = new SimpleDateFormat("SSS");
+        SimpleDateFormat milliFormatFull = new SimpleDateFormat(dataformat + " HH:mm:ss.SSS");
+        tup.add(new GranularityTimeUnit("50 Milliseconds", ms, 50, milliFormat, milliFormat, milliFormatFull));
+
+        SimpleDateFormat secondFormatShort = new SimpleDateFormat("ss");
+        SimpleDateFormat secondFormatLong = new SimpleDateFormat("HH:mm:ss");
+        tup.add(new GranularityTimeUnit("Seconds", sec, secondFormatShort, secondFormatLong, milliFormatFull));
+        tup.add(new GranularityTimeUnit("5 Seconds", sec, 5, secondFormatShort, secondFormatLong, milliFormatFull));
+        tup.add(new GranularityTimeUnit("15 Seconds", sec, 15, secondFormatShort, secondFormatLong, milliFormatFull));
+	
+        SimpleDateFormat minuteFormatShort = new SimpleDateFormat("mm");
+        SimpleDateFormat minuteFormatLong = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat minuteFormatFull = new SimpleDateFormat(dataformat + " HH:mm:ss");
+        tup.add(new GranularityTimeUnit("Minutes", min, minuteFormatShort, minuteFormatLong, minuteFormatFull));
+        tup.add(new GranularityTimeUnit("5 Minutes", min, 5, minuteFormatShort, minuteFormatLong, minuteFormatFull));
+        tup.add(new GranularityTimeUnit("15 Minutes", min, 15, minuteFormatShort, minuteFormatLong, minuteFormatFull));
+
+        SimpleDateFormat hourFormatShort = new SimpleDateFormat("HH");
+        SimpleDateFormat hourFormatLong = new SimpleDateFormat("dd.MM HH:mm");
+        tup.add(new GranularityTimeUnit("Hours", hour, hourFormatShort, hourFormatLong, minuteFormatFull));
+        tup.add(new GranularityTimeUnit("4 Hours", hour, 4, hourFormatShort, hourFormatLong, minuteFormatFull));
+
+        SimpleDateFormat dayFormatShort = new SimpleDateFormat("dd");
+        DateFormat dayFormatLong = DateFormat.getDateInstance();
+        SimpleDateFormat dayFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
+        tup.add(new GranularityTimeUnit("Days", day, dayFormatShort, dayFormatLong, dayFormatFull));
+
+        SimpleDateFormat weekFormatShort = new SimpleDateFormat("w");
+        String weekPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Woche" : "Week";
+        SimpleDateFormat weekFormatLong = new SimpleDateFormat("'" + weekPrefix + "' w");
+        SimpleDateFormat weekFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
+        tup.weekUnit = new GranularityTimeUnit("Weeks", week, weekFormatShort, weekFormatLong, weekFormatFull);
+        tup.add(tup.weekUnit);
+
+        SimpleDateFormat monthFormatShort = new SimpleDateFormat("MMM");
+        SimpleDateFormat monthFormatLong = new SimpleDateFormat("MMMMM yy");
+        SimpleDateFormat monthFormatFull = new SimpleDateFormat(dataformat);
+        tup.add(new GranularityTimeUnit("Months", month, monthFormatShort, monthFormatLong, monthFormatFull));
+
+        String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
+        DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
+        DateFormat quarterFormatLong = new QuarterDateFormat(true, quarterPrefix, false);
+        DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
+        tup.add(new GranularityTimeUnit("Quarters", quarter, 1, quarterFormatShort, quarterFormatLong, quarterFormatFull));
+        
+        SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
+        SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
+        tup.add(new GranularityTimeUnit("Years", year, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GranularityTimeUnit("Decades", year, 10, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GranularityTimeUnit("Centuries", year, 100, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GranularityTimeUnit("Millennia", year, 1000, yearFormatShort, yearFormatLong, yearFormatLong));
+        
+        return tup;
+    }
 
 	/**
 	 * Returns the next less accurate {@link TimeUnit} based on the given

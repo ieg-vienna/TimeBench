@@ -8,7 +8,7 @@ import timeBench.util.DateUtil;
 
 class GregorianTimeUnit extends TimeUnit {
 
-    private Long maxLengthInMillis;
+    private long maxLengthInMillis;
     
     private int field;
     private int factor;
