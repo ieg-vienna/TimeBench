@@ -1,7 +1,5 @@
 package timeBench.calendar;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -801,7 +799,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier()*86400000L;
 				break;
 			case Week:
-				result = granule.getIdentifier()*604800000;
+			    // 1 Jan 1970 is a Thursday
+				result = granule.getIdentifier() * 604800000L - 259200000; // = 3*24*60*60*1000
 				break;
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -837,6 +836,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 	public long createSup(Granule granule) throws TemporalDataException {
 		long result = 0;
 		
+		// invalid granule ids for context granularities are not defined (insert context granule)
+		
 		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
 			case Millisecond:
 				result = granule.getIdentifier();
@@ -854,7 +855,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getIdentifier()*86400000L+86399999L;
 				break;
 			case Week:
-				result = granule.getIdentifier()*604800000+604799999L;
+                // 1 Jan 1970 is a Thursday
+                result = granule.getIdentifier() * 604800000L + 345599999; // = 4*24*60*60*1000 - 1
 				break;
 			case Month:{
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
