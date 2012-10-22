@@ -60,16 +60,16 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
     		throw new IllegalArgumentException("Operation only permitted on TemporalElement,TemporalElement or TemporalElement,ArrayList<TemporalElement>");   	
 		TemporalElement teTemplate = (TemporalElement)m_left.get(t);
 		
-        ArrayList<TemporalElement> history = null;
-    	if (ArrayList.class.isAssignableFrom(m_right.getClass())) {
-    		history = (ArrayList<TemporalElement>)m_right.get(t);
+        TemporalElement[] history = null;
+    	if (TemporalElement[].class.isAssignableFrom(m_right.getClass())) {
+    		history = (TemporalElement[])m_right.get(t);
     	} else if(TemporalElement.class.isAssignableFrom(m_right.getClass())) {
-    		history = new ArrayList<TemporalElement>();
-    		history.add((TemporalElement)m_right.get(t));
+    		history = new TemporalElement[1];
+    		history[0] = (TemporalElement)m_right.get(t);
     	} else
     		throw new IllegalArgumentException("Operation only permitted on TemporalElement,TemporalElement or TemporalElement,ArrayList<TemporalElement>");
-    	TemporalElement teStart = history.get(0);
-    	TemporalElement teEnd = history.get(history.size()-1);
+    	TemporalElement teStart = history[0];
+    	TemporalElement teEnd = history[history.length-1];
 				
 		switch(m_op) {
 		case BEFORE:
@@ -114,8 +114,8 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 							g.getGranularityContextIdentifier() != iTe.getGranule().getGranularity().getGranularityContextIdentifier())
 						return false;
 				}
-				long inf = history.get(0).getFirstInstant().getInf();
-				long sup = history.get(history.size()-1).getLastInstant().getSup();
+				long inf = history[0].getFirstInstant().getInf();
+				long sup = history[history.length-1].getLastInstant().getSup();
 				Granule[] possible = g.createGranules(teTemplate.getFirstInstant().getInf(), teTemplate.getLastInstant().getSup());
 				for(Granule iG : g.createGranules(inf, sup)) {
 					boolean found = false;
@@ -146,8 +146,8 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 						return false;					
 				}
 			} else {
-				if (!(history.get(0).getFirstInstant().getInf() >= teTemplate.getLastInstant().getSup() ||
-						history.get(history.size()-1).getLastInstant().getSup() <= teTemplate.getFirstInstant().getInf()))
+				if (!(history[0].getFirstInstant().getInf() >= teTemplate.getLastInstant().getSup() ||
+						history[history.length-1].getLastInstant().getSup() <= teTemplate.getFirstInstant().getInf()))
 					return false;
 			}
 			break;
