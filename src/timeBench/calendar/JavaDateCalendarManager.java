@@ -549,7 +549,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 						result = cal.get(GregorianCalendar.MONTH);
 						break;
 					default:
-						result = granule.getInf() / 2592000000L;
+                        result = (cal.get(GregorianCalendar.YEAR)-1970) * 12 +
+                                cal.get(GregorianCalendar.MONTH);
 						break;
 					}
 				break;}
