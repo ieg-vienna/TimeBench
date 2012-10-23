@@ -65,43 +65,57 @@ public class IntervalEventFindingAction extends Action {
 		try {
 			eventDataset = new TemporalDataset(eventSchema);
 
-			ArrayList<Integer> potentialEvents = new ArrayList<Integer>();
-			ArrayList<ArrayList<TemporalObject>> potentialObjectLists = new ArrayList<ArrayList<TemporalObject>>();
+			ArrayList<Integer> openEvents = new ArrayList<Integer>();
+			ArrayList<ArrayList<TemporalObject>> openObjectLists = new ArrayList<ArrayList<TemporalObject>>();
+			ArrayList<Integer> closedEvents = new ArrayList<Integer>();
+			ArrayList<ArrayList<TemporalObject>> closedObjectLists = new ArrayList<ArrayList<TemporalObject>>();
 
 			for (TemporalObject iSource : sourceDataset.temporalObjects()) {				
 				for (int j=0; j<templates.length; j++) {
 					Predicate iTemplate = templates[j];
-					for (int i = 0; i < potentialEvents.size(); i++) {
-						/*if (satisfies(potentialObjectLists.get(i),templateDataset.getTemporalObject(potentialEvents.get(i)))) {
-							potentialObjectLists.get(i).add(iSource);
+					for (int i = 0; i < openEvents.size(); i++) {
+						// if the next line belongs to event
+						if (satisfies(openObjectLists.get(i),templates[openEvents.get(i)])) {
+							// add it
+							openObjectLists.get(i).add(iSource);		
+							break;	// do not start new event of the same type when added
 						} else {
-							potentialEvents.remove(i);
-							potentialObjectLists.remove(i);
+							// otherwise, close it (save for later)
+							closedEvents.add(openEvents.get(i));
+							openEvents.remove(i);
+							closedObjectLists.add(openObjectLists.get(i));
+							openObjectLists.remove(i);
 							i--;
-						}*/
+						}
 					}
 					ArrayList<TemporalObject> newList = new ArrayList<TemporalObject>();
 					newList.add(iSource);
+					// if line satisfies an event
 					if (satisfies(newList, iTemplate)) {
-						potentialEvents.add(j);
-						potentialObjectLists.add(newList);
+						openEvents.add(j);
+						openObjectLists.add(newList);
 					}
 				}
 			}
-
-			for (int i = 0; i < potentialEvents.size(); i++) {
+			
+			for (int i = 0; i < openEvents.size(); i++) {
+				closedEvents.add(openEvents.get(i));
+				closedObjectLists.add(openObjectLists.get(i));
+			}
+			
+			for (int i = 0; i < closedEvents.size(); i++) {
 				TemporalElement element;
 				element = eventDataset.addInterval(
-						eventDataset.addInstant(potentialObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getInf(),
-								potentialObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getSup(),
-								potentialObjectLists.get(i).get(0).getTemporalElement().getGranularityId(),
-								potentialObjectLists.get(i).get(0).getTemporalElement().getGranularityContextId()),
-								eventDataset.addInstant(potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getInf(),
-										potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getSup(),
-										potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getGranularityId(),
-										potentialObjectLists.get(potentialObjectLists.size()-1).get(0).getTemporalElement().getGranularityContextId()));
+						eventDataset.addInstant(closedObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getInf(),
+								closedObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getSup(),
+								closedObjectLists.get(i).get(0).getTemporalElement().getGranularityId(),
+								closedObjectLists.get(i).get(0).getTemporalElement().getGranularityContextId()),
+								eventDataset.addInstant(closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getInf(),
+										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getSup(),
+										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getGranularityId(),
+										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getGranularityContextId()));
 				TemporalObject object = eventDataset.addTemporalObject(element);
-				object.setLong("class", potentialEvents.get(i));
+				object.setLong("class", closedEvents.get(i));
 				object.setString("label", "e" + i);
 			}
 		} catch (TemporalDataException e) {
