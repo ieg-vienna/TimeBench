@@ -122,6 +122,7 @@ public class TimeUnitProvider {
         Granularity month = new Granularity(cal, Granularities.Month.toInt(), Granularities.Top.toInt());
         Granularity quarter = new Granularity(cal, Granularities.Quarter.toInt(), Granularities.Top.toInt());
         Granularity year = new Granularity(cal, Granularities.Year.toInt(), Granularities.Top.toInt());
+        Granularity decade = new Granularity(cal, Granularities.Decade.toInt(), Granularities.Top.toInt());
         
         // handle two languages (e.g., for MouseTracker)
         String dataformat = (Locale.getDefault().getLanguage() == "de") ? "dd.MM yyyy" : "MMM d, yyyy";
@@ -174,9 +175,9 @@ public class TimeUnitProvider {
         SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
         SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
         tup.add(new GranularityTimeUnit("Years", year, yearFormatShort, yearFormatLong, monthFormatFull));
-        tup.add(new GranularityTimeUnit("Decades", year, 10, yearFormatShort, yearFormatLong, monthFormatFull));
-        tup.add(new GranularityTimeUnit("Centuries", year, 100, yearFormatShort, yearFormatLong, monthFormatFull));
-        tup.add(new GranularityTimeUnit("Millennia", year, 1000, yearFormatShort, yearFormatLong, yearFormatLong));
+        tup.add(new GranularityTimeUnit("Decades", decade, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GranularityTimeUnit("Centuries", decade, 10, yearFormatShort, yearFormatLong, monthFormatFull));
+        tup.add(new GranularityTimeUnit("Millennia", decade, 100, yearFormatShort, yearFormatLong, yearFormatLong));
         
         return tup;
     }
