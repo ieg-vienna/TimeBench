@@ -27,10 +27,11 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
     public static final int AFTER                               = 0x0102;    
     public static final int STARTS                              = 0x0103;
     public static final int FINISHES                            = 0x0104;
-    public static final int DURING                              = 0x0105;
-    public static final int OUTSIDE                             = 0x0106;
-    public static final int OVERLAPS                            = 0x0107;
-    public static final int ASLONGAS                            = 0x0108;
+    public static final int MEETS								= 0x0105;
+    public static final int DURING                              = 0x0106;
+    public static final int OUTSIDE                             = 0x0107;
+    public static final int OVERLAPS                            = 0x0108;
+    public static final int ASLONGAS                            = 0x0109;
        
     public TemporalComparisonPredicate(int operation, TemporalExpression left, TemporalExpression right) {
     	super(operation,Integer.MIN_VALUE,Integer.MAX_VALUE,left,right);
@@ -96,6 +97,18 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 			} else {			
 				if (teTemplate.getLastInstant().getSup() != teEnd.getLastInstant().getSup() ||
 						teStart.getFirstInstant().getInf() < teTemplate.getFirstInstant().getInf())
+					return false;
+			}
+			break;
+		case MEETS:
+			if (teTemplate.getKind() == TemporalElement.RECURRING_INSTANT || teTemplate.getKind() == TemporalElement.RECURRING_INTERVAL) {
+				long needed = teEnd.getGranules()[teEnd.getGranules().length-1].getIdentifier() + 1;
+				if(needed > teEnd.getGranule().getGranularity().getMaxGranuleIdentifier())
+					needed = teEnd.getGranule().getGranularity().getMinGranuleIdentifier();
+				if( needed != teTemplate.getGranule().getIdentifier() )
+					return false;
+			} else {
+				if (teEnd.getLastInstant().getSup() + 1 != teTemplate.getFirstInstant().getInf())
 					return false;
 			}
 			break;
