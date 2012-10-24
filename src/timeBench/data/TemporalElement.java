@@ -243,12 +243,13 @@ public abstract class TemporalElement extends TableNode {
      * @throws TemporalDataException 
      */
     public Instant getFirstInstant() throws TemporalDataException {
-    	if (this instanceof Instant) {
-    		return (Instant)this;
-    	} else if (this instanceof Interval) {
-    		((Interval)this).getBegin();	// TODO check if this is implemented yet
-    	} else if (this.getFirstChild() != null) {
-    		return ((TemporalElement)this.getFirstChild()).getFirstInstant();
+    	TemporalElement thisElement = this.asPrimitive();
+    	if (thisElement instanceof Instant) {
+    		return (Instant)thisElement;
+    	} else if (thisElement instanceof Interval) {
+    		((Interval)thisElement).getBegin();	// TODO check if this is implemented yet
+    	} else if (thisElement.getFirstChild() != null) {
+    		return ((TemporalElement)thisElement.getFirstChild()).getFirstInstant();
     	}
     	
     	return null;
@@ -264,12 +265,13 @@ public abstract class TemporalElement extends TableNode {
      * @throws TemporalDataException 
      */
     public Instant getLastInstant() throws TemporalDataException {
-    	if (this instanceof Instant) {
-    		return (Instant)this;
-    	} else if (this instanceof Interval) {
-    		((Interval)this).getEnd();	// TODO check if this is implemented yet
-    	} else if (this.getLastChild() != null) {
-    		return ((TemporalElement)this.getLastChild()).getLastInstant();
+    	TemporalElement thisElement = this.asPrimitive();
+    	if (thisElement instanceof Instant) {
+    		return (Instant)thisElement;
+    	} else if (thisElement instanceof Interval) {
+    		((Interval)thisElement).getEnd();	// TODO check if this is implemented yet
+    	} else if (thisElement.getLastChild() != null) {
+    		return ((TemporalElement)thisElement.getLastChild()).getLastInstant();
     	}
     	
     	return null;

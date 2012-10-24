@@ -43,7 +43,7 @@ public class IntervalEventFindingAction extends Action {
 	public static int SPACING_OVERLAP_ALLOWED = 3; // 1&2
 
 	Schema eventSchema = new Schema(new String[] { "class", "label" },
-			new Class[] { Long.class, String.class });
+			new Class[] { long.class, String.class });
 
 	public IntervalEventFindingAction(TemporalDataset sourceDataset,Predicate[] templates) {
 		this(sourceDataset,templates,ONLY_COHERENT);
@@ -116,7 +116,7 @@ public class IntervalEventFindingAction extends Action {
 										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getGranularityContextId()));
 				TemporalObject object = eventDataset.addTemporalObject(element);
 				object.setLong("class", closedEvents.get(i));
-				object.setString("label", "e" + i);
+				object.setString("label", "e" + closedEvents.get(i));
 			}
 		} catch (TemporalDataException e) {
 			// TODO Auto-generated catch block

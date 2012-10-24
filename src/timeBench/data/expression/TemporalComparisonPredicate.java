@@ -1,21 +1,14 @@
 package timeBench.data.expression;
 
-import java.util.ArrayList;
-
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
-import prefuse.data.event.ExpressionListener;
 import prefuse.data.expression.BinaryExpression;
-import prefuse.data.expression.ComparisonPredicate;
-import prefuse.data.expression.ExpressionVisitor;
 import prefuse.data.expression.Predicate;
-import prefuse.util.collections.DefaultLiteralComparator;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.Span;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalElement;
-import timeBench.data.TemporalObject;
 
 /**
  * 
