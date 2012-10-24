@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<temporal-data-column-specifaction>
+    <calendar>0</calendar>
+    <fail-on-illegal-rows>false</fail-on-illegal-rows>
+    <encodings>
+        <date-instant key="date">
+            <data-element>
+                <column>random</column>
+                <column>increase</column>
+                <column>dow</column>
+                <column>week</column>
+            </data-element>
+            <granularity-id>4</granularity-id>
+            <granularity-context-id>32767</granularity-context-id>
+            <temporal-column>date</temporal-column>
+        </date-instant>
+    </encodings>
+    <text-table>
+        <method>csv</method>
+        <has-header>true</has-header>
+        <parse-dates>true</parse-dates>
+    </text-table>
+</temporal-data-column-specifaction>
