@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<temporal-data-column-specifaction>
+    <calendar>0</calendar>
+    <fail-on-illegal-rows>false</fail-on-illegal-rows>
+    <encodings>
+        <string-instant key="date">
+            <data-element>
+                <column>B</column>
+            </data-element>
+            <granularity-id>0</granularity-id>
+            <granularity-context-id>0</granularity-context-id>
+            <temporal-column>A</temporal-column>
+            <date-time-pattern>d.M.yyyy H:mm</date-time-pattern>
+            <language>en</language>
+        </string-instant>
+    </encodings>
+    <text-table>
+        <method>csv</method>
+        <has-header>false</has-header>
+        <parse-dates>false</parse-dates>
+    </text-table>
+</temporal-data-column-specifaction>

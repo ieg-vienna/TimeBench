@@ -110,7 +110,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
 			    		whichChild = 0;
 			    		for(int l=0; l<k; l++)
-			    			whichChild += currentBranches.get(l).getChildCount();
+			    			whichChild += currentBranches.get(l).getChildObjectCount();
 						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
 					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
 					    		targetBranch = potentialBranch;
@@ -139,7 +139,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 					currentLeaves = futureLeaves;
 				}
 			}
-
+			
             logger.debug("run -> after for loop over granularities");
             
             for(long iRoot : roots)
@@ -147,7 +147,9 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			
 			workingDataset.setRoots(roots);
 			
-			DebugHelper.printTemporalDatasetGraph(System.out, workingDataset.getTemporalObject(roots[0]));
+//			for(long iRoot : roots)
+//				DebugHelper.printTemporalDatasetGraph(System.out, workingDataset.getTemporalObject(iRoot));
+			
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -158,7 +160,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	
 
 	private void aggregate(TemporalObject parent,int level) {
-	    if (parent.getChildCount() > 0) {
+	    if (parent.getChildObjectCount() > 0) {
 	    	for (TemporalObject child : parent.childObjects()) {
 	    		aggregate(child,level+1);
 	    	}
@@ -171,7 +173,9 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
         // TODO skip columns where NOT canSetDouble() e.g. boolean, Object
 		for(int i=0; i<dataColumnIndices.length; i++) {
-			parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			if (parent.canSetDouble(dataColumnIndices[i])) {
+				parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			}
 			parent.setInt(GranularityAggregationTree.DEPTH,level);
 		}
 		
