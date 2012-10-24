@@ -73,14 +73,16 @@ public class IntervalEventFindingAction extends Action {
 			for (TemporalObject iSource : sourceDataset.temporalObjects()) {				
 				for (int j=0; j<templates.length; j++) {
 					Predicate iTemplate = templates[j];
+					boolean satisfied = false;
 					for (int i = 0; i < openEvents.size(); i++) {
 						// if the next line belongs to event
+						openObjectLists.get(i).add(iSource);		
 						if (satisfies(openObjectLists.get(i),templates[openEvents.get(i)])) {
-							// add it
-							openObjectLists.get(i).add(iSource);		
-							break;	// do not start new event of the same type when added
+							satisfied = true;	// do not start new event of the same type when added
 						} else {
-							// otherwise, close it (save for later)
+							// otherwise, remove it again
+							openObjectLists.get(i).remove(openObjectLists.get(i).size()-1);		
+							// and close the event (save for later)
 							closedEvents.add(openEvents.get(i));
 							openEvents.remove(i);
 							closedObjectLists.add(openObjectLists.get(i));
@@ -88,6 +90,8 @@ public class IntervalEventFindingAction extends Action {
 							i--;
 						}
 					}
+					if (satisfied)
+						break;
 					ArrayList<TemporalObject> newList = new ArrayList<TemporalObject>();
 					newList.add(iSource);
 					// if line satisfies an event
@@ -110,10 +114,10 @@ public class IntervalEventFindingAction extends Action {
 								closedObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getSup(),
 								closedObjectLists.get(i).get(0).getTemporalElement().getGranularityId(),
 								closedObjectLists.get(i).get(0).getTemporalElement().getGranularityContextId()),
-								eventDataset.addInstant(closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getInf(),
-										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getFirstInstant().getSup(),
-										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getGranularityId(),
-										closedObjectLists.get(closedObjectLists.size()-1).get(0).getTemporalElement().getGranularityContextId()));
+								eventDataset.addInstant(closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getLastInstant().getInf(),
+										closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getLastInstant().getSup(),
+										closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getGranularityId(),
+										closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getGranularityContextId()));
 				TemporalObject object = eventDataset.addTemporalObject(element);
 				object.setLong("class", closedEvents.get(i));
 				object.setString("label", "e" + closedEvents.get(i));
@@ -139,11 +143,11 @@ public class IntervalEventFindingAction extends Action {
 			if ( coherenceSettings != SPACING_OVERLAP_ALLOWED) {
 				// check only last against others; assume this is called once for each new TemporalObject
 				TemporalElement last = checkedObjects.get(checkedObjects.size()-1).getTemporalElement();
-				if ( (coherenceSettings & SPACING_ALLOWED) != 0) {
+				if ( (coherenceSettings & SPACING_ALLOWED) == 0) {
 					if (last.getFirstInstant().getInf() - checkedObjects.get(checkedObjects.size()-2).getTemporalElement().getLastInstant().getSup() > 1)
 						return false;
 				}
-				if ( (coherenceSettings & OVERLAP_ALLOWED) != 0) {
+				if ( (coherenceSettings & OVERLAP_ALLOWED) == 0) {
 					for(int i=0; i<checkedObjects.size()-1;i++) {
 						if(checkedObjects.get(i).getTemporalElement().getLastInstant().getSup() >= last.getFirstInstant().getInf())
 							return false;
