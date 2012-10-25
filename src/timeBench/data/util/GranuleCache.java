@@ -22,7 +22,7 @@ import timeBench.data.TemporalDataset;
  */
 public class GranuleCache {
 
-    private ObjectColumn granules = new ObjectColumn(Granule.class);
+    private ObjectColumn granules = new ObjectColumn(Granule[].class);
 
     private TemporalDataset tmpds;
 
@@ -69,7 +69,7 @@ public class GranuleCache {
     public void addGranule(int row, Granule granule) {
         ensureRow(row);
 //        System.out.println("row: " + row + " size: " + granules.getRowCount());
-        granules.set(granule, row);
+        granules.set(new Granule[] {granule}, row);
     }
     
     private void ensureRow(int row) {
