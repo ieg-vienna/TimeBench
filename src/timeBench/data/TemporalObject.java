@@ -216,6 +216,7 @@ public class TemporalObject extends TableNode {
 	public static final int MEASURED_DATA = 0x00;
 	public static final int COMPUTER_GENERATED_DATA = 0x01;
 	public static final int USER_GENERATED_DATA = 0x02;
+	public static final int COMPUTER_GENERATED_AND_USER_GENERATED_PARTS = 0x03;
 	
 	public static final int TEMPLATE_ = 0x10;
 		

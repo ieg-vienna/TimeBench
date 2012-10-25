@@ -168,11 +168,19 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {
 		int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
 		
-		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
         // TODO skip columns where NOT canSetDouble() e.g. boolean, Object
+		// already done: .kind
+		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
+		
 		for(int i=0; i<dataColumnIndices.length; i++) {
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);
 			parent.setInt(GranularityAggregationTree.DEPTH,level);
+						
+			int kind = 0;
+			for(TemporalObject iO : childs) {
+				kind &= iO.getKind(dataColumnIndices[i]);
+			}
+			parent.setKind(dataColumnIndices[i], kind);
 		}
 		
 	}
