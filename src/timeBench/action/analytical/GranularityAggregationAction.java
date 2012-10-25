@@ -1,6 +1,5 @@
 package timeBench.action.analytical;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -10,14 +9,12 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.data.GenericTemporalElement;
 import timeBench.data.GranularityAggregationTree;
 import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
-import timeBench.test.DebugHelper;
 
 /**
  * 
@@ -156,7 +153,17 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		}
 	}
 
-	
+	public void update() {
+		for (long iRoot : workingDataset.getRoots()) {
+			boolean change = false;
+			for (int i : sourceDataset.getDataColumnIndices()) {
+				if (workingDataset.getTemporalObject(iRoot).getKind(i) > 0.0)
+					change = true;
+			}
+			if (change)
+				aggregate(workingDataset.getTemporalObject(iRoot),0);
+		}
+	}
 	
 
 	private void aggregate(TemporalObject parent,int level) {
@@ -169,6 +176,26 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	}
 	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {
 		int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
+//		Vector<Integer> aggregateColumn = new Vector<Integer>();
+		
+		/*
+		 * Aggregate Only the data Columns, do not aggregate the Metadata
+		 * To have the Metadata in the leafes, we keep the Metadata Columns in th lowest level
+		 */
+//		if (level < (granularities.length - 1)) {
+//			for (int i = 0 ; i < dataColumnIndices.length; i++) {
+//				if (!(parent.getColumnName(dataColumnIndices[i]).endsWith(".kind") ||
+//						parent.getColumnName(dataColumnIndices[i]).endsWith(".minValue") ||
+//						parent.getColumnName(dataColumnIndices[i]).endsWith(".maxValue"))) {
+//					aggregateColumn.add(Integer.valueOf(dataColumnIndices[i]));
+//				}
+//			}
+//			
+//			dataColumnIndices = new int[aggregateColumn.size()];
+//			for (int i =0; i < dataColumnIndices.length; i++) {
+//				dataColumnIndices[i] = aggregateColumn.get(i).intValue();
+//			}
+//		}
 		
 		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
         // TODO skip columns where NOT canSetDouble() e.g. boolean, Object
