@@ -22,6 +22,8 @@ import timeBench.calendar.Granule;
  */
 public abstract class TemporalElement extends TableNode {
 
+	protected static TemporalDataset temporalDataHeap = new TemporalDataset();
+	
     // predefined column names for temporal elements (similar to VisualItem)
     /**
      * the identifier data field for temporal elements. Primary key of the
@@ -85,6 +87,29 @@ public abstract class TemporalElement extends TableNode {
     protected void init(Table table, Graph graph, TemporalDataset tmpds, int row) {
         super.init(table, graph, row);
         this.tmpds = tmpds;
+    }
+    
+    
+    /**
+     * Creates a TemporalElement on the temporal data heap. Note that
+     * currently, these TemporalElements have to be cleared manually
+     * from there as there 
+     * 
+     * @param inf
+     *            the lower end of the temporal element
+     * @param sup
+     *            the upper end of the temporal element
+     * @param granularityId
+     *            the granularityID of the temporal element
+     * @param granularityContextId
+     *            the granularityContextID of the temporal element
+     * @param kind
+     *            the kind of the temporal element
+     * @return the created temporal element
+     */
+    public static TemporalElement createOnHeap(long inf, long sup, int granularityId,
+    		int granularityContextId, int kind) {
+    	return temporalDataHeap.addTemporalElement(inf, sup, granularityId, granularityContextId, kind);
     }
 
     /**

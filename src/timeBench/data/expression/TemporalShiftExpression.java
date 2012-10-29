@@ -3,6 +3,7 @@ package timeBench.data.expression;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
+import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalElement;
 
 /**
@@ -21,11 +22,16 @@ public class TemporalShiftExpression extends AbstractExpression {
 	private TemporalElementExpression temporalElementExpression = null;
 	private TemporalElementArrayExpression temporalElementArrayExpression = null;
 	
-	public TemporalShiftExpression(TemporalElementExpression temporalElementExpression) {
+	// did not add more possibilites because of "Lego brick" idea
+	// do get chronon count from granules or temporal elements, perhaps add total chronon output there
+	private long shiftChronons;
+	
+	public TemporalShiftExpression(TemporalElementExpression temporalElementExpression,long shiftChronons) {
 		this.temporalElementExpression = temporalElementExpression;
+		this.shiftChronons = shiftChronons;
 	}
 
-	public TemporalShiftExpression(TemporalElementArrayExpression temporalElementArrayExpression) {
+	public TemporalShiftExpression(TemporalElementArrayExpression temporalElementArrayExpression,long shiftChronons) {
 		this.temporalElementArrayExpression = temporalElementArrayExpression;
 	}
 	
@@ -41,12 +47,25 @@ public class TemporalShiftExpression extends AbstractExpression {
 	}
 
 	public Object get(Tuple t) {
-		if (temporalElementExpression != null) {
-			TemporalElement result = (TemporalElement)temporalElementExpression.get(t);
-			return result;
+		if (temporalElementExpression != null) {			
+			return shift(((TemporalElement)temporalElementExpression.get(t)).asGeneric(),shiftChronons);
 		} else {
-			TemporalElement[] result = (TemporalElement[])temporalElementArrayExpression.get(t);
+			TemporalElement[] unshifted = (TemporalElement[])temporalElementArrayExpression.get(t);
+			TemporalElement[] result = new GenericTemporalElement[unshifted.length];
+			for(int i=0; i<unshifted.length;i++)
+				result[i] = shift(unshifted[i].asGeneric(),shiftChronons);						
 			return result;
 		}						
+	}
+
+	/**
+	 * @param temporalElement
+	 * @return
+	 */
+	private TemporalElement shift(GenericTemporalElement temporalElement,long shiftChronons) {
+		TemporalElement result = TemporalElement.createOnHeap(temporalElement.getInf()+shiftChronons, temporalElement.getSup()+shiftChronons,
+				temporalElement.getGranularityId(), temporalElement.getGranularityContextId(), temporalElement.getKind());
+		
+		return result;
 	}
 }
