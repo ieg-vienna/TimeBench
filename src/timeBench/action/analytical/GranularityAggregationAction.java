@@ -16,6 +16,7 @@ import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
 import timeBench.test.DebugHelper;
 
@@ -30,7 +31,7 @@ import timeBench.test.DebugHelper;
  * @author Tim Lammarsch
  *
  */
-public class GranularityAggregationAction extends prefuse.action.Action implements GranularityAggregationTreeProvider {
+public class GranularityAggregationAction extends prefuse.action.Action implements GranularityAggregationTreeProvider,TemporalDatasetProvider {
     
     private final Logger logger = Logger.getLogger(this.getClass());
     
@@ -190,6 +191,15 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	 */
 	@Override
 	public GranularityAggregationTree getGranularityAggregationTree() {
+		return workingDataset;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see timeBench.data.TemporalDatasetProvider#getTemporalDataset()
+	 */
+	@Override
+	public TemporalDataset getTemporalDataset() {
 		return workingDataset;
 	}
 }
