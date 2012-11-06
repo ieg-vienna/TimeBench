@@ -6,6 +6,7 @@ import ieg.util.lang.CustomIterable;
 
 import org.apache.log4j.Logger;
 
+import prefuse.data.Edge;
 import prefuse.data.tuple.TableNode;
 
 /**
@@ -120,13 +121,14 @@ public class TemporalObject extends TableNode {
      * Links a TemporalObject as child to this TemporalObject.
      * 
      * @param child The TemporalObject that will be added as child.
+     * @return the new link
      */
-    public void linkWithChild(TemporalObject child) {
-        super.m_graph.addEdge(child, this);
+    public Edge linkWithChild(TemporalObject child) {        
         logger.trace("link with child: " + this.getRow() + " <- " + child.getRow() 
                 + " my childs: " + this.getChildObjectCount() 
                 + " total childs: " + super.m_graph.getEdgeCount() 
                 + " total nodes: " + super.m_graph.getNodeCount());
+        return super.m_graph.addEdge(child, this);
     } 
 
     /**

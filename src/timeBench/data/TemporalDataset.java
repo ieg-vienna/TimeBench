@@ -981,4 +981,9 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         Table elem = temporalElements.getNodeTable(); 
         return elem.getLong(elem.getMetadata(TemporalElement.SUP).getMaximumRow(), TemporalElement.SUP);
     }
+
+	public TemporalObject addCloneOf(TemporalObject newObject) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
