@@ -328,7 +328,7 @@ public abstract class TemporalElement extends TableNode {
      * 
      * @return the number of parent temporal elements
      */
-    public int getParentElementCount() {
+    public int getParentCount() {
         return super.getOutDegree();
     }
 
@@ -348,7 +348,8 @@ public abstract class TemporalElement extends TableNode {
      * 
      * @return the number of child temporal elements
      */
-    public int getChildElementCount() {
+    @Override
+    public int getChildCount() {
         return super.getInDegree();
     }
     

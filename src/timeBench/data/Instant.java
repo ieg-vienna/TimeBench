@@ -28,7 +28,7 @@ public class Instant extends AnchoredTemporalElement {
     }
 
     @Override
-    public int getChildElementCount() {
+    public int getChildCount() {
         // an instant should not have children (speedup?)
         return 0;
     }

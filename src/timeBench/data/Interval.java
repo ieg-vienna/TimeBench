@@ -27,7 +27,7 @@ public class Interval extends AnchoredTemporalElement {
     public Instant getBegin() throws TemporalDataException {
     	if(this.getFirstChild() instanceof Instant)
     		return (Instant)this.getFirstChild();
-    	else if(this.getChildElementCount() == 2 && this.getFirstChild() instanceof Span && this.getLastChild() instanceof Instant) {
+    	else if(this.getChildCount() == 2 && this.getFirstChild() instanceof Span && this.getLastChild() instanceof Instant) {
         	throw new RuntimeException("Not implemented");
     	} else
     		throw new TemporalDataException("Syntax error in temporal element of type interval");

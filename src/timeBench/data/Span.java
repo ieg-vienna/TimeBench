@@ -28,7 +28,7 @@ public class Span extends UnanchoredTemporalElement {
     }
 
     @Override
-    public int getChildElementCount() {
+    public int getChildCount() {
         // a span should not have children (speedup?)
         return 0;
     }
