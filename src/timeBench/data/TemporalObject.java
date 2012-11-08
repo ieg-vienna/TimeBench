@@ -86,6 +86,15 @@ public class TemporalObject extends TableNode {
     }
     
     /**
+     * Gets the number of parent temporal objects.
+     * 
+     * @return the number of parent temporal objects.
+     */
+    public int getParentCount() {
+        return super.m_graph.getOutDegree(this);
+    }
+    
+    /**
      * Get an iterator over all temporal objects that are children of this
      * temporal object.
      * 
@@ -113,7 +122,8 @@ public class TemporalObject extends TableNode {
      * 
      * @return the number of child temporal objects.
      */
-    public int getChildObjectCount() {
+    @Override 
+    public int getChildCount() {
         return super.m_graph.getInDegree(this);
     }
     
@@ -125,7 +135,7 @@ public class TemporalObject extends TableNode {
      */
     public Edge linkWithChild(TemporalObject child) {        
         logger.trace("link with child: " + this.getRow() + " <- " + child.getRow() 
-                + " my childs: " + this.getChildObjectCount() 
+                + " my childs: " + this.getChildCount() 
                 + " total childs: " + super.m_graph.getEdgeCount() 
                 + " total nodes: " + super.m_graph.getNodeCount());
         return super.m_graph.addEdge(child, this);

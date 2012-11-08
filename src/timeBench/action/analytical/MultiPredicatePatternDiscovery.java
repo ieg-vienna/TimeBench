@@ -88,7 +88,7 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 	private void check(ArrayList<TemporalObject> checkList,TemporalObject currentObject,TemporalObject newObject,int predicate) throws TemporalDataException {
 		// recursively build list of existing pattern
 		checkList.add(currentObject);
-		if(currentObject.getChildObjectCount() > 0) {
+		if(currentObject.getChildCount() > 0) {
 			for(TemporalObject iChild : currentObject.childObjects()) {
 				check((ArrayList<TemporalObject>)checkList.clone(),iChild,newObject,predicate);
 			}
