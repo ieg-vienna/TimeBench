@@ -1,10 +1,13 @@
 package timeBench.data;
 
+import java.util.Iterator;
+
 import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.tuple.TableNode;
+import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
 
 /**
@@ -343,6 +346,45 @@ public abstract class TemporalElement extends TableNode {
         return new CustomIterable(super.inNeighbors());
     }
 
+    /**
+     * Get the first or only child temporal object.
+     * 
+     * @return a temporal object that is child of this temporal object or
+     *         <tt>null</tt>.
+     */
+    @Override
+    public GenericTemporalElement getFirstChild() {
+        // TODO consider more efficient solution using m_links or code like getFirstChildPrimitive()
+        @SuppressWarnings("rawtypes")
+        Iterator objs = super.inNeighbors();
+        return objs.hasNext() ? (GenericTemporalElement) objs.next() : null;
+    }
+
+//    @Override
+//    public GenericTemporalElement getLastChild() {
+    // // TODO needs access to m_links -> move to subclass of graph
+//        @SuppressWarnings("rawtypes")
+//        Iterator objs = super.inNeighbors();
+//        return objs.hasNext() ? (GenericTemporalElement) objs.next() : null;
+//    }
+
+    /**
+     * Get the first or only child temporal object as a primitive.
+     * 
+     * @return a temporal object that is child of this temporal object or
+     *         <tt>null</tt>.
+     */
+    public TemporalElement getFirstChildPrimitive() {
+        IntIterator i = super.m_graph.inEdgeRows(super.m_row);
+        if (i.hasNext()) {
+            int edge = i.nextInt();
+            int child = super.m_graph.getSourceNode(edge);
+            return this.tmpds.getTemporalPrimitiveByRow(child);
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * Gets the number of child temporal elements
      * 
