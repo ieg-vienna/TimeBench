@@ -50,10 +50,7 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 		this.sourceDataset = sourceDataset;
 		this.eventDataset = eventDataset;
 		this.predicates = predicates;
-		this.coherenceSettings = coherenceSettings;
-		
-		if (resultDataset.getEdgeTable().getColumn(predicateColumn) == null)
-			resultDataset.getEdgeTable().addColumn(predicateColumn, long.class);
+		this.coherenceSettings = coherenceSettings;		
 	}
 	
 	/* (non-Javadoc)
@@ -61,8 +58,12 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 	 */
 	@Override
 	public void run(double frac) {
-		try {
-			resultDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
+		try {					
+
+		resultDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
+		
+		if (resultDataset.getEdgeTable().getColumn(predicateColumn) == null)
+			resultDataset.getEdgeTable().addColumn(predicateColumn, long.class);
 		
 			// for all patterns of existing length (might be events)
 			for (TemporalObject iSource : sourceDataset.temporalObjects()) {

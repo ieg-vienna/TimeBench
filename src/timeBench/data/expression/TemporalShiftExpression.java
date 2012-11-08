@@ -17,7 +17,7 @@ import timeBench.data.TemporalElement;
  * @author Tim Lammarsch
  *
  */
-public class TemporalShiftExpression extends AbstractExpression {
+public class TemporalShiftExpression extends TemporalExpression {
 
 	private TemporalElementExpression temporalElementExpression = null;
 	private TemporalElementArrayExpression temporalElementArrayExpression = null;
