@@ -28,17 +28,25 @@ public class Interval extends AnchoredTemporalElement {
     	if(this.getFirstChildPrimitive() instanceof Instant)
     		return (Instant)this.getFirstChildPrimitive();
     	else if(this.getChildCount() == 2 && this.getFirstChildPrimitive() instanceof Span && this.getLastChild() instanceof Instant) {
-        	throw new RuntimeException("Not implemented");
+        	throw new RuntimeException("Not implemented yet");
     	} else
     		throw new TemporalDataException("Syntax error in temporal element of type interval");
     }
     
     public Instant getEnd() throws TemporalDataException {
-    	if(this.getLastChild() instanceof Instant)
-    		return (Instant)this.getLastChild();
-    	else if(this.getChildCount() == 2 && this.getLastChild() instanceof Span && this.getFirstChildPrimitive() instanceof Instant) {
-        	throw new RuntimeException("Not implemented");
-    	} else
-    		throw new TemporalDataException("Syntax error in temporal element of type interval");
+        TemporalElement last = (TemporalElement) this.getLastChild();
+        if (last != null) {
+            last = last.asPrimitive();
+            
+            if(last instanceof Instant)
+                return (Instant) last;
+            else if(this.getChildCount() == 2 && last instanceof Span && this.getFirstChildPrimitive() instanceof Instant) {
+                throw new RuntimeException("Not implemented yet");
+            } else
+                throw new TemporalDataException("Syntax error in temporal element of type interval");
+            
+        } else
+            throw new TemporalDataException("Syntax error in temporal element of type interval");
+        
     }
 }
