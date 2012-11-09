@@ -6,9 +6,6 @@ import ieg.util.lang.CustomIterable;
 
 import org.apache.log4j.Logger;
 
-import prefuse.data.Edge;
-import prefuse.data.tuple.TableNode;
-
 /**
  * Relational view of the temporal object. Following the <em>proxy tuple</em>
  * pattern [Heer & Agrawala, 2006] it provides an object oriented proxy for
@@ -17,7 +14,7 @@ import prefuse.data.tuple.TableNode;
  * @author Rind
  *
  */
-public class TemporalObject extends TableNode {
+public class TemporalObject extends PCNode {
     
     static Logger logger = Logger.getLogger(TemporalObject.class);
     
@@ -112,35 +109,9 @@ public class TemporalObject extends TableNode {
      *         <tt>null</tt>.
      */
     public TemporalObject getFirstChildObject() {
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.inNeighbors();
-        return objs.hasNext() ? (TemporalObject) objs.next() : null;
+        return (TemporalObject) super.getFirstChild();
     }
     
-    /**
-     * Gets the number of child temporal objects.
-     * 
-     * @return the number of child temporal objects.
-     */
-    @Override 
-    public int getChildCount() {
-        return super.m_graph.getInDegree(this);
-    }
-    
-    /**
-     * Links a TemporalObject as child to this TemporalObject.
-     * 
-     * @param child The TemporalObject that will be added as child.
-     * @return the new link
-     */
-    public Edge linkWithChild(TemporalObject child) {        
-        logger.trace("link with child: " + this.getRow() + " <- " + child.getRow() 
-                + " my childs: " + this.getChildCount() 
-                + " total childs: " + super.m_graph.getEdgeCount() 
-                + " total nodes: " + super.m_graph.getNodeCount());
-        return super.m_graph.addEdge(child, this);
-    } 
-
     /**
      * creates a human-readable string from a {@link TemporalObject}.
      * <p>
@@ -246,7 +217,8 @@ public class TemporalObject extends TableNode {
 		setInt(kindField,value);
 	}
 	
-	private void ensureFieldExistence(String field,Class type) {
+	@SuppressWarnings("rawtypes")
+    private void ensureFieldExistence(String field,Class type) {
 		
 		Class existingType = m_table.getSchema().getColumnType(field);
 		if (existingType == null)

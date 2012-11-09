@@ -1,7 +1,5 @@
 package timeBench.data;
 
-import java.util.Iterator;
-
 import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
@@ -23,7 +21,7 @@ import timeBench.calendar.Granule;
  * 
  * @author Rind
  */
-public abstract class TemporalElement extends TableNode {
+public abstract class TemporalElement extends PCNode {
 
 	protected static TemporalDataset temporalDataHeap = new TemporalDataset();
 	
@@ -323,16 +321,7 @@ public abstract class TemporalElement extends TableNode {
      */
     @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> parentElements() {
-        return new CustomIterable(super.outNeighbors());
-    }
-
-    /**
-     * Gets the number of parent temporal elements
-     * 
-     * @return the number of parent temporal elements
-     */
-    public int getParentCount() {
-        return super.getOutDegree();
+        return new CustomIterable(super.parents());
     }
 
     /**
@@ -343,30 +332,8 @@ public abstract class TemporalElement extends TableNode {
      */
     @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> childElements() {
-        return new CustomIterable(super.inNeighbors());
+        return new CustomIterable(super.children());
     }
-
-    /**
-     * Get the first or only child temporal object.
-     * 
-     * @return a temporal object that is child of this temporal object or
-     *         <tt>null</tt>.
-     */
-    @Override
-    public GenericTemporalElement getFirstChild() {
-        // TODO consider more efficient solution using m_links or code like getFirstChildPrimitive()
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.inNeighbors();
-        return objs.hasNext() ? (GenericTemporalElement) objs.next() : null;
-    }
-
-//    @Override
-//    public GenericTemporalElement getLastChild() {
-    // // TODO needs access to m_links -> move to subclass of graph
-//        @SuppressWarnings("rawtypes")
-//        Iterator objs = super.inNeighbors();
-//        return objs.hasNext() ? (GenericTemporalElement) objs.next() : null;
-//    }
 
     /**
      * Get the first or only child temporal object as a primitive.
@@ -385,25 +352,6 @@ public abstract class TemporalElement extends TableNode {
         }
     }
     
-    /**
-     * Gets the number of child temporal elements
-     * 
-     * @return the number of child temporal elements
-     */
-    @Override
-    public int getChildCount() {
-        return super.getInDegree();
-    }
-    
-    /**
-     * Links a TemporalElement as child to this TemporalElement.
-     * 
-     * @param child The TemporalElement that will be added as child.
-     */
-    public void linkWithChild(TemporalElement child) {
-        super.m_graph.addEdge(child, this);
-    } 
-
     /**
      * Gets the first granule of an anchored temporal element. For an
      * {@link Instant}, the granule represents the time of the instant. If it is
