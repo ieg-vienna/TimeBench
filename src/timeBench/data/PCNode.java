@@ -119,8 +119,9 @@ public class PCNode extends TableNode {
      * 
      * @param parent
      *            The node that will be added as parent.
+     * @return the edge that was added between the two nodes
      */
-    public void linkWithParent(PCNode parent) {
+    public Edge linkWithParent(PCNode parent) {
         if (Logger.getLogger(this.getClass()).isTraceEnabled()) {
             Logger.getLogger(this.getClass()).trace(
                     "link with parent: " + this.getRow() + " -> "
@@ -130,7 +131,7 @@ public class PCNode extends TableNode {
                             + super.m_graph.getNodeCount());
         }
 
-        super.m_graph.addEdge(this, parent);
+        return super.m_graph.addEdge(this, parent);
     }
 
     // ----- methods that do not make sense -----
