@@ -273,7 +273,7 @@ public abstract class TemporalElement extends PCNode {
     	if (thisElement instanceof Instant) {
     		return (Instant)thisElement;
     	} else if (thisElement instanceof Interval) {
-    		((Interval)thisElement).getBegin();	// TODO check if this is implemented yet
+    		return ((Interval)thisElement).getBegin();	// TODO check if this is implemented yet
     	} else if (thisElement.getFirstChild() != null) {
     		return ((TemporalElement)thisElement.getFirstChild()).getFirstInstant();
     	}
