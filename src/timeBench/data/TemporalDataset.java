@@ -31,7 +31,7 @@ import timeBench.data.util.TemporalIndex;
  * @author BA, AR, TL
  * 
  */
-public class TemporalDataset extends Graph implements Lifespan, Cloneable {
+public class TemporalDataset extends PCGraph implements Lifespan, Cloneable {
     
     /**
      * ID of the first temporal object or temporal element, if it is not
@@ -42,7 +42,7 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
     /**
      * {@link Graph} of temporal elements
      */
-    private Graph temporalElements;
+    private PCGraph temporalElements;
 
     // TODO roots as a linked list?
     private long[] roots = null; // if we have a forest or tree of temporal
@@ -93,9 +93,9 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      */
     public TemporalDataset() {
         // temporal objects are by default in an directed graph
-        super(true);
+        super();
 
-        this.temporalElements = new Graph(true);
+        this.temporalElements = new PCGraph();
         // define temporal element columns for nodes of the temporal e. graph
         this.temporalElements.getNodeTable().addColumns(
                 this.getTemporalElementSchema());

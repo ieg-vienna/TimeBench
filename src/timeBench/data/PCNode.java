@@ -10,10 +10,10 @@ import prefuse.data.tuple.TableNode;
 
 public class PCNode extends TableNode {
 
-    // @Override
-    // public PCGraph getGraph() {
-    // return (PCGraph) super.getGraph();
-    // }
+    @Override
+    public PCGraph getGraph() {
+        return (PCGraph) super.getGraph();
+    }
 
     // ----- child methods -----
 
@@ -24,23 +24,18 @@ public class PCNode extends TableNode {
 
     @Override
     public PCNode getChild(int idx) {
-        // // TODO needs access to m_links -> move to subclass of graph
-        throw new UnsupportedOperationException("todo");
+        int c = getGraph().getChildRow(m_row, idx);
+        return (PCNode) (c < 0 ? null : m_graph.getNode(c));
     }
 
     @Override
     public PCNode getFirstChild() {
-        // TODO consider more efficient solution using m_links or code like
-        // getFirstChildPrimitive()
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.inNeighbors();
-        return objs.hasNext() ? (GenericTemporalElement) objs.next() : null;
+        return getChild(0);
     }
 
     @Override
     public PCNode getLastChild() {
-        // // TODO needs access to m_links -> move to subclass of graph
-        throw new UnsupportedOperationException("todo");
+        return getChild(getChildCount() - 1);
     }
 
     @SuppressWarnings("rawtypes")
@@ -87,21 +82,16 @@ public class PCNode extends TableNode {
     }
 
     public PCNode getParent(int idx) {
-        // // TODO needs access to m_links -> move to subclass of graph
-        throw new UnsupportedOperationException("todo");
+        int c = getGraph().getParentRow(m_row, idx);
+        return (PCNode) (c < 0 ? null : m_graph.getNode(c));
     }
 
     public PCNode getFirstParent() {
-        // TODO consider more efficient solution using m_links or code like
-        // getFirstChildPrimitive()
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.outNeighbors();
-        return objs.hasNext() ? (PCNode) objs.next() : null;
+        return getParent(0);
     }
 
     public PCNode getLastParent() {
-        // // TODO needs access to m_links -> move to subclass of graph
-        throw new UnsupportedOperationException("todo");
+        return getParent(getParentCount() - 1);
     }
 
     @SuppressWarnings("rawtypes")
