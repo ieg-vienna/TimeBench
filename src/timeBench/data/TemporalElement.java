@@ -5,7 +5,6 @@ import ieg.util.lang.CustomIterable;
 import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.tuple.TableNode;
-import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
 
 /**
@@ -336,16 +335,14 @@ public abstract class TemporalElement extends PCNode {
     }
 
     /**
-     * Get the first or only child temporal object as a primitive.
+     * Get the first or only child temporal element as a primitive.
      * 
-     * @return a temporal object that is child of this temporal object or
+     * @return a temporal element that is child of this temporal element or
      *         <tt>null</tt>.
      */
     public TemporalElement getFirstChildPrimitive() {
-        IntIterator i = super.m_graph.inEdgeRows(super.m_row);
-        if (i.hasNext()) {
-            int edge = i.nextInt();
-            int child = super.m_graph.getSourceNode(edge);
+        int child = getGraph().getChildRow(m_row, 0);
+        if (child > -1) {
             return this.tmpds.getTemporalPrimitiveByRow(child);
         } else {
             return null;

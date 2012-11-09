@@ -77,9 +77,7 @@ public class TemporalObject extends PCNode {
      *         <tt>null</tt>.
      */
     public TemporalObject getFirstParentObject() {
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.outNeighbors();
-        return objs.hasNext() ? (TemporalObject) objs.next() : null;
+        return (TemporalObject) super.getFirstParent();
     }
     
     /**
