@@ -6,8 +6,23 @@ import org.apache.log4j.Logger;
 
 import prefuse.data.Edge;
 import prefuse.data.Node;
+import prefuse.data.Tree;
 import prefuse.data.tuple.TableNode;
 
+/**
+ * Tuple representing a node in a {@link PCGraph}. These nodes can have multiple
+ * "child" nodes and multiple "parent" nodes (in principle these are nodes
+ * connected by incoming and outgoing edges). The class provides convenience
+ * methods to access these nodes (e.g., {@link PCNode#getLastChild()}) and
+ * throws exceptions in methods that do not make sense here (e.g.,
+ * {@link #getNextSibling()}).
+ * 
+ * <p>
+ * Note that edges are directed from child to parent, which is opposite from
+ * {@link Tree} nodes.
+ * 
+ * @author Rind
+ */
 public class PCNode extends TableNode {
 
     @Override

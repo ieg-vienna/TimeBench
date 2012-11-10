@@ -233,10 +233,10 @@ public class TemporalDataset extends PCGraph implements Lifespan, Cloneable {
      * Tuples retrieved from this dataset to be invalidated.
      */
     private void initTupleManagers() {
+        // assign to temporal object graph
         // nodes of temporal object graph --> TemporalObject
-        TupleManager tempObjectManager = new TupleManager(
-                super.getNodeTable(), this, TemporalObject.class);
-
+        super.initTupleManagers(TemporalObject.class, TableEdge.class);
+        
         // nodes of temporal element graph --> GenericTemporalElement
         this.temporalGenerics = new TemporalElementManager(this, true);
 
@@ -245,17 +245,10 @@ public class TemporalDataset extends PCGraph implements Lifespan, Cloneable {
         this.temporalPrimitives = new TemporalElementManager(this, false);
         this.temporalPrimitives.invalidateAutomatically();
 
-        // dummy manager for edges in both graphs
-        TupleManager tempObjectEdgeManager = new TupleManager(
-                this.getEdgeTable(), this, TableEdge.class);
+        // default manager for edges in graphs
         TupleManager tempElementEdgeManager = new TupleManager(
                 temporalElements.getEdgeTable(), temporalElements,
                 TableEdge.class);
-
-        // assign to temporal object graph
-        super.setTupleManagers(tempObjectManager, tempObjectEdgeManager);
-        super.getNodeTable().setTupleManager(tempObjectManager);
-        super.getEdgeTable().setTupleManager(tempObjectEdgeManager);
 
         // assign to temporal element graph
         temporalElements.setTupleManagers(temporalGenerics,

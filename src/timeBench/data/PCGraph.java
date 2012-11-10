@@ -1,15 +1,41 @@
 package timeBench.data;
 
 import prefuse.data.Graph;
+import prefuse.data.Tree;
+import prefuse.data.tuple.TupleManager;
 
+/**
+ * Hierarchical structure where a node can have multiple parents and multiple
+ * children. This is realized as a directed {@link Graph}, where inbound edges
+ * connect a node to its children and outgoing edges connect it to its parents.
+ * Note that edges are direction is opposite in the {@link Tree} class.
+ * 
+ * <p>
+ * The proxy tuple type {@link PCNode} provides suitable convenience methods.
+ * However, the tuple type needs to be set using
+ * {@link #initTupleManagers(Class, Class)}. This is not done automatically under
+ * the assumption that a subclass of {@link PCNode} would be used more often.
+ * 
+ * @author Rind
+ */
 public class PCGraph extends Graph {
 
-    // TODO make sure tuples are created as PCNode (only if used outside TemporalDataset)
     /**
      * Instances are always directed.
      */
     public PCGraph() {
         super(true);
+    }
+    
+    @SuppressWarnings("rawtypes")
+    public void initTupleManagers(Class nodeType, Class edgeType) {
+        TupleManager nodeTuples = new TupleManager(super.getNodeTable(), this,
+                nodeType);
+        TupleManager edgeTuples = new TupleManager(super.getEdgeTable(), this,
+                edgeType);
+        super.setTupleManagers(nodeTuples, edgeTuples);
+        super.getNodeTable().setTupleManager(nodeTuples);
+        super.getEdgeTable().setTupleManager(edgeTuples);
     }
 
     /**
