@@ -4,11 +4,20 @@ import java.util.ArrayList;
 
 import prefuse.action.Action;
 import prefuse.data.Schema;
+import prefuse.data.expression.BinaryExpression;
+import prefuse.data.expression.CompositePredicate;
+import prefuse.data.expression.Expression;
+import prefuse.data.expression.Predicate;
+import timeBench.calendar.Granularity;
+import timeBench.calendar.Granule;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.Instant;
+import timeBench.data.Span;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
+import timeBench.data.expression.TemporalElementArrayExpression;
 
 /**
  * 
@@ -24,15 +33,26 @@ import timeBench.data.TemporalObject;
 public class IntervalEventFindingAction extends Action {
 
 	TemporalDataset sourceDataset;
-	TemporalDataset templateDataset;
+	Predicate[] templates;
 	TemporalDataset eventDataset;
-	Schema eventSchema = new Schema(new String[] { "class", "label" },
-			new Class[] { Long.class, String.class });
+	int coherenceSettings;
+	
+	public static int ONLY_COHERENT 		  = 0;
+	public static int SPACING_ALLOWED		  = 1;
+	public static int OVERLAP_ALLOWED 		  = 2;
+	public static int SPACING_OVERLAP_ALLOWED = 3; // 1&2
 
-	public IntervalEventFindingAction(TemporalDataset sourceDataset,
-			TemporalDataset templateDataset) {
+	Schema eventSchema = new Schema(new String[] { "class", "label" },
+			new Class[] { long.class, String.class });
+
+	public IntervalEventFindingAction(TemporalDataset sourceDataset,Predicate[] templates) {
+		this(sourceDataset,templates,ONLY_COHERENT);
+	}
+	
+	public IntervalEventFindingAction(TemporalDataset sourceDataset,Predicate[] templates,int coherenceSettings) {
 		this.sourceDataset = sourceDataset;
-		this.templateDataset = templateDataset;
+		this.templates= templates;
+		this.coherenceSettings = coherenceSettings;
 	}
 
 	/*
@@ -45,39 +65,62 @@ public class IntervalEventFindingAction extends Action {
 		try {
 			eventDataset = new TemporalDataset(eventSchema);
 
-			ArrayList<Long> potentialEvents = new ArrayList<Long>();
-			ArrayList<Instant> potentialStartingPoints = new ArrayList<Instant>();
-			ArrayList<Instant> potentialEndingPoints = new ArrayList<Instant>();
+			ArrayList<Integer> openEvents = new ArrayList<Integer>();
+			ArrayList<ArrayList<TemporalObject>> openObjectLists = new ArrayList<ArrayList<TemporalObject>>();
+			ArrayList<Integer> closedEvents = new ArrayList<Integer>();
+			ArrayList<ArrayList<TemporalObject>> closedObjectLists = new ArrayList<ArrayList<TemporalObject>>();
 
-			for (TemporalObject iSource : sourceDataset.temporalObjects()) {
-				for (TemporalObject iTemplate : templateDataset.temporalObjects()) {
-					for (int i = 0; i < potentialEvents.size(); i++) {
-						if (satisfies(iSource,templateDataset.getTemporalObject(potentialEvents.get(i)))) {
-							potentialEndingPoints.set(i, iSource.getTemporalElement().getLastInstant());
+			for (TemporalObject iSource : sourceDataset.temporalObjects()) {				
+				for (int j=0; j<templates.length; j++) {
+					Predicate iTemplate = templates[j];
+					boolean satisfied = false;
+					for (int i = 0; i < openEvents.size(); i++) {
+						// if the next line belongs to event
+						openObjectLists.get(i).add(iSource);		
+						if (satisfies(openObjectLists.get(i),templates[openEvents.get(i)])) {
+							satisfied = true;	// do not start new event of the same type when added
 						} else {
-							potentialEvents.remove(i);
-							potentialStartingPoints.remove(i);
+							// otherwise, remove it again
+							openObjectLists.get(i).remove(openObjectLists.get(i).size()-1);		
+							// and close the event (save for later)
+							closedEvents.add(openEvents.get(i));
+							openEvents.remove(i);
+							closedObjectLists.add(openObjectLists.get(i));
+							openObjectLists.remove(i);
 							i--;
 						}
 					}
-					if (satisfies(iSource, iTemplate)) {
-						potentialEvents.add(iTemplate.getId());
-						potentialStartingPoints.add(iSource.getTemporalElement().getFirstInstant());
-						potentialEndingPoints.add(iSource.getTemporalElement().getLastInstant());
+					if (satisfied)
+						break;
+					ArrayList<TemporalObject> newList = new ArrayList<TemporalObject>();
+					newList.add(iSource);
+					// if line satisfies an event
+					if (satisfies(newList, iTemplate)) {
+						openEvents.add(j);
+						openObjectLists.add(newList);
 					}
 				}
 			}
-
-			for (int i = 0; i < potentialEvents.size(); i++) {
+			
+			for (int i = 0; i < openEvents.size(); i++) {
+				closedEvents.add(openEvents.get(i));
+				closedObjectLists.add(openObjectLists.get(i));
+			}
+			
+			for (int i = 0; i < closedEvents.size(); i++) {
 				TemporalElement element;
 				element = eventDataset.addInterval(
-						eventDataset.addInstant(potentialStartingPoints.get(i).getInf(),potentialStartingPoints.get(i).getSup(),
-								potentialStartingPoints.get(i).getGranularityId(),potentialStartingPoints.get(i).getGranularityContextId()),
-						eventDataset.addInstant(potentialEndingPoints.get(i).getInf(), potentialEndingPoints.get(i).getSup(),
-								potentialEndingPoints.get(i).getGranularityId(),potentialEndingPoints.get(i).getGranularityContextId()));
+						eventDataset.addInstant(closedObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getInf(),
+								closedObjectLists.get(i).get(0).getTemporalElement().getFirstInstant().getSup(),
+								closedObjectLists.get(i).get(0).getTemporalElement().getGranularityId(),
+								closedObjectLists.get(i).get(0).getTemporalElement().getGranularityContextId()),
+								eventDataset.addInstant(closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getLastInstant().getInf(),
+										closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getLastInstant().getSup(),
+										closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getGranularityId(),
+										closedObjectLists.get(i).get(closedObjectLists.get(i).size()-1).getTemporalElement().getGranularityContextId()));
 				TemporalObject object = eventDataset.addTemporalObject(element);
-				object.setLong("class", potentialEvents.get(i));
-				object.setString("label", "e" + i);
+				object.setLong("class", closedEvents.get(i));
+				object.setString("label", "e" + closedEvents.get(i));
 			}
 		} catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
@@ -92,33 +135,54 @@ public class IntervalEventFindingAction extends Action {
 	 * @return
 	 * @throws TemporalDataException
 	 */
-	private boolean satisfies(TemporalObject source, TemporalObject template)
+	private boolean satisfies(ArrayList<TemporalObject> checkedObjects, Predicate template)
 			throws TemporalDataException {
-
-		for (int i : templateDataset.getDataColumnIndices()) {
-			Object value = template.get(i);
-			if (value != null) {
-				if (source.getColumnType(i) != template.getColumnType(i))
-					return false;
-				if (!source.get(i).equals(template.get(i)))
-					return false;
+		
+		if (checkedObjects.size() > 1) {
+			// check for coherence		
+			if ( coherenceSettings != SPACING_OVERLAP_ALLOWED) {
+				// check only last against others; assume this is called once for each new TemporalObject
+				TemporalElement last = checkedObjects.get(checkedObjects.size()-1).getTemporalElement();
+				if ( (coherenceSettings & SPACING_ALLOWED) == 0) {
+					if (last.getFirstInstant().getInf() - checkedObjects.get(checkedObjects.size()-2).getTemporalElement().getLastInstant().getSup() > 1)
+						return false;
+				}
+				if ( (coherenceSettings & OVERLAP_ALLOWED) == 0) {
+					for(int i=0; i<checkedObjects.size()-1;i++) {
+						if(checkedObjects.get(i).getTemporalElement().getLastInstant().getSup() >= last.getFirstInstant().getInf())
+							return false;
+					}
+				}
 			}
-			TemporalElement teTemplate = template.getTemporalElement();
-			TemporalElement teSource = source.getTemporalElement();
-			if (teTemplate.getGranularityId() >= 0 && teTemplate.getGranularityId() != teSource.getGranularityId())
-				return false;
-			if (teTemplate.getGranularityContextId() >= 0 && teTemplate.getGranularityContextId() != teSource.getGranularityContextId())
-				return false;
-			if (teTemplate.getGranule().getIdentifier() != Long.MIN_VALUE
-					&& teTemplate.getGranule().getIdentifier() != teSource.getGranule().getIdentifier())
-				return false;
-			if (teTemplate.getFirstInstant().getGranule().getInf() != Long.MIN_VALUE &&
-					(teTemplate.getFirstInstant().getGranule().getInf() > teSource.getFirstInstant().getGranule().getInf() ||
-					teTemplate.getLastInstant().getGranule().getSup() < teSource.getLastInstant().getGranule().getSup()))
-				return false;
 		}
-
-		return true;
+		
+		updateTemporalElementExpressions(template,checkedObjects);
+		
+ 		return template.getBoolean(checkedObjects.get(checkedObjects.size()-1));
 	}
 
+	/**
+	 * @param template
+	 * @param checkedObjects
+	 */
+	private void updateTemporalElementExpressions(Expression template,
+			ArrayList<TemporalObject> checkedObjects) {
+		if(template instanceof TemporalElementArrayExpression)
+			((TemporalElementArrayExpression)template).updateBuffer(checkedObjects);
+		else if (template instanceof BinaryExpression) {
+			updateTemporalElementExpressions(((BinaryExpression)template).getLeftExpression(), checkedObjects);
+			updateTemporalElementExpressions(((BinaryExpression)template).getRightExpression(), checkedObjects);
+		} else if(template instanceof CompositePredicate) {
+			CompositePredicate composite = (CompositePredicate)template;
+			for(int i=0; i<composite.size(); i++)
+				updateTemporalElementExpressions(composite.get(i), checkedObjects);			
+		}
+	}
+
+	/**
+	 * @return the eventDataset
+	 */
+	public TemporalDataset getEventDataset() {
+		return eventDataset;
+	}
 }

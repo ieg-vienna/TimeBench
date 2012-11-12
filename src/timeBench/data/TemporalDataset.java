@@ -198,12 +198,19 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
         	}
         } else {
         	ArrayList<Integer> removedlist = new ArrayList<Integer>();                	
-    		for(String iAdditionalNonDataColumn : additionalNonDataColums) {
-            	for (int i = TEMPORAL_OBJECT_NONDATA_COLUMS; i < getNodeTable().getColumnCount(); i++) {        	            		        	
+        	for (int i = TEMPORAL_OBJECT_NONDATA_COLUMS; i < getNodeTable().getColumnCount(); i++) {
+        		boolean removed = false;
+        		for(String iAdditionalNonDataColumn : additionalNonDataColums) {
         			if(getNodeTable().getColumnName(i) == iAdditionalNonDataColumn) {
         				removedlist.add(i);
         				break;
         			}
+        		}
+        		if (removed)
+        			break;
+        		if (getNodeTable().getColumnName(i).endsWith(".kind")) {
+    				removedlist.add(i);
+    				break;        			
         		}
     		}
     		cols = new int[super.getNodeTable().getColumnCount() - TEMPORAL_OBJECT_NONDATA_COLUMS - removedlist.size()];
@@ -911,11 +918,11 @@ public class TemporalDataset extends Graph implements Lifespan, Cloneable {
      * @throws TemporalDataException
      * @see GranuleCache
      */
-    protected Granule getGranuleByRow(int row) throws TemporalDataException {
+    protected Granule[] getGranulesByRow(int row) throws TemporalDataException {
         if (this.granuleCache == null) {
             granuleCache = new GranuleCache(this);
         }
-        return granuleCache.getGranule(row);
+        return granuleCache.getGranules(row);
     }
     
     /**

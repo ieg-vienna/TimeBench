@@ -61,7 +61,7 @@ public class BasicTimeScale implements TimeScale {
 	 *            best fitting {@link TimeUnit}
 	 */
 	public BasicTimeScale(TimeUnitProvider timeUnitProvider) {
-		this(new Date().getTime(), TimeUnit.getMaxLength(Calendar.HOUR, 1), timeUnitProvider);
+		this(new Date().getTime(), GregorianTimeUnit.getMaxLength(Calendar.HOUR, 1), timeUnitProvider);
 	}
 	
 	/**

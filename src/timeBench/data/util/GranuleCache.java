@@ -22,7 +22,7 @@ import timeBench.data.TemporalDataset;
  */
 public class GranuleCache {
 
-    private ObjectColumn granules = new ObjectColumn(Granule.class);
+    private ObjectColumn granules = new ObjectColumn(Granule[].class);
 
     private TemporalDataset tmpds;
 
@@ -44,7 +44,7 @@ public class GranuleCache {
      * @return
      * @throws TemporalDataException
      */
-    public Granule getGranule(int row) throws TemporalDataException {
+    public Granule[] getGranules(int row) throws TemporalDataException {
         ensureRow(row);
         if (granules.get(row) == null) {
             GenericTemporalElement elem = tmpds.getTemporalElementByRow(row);
@@ -52,14 +52,13 @@ public class GranuleCache {
                 // TODO reuse granularity objects --> calendar responsible?
                 Granularity g = new Granularity(calendar,
                         elem.getGranularityId(), elem.getGranularityContextId());
-                granules.set(new Granule(elem.getInf(), elem.getSup(),
-                        Granule.MODE_INF_GRANULE, g), row);
+                granules.set(g.createGranules(elem.getInf(), elem.getSup()), row);
             } else {
                 // TODO distinguish unknown from unanchored
                 granules.set(null, row);
             }
         }
-        return (Granule) granules.get(row);
+        return (Granule[]) granules.get(row);
     }
 
     public Granule getGranule(long id) throws TemporalDataException {
@@ -70,7 +69,7 @@ public class GranuleCache {
     public void addGranule(int row, Granule granule) {
         ensureRow(row);
 //        System.out.println("row: " + row + " size: " + granules.getRowCount());
-        granules.set(granule, row);
+        granules.set(new Granule[] {granule}, row);
     }
     
     private void ensureRow(int row) {
