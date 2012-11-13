@@ -36,6 +36,9 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
     public TemporalComparisonPredicate(int operation, TemporalExpression left, TemporalExpression right) {
     	super(operation,Integer.MIN_VALUE,Integer.MAX_VALUE,left,right);
     }
+    public TemporalComparisonPredicate(int operation, TemporalExpression left, TemporalElementArrayExpression right) {
+    	super(operation,Integer.MIN_VALUE,Integer.MAX_VALUE,left,right);
+    }
 
 	/* (non-Javadoc)
 	 * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
@@ -55,9 +58,9 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 		TemporalElement teTemplate = (TemporalElement)m_left.get(t);
 		
         TemporalElement[] history = null;
-    	if (TemporalElement[].class.isAssignableFrom(m_right.getClass())) {
+    	if (TemporalElement[].class.isAssignableFrom(m_right.getType(t.getSchema()))) {
     		history = (TemporalElement[])m_right.get(t);
-    	} else if(TemporalElement.class.isAssignableFrom(m_right.getClass())) {
+    	} else if(TemporalElement.class.isAssignableFrom(m_right.getType(t.getSchema()))) {
     		history = new TemporalElement[1];
     		history[0] = (TemporalElement)m_right.get(t);
     	} else
