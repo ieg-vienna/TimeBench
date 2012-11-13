@@ -33,7 +33,8 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 	TemporalDataset eventDataset;		
 	Predicate[] predicates;	// Bertone: Intervals
 	int coherenceSettings;
-	Hashtable<Long,Long> sourceToResult = new Hashtable<Long,Long>(); 
+	Hashtable<Long,Long> sourceToResult = new Hashtable<Long,Long>();
+	ArrayList<Long> resultRoots = new ArrayList<Long>();
 
 	public static int ONLY_COHERENT 		  = 0;
 	public static int SPACING_ALLOWED		  = 1;
@@ -77,6 +78,11 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 					}
 				}
 			}
+			
+			long[] resultRootsForJavaHasNoBoxingOfValueTypes = new long[resultRoots.size()];
+			for(int i=0; i<resultRootsForJavaHasNoBoxingOfValueTypes.length; i++)
+				resultRootsForJavaHasNoBoxingOfValueTypes[i] = resultRoots.get(i);
+			resultDataset.setRoots(resultRootsForJavaHasNoBoxingOfValueTypes);
 		
 		} catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
@@ -101,6 +107,9 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 				for(int i=0; i<checkList.size()-1; i++) {
 					if (!sourceToResult.containsKey(checkList.get(i).getId())) {
 						TemporalObject newReference = resultDataset.addCloneOf((checkList.get(i)));
+						if (i==0) {
+							resultRoots.add(newReference.getId());
+						}
 						sourceToResult.put(checkList.get(i).getId(), newReference.getId());
 						// if we did not add a first event of a pattern, add it as child of event before
 						if (i>0) {
