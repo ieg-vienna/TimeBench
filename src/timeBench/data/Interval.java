@@ -1,5 +1,7 @@
 package timeBench.data;
 
+import ieg.prefuse.data.DataHelper;
+
 
 /**
  * Interval in the relational view. Following the <em>proxy tuple</em> pattern
@@ -29,8 +31,9 @@ public class Interval extends AnchoredTemporalElement {
     		return (Instant)this.getFirstChildPrimitive();
     	else if(this.getChildCount() == 2 && this.getFirstChildPrimitive() instanceof Span && this.getLastChild() instanceof Instant) {
         	throw new RuntimeException("Not implemented yet");
-    	} else
+    	} else {
     		throw new TemporalDataException("Syntax error in temporal element of type interval");
+    	}
     }
     
     public Instant getEnd() throws TemporalDataException {

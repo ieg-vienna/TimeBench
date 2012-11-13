@@ -62,9 +62,12 @@ public class TemporalShiftExpression extends TemporalExpression {
 	 * @param temporalElement
 	 * @return
 	 */
-	private TemporalElement shift(GenericTemporalElement temporalElement,long shiftChronons) {
+	private TemporalElement shift(GenericTemporalElement temporalElement,long shiftChronons) {			
 		TemporalElement result = TemporalElement.createOnHeap(temporalElement.getInf()+shiftChronons, temporalElement.getSup()+shiftChronons,
 				temporalElement.getGranularityId(), temporalElement.getGranularityContextId(), temporalElement.getKind());
+		
+		for (GenericTemporalElement iChild : temporalElement.childElements())
+			result.linkWithChild(shift(iChild,shiftChronons));
 		
 		return result;
 	}
