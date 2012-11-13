@@ -112,7 +112,7 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 				}
 				// add new event to pattern
 				TemporalObject newReference = resultDataset.addCloneOf(newObject);
-				int rowNumber = checkList.get(checkList.size()-1).linkWithChild(newReference).getRow();
+				int rowNumber = resultDataset.getTemporalObject(sourceToResult.get(checkList.get(checkList.size()-2).getId())).linkWithChild(newReference).getRow();
 				resultDataset.getEdgeTable().setLong(rowNumber, predicateColumn, predicate);
 			}
 		}
