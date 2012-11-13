@@ -975,8 +975,27 @@ public class TemporalDataset extends PCGraph implements Lifespan, Cloneable {
         return elem.getLong(elem.getMetadata(TemporalElement.SUP).getMaximumRow(), TemporalElement.SUP);
     }
 
-	public TemporalObject addCloneOf(TemporalObject newObject) {
-		// TODO Auto-generated method stub
-		return null;
+	public TemporalObject addCloneOf(TemporalObject source) {					
+		TemporalObject result = addTemporalObject(addCloneOf(source.getTemporalElement()));
+		for(int i : getDataColumnIndices()) {
+			result.set(i, source.get(i));
+		}
+		
+		return result;
+	}
+
+	/**
+	 * @param temporalElement
+	 * @return
+	 */
+	private TemporalElement addCloneOf(GenericTemporalElement temporalElement) {
+		TemporalElement result = addTemporalElement(temporalElement.getInf(), temporalElement.getSup(),
+				temporalElement.getGranularityId(),temporalElement.getGranularityContextId(),
+				temporalElement.getKind());
+		
+		for(GenericTemporalElement iTemporalElement : temporalElement.childElements())
+			result.linkWithChild(addCloneOf(iTemporalElement));
+		
+		return result;
 	}
 }
