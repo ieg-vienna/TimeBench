@@ -1,5 +1,7 @@
 package timeBench.R;
 
+import java.util.Arrays;
+
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngine;
@@ -19,8 +21,6 @@ public class RsarimaModelProvider {
 	public String estimateSARIMA(String dataset, Object key, int p, int d, int q, 
 			int seasonal_p, int seasonal_d, int seasonal_q, int seasonal_length, boolean no_constant) {
 		String resultName = "res"+Integer.toHexString(key.hashCode());
-//			dataset+String.valueOf(p)+String.valueOf(d)+String.valueOf(q)+
-//				String.valueOf(seasonal_p)+String.valueOf(seasonal_d)+String.valueOf(seasonal_q);
 		if (seasonal_length >= 0) {
 			resultName = resultName + String.valueOf(seasonal_length);
 		}
@@ -28,10 +28,7 @@ public class RsarimaModelProvider {
 			seasonal_length = -1;
 		}
 		
-		String command;/* = "sarima(" + dataset +
-				", "+p+", "+d+", "+q+", "+seasonal_p+", "+seasonal_d+", "+
-						seasonal_q+", "+seasonal_length+", details = TRUE, "
-		        +"no.constant = "+noConstant+")";*/
+		String command;
 		
 		if ((d == 0) && (seasonal_d == 0)) {
 			command = "stats::arima("+dataset+
@@ -62,8 +59,12 @@ public class RsarimaModelProvider {
 			if (no_constant) {
 				engine.parseAndEval("xmean = NULL");
 			}
-//			System.out.println("RUN CMD: "+resultName+" <- "+command);
-			engine.parseAndEval(resultName+" <- "+command, null, false);
+			REXP result = engine.parseAndEval(resultName+" <- "+command, null, true);
+			if (result.isNull()) {
+				return null;
+			} else {
+				return resultName;
+			}
 		} catch (REngineException e) {
 			e.printStackTrace();
 			resultName = null;
@@ -72,7 +73,7 @@ public class RsarimaModelProvider {
 			resultName = null;
 		}
 		
-		return resultName;
+		return null;
 	}
 	
 	public String estimateSARIMA(String dataset, Object key, int p, int d, int q, 
@@ -95,9 +96,12 @@ public class RsarimaModelProvider {
 	    	engine.parseAndEval("num <- sum(!is.na(rs))", null, false);
 	    	engine.parseAndEval("u <- c(0, stats::pacf(rs, lag.max = num, plot = FALSE, na.action = na.pass)$acf)", null, false);
 	    	engine.parseAndEval("u <- sqrt("+res+"$sigma2 * base::cumprod(1 - u^2))", null, false);
-	    	engine.parseAndEval("std"+res+" <- rs/u", null, false);
-	    	
-	    	return "std"+res;
+	    	REXP result = engine.parseAndEval("std"+res+" <- rs/u", null, true);
+	    	if (result.isNull()) {
+	    		return null;
+	    	} else {
+	    		return "std"+res;
+	    	}
 		} catch (REXPMismatchException e) {
 			e.printStackTrace();
 		} catch (REngineException e) {
@@ -109,9 +113,13 @@ public class RsarimaModelProvider {
 	public ScatterPlotDataObject getStandardizedResiduals(String res) {
 		try {
 			String stdres = standardizeResiduals(res);
-			double[] y = engine.parseAndEval("coredata("+stdres+")", null, true).asDoubles();
-			double[] x = engine.parseAndEval("coredata(time("+stdres+"))",null, true).asDoubles();
-			return new ScatterPlotDataObject(x, y, 0.0, 0.0);
+			if (stdres == null) {
+				return null;
+			} else {
+				double[] y = engine.parseAndEval("coredata("+stdres+")", null, true).asDoubles();
+				double[] x = engine.parseAndEval("coredata(time("+stdres+"))",null, true).asDoubles();
+				return new ScatterPlotDataObject(x, y, 0.0, 0.0);
+			}
 		} catch (REXPMismatchException e) {
 			e.printStackTrace();
 		} catch (REngineException e) {
@@ -123,7 +131,10 @@ public class RsarimaModelProvider {
 	public ScatterPlotDataObject getQQPlotResiduals(String stdres) {
 		try {
 			String qqReturn = "qret"+stdres;
-			engine.parseAndEval(qqReturn+" <- qqnorm(as.numeric("+stdres+"), plot.it=FALSE)", null, false);
+			REXP result = engine.parseAndEval(qqReturn+" <- qqnorm(as.numeric("+stdres+"), plot.it=FALSE)", null, true);
+			if (result.isNull()) {
+				return null;
+			}
 			double[] x = engine.parseAndEval(qqReturn+"$x",null, true).asDoubles();
 			double[] y = engine.parseAndEval(qqReturn+"$y",null, true).asDoubles();
 			
@@ -145,10 +156,15 @@ public class RsarimaModelProvider {
 	public ScatterPlotDataObject getLjungBoxStatisticResiduals(String res) {
 		try {
 			REXP r = engine.parseAndEval(res+"$arma", null, true);
-			if (r.isNull())
+			if (r.isNull()) {
 				return null;
+			}
 			
 			double[] parameter = r.asDoubles();
+			
+			if (parameter == null || parameter.length < 5) {
+				return null;
+			}
 			
 			engine.parseAndEval("p <- "+parameter[0]+"; q <- "+parameter[1]+"; P <- "+parameter[2]+
 					"; Q <- "+parameter[3]+"; S <- "+parameter[4],null,false);
@@ -160,12 +176,20 @@ public class RsarimaModelProvider {
 			" pval[i] <- stats::pchisq(u, i - ppq, lower.tail = FALSE);}",null,false);
 			int[] x = engine.parseAndEval("(ppq + 1):nlag", null, true).asIntegers();
 			double[] y = engine.parseAndEval("pval[(ppq + 1):nlag]", null, true).asDoubles();
+			
+			int firstNaNIndex = y.length-1;
+			
+			for ( ; Double.isNaN(y[firstNaNIndex]); firstNaNIndex--);
+			
+			if (firstNaNIndex < (y.length-1)) {
+				x = Arrays.copyOf(x, firstNaNIndex+1);
+				y = Arrays.copyOf(y, firstNaNIndex+1);
+			}
+			
 			return new ScatterPlotDataObject(x,y,0.05,0.0);
 		} catch (REXPMismatchException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (REngineException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

@@ -22,7 +22,7 @@ import timeBench.data.TemporalObject;
 public class RTemporalDatasetProvider {
 	REngine engine;
 	int userSetGranularityId = -1;
-
+	
 	public RTemporalDatasetProvider(REngine eng) {
 		engine = eng;
 	}
@@ -64,14 +64,14 @@ public class RTemporalDatasetProvider {
 	}
 	
 	public TemporalDataset getTemporalDataset(
-            String name, int granularityID) throws REngineException, REXPMismatchException,
+            String name, int granularityID, String naHandling) throws REngineException, REXPMismatchException,
             TemporalDataException {
 		userSetGranularityId = granularityID;
-		return getTemporalDataset(name);
+		return getTemporalDataset(name, naHandling);
 	}
 	
     public TemporalDataset getTemporalDataset(
-            String name) throws REngineException, REXPMismatchException,
+            String name, String naHandling) throws REngineException, REXPMismatchException,
             TemporalDataException {
         // check R class
 //    	re.parseAndEval(name + " <- zoo(" + name + ")",null, false);
@@ -89,6 +89,11 @@ public class RTemporalDatasetProvider {
                     null, true).asDouble();
             double[] data = engine.parseAndEval("as.vector(" + name + ")",
                     null, true).asDoubles();
+            double[] missingEstimate = null;
+            if ((naHandling != null) && (naHandling.length() > 0)) {
+            	missingEstimate = engine.parseAndEval("as.vector("+naHandling+"(" + name + "))",
+                    null, true).asDoubles();
+            }
 //            logger.debug("ts with start: " + Arrays.toString(start)
 //                    + ", frequency: " + frequency + ", obs: " + data.length);
 
@@ -111,6 +116,9 @@ public class RTemporalDatasetProvider {
                         .toInt();
             else if (Math.abs(frequency - 12.0) < 0.005)
                 granularityId = JavaDateCalendarManager.Granularities.Month
+                        .toInt();
+            else if (Math.abs(frequency - 52.0) < 0.005)
+                granularityId = JavaDateCalendarManager.Granularities.Week
                         .toInt();
             else
                 throw new TemporalDataException(
@@ -177,16 +185,22 @@ public class RTemporalDatasetProvider {
                 //to.set(name, data[i]);
                 to.setInt("rindex", i+1);
                 to.set(name, (double) (Math.round(data[i]*100.0)/100.0));
-                if (Math.abs(data[i]-260) < 5) {
-                	to.set(name, Double.NaN);
-//                	to.setMin(name, (Double) (Math.round((data[i]-20.0)*100.0)/100.0));
-//                	to.setMax(name, (Double) (Math.round((data[i]+20.0)*100.0)/100.0));
+                if (Double.isNaN(data[i])){
                 	to.setKind(name, 1);
-                } else {
-                	to.setKind(name, 0);
-//                	to.set("minConf", 0.0);
-//                	to.set("maxConf", 0.0);
+                	if (missingEstimate != null && missingEstimate.length > i) {
+                		to.set(name, (double) (Math.round(missingEstimate[i]*100.0)/100.0));
+                	}
                 }
+//                if (Math.abs(data[i]-260) < 5) {
+//                	to.set(name, Double.NaN);
+////                	to.setMin(name, (Double) (Math.round((data[i]-20.0)*100.0)/100.0));
+////                	to.setMax(name, (Double) (Math.round((data[i]+20.0)*100.0)/100.0));
+//                	to.setKind(name, 1);
+//                } else {
+//                	to.setKind(name, 0);
+////                	to.set("minConf", 0.0);
+////                	to.set("maxConf", 0.0);
+//                }
 //                to.set("minConf", 0.0);
 //            	to.set("maxConf", 0.0);
 //                to.set("labels", new String(to.getDouble(name)+" | "+to.getDouble("minConf")+" - " + to.getDouble("maxConf")));
@@ -280,6 +294,7 @@ public class RTemporalDatasetProvider {
     private String getACF_PACF(String name, int diff, int seasondiff, int seasonFrequency, int maxlag, String cmd) throws REngineException, REXPMismatchException {
     	String r_command_lag = "";
     	String r_command_all = name;
+    	String na_action = ", na.action = na.pass";
     	
 		if (maxlag > 0)
 			r_command_lag = ", lag.max="+maxlag;
@@ -287,7 +302,7 @@ public class RTemporalDatasetProvider {
 			r_command_all = "diff("+name+",differences="+diff+")";
 		if (seasondiff > 0)
 			r_command_all = "diff("+r_command_all+", lag="+seasonFrequency+", differences="+seasondiff+")";
-		return " <- "+cmd+"("+r_command_all+", plot=FALSE"+r_command_lag+")";
+		return " <- "+cmd+"("+r_command_all+", plot=FALSE"+r_command_lag+na_action + ")";
     }
     
     public ACFDataObject getAutocorrelationFunction(String name, int diff, int seasondiff, int seasonFrequency, int maxlag) throws REngineException, REXPMismatchException {
@@ -323,6 +338,10 @@ public class RTemporalDatasetProvider {
 		}
 		
 		try {
+			if (!engine.parseAndEval(name, null, true).isNull()) {
+				return name;
+			}
+			
 //			engine.assign(name + ".time", time);
 			engine.assign(name , data);
 //			engine.parseAndEval(name + " <- zooreg(" + name + ".data)");
@@ -348,11 +367,65 @@ public class RTemporalDatasetProvider {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			name = null;
-		} /*catch (REXPMismatchException e) {
+		} catch (REXPMismatchException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			name = null;
-		}*/
+		}
 		return name;
 	}
+	
+	public void setTemporalDatasetToR(String name,
+            TemporalDataset tmpds, String dataField, Double missingIdent)
+            throws TemporalDataException, REngineException {
+        double[] time = new double[tmpds.getTemporalObjectCount()];
+        double[] data = new double[tmpds.getTemporalObjectCount()];
+        int i = 0;
+        
+//        int dataCol = tmpds.getNodeTable().getColumnNumber(dataField);
+        int dataCol = tmpds.getDataColumnIndices()[0];
+
+        for (TemporalObject cur : tmpds.temporalObjects()) { 
+            if (cur.getTemporalElement().isAnchored()) {
+                time[i] = ((double) cur.getTemporalElement().asGeneric()
+                        .getInf()) / 1000.0d;
+                if (missingIdent == null || missingIdent != cur.getDouble(dataCol))
+                	data[i] = cur.getDouble(dataCol);
+                else {
+                	data[i] = Double.NaN;
+                }
+                i++;
+            } 
+        }
+
+        if (i == 0)
+            throw new TemporalDataException(
+                    "TemporalDataSet did not contain any anchored objects.");
+
+        // shorten arrays, if some temp.obj. were skipped
+        if (i < time.length || i < data.length) {
+            double[] temp = new double[i];
+            System.arraycopy(time, 0, temp, 0, i);
+            time = temp;
+            System.arraycopy(data, 0, temp, 0, i);
+            data = temp;
+        }
+
+        try {
+        engine.assign(name + ".time", time);
+        engine.assign(name + ".data", data);
+        engine.parseAndEval(name + " <- zoo(" + name + ".data)");
+        // work around a possible timezone bug in as.POSIXct.numeric
+        // cp. http://stackoverflow.com/questions/2457129/converting-unix-seconds-in-milliseconds-to-posixct-posixlt
+        // this.exec("time(" + name + ") <- as.POSIXct(" + name +
+        // ".time, origin=\"1970-01-01 GMT\")");
+        engine.parseAndEval("time(" + name + ") <- as.POSIXct(as.POSIXlt(" + name
+                + ".time, origin=\"1970-01-01\"))");
+        } catch (REngineException e) {
+        	e.printStackTrace();
+        } catch (REXPMismatchException e) {
+			e.printStackTrace();
+		}
+    }
 
 }
