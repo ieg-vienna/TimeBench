@@ -184,6 +184,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			parent.setKind(dataColumnIndices[i], kind);
 		}
 		
+		workingDataset.setDepth(Math.max(level, workingDataset.getDepth()));		
 	}
 
 	/* (non-Javadoc)

@@ -47,6 +47,7 @@ public class TemporalDataset extends PCGraph implements Lifespan, Cloneable {
     // TODO roots as a linked list?
     private long[] roots = null; // if we have a forest or tree of temporal
                                  // objects, null for tables
+    private int depth = 1; // 1-> table, otherwise depth of forest
 
     /**
      * here, derived classes can add their own non-data columns
@@ -281,6 +282,14 @@ public class TemporalDataset extends PCGraph implements Lifespan, Cloneable {
      */
     public void setRoots(long[] roots) {
         this.roots = roots;
+    }
+    
+    public int getDepth() {
+        return depth;
+    }
+    
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     // ----- TEMPORAL ELEMENT ACCESSORS -----

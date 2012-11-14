@@ -101,6 +101,7 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 		} else {
 			// add new event
 			checkList.add(newObject);
+			resultDataset.setDepth(checkList.size());
 			// if this is an acceptable pattern
 			if (satisfies(checkList,predicates[predicate])) {
 				// check whether a pattern based on the same pattern exists in result
