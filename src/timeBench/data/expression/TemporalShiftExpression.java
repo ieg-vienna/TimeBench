@@ -1,5 +1,8 @@
 package timeBench.data.expression;
 
+import java.util.ArrayList;
+
+import groovy.lang.Newify;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
@@ -21,6 +24,8 @@ public class TemporalShiftExpression extends TemporalExpression {
 
 	private TemporalElementExpression temporalElementExpression = null;
 	private TemporalElementArrayExpression temporalElementArrayExpression = null;
+	
+	private ArrayList<TemporalElement> createdHere = new ArrayList<TemporalElement>();
 	
 	// did not add more possibilites because of "Lego brick" idea
 	// do get chronon count from granules or temporal elements, perhaps add total chronon output there
@@ -65,10 +70,18 @@ public class TemporalShiftExpression extends TemporalExpression {
 	private TemporalElement shift(GenericTemporalElement temporalElement,long shiftChronons) {			
 		TemporalElement result = TemporalElement.createOnHeap(temporalElement.getInf()+shiftChronons, temporalElement.getSup()+shiftChronons,
 				temporalElement.getGranularityId(), temporalElement.getGranularityContextId(), temporalElement.getKind());
+		createdHere.add(result);
 		
 		for (GenericTemporalElement iChild : temporalElement.childElements())
 			result.linkWithChild(shift(iChild,shiftChronons));
 		
 		return result;
+	}
+	
+	public void destroyTemporaryTemporalElements() {
+		for(TemporalElement iE : createdHere) {
+			iE.destroyFromHeap();
+		}
+		createdHere = new ArrayList<TemporalElement>();
 	}
 }

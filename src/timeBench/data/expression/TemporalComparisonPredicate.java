@@ -196,6 +196,13 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 
     	} catch (TemporalDataException e) {
     		throw new UnsupportedOperationException("Illegal handling of time-oriented data: "+e.getMessage());
+    	} finally {
+    		if (TemporalExpression.class.isAssignableFrom(m_left.getClass()) ) {
+    			((TemporalExpression) m_left).destroyTemporaryTemporalElements();
+    		}
+    		if (TemporalExpression.class.isAssignableFrom(m_right.getClass()) ) {
+    			((TemporalExpression) m_right).destroyTemporaryTemporalElements();
+    		}
     	}
     	
 		return true;    	

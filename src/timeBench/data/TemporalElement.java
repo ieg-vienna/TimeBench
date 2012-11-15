@@ -93,7 +93,8 @@ public abstract class TemporalElement extends PCNode {
     /**
      * Creates a TemporalElement on the temporal data heap. Note that
      * currently, these TemporalElements have to be cleared manually
-     * from there as there 
+     * from there as there is no full support for weak references
+     * in Java.
      * 
      * @param inf
      *            the lower end of the temporal element
@@ -110,6 +111,16 @@ public abstract class TemporalElement extends PCNode {
     public static TemporalElement createOnHeap(long inf, long sup, int granularityId,
     		int granularityContextId, int kind) {
     	return temporalDataHeap.addTemporalElement(inf, sup, granularityId, granularityContextId, kind);
+    }
+    
+    /**
+     * Destroys an instance of a (this) TemporalElement on the heap.
+     * If it is not on the heap, nothing is done to prevent this, so prefuse will
+     * throw an IllegalArgumentException. External references to
+     * this TemporalElement should be cleared by the calling code.  
+     */
+    public void destroyFromHeap() {
+    	temporalDataHeap.removeTuple(this);
     }
 
     /**

@@ -24,4 +24,7 @@ public class TemporalExpression extends AbstractExpression {
 	public Class getType(Schema s) {
 		return TemporalElement.class;
 	}
+	
+	public void destroyTemporaryTemporalElements() {		
+	}
 }
