@@ -1,5 +1,6 @@
 package timeBench.data;
 
+import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;

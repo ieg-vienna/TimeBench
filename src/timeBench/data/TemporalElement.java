@@ -1,5 +1,6 @@
 package timeBench.data;
 
+import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
