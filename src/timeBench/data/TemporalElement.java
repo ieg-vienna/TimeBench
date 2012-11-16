@@ -121,7 +121,7 @@ public abstract class TemporalElement extends ParentChildNode {
      * this TemporalElement should be cleared by the calling code.  
      */
     public void destroyFromHeap() {
-    	temporalDataHeap.removeTuple(this);
+    	temporalDataHeap.removeTemporalElement(this);
     }
 
     /**

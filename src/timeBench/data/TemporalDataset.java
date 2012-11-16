@@ -911,6 +911,16 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     }
     
     /**
+     * Remove a TemporalElement from the TemporalDataset.
+     * @param te the TemporalElement to remove from the TemporalDataset
+     * @return true if the TemporalElement was successfully removed, false if the
+     * TemporalElement was not found in this graph
+     */   
+    public boolean removeTemporalElement(TemporalElement te) {
+    	return temporalElements.removeNode(te);
+    }
+    
+    /**
      * Gets the first granule of an anchored temporal element. For an
      * {@link Instant}, the granule represents the time of the instant. If it is
      * unanchored, <tt>null</tt> is returned. Granules are cached.
