@@ -20,7 +20,7 @@ import timeBench.calendar.Granule;
  * 
  * @author Rind
  */
-public abstract class TemporalElement extends PCNode {
+public abstract class TemporalElement extends ParentChildNode {
 
 	protected static TemporalDataset temporalDataHeap = new TemporalDataset();
 	

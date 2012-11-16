@@ -11,19 +11,19 @@ import prefuse.data.tuple.TupleManager;
  * Note that edges are direction is opposite in the {@link Tree} class.
  * 
  * <p>
- * The proxy tuple type {@link PCNode} provides suitable convenience methods.
+ * The proxy tuple type {@link ParentChildNode} provides suitable convenience methods.
  * However, the tuple type needs to be set using
  * {@link #initTupleManagers(Class, Class)}. This is not done automatically under
- * the assumption that a subclass of {@link PCNode} would be used more often.
+ * the assumption that a subclass of {@link ParentChildNode} would be used more often.
  * 
  * @author Rind
  */
-public class PCGraph extends Graph {
+public class ParentChildGraph extends Graph {
 
     /**
      * Instances are always directed.
      */
-    public PCGraph() {
+    public ParentChildGraph() {
         super(true);
     }
     

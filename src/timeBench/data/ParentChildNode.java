@@ -10,10 +10,10 @@ import prefuse.data.Tree;
 import prefuse.data.tuple.TableNode;
 
 /**
- * Tuple representing a node in a {@link PCGraph}. These nodes can have multiple
+ * Tuple representing a node in a {@link ParentChildGraph}. These nodes can have multiple
  * "child" nodes and multiple "parent" nodes (in principle these are nodes
  * connected by incoming and outgoing edges). The class provides convenience
- * methods to access these nodes (e.g., {@link PCNode#getLastChild()}) and
+ * methods to access these nodes (e.g., {@link ParentChildNode#getLastChild()}) and
  * throws exceptions in methods that do not make sense here (e.g.,
  * {@link #getNextSibling()}).
  * 
@@ -23,11 +23,11 @@ import prefuse.data.tuple.TableNode;
  * 
  * @author Rind
  */
-public class PCNode extends TableNode {
+public class ParentChildNode extends TableNode {
 
     @Override
-    public PCGraph getGraph() {
-        return (PCGraph) super.getGraph();
+    public ParentChildGraph getGraph() {
+        return (ParentChildGraph) super.getGraph();
     }
 
     // ----- child methods -----
@@ -38,18 +38,18 @@ public class PCNode extends TableNode {
     }
 
     @Override
-    public PCNode getChild(int idx) {
+    public ParentChildNode getChild(int idx) {
         int c = getGraph().getChildRow(m_row, idx);
-        return (PCNode) (c < 0 ? null : m_graph.getNode(c));
+        return (ParentChildNode) (c < 0 ? null : m_graph.getNode(c));
     }
 
     @Override
-    public PCNode getFirstChild() {
+    public ParentChildNode getFirstChild() {
         return getChild(0);
     }
 
     @Override
-    public PCNode getLastChild() {
+    public ParentChildNode getLastChild() {
         return getChild(getChildCount() - 1);
     }
 
@@ -72,7 +72,7 @@ public class PCNode extends TableNode {
      *            The node that will be added as child.
      * @return the edge that was added between the two nodes
      */
-    public Edge linkWithChild(PCNode child) {
+    public Edge linkWithChild(ParentChildNode child) {
         if (Logger.getLogger(this.getClass()).isTraceEnabled()) {
             Logger.getLogger(this.getClass()).trace(
                     "link with child: " + this.getRow() + " <- "
@@ -96,16 +96,16 @@ public class PCNode extends TableNode {
         return super.m_graph.getOutDegree(this);
     }
 
-    public PCNode getParent(int idx) {
+    public ParentChildNode getParent(int idx) {
         int c = getGraph().getParentRow(m_row, idx);
-        return (PCNode) (c < 0 ? null : m_graph.getNode(c));
+        return (ParentChildNode) (c < 0 ? null : m_graph.getNode(c));
     }
 
-    public PCNode getFirstParent() {
+    public ParentChildNode getFirstParent() {
         return getParent(0);
     }
 
-    public PCNode getLastParent() {
+    public ParentChildNode getLastParent() {
         return getParent(getParentCount() - 1);
     }
 
@@ -126,7 +126,7 @@ public class PCNode extends TableNode {
      *            The node that will be added as parent.
      * @return the edge that was added between the two nodes
      */
-    public Edge linkWithParent(PCNode parent) {
+    public Edge linkWithParent(ParentChildNode parent) {
         if (Logger.getLogger(this.getClass()).isTraceEnabled()) {
             Logger.getLogger(this.getClass()).trace(
                     "link with parent: " + this.getRow() + " -> "

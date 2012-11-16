@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * @author Rind
  *
  */
-public class TemporalObject extends PCNode {
+public class TemporalObject extends ParentChildNode {
     
     static Logger logger = Logger.getLogger(TemporalObject.class);
     
