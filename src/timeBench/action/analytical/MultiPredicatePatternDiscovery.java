@@ -99,11 +99,11 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 				check((ArrayList<TemporalObject>)checkList.clone(),iChild,newObject,predicate);
 			}
 		} else {
-			// add new event
-			checkList.add(newObject);
-			resultDataset.setDepth(checkList.size());
 			// if this is an acceptable pattern
-			if (satisfies(checkList,predicates[predicate])) {
+			if (satisfies(checkList,newObject,predicates[predicate])) {
+				// add new event
+				checkList.add(newObject);
+				resultDataset.setDepth(checkList.size());
 				// check whether a pattern based on the same pattern exists in result
 				for(int i=0; i<checkList.size()-1; i++) {
 					if (!sourceToResult.containsKey(checkList.get(i).getId())) {
@@ -143,20 +143,20 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 	 * @return
 	 * @throws TemporalDataException
 	 */
-	private boolean satisfies(ArrayList<TemporalObject> checkedObjects, Predicate template)
+	private boolean satisfies(ArrayList<TemporalObject> checkedObjects, TemporalObject newObject, Predicate template)
 			throws TemporalDataException {
 		
-		if (checkedObjects.size() > 1) {
+		if (checkedObjects.size() > 0) {
 			// check for coherence		
 			if ( coherenceSettings != SPACING_OVERLAP_ALLOWED) {
 				// check only last against others; assume this is called once for each new TemporalObject
-				TemporalElement last = checkedObjects.get(checkedObjects.size()-1).getTemporalElement();
+				TemporalElement last = newObject.getTemporalElement();
 				if ( (coherenceSettings & SPACING_ALLOWED) == 0) {
-					if (last.getFirstInstant().getInf() - checkedObjects.get(checkedObjects.size()-2).getTemporalElement().getLastInstant().getSup() > 1)
+					if (last.getFirstInstant().getInf() - checkedObjects.get(checkedObjects.size()-1).getTemporalElement().getLastInstant().getSup() > 1)
 						return false;
 				}
 				if ( (coherenceSettings & OVERLAP_ALLOWED) == 0) {
-					for(int i=0; i<checkedObjects.size()-1;i++) {
+					for(int i=0; i<checkedObjects.size();i++) {
 						if(checkedObjects.get(i).getTemporalElement().getLastInstant().getSup() >= last.getFirstInstant().getInf())
 							return false;
 					}
@@ -166,7 +166,7 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 		
 		updateTemporalElementExpressions(template,checkedObjects);			
 		
- 		return template.getBoolean(checkedObjects.get(checkedObjects.size()-1));
+ 		return template.getBoolean(newObject);
 	}
 	
 	/**
