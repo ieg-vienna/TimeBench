@@ -43,6 +43,16 @@ public class TemporalObject extends ParentChildNode {
     }
 
     /**
+     * Get the temporal dataset of which this object is a member.
+     * Actually this is identical with {@link #getGraph()}.
+     * 
+     * @return the backing temporal dataset
+     */
+    public TemporalDataset getTemporalDataset() {
+        return (TemporalDataset) super.getGraph();
+    }
+
+    /**
      * Get the temporal element id.
      * 
      * @return the id
