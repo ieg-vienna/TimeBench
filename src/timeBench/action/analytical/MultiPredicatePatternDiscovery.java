@@ -114,9 +114,9 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 						sourceToResult.put(checkList.get(i).getId(), newReference.getId());
 						// if we did not add a first event of a pattern, add it as child of event before
 						if (i>0) {
-							int rowNumber = checkList.get(i).linkWithChild(newReference).getRow();
+							int rowNumber = resultDataset.getTemporalObject(sourceToResult.get(checkList.get(i-1).getId())).linkWithChild(newReference).getRow();
 							resultDataset.getEdgeTable().setLong(rowNumber, predicateColumn,
-								sourceDataset.getEdge(newReference,checkList.get(i)).getLong(predicateColumn)); 
+								sourceDataset.getEdge(checkList.get(i),checkList.get(i-1)).getLong(predicateColumn)); 
 						}
 					}
 				}
