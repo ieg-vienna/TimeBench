@@ -8,6 +8,7 @@ import prefuse.data.expression.BinaryExpression;
 import prefuse.data.expression.CompositePredicate;
 import prefuse.data.expression.Expression;
 import prefuse.data.expression.Predicate;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;
@@ -66,15 +67,35 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 		if (resultDataset.getEdgeTable().getColumn(predicateColumn) == null)
 			resultDataset.getEdgeTable().addColumn(predicateColumn, long.class);
 		
-			// for all patterns of existing length (might be events)
-			for (TemporalObject iSource : sourceDataset.temporalObjects()) {
-				// and for all predicates
-				for (int i=0; i<predicates.length; i++) {
-					// as well as all events to be added
-					for (TemporalObject iEvent : sourceDataset.temporalObjects()) {					
-						ArrayList<TemporalObject> checkList = new ArrayList<TemporalObject>();
-						// check if this combination is to be added
-						check(checkList,iSource,iEvent,i);
+			// This code is duplicated because TemporalDataset is too complicated to use
+			// This problem is inherited from prefuse
+			if (sourceDataset.getDepth() == 1) {
+		
+				// for all patterns of existing length (might be events)
+				for (TemporalObject iSource : sourceDataset.temporalObjects()) {
+					// and for all predicates
+					for (int i=0; i<predicates.length; i++) {
+						// as well as all events to be added
+						for (TemporalObject iEvent : eventDataset.temporalObjects()) {
+							ArrayList<TemporalObject> checkList = new ArrayList<TemporalObject>();
+							// check if this combination is to be added
+							check(checkList,iSource,iEvent,i);
+						}
+					}
+				}
+			} else {
+			
+				// for all patterns of existing length (might be events)
+				for (long iSourceId : sourceDataset.getRoots()) {
+					TemporalObject iSource = sourceDataset.getTemporalObject(iSourceId);
+					// and for all predicates
+					for (int i=0; i<predicates.length; i++) {
+						// as well as all events to be added
+						for (TemporalObject iEvent : eventDataset.temporalObjects()) {
+							ArrayList<TemporalObject> checkList = new ArrayList<TemporalObject>();
+							// check if this combination is to be added
+							check(checkList,iSource,iEvent,i);
+						}
 					}
 				}
 			}
