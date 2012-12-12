@@ -1,5 +1,6 @@
 package visual.sort;
 
+import ieg.prefuse.data.ParentChildNode;
 import prefuse.Visualization;
 import prefuse.data.Node;
 import prefuse.visual.AggregateItem;
@@ -33,8 +34,8 @@ public class TreeItemSorter extends ItemSorter {
         
         int score = (1<<(26+type));
                 
-        if (item.getSourceTuple() instanceof Node) {
-            for(Node node = (Node)item.getSourceTuple(); node.getParent() != null; node = node.getParent()) {
+        if (item.getSourceTuple() instanceof ParentChildNode) {
+            for(ParentChildNode node = (ParentChildNode)item.getSourceTuple(); node.getFirstParent() != null; node = node.getFirstParent()) {
             	score++;
             }
         }
