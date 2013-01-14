@@ -328,7 +328,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return a {@link Graph} containing the temporal elements and how they are
      *         related.
      */
-    public Graph getTemporalElements() {
+    public ParentChildGraph getTemporalElements() {
         return temporalElements;
     }
 
