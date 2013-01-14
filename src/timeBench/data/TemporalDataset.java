@@ -135,6 +135,33 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
                     dataColumns.getColumnType(i), dataColumns.getDefault(i));
         }
     }
+    
+    /**
+     * Warning: experimental -- know what you do!
+     * 
+     * @param temporalObjects
+     * @param temporalObjectsEdges
+     * @param temporalElements
+     * @throws TemporalDataException
+     */
+    public TemporalDataset(Table temporalObjects, Table temporalObjectsEdges, ParentChildGraph temporalElements) throws TemporalDataException {
+        super(temporalObjects, temporalObjectsEdges);
+        
+        this.temporalElements = temporalElements;
+        // TODO check temporal element schema 
+
+        // TODO check temporal objects columns (primary and foreign key)
+        // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
+        
+        // add indices
+        this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
+        this.indexObjectsByElements = super.getNodeTable().index(
+                TemporalObject.TEMPORAL_ELEMENT_ID);
+        this.indexElements = this.temporalElements.getNodeTable().index(
+                TemporalElement.ID);
+
+        initTupleManagers();
+    }
 
     /**
      * Add a data column with the given name and data type to the temporal
