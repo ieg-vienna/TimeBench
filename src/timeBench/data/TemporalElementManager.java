@@ -41,7 +41,7 @@ public class TemporalElementManager extends TupleManager {
     /**
      * the temporal dataset. It will be passed to new temporal element tuples
      */
-    private TemporalDataset tmpds;
+    private TemporalElementStore tmpStore;
 
     // TODO undesirable to mix generic and primitive tuples in the dataset?
     /**
@@ -51,10 +51,9 @@ public class TemporalElementManager extends TupleManager {
      */
     private boolean generic;
 
-    public TemporalElementManager(TemporalDataset tmpds, boolean generic) {
-        super(tmpds.getTemporalElements().getNodeTable(), 
-                tmpds.getTemporalElements(), TemporalElement.class);
-        this.tmpds = tmpds;
+    public TemporalElementManager(TemporalElementStore tmpstr, boolean generic) {
+        super(tmpstr.getNodeTable(), tmpstr, TemporalElement.class);
+        this.tmpStore = tmpstr;
         this.generic = generic;
     }
 
@@ -66,13 +65,13 @@ public class TemporalElementManager extends TupleManager {
             t = new GenericTemporalElement();
         else
             switch (kind) {
-            case TemporalDataset.PRIMITIVE_INSTANT:
+            case TemporalElementStore.PRIMITIVE_INSTANT:
                 t = new Instant();
                 break;
-            case TemporalDataset.PRIMITIVE_INTERVAL:
+            case TemporalElementStore.PRIMITIVE_INTERVAL:
                 t = new Interval();
                 break;
-            case TemporalDataset.PRIMITIVE_SPAN:
+            case TemporalElementStore.PRIMITIVE_SPAN:
                 t = new Span();
                 break;
             default:
@@ -82,7 +81,7 @@ public class TemporalElementManager extends TupleManager {
                     t = new UnanchoredTemporalElement();
             }
 
-        t.init(m_table, m_graph, tmpds, row);
+        t.init(m_table, tmpStore, row);
         return t;
     }
 
@@ -103,10 +102,10 @@ public class TemporalElementManager extends TupleManager {
         // use low level functions, otherwise a tuple would be created (circular
         // dependency)
         int kind = g.getNodeTable().getInt(row, TemporalElement.KIND);
-        if (kind == TemporalDataset.PRIMITIVE_INSTANT
-                || kind == TemporalDataset.PRIMITIVE_INTERVAL)
+        if (kind == TemporalElementStore.PRIMITIVE_INSTANT
+                || kind == TemporalElementStore.PRIMITIVE_INTERVAL)
             return true;
-        else if (kind == TemporalDataset.PRIMITIVE_SET) {
+        else if (kind == TemporalElementStore.PRIMITIVE_SET) {
             IntIterator iter = g.inEdgeRows(row);
             while (iter.hasNext())
                 if (TemporalElementManager.isAnchored(g,

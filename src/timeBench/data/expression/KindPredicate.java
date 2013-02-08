@@ -6,7 +6,7 @@ import prefuse.data.expression.ComparisonPredicate;
 import prefuse.data.expression.Expression;
 import prefuse.data.expression.NumericLiteral;
 import prefuse.data.expression.Predicate;
-import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElementStore;
 import timeBench.data.TemporalElement;
 
 /**
@@ -23,16 +23,16 @@ public class KindPredicate extends ComparisonPredicate {
 
     /** convenience instance for instants. */
     public static final Predicate INSTANT = new KindPredicate(
-            TemporalDataset.PRIMITIVE_INSTANT);
+            TemporalElementStore.PRIMITIVE_INSTANT);
     /** convenience instance for intervals. */
     public static final Predicate INTERVAL = new KindPredicate(
-            TemporalDataset.PRIMITIVE_INTERVAL);
+            TemporalElementStore.PRIMITIVE_INTERVAL);
     /** convenience instance for intervals. */
     public static final Predicate SPAN = new KindPredicate(
-            TemporalDataset.PRIMITIVE_SPAN);
+            TemporalElementStore.PRIMITIVE_SPAN);
     /** convenience instance for intervals. */
     public static final Predicate SET = new KindPredicate(
-            TemporalDataset.PRIMITIVE_SET);
+            TemporalElementStore.PRIMITIVE_SET);
 
     private int kind;
 

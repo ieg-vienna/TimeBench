@@ -8,6 +8,7 @@ import prefuse.util.collections.IntIterator;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
+import timeBench.data.TemporalElementStore;
 import timeBench.data.TemporalObject;
 
 /**
@@ -124,28 +125,28 @@ public class TemporalDatasetValidator {
         Graph graph = tmpds.getTemporalElements();
         for (GenericTemporalElement elem : tmpds.temporalElements()) {
             switch (elem.getKind()) {
-            case TemporalDataset.PRIMITIVE_INSTANT:
+            case TemporalElementStore.PRIMITIVE_INSTANT:
                 if (graph.getInDegree(elem) > 0) {
                     log.info("Instant with children at temporal element ID "
                             + elem.getId());
                     return false;
                 }
                 break;
-            case TemporalDataset.PRIMITIVE_SPAN:
+            case TemporalElementStore.PRIMITIVE_SPAN:
                 if (graph.getInDegree(elem) > 0) {
                     log.info("Span with children at temporal element ID "
                             + elem.getId());
                     return false;
                 }
                 break;
-            case TemporalDataset.PRIMITIVE_SET:
+            case TemporalElementStore.PRIMITIVE_SET:
                 if (graph.getInDegree(elem) == 0) {
                     log.info("Set without children at temporal element ID "
                             + elem.getId());
                     return false;
                 }
                 break;
-            case TemporalDataset.PRIMITIVE_INTERVAL:
+            case TemporalElementStore.PRIMITIVE_INTERVAL:
                 // TODO check structure of interval
                 break;
             default:
@@ -167,13 +168,13 @@ public class TemporalDatasetValidator {
     public static boolean validateGranules(TemporalDataset tmpds) {
         for (GenericTemporalElement elem : tmpds.temporalElements()) {
             switch (elem.getKind()) {
-            case TemporalDataset.PRIMITIVE_INSTANT:
+            case TemporalElementStore.PRIMITIVE_INSTANT:
                 // TODO inf/sup of exactly one granule
                 break;
-            case TemporalDataset.PRIMITIVE_INTERVAL:
+            case TemporalElementStore.PRIMITIVE_INTERVAL:
                 // TODO inf<sup & inf/sup may be of different granules
                 break;
-            case TemporalDataset.PRIMITIVE_SPAN:
+            case TemporalElementStore.PRIMITIVE_SPAN:
                 if (elem.getInf() < 0) {
                     log.info("Span with negative length (ID: " + elem.getId()
                             + ")");
@@ -182,7 +183,7 @@ public class TemporalDatasetValidator {
                 // TODO sanity check: large value in a "high" granularity
                 // (misplaced timestamp)??
                 break;
-            case TemporalDataset.PRIMITIVE_SET:
+            case TemporalElementStore.PRIMITIVE_SET:
                 if (elem.isAnchored()) {
                     // TODO see interval
                 } else {
