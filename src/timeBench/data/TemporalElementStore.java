@@ -2,6 +2,12 @@ package timeBench.data;
 
 import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
@@ -9,6 +15,7 @@ import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
+import prefuse.util.collections.CompositeIterator;
 import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
@@ -52,6 +59,8 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
      * Initialized on demand by {@link #intervalIndex()}.
      */
     private IntervalIndex indexElementIntervals = null;
+    
+    private List<TemporalDataset> temporalData = new LinkedList<TemporalDataset>();
     
     /**
      * Cache for first granules of temporal elements (Lazy initialization).
@@ -125,6 +134,14 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
     @Deprecated
     public TemporalElementStore clone() {
         throw new UnsupportedOperationException("clone no longer needed");
+    }
+    
+    protected void register(TemporalDataset tmpds) {
+        this.temporalData.add(tmpds);
+    }
+
+    protected void unregister(TemporalDataset tmpds) {
+        this.temporalData.add(tmpds);
     }
 
     // ----- TEMPORAL ELEMENT ACCESSORS -----
@@ -268,13 +285,24 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
      * @return an object, which provides an iterator over temporal objects
      *         occurring with the temporal element
      */
-//    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Iterable<TemporalObject> getTemporalObjectsByElementId(
             long temporalId) {
-        // XXX Knackpunkt: keep track of all my temporal datasets and ask them 
-//        IntIterator rows = this.indexObjectsByElements.rows(temporalId);
-//        return new CustomIterable(super.getNodeTable().tuples(rows));
-        throw new UnsupportedOperationException();
+        
+        // TODO handle element store without datasets
+        if (temporalData.size() < 1) {
+            throw new UnsupportedOperationException();
+        }
+            
+        ArrayList<Iterator<TemporalObject>> iis = new ArrayList<Iterator<TemporalObject>>();
+        for (TemporalDataset tmpds : temporalData) {
+            Iterator<TemporalObject> ii = tmpds
+                    .getTemporalObjectsByElementIdIterator(temporalId);
+            iis.add(ii);
+        }
+
+        Iterator[] iiArray = new Iterator[iis.size()];
+        return new CustomIterable(new CompositeIterator(iis.toArray(iiArray)));
     }
 
     /**

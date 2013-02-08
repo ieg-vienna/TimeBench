@@ -4,6 +4,7 @@ import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import prefuse.data.Graph;
 import prefuse.data.Schema;
@@ -71,10 +72,15 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * Constructs an empty {@link TemporalDataset}
      */
     public TemporalDataset() {
+        this(new TemporalElementStore());
+    }
+    
+    public TemporalDataset(TemporalElementStore temporalElements) {
         // temporal objects are by default in an directed graph
         super();
 
-        this.temporalElements = new TemporalElementStore();
+        this.temporalElements = temporalElements;
+        temporalElements.register(this);
 
         // add temporal objects columns (primary and foreign key)
         // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
@@ -457,10 +463,15 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     @SuppressWarnings("unchecked")
     public Iterable<TemporalObject> getTemporalObjectsByElementId(
             long temporalId) {
-        IntIterator rows = this.indexObjectsByElements.rows(temporalId);
-        return new CustomIterable(super.getNodeTable().tuples(rows));
+        return new CustomIterable(getTemporalObjectsByElementIdIterator(temporalId));
     }
 
+    @SuppressWarnings("unchecked")
+    protected Iterator<TemporalObject> getTemporalObjectsByElementIdIterator(
+            long temporalId) {
+        IntIterator rows = this.indexObjectsByElements.rows(temporalId);
+        return super.getNodeTable().tuples(rows);
+    }
     /**
      * Gets all (temporal) occurrences of data elements
      * 
