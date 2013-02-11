@@ -289,6 +289,9 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
     public Iterable<TemporalObject> getTemporalObjectsByElementId(
             long temporalId) {
         
+        // TODO use an interface instead of TemporalObject for return 
+        // TODO query columns instead of temporal datasets for more generalizability 
+        
         // TODO handle element store without datasets
         if (temporalData.size() < 1) {
             throw new UnsupportedOperationException();

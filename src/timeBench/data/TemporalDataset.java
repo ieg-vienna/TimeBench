@@ -85,6 +85,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         // add temporal objects columns (primary and foreign key)
         // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
         super.getNodeTable().addColumn(TemporalObject.ID, long.class, -1);
+//        super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, new TemporalColumn(temporalElements));
+
         super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
         
         // add indices
