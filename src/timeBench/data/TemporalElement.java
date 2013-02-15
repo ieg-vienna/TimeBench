@@ -3,7 +3,6 @@ package timeBench.data;
 import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
 
-import prefuse.data.Graph;
 import prefuse.data.Table;
 import prefuse.data.tuple.TableNode;
 import timeBench.calendar.Granule;
@@ -23,7 +22,7 @@ import timeBench.calendar.Granule;
  */
 public abstract class TemporalElement extends ParentChildNode {
 
-	protected static TemporalDataset temporalDataHeap = new TemporalDataset();
+	protected static TemporalElementStore temporalDataHeap = new TemporalElementStore();
 	
     // predefined column names for temporal elements (similar to VisualItem)
     /**
@@ -59,11 +58,6 @@ public abstract class TemporalElement extends ParentChildNode {
 
     
     /**
-     * the backing temporal data set
-     */
-    private TemporalDataset tmpds;
-    
-    /**
      * creates an invalid TemporalElement. Use {@link TemporalDataset} as a
      * factory!
      */
@@ -79,15 +73,12 @@ public abstract class TemporalElement extends ParentChildNode {
      *            the backing table
      * @param graph
      *            the backing graph
-     * @param tmpds
-     *            the backing temporal dataset
      * @param row
      *            the row in the node table to which this temporal element
      *            corresponds
      */
-    protected void init(Table table, Graph graph, TemporalDataset tmpds, int row) {
+    protected void init(Table table, TemporalElementStore graph, int row) {
         super.init(table, graph, row);
-        this.tmpds = tmpds;
     }
     
     
@@ -156,8 +147,8 @@ public abstract class TemporalElement extends ParentChildNode {
      * 
      * @return the backing temporal dataset
      */
-    public TemporalDataset getTemporalDataset() {
-        return tmpds;
+    public TemporalElementStore getTemporalElementStore() {
+        return (TemporalElementStore) this.m_graph;
     }
 
     /**
@@ -258,7 +249,7 @@ public abstract class TemporalElement extends ParentChildNode {
      * @return a generic temporal element of the same underlying data row.
      */
     public GenericTemporalElement asGeneric() {
-        return this.tmpds.getTemporalElementByRow(this.m_row);
+        return ((TemporalElementStore) this.m_graph).getTemporalElementByRow(this.m_row);
     }
 
     /**
@@ -267,7 +258,7 @@ public abstract class TemporalElement extends ParentChildNode {
      * @return a temporal primitive of the same underlying data row.
      */
     public TemporalElement asPrimitive() {
-        return this.tmpds.getTemporalPrimitiveByRow(this.m_row);
+        return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(this.m_row);
     }
     
     /**
@@ -321,7 +312,11 @@ public abstract class TemporalElement extends ParentChildNode {
      * @return temporal objects occurring with the temporal element
      */
     public Iterable<TemporalObject> temporalObjects() {
-        return this.tmpds.getTemporalObjectsByElementId(getId());
+        return ((TemporalElementStore) this.m_graph).getTemporalObjectsByElementId(getId());
+    }
+    
+    public Iterable<TemporalObject> temporalObjects(TemporalDataset tmpds) {
+        return tmpds.getTemporalObjectsByElementId(getId());
     }
     
     /**
@@ -355,7 +350,7 @@ public abstract class TemporalElement extends ParentChildNode {
     public TemporalElement getFirstChildPrimitive() {
         int child = getGraph().getChildRow(m_row, 0);
         if (child > -1) {
-            return this.tmpds.getTemporalPrimitiveByRow(child);
+            return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(child);
         } else {
             return null;
         }
@@ -383,7 +378,7 @@ public abstract class TemporalElement extends ParentChildNode {
      * @see timeBench.data.util.GranuleCache
      */
     public Granule[] getGranules() throws TemporalDataException {
-        return tmpds.getGranulesByRow(m_row);
+        return ((TemporalElementStore) this.m_graph).getGranulesByRow(m_row);
     }
 
     /**

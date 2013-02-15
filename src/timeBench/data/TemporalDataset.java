@@ -4,20 +4,18 @@ import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TableEdge;
-import prefuse.data.tuple.TupleManager;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
-import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.expression.AnchoredPredicate;
 import timeBench.data.util.DefaultIntervalComparator;
-import timeBench.data.util.GranuleCache;
 import timeBench.data.util.IntervalComparator;
 import timeBench.data.util.IntervalIndex;
 import timeBench.data.util.TemporalIndex;
@@ -35,15 +33,14 @@ import timeBench.data.util.TemporalIndex;
 public class TemporalDataset extends ParentChildGraph implements Lifespan, Cloneable {
     
     /**
-     * ID of the first temporal object or temporal element, if it is not
-     * externally set.
+     * ID of the first temporal object, if it is not externally set.
      */
     private static final long DEFAULT_FIRST_ID = 0l;
     
     /**
-     * {@link Graph} of temporal elements
+     * store of temporal elements
      */
-    private ParentChildGraph temporalElements;
+    private TemporalElementStore temporalElements;
 
     // TODO roots as a linked list?
     private long[] roots = null; // if we have a forest or tree of temporal
@@ -56,23 +53,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     protected String[] additionalNonDataColums = new String[0];
     
     /**
-     * tuple manager for primitives (e.g., {@link Instance})
-     */
-    private TemporalElementManager temporalPrimitives;
-    /**
-     * tuple manager for {@link GenericTemporalElement}s)
-     */
-    private TemporalElementManager temporalGenerics;
-
-    /**
      * index for {@link TemporalObject} row numbers by {@link TemporalObject#ID}. 
      */
     private Index indexObjects;
-
-    /**
-     * index for {@link TemporalElement} row numbers by {@link TemporalElement#ID}. 
-     */
-    private Index indexElements;
 
     /**
      * index for {@link TemporalObject} row numbers by {@link TemporalElement#ID}. 
@@ -86,21 +69,18 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     private IntervalIndex indexElementIntervals = null;
     
     /**
-     * Cache for first granules of temporal elements (Lazy initialization).
-     */
-    private GranuleCache granuleCache; 
-    
-    /**
      * Constructs an empty {@link TemporalDataset}
      */
     public TemporalDataset() {
+        this(new TemporalElementStore());
+    }
+    
+    public TemporalDataset(TemporalElementStore temporalElements) {
         // temporal objects are by default in an directed graph
         super();
 
-        this.temporalElements = new ParentChildGraph();
-        // define temporal element columns for nodes of the temporal e. graph
-        this.temporalElements.getNodeTable().addColumns(
-                this.getTemporalElementSchema());
+        this.temporalElements = temporalElements;
+        temporalElements.register(this);
 
         // add temporal objects columns (primary and foreign key)
         // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
@@ -111,8 +91,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
         this.indexObjectsByElements = super.getNodeTable().index(
                 TemporalObject.TEMPORAL_ELEMENT_ID);
-        this.indexElements = this.temporalElements.getNodeTable().index(
-                TemporalElement.ID);
 
         initTupleManagers();
     }
@@ -144,11 +122,10 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @param temporalElements
      * @throws TemporalDataException
      */
-    public TemporalDataset(Table temporalObjects, Table temporalObjectsEdges, ParentChildGraph temporalElements) throws TemporalDataException {
+    public TemporalDataset(Table temporalObjects, Table temporalObjectsEdges, TemporalElementStore temporalElements) throws TemporalDataException {
         super(temporalObjects, temporalObjectsEdges);
         
         this.temporalElements = temporalElements;
-        // TODO check temporal element schema 
 
         // TODO check temporal objects columns (primary and foreign key)
         // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
@@ -157,8 +134,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
         this.indexObjectsByElements = super.getNodeTable().index(
                 TemporalObject.TEMPORAL_ELEMENT_ID);
-        this.indexElements = this.temporalElements.getNodeTable().index(
-                TemporalElement.ID);
 
         initTupleManagers();
     }
@@ -265,25 +240,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         // assign to temporal object graph
         // nodes of temporal object graph --> TemporalObject
         super.initTupleManagers(TemporalObject.class, TableEdge.class);
-        
-        // nodes of temporal element graph --> GenericTemporalElement
-        this.temporalGenerics = new TemporalElementManager(this, true);
-
-        // additional tuple manager for temporal element graph --> temporal
-        // primitives
-        this.temporalPrimitives = new TemporalElementManager(this, false);
-        this.temporalPrimitives.invalidateAutomatically();
-
-        // default manager for edges in graphs
-        TupleManager tempElementEdgeManager = new TupleManager(
-                temporalElements.getEdgeTable(), temporalElements,
-                TableEdge.class);
-
-        // assign to temporal element graph
-        temporalElements.setTupleManagers(temporalGenerics,
-                tempElementEdgeManager);
-        temporalElements.getNodeTable().setTupleManager(temporalGenerics);
-        temporalElements.getEdgeTable().setTupleManager(tempElementEdgeManager);
     }
 
     @Deprecated
@@ -328,7 +284,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return a {@link Graph} containing the temporal elements and how they are
      *         related.
      */
-    public ParentChildGraph getTemporalElements() {
+    public TemporalElementStore getTemporalElements() {
         return temporalElements;
     }
 
@@ -337,8 +293,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * 
      * @return the number of temporal elements
      */
+    @Deprecated
     public int getTemporalElementCount() {
-        return temporalElements.getNodeCount();
+        return temporalElements.getTemporalElementCount();
     }
 
     /**
@@ -348,8 +305,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      *            temporal element table row number
      * @return the TemporalElement instance corresponding to the row number
      */
+    @Deprecated
     public GenericTemporalElement getTemporalElementByRow(int row) {
-        return (GenericTemporalElement) temporalElements.getNode(row);
+        return temporalElements.getTemporalElementByRow(row);
     }
 
     /**
@@ -362,8 +320,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      *         <tt>null</tt> if this dataset contains no element for the id.
      */
     public GenericTemporalElement getTemporalElement(long id) {
-        int row = this.indexElements.get(id);
-        return (row == Integer.MIN_VALUE) ? null : getTemporalElementByRow(row);
+        return temporalElements.getTemporalElement(id);
     }
 
     /**
@@ -373,8 +330,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      *            temporal element table row number
      * @return the temporal primitive corresponding to the row number
      */
+    @Deprecated
     public TemporalElement getTemporalPrimitiveByRow(int row) {
-        return (TemporalElement) this.temporalPrimitives.getTuple(row);
+        return temporalElements.getTemporalPrimitiveByRow(row);
     }
 
     /**
@@ -387,9 +345,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      *         <tt>null</tt> if this dataset contains no primitive for the id.
      */
     public TemporalElement getTemporalPrimitive(long id) {
-        int row = this.indexElements.get(id);
-        return (row == Integer.MIN_VALUE) ? null
-                : getTemporalPrimitiveByRow(row);
+        return temporalElements.getTemporalPrimitive(id);
     }
 
     /**
@@ -398,9 +354,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return an object, which provides an iterator over TemporalElement
      *         instances
      */
-    @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> temporalElements() {
-        return new CustomIterable(temporalElements.nodes());
+        return temporalElements.temporalElements();
     }
 
     /**
@@ -414,10 +369,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return an object, which provides an iterator over TemporalElement
      *         instances
      */
-    @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> temporalElements(Predicate filter) {
-        return new CustomIterable(temporalElements.getNodeTable()
-                .tuples(filter));
+        return temporalElements.temporalElements(filter);
     }
 
     /**
@@ -426,10 +379,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return an object, which provides an iterator over TemporalElement
      *         instances
      */
-    @SuppressWarnings("unchecked")
     public Iterable<TemporalElement> temporalPrimitives() {
-        return new CustomIterable(temporalPrimitives.iterator(temporalElements
-                .nodeRows()));
+        return temporalElements.temporalPrimitives();
     }
 
     /**
@@ -443,10 +394,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return an object, which provides an iterator over TemporalElement
      *         instances
      */
-    @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> temporalPrimitives(Predicate filter) {
-        IntIterator iit = temporalElements.getNodeTable().rows(filter);
-        return new CustomIterable(temporalPrimitives.iterator(iit));
+        return temporalElements.temporalPrimitives(filter);
     }
 
     // ----- TEMPORAL OBJECT ACCESSORS -----
@@ -514,10 +463,15 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     @SuppressWarnings("unchecked")
     public Iterable<TemporalObject> getTemporalObjectsByElementId(
             long temporalId) {
-        IntIterator rows = this.indexObjectsByElements.rows(temporalId);
-        return new CustomIterable(super.getNodeTable().tuples(rows));
+        return new CustomIterable(getTemporalObjectsByElementIdIterator(temporalId));
     }
 
+    @SuppressWarnings("unchecked")
+    protected Iterator<TemporalObject> getTemporalObjectsByElementIdIterator(
+            long temporalId) {
+        IntIterator rows = this.indexObjectsByElements.rows(temporalId);
+        return super.getNodeTable().tuples(rows);
+    }
     /**
      * Gets all (temporal) occurrences of data elements
      * 
@@ -640,67 +594,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     }
     
     /**
-     * Adds a new temporal element to the dataset but does not return a proxy
-     * tuple.
-     * 
-     * @param inf
-     *            the lower end of the temporal element
-     * @param sup
-     *            the upper end of the temporal element
-     * @param granularityId
-     *            the granularityID of the temporal element
-     * @param granularityContextId
-     *            the granularityContextID of the temporal element
-     * @param kind
-     *            the kind of the temporal element
-     * @return the index of the created element in the table of temporal
-     *         elements
-     */
-    private int addTemporalElementAsRow(long inf, long sup, int granularityId,
-            int granularityContextId, int kind) {
-        long id = (indexElements.size() > 0) ? temporalElements.getNodeTable()
-                .getLong(this.indexElements.maximum(), TemporalElement.ID) + 1
-                : DEFAULT_FIRST_ID;
-        return addTemporalElementAsRow(id, inf, sup, granularityId,
-                granularityContextId, kind);
-    }
-
-    /**
-     * Adds a new temporal element to the dataset but does not return a proxy
-     * tuple.
-     * 
-     * @param id
-     *            the id of the temporal element
-     * @param inf
-     *            the lower end of the temporal element
-     * @param sup
-     *            the upper end of the temporal element
-     * @param granularityId
-     *            the granularityID of the temporal element
-     * @param granularityContextId
-     *            the granularityContextID of the temporal element
-     * @param kind
-     *            the kind of the temporal element
-     * @return the index of the created element in the table of temporal
-     *         elements
-     */
-    private int addTemporalElementAsRow(long id, long inf, long sup,
-            int granularityId, int granularityContextId, int kind) {
-        Table nodeTable = temporalElements.getNodeTable();
-        int row = nodeTable.addRow();
-        nodeTable.set(row, TemporalElement.ID, id);
-        nodeTable.set(row, TemporalElement.INF, inf);
-        nodeTable.set(row, TemporalElement.SUP, sup);
-        nodeTable.set(row, TemporalElement.GRANULARITY_ID, granularityId);
-        nodeTable.set(row, TemporalElement.GRANULARITY_CONTEXT_ID, granularityContextId);
-        nodeTable.set(row, TemporalElement.KIND, kind);
-
-        // only proxy tuple is GenericTemporalElement -> no need to invalidate
-
-        return row;
-    }
-
-    /**
      * Adds a new temporal element to the dataset
      * 
      * @param inf
@@ -717,10 +610,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     public GenericTemporalElement addTemporalElement(long inf, long sup,
             int granularityId, int granularityContextId, int kind) {
-        int row = addTemporalElementAsRow(inf, sup, granularityId,
+        return temporalElements.addTemporalElement(inf, sup, granularityId, 
                 granularityContextId, kind);
-        return (GenericTemporalElement) this.temporalGenerics.getTuple(row);
-
     }
 
     /**
@@ -742,10 +633,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     public GenericTemporalElement addTemporalElement(long id, long inf,
             long sup, int granularityId, int granularityContextId, int kind) {
-        int row = addTemporalElementAsRow(id, inf, sup, granularityId,
+        return temporalElements.addTemporalElement(id, inf, sup, granularityId, 
                 granularityContextId, kind);
-        return (GenericTemporalElement) this.temporalGenerics.getTuple(row);
-
     }
     
     /**
@@ -759,23 +648,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return an array of proxy tuples for the new temporal elements.
      */
     public GenericTemporalElement[] addTemporalElements(int nTuples, int kind) {
-        Table nodeTable = temporalElements.getNodeTable();
-
-        long firstId = (indexElements.size() > 0) ? nodeTable.getLong(
-                this.indexElements.maximum(), TemporalElement.ID) + 1
-                : DEFAULT_FIRST_ID;
-
-        int[] rows = nodeTable.addRows(nTuples);
-        GenericTemporalElement[] elems = new GenericTemporalElement[nTuples];
-
-        for (int i = 0; i < nTuples; i++) {
-            nodeTable.set(rows[i], TemporalElement.ID, firstId + i);
-            nodeTable.set(rows[i], TemporalElement.KIND, kind);
-            elems[i] = (GenericTemporalElement) this.temporalGenerics
-                    .getTuple(rows[i]);
-        }
-
-        return elems;
+        return temporalElements.addTemporalElements(nTuples, kind);
     }
     
     /**
@@ -794,12 +667,10 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     public Instant addInstant(long inf, long sup, int granularityId,
             int granularityContextId) {
-        int row = this.addTemporalElementAsRow(inf, sup, granularityId,
-                granularityContextId, TemporalDataset.PRIMITIVE_INSTANT);
-        Instant result = (Instant) this.temporalPrimitives.getTuple(row);
-        return result;
+        return temporalElements.addInstant(inf, sup, granularityId, 
+                granularityContextId);
     }
-
+    
     /**
      * Add a new instant to the dataset. This method returns a proxy tuple of
      * this instant, which is of class {@link Instant}.
@@ -818,10 +689,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     public Instant addInstant(long id, long inf, long sup, int granularityId,
             int granularityContextId) {
-        int row = this.addTemporalElementAsRow(id, inf, sup, granularityId,
-                granularityContextId, TemporalDataset.PRIMITIVE_INSTANT);
-        Instant result = (Instant) this.temporalPrimitives.getTuple(row);
-        return result;
+        return temporalElements.addInstant(id, inf, sup, granularityId, 
+                granularityContextId);
     }
 
     /**
@@ -834,107 +703,30 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @throws TemporalDataException
      */
     public Instant addInstant(Granule granule) throws TemporalDataException {
-        if (this.granuleCache == null) {
-            granuleCache = new GranuleCache(this);
-        }
-        Instant instant = addInstant(granule.getInf(), granule.getSup(),
-                granule.getGranularity().getIdentifier(), granule
-                        .getGranularity().getGranularityContextIdentifier());
-        granuleCache.addGranule(instant.getRow(), granule);
-        return instant;
+        return temporalElements.addInstant(granule);
     }
     
     public Span addSpan(long length, int granularityId) {
-        int row = this.addTemporalElementAsRow(length, length, granularityId,
-                -1, TemporalDataset.PRIMITIVE_SPAN);
-        Span result = (Span) this.temporalPrimitives.getTuple(row);
-        return result;
+        return temporalElements.addSpan(length, granularityId);
     }
 
     public Interval addInterval(Instant begin, Instant end)
             throws TemporalDataException {
-
-        // XXX make this more correct using Tim's classes (e.g., check &
-        // handle different granularities)
-
-        GenericTemporalElement interval = addTemporalElement(begin.getInf(),
-                end.getSup(), begin.getGranularityId(),
-                begin.getGranularityContextId(),
-                TemporalDataset.PRIMITIVE_INTERVAL);
-
-        // add edges to temporal element graph
-        interval.linkWithChild(begin);
-        interval.linkWithChild(end);
-
-        return (Interval) interval.asPrimitive();
+        return temporalElements.addInterval(begin, end);
     }
     
     public Interval addInterval(Instant begin, Span span)
             throws TemporalDataException {
-
-        // TODO change granularities to solve more general cases
-        if (span.getGranularityId() != begin.getGranularityId()) {
-            throw new TemporalDataException(
-                    "Begin and span need to be the same granularity");
-        }
-
-        Granule granule = begin.getGranule();
-        Granularity granularity = granule.getGranularity();
-
-        if (!granularity.isInTopContext()) {
-            throw new TemporalDataException(
-                    "Granularity must be in top context");
-        }
-
-        long endId = granule.getIdentifier() + span.getLength() - 1;
-        granule = new Granule(endId, granularity);
-        long sup = granule.getSup();
-
-        GenericTemporalElement interval = addTemporalElement(begin.getInf(),
-                sup, begin.getGranularityId(),
-                begin.getGranularityContextId(),
-                TemporalDataset.PRIMITIVE_INTERVAL);
-
-        // add edges to temporal element graph
-        interval.linkWithChild(begin);
-        interval.linkWithChild(span);
-
-        return (Interval) interval.asPrimitive();
+        return temporalElements.addInterval(begin, span);
     }
     
     public Interval addInterval(Span span, Instant end)
             throws TemporalDataException {
-        throw new UnsupportedOperationException();
+        return temporalElements.addInterval(span, end);
     }
     
     public AnchoredTemporalElement addAnchoredSet(TemporalElement... elements) throws TemporalDataException {
-        TemporalElement anchor = null;
-        long inf = Long.MAX_VALUE;
-        long sup = Long.MIN_VALUE;
-
-        for (TemporalElement el : elements) {
-            if (el.isAnchored()) {
-                anchor = el;
-                inf = Math.min(inf, el.getLong(TemporalElement.INF));
-                sup = Math.max(sup, el.getLong(TemporalElement.SUP));
-            }
-        }
-
-        if (anchor == null) {
-            throw new TemporalDataException(
-                    "Anchored set needs at least one anchored child.");
-        }
-
-        GenericTemporalElement set = addTemporalElement(inf, sup,
-                anchor.getGranularityId(), anchor.getGranularityContextId(),
-                TemporalDataset.PRIMITIVE_SET);
-
-        // add edges to temporal element graph
-        for (TemporalElement el : elements) {
-            set.linkWithChild(el);
-        }
-
-        return (AnchoredTemporalElement) set.asPrimitive();
+        return temporalElements.addAnchoredSet(elements);
     }
     
     /**
@@ -944,54 +736,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * TemporalElement was not found in this graph
      */   
     public boolean removeTemporalElement(TemporalElement te) {
-    	return temporalElements.removeNode(te);
+    	return temporalElements.removeTemporalElement(te);
     }
     
-    /**
-     * Gets the first granule of an anchored temporal element. For an
-     * {@link Instant}, the granule represents the time of the instant. If it is
-     * unanchored, <tt>null</tt> is returned. Granules are cached.
-     * 
-     * @param row
-     *            temporal element table row number
-     * @return the first granule
-     * @throws TemporalDataException
-     * @see GranuleCache
-     */
-    protected Granule[] getGranulesByRow(int row) throws TemporalDataException {
-        if (this.granuleCache == null) {
-            granuleCache = new GranuleCache(this);
-        }
-        return granuleCache.getGranules(row);
-    }
-    
-    /**
-     * Get an instance of the default {@link Schema} used for
-     * {@link TemporalElement} instances. Contains the data members internally
-     * used to model a temporal element, i.e. inf, sup, granularity, granularity
-     * context, and kind.
-     * 
-     * @return the TemporalElement data Schema
-     */
-    private Schema getTemporalElementSchema() {
-        Schema s = new Schema();
-
-        s.addColumn(TemporalElement.ID, long.class, -1);
-        s.addColumn(TemporalElement.INF, long.class, Long.MIN_VALUE);
-        s.addColumn(TemporalElement.SUP, long.class, Long.MAX_VALUE);
-        s.addColumn(TemporalElement.GRANULARITY_ID, int.class, -1);
-        s.addColumn(TemporalElement.GRANULARITY_CONTEXT_ID, int.class, -1);
-        s.addColumn(TemporalElement.KIND, int.class, -1);
-
-        return s;
-    }
-
-    // predefined kinds of temporal elements
-    public static final int PRIMITIVE_SPAN = 0;
-    public static final int PRIMITIVE_SET = 1;
-    public static final int PRIMITIVE_INSTANT = 2;
-    public static final int PRIMITIVE_INTERVAL = 3;
-
     /**
      * creates a human-readable string from a {@link TemporalDataset}.
      * <p>
@@ -1002,10 +749,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     @Override
     public String toString() {
-        return "TemporalDataset [" + this.temporalElements.getNodeCount()
-                + " temporal elements, " + super.getNodeCount()
+        return "TemporalDataset [" + super.getNodeCount()
                 + " temporal objects, " + super.getEdgeCount()
-                + " object relationships]";
+                + " object relationships, "+ temporalElements.toString() + "]";
     }
 
     @Override
@@ -1023,7 +769,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     }
 
 	public TemporalObject addCloneOf(TemporalObject source) {					
-		TemporalObject result = addTemporalObject(addCloneOf(source.getTemporalElement()));
+		TemporalObject result = addTemporalObject(temporalElements.addCloneOf(source.getTemporalElement()));
 		for(int i : getDataColumnIndices()) {
 			result.set(i, source.get(i));
 		}
@@ -1031,18 +777,4 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
 		return result;
 	}
 
-	/**
-	 * @param temporalElement
-	 * @return
-	 */
-	private TemporalElement addCloneOf(GenericTemporalElement temporalElement) {
-		TemporalElement result = addTemporalElement(temporalElement.getInf(), temporalElement.getSup(),
-				temporalElement.getGranularityId(),temporalElement.getGranularityContextId(),
-				temporalElement.getKind());
-		
-		for(GenericTemporalElement iTemporalElement : temporalElement.childElements())
-			result.linkWithChild(addCloneOf(iTemporalElement));
-		
-		return result;
-	}
 }

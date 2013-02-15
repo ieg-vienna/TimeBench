@@ -22,6 +22,7 @@ import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
+import timeBench.data.TemporalElementStore;
 import timeBench.data.TemporalObject;
 
 /**
@@ -160,7 +161,7 @@ public class RConnector {
                         sup,
                         granularityId,
                         granularityContextId,
-                        TemporalDataset.PRIMITIVE_INTERVAL);
+                        TemporalElementStore.PRIMITIVE_INTERVAL);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
             }
@@ -204,7 +205,7 @@ public class RConnector {
                         inf,
                         granularityId,
                         granularityContextId,
-                        TemporalDataset.PRIMITIVE_INSTANT);
+                        TemporalElementStore.PRIMITIVE_INSTANT);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
             }
