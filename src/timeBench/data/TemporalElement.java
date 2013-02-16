@@ -20,7 +20,7 @@ import timeBench.calendar.Granule;
  * 
  * @author Rind
  */
-public abstract class TemporalElement extends ParentChildNode {
+public abstract class TemporalElement extends ParentChildNode implements Comparable<TemporalElement> {
 
 	protected static TemporalElementStore temporalDataHeap = new TemporalElementStore();
 	
@@ -395,5 +395,20 @@ public abstract class TemporalElement extends ParentChildNode {
                 + super.getLong(TemporalElement.SUP) + ", granularityId="
                 + getGranularityId() + ", granularityContextId="
                 + getGranularityContextId() + ", kind=" + getKind() + "]";
+    }
+
+    @Override
+    public int compareTo(TemporalElement o) {
+        return Long.valueOf(this.getId()).compareTo(o.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TemporalElement) {
+            TemporalElement el = (TemporalElement) obj;
+            return this.getId() == el.getId() && this.getGraph() == el.getGraph();
+        } else {
+            return false;
+        }
     }
 }
