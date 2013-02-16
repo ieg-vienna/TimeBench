@@ -104,8 +104,8 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 				for(int k=0; k<currentLeaves.size();k++) {
 					ArrayList<TemporalObject> iCurrentLeaves = currentLeaves.get(k);
 					while(iCurrentLeaves.size() > 0) {
-						TemporalObject currentLeave = iCurrentLeaves.get(iCurrentLeaves.size()-1);
-						iCurrentLeaves.remove(iCurrentLeaves.size()-1);
+						TemporalObject currentLeave = iCurrentLeaves.get(0);
+						iCurrentLeaves.remove(0);
 						TemporalObject targetBranch = null;
 						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
 						long sup = currentLeave.getTemporalElement().asGeneric().getSup();

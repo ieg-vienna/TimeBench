@@ -32,8 +32,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import prefuse.data.Table;
 import prefuse.data.column.Column;
 import prefuse.data.event.EventConstants;
@@ -78,7 +76,7 @@ public class TemporalIndex implements TableListener,  IntervalIndex {
         Column colLo = table.getColumn(TemporalElement.INF);
         Column colHi = table.getColumn(TemporalElement.SUP);
         colLoInd = table.getColumnNumber(colLo);
-        colHiInd = table.getColumnNumber(colLo);
+        colHiInd = table.getColumnNumber(colHi);
         intervalTree = new IntervalTree(table, colLo, colHi, comparator);
         this.rowsPredicate = rowsPredicate;
         index();
@@ -123,7 +121,7 @@ public class TemporalIndex implements TableListener,  IntervalIndex {
 
 	@Override
 	public int size() {
-		throw new NotImplementedException("Contact Bilal or Alex :)");
+		return treeNodes.size();
 	}
 	
 	

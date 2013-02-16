@@ -665,7 +665,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @return the top granularity identifier
 	 */
 	public int getTopGranularityIdentifier() {
-		return 16383;
+		return Granularities.Top.toInt();
 	}
 
 	/**

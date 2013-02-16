@@ -26,6 +26,7 @@
 
 package timeBench.data.util;
 
+// TODO javadoc ????
 /**
  * Implements an interval whose endpoints are real numbers.
  */
@@ -41,6 +42,7 @@ public class DefaultIntervalComparator implements IntervalComparator {
 		if (lo1 < lo2)
 			return -1;
 		else if (lo1 == lo2)
+		    // TODO sort by hi, if lo are equal?
 			return 0;
 		else
 			return 1;

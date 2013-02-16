@@ -315,6 +315,10 @@ public abstract class TemporalElement extends ParentChildNode {
         return ((TemporalElementStore) this.m_graph).getTemporalObjectsByElementId(getId());
     }
     
+    public Iterable<TemporalObject> temporalObjects(TemporalDataset tmpds) {
+        return tmpds.getTemporalObjectsByElementId(getId());
+    }
+    
     /**
      * Get an iterator over all temporal elements that are parents of this
      * temporal element.
