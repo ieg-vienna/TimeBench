@@ -96,55 +96,58 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			long[] roots = new long[currentBranches.size()];
 			for(int i=0; i<currentBranches.size(); i++)
 				roots[i] = currentBranches.get(i).getId();
-						
-			for(int i=1; i<granularities.length;i++) {
-				ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
-				ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
-				int whichChild = 0;
-				for(int k=0; k<currentLeaves.size();k++) {
-					ArrayList<TemporalObject> iCurrentLeaves = currentLeaves.get(k);
-					while(iCurrentLeaves.size() > 0) {
-						TemporalObject currentLeave = iCurrentLeaves.get(0);
-						iCurrentLeaves.remove(0);
-						TemporalObject targetBranch = null;
-						long inf = currentLeave.getTemporalElement().asGeneric().getInf();
-						long sup = currentLeave.getTemporalElement().asGeneric().getSup();
-			    		whichChild = 0;
-			    		for(int l=0; l<k; l++)
-			    			whichChild += currentBranches.get(l).getChildCount();
-						for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
-					    	if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
-					    		targetBranch = potentialBranch;
-					    	    break;
-					    	}
-				    	    whichChild++;
-					    }
-					    if (targetBranch == null) {
-					    	Granule newGranule = new Granule(inf,sup,granularities[i]); 
-					    	Instant newTe = workingDataset.addInstant(newGranule);
-					    	targetBranch = workingDataset.addTemporalObject(newTe);
-					    	futureBranches.add(targetBranch);
-					    	futureLeaves.add(new ArrayList<TemporalObject>());					    	
-					    	whichChild = futureLeaves.size() - 1;
-					    	currentBranches.get(k).linkWithChild(targetBranch);
-					    }
-				    	futureLeaves.get(whichChild).add(currentLeave);
+					
+			if (granularities.length > 1) {			
+				for(int i=1; i<granularities.length;i++) {
+					ArrayList<ArrayList<TemporalObject>> futureLeaves = new ArrayList<ArrayList<TemporalObject>>();
+					ArrayList<TemporalObject> futureBranches = new ArrayList<TemporalObject>(); 
+					int whichChild = 0;
+					for(int k=0; k<currentLeaves.size();k++) {
+						ArrayList<TemporalObject> iCurrentLeaves = currentLeaves.get(k);
+						while(iCurrentLeaves.size() > 0) {
+							TemporalObject currentLeave = iCurrentLeaves.get(0);
+							iCurrentLeaves.remove(0);
+							TemporalObject targetBranch = null;
+							long inf = currentLeave.getTemporalElement().asGeneric().getInf();
+							long sup = currentLeave.getTemporalElement().asGeneric().getSup();
+							whichChild = 0;
+							for(int l=0; l<k; l++)
+								whichChild += currentBranches.get(l).getChildCount();
+							for(TemporalObject potentialBranch : currentBranches.get(k).childObjects()) {
+								if (potentialBranch.getTemporalElement().asGeneric().getGranule().contains(inf)) {
+									targetBranch = potentialBranch;
+									break;
+								}
+								whichChild++;
+							}
+							if (targetBranch == null) {
+								Granule newGranule = new Granule(inf,sup,granularities[i]); 
+								Instant newTe = workingDataset.addInstant(newGranule);
+								targetBranch = workingDataset.addTemporalObject(newTe);
+								futureBranches.add(targetBranch);
+								futureLeaves.add(new ArrayList<TemporalObject>());					    	
+								whichChild = futureLeaves.size() - 1;
+								currentBranches.get(k).linkWithChild(targetBranch);
+							}
+							futureLeaves.get(whichChild).add(currentLeave);
+						}
+					}
+					if(i==granularities.length-1) {
+						for(int j=0; j<futureBranches.size(); j++ ) {
+							aggregate(futureBranches.get(j),futureLeaves.get(j),granularities.length-1);
+						}
+					} else {
+						currentBranches = futureBranches;
+						currentLeaves = futureLeaves;
 					}
 				}
-				if(i==granularities.length-1) {
-					for(int j=0; j<futureBranches.size(); j++ ) {
-						aggregate(futureBranches.get(j),futureLeaves.get(j),granularities.length-1);
-					}
-				} else {
-					currentBranches = futureBranches;
-					currentLeaves = futureLeaves;
-				}
-			}
 
-            logger.debug("run -> after for loop over granularities");
-            
-            for(long iRoot : roots)
-            	aggregate(workingDataset.getTemporalObject(iRoot),0);
+				for(long iRoot : roots)
+					aggregate(workingDataset.getTemporalObject(iRoot),0);
+			} else {
+				for(int i=0; i<roots.length; i++)
+					aggregate(workingDataset.getTemporalObject(roots[i]),currentLeaves.get(i),0);
+			}
 			
 			workingDataset.setRoots(roots);
 			
