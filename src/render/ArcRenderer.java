@@ -4,8 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.util.Iterator;
 
 import prefuse.data.Node;
+import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
@@ -18,13 +20,14 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	public void render(Graphics2D g, VisualItem item) {		
 		if(item instanceof NodeItem) { 								
 			// draw from ViusalItem to each child (no arcs for leaves)
-			for (int i=0; i<((NodeItem)item).getChildCount(); i++) {			
-				Node childNode = ((NodeItem)item).getChild(i);
+			Iterator<Tuple> childs = ((NodeItem)item).inNeighbors();
+			//for (int i=0; i<((NodeItem)item).getChildCount(); i++) {
+			while(childs.hasNext()) {
+				Tuple childNode = childs.next();
+				//Node childNode = ((NodeItem)item).getChild(i);
 				if (childNode instanceof VisualItem) {
 					VisualItem child = (VisualItem)childNode;
 				
-					// color of parent
-					g.setColor(ColorLib.getColor(item.getFillColor()));
 					/*if(item.getInt("class") == 0 && child.getInt("class") == 0)
 						g.setColor(ColorLib.getColor(255, 0, 0, 63));
 					if(item.getInt("class") == 0 && child.getInt("class") == 1)
@@ -52,10 +55,15 @@ public class ArcRenderer implements prefuse.render.Renderer {
 					double innerRadius = (child.getX()-item.getDouble(VisualItem.X2))/2.0;							
 					for(int j=0; j<=180; j+=4) {
 						x[j/4] = (int)Math.round( item.getX() + outerRadius * Math.cos( ((double)j) / 180.0 * Math.PI ) + outerRadius );
-						x[91-j/4] = (int)Math.round( item.getX() + innerRadius * Math.cos( ((double)j) / 180.0 * Math.PI ) + outerRadius );
+						x[91-j/4] = (int)Math.round( item.getDouble(VisualItem.X2) + innerRadius * Math.cos( ((double)j) / 180.0 * Math.PI ) + innerRadius );
 						y[j/4] = (int)Math.round( -outerRadius * Math.sin( ((double)j) / 180.0 * Math.PI ) + g.getClipBounds().height - 5 );
 						y[91-j/4] = (int)Math.round( -innerRadius * Math.sin( ((double)j) / 180.0 * Math.PI ) + g.getClipBounds().height - 5 );
 					}
+					
+					g.setColor(ColorLib.getColor(ColorLib.red(item.getFillColor()),
+							ColorLib.green(item.getFillColor()),
+							ColorLib.blue(item.getFillColor()),
+							(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
 					
 					g.fillPolygon(x, y, 92);
 				}
