@@ -48,16 +48,18 @@ public class ArcRenderer implements prefuse.render.Renderer {
 						g.setColor(ColorLib.getColor(0, 0, 255, 63));*/						
 		
 					// There is not function for what we want to do - so we draw a polygon with many nodes and calculate those here
-					int[] x = new int[92];
-					int[] y = new int[92];
+					int[] x = new int[128];
+					int[] y = new int[128];
 		
 					double outerRadius = (child.getDouble(VisualItem.X2)-item.getX())/2.0;		
 					double innerRadius = (child.getX()-item.getDouble(VisualItem.X2))/2.0;							
-					for(int j=0; j<=180; j+=4) {
-						x[j/4] = (int)Math.round( item.getX() + outerRadius * Math.cos( ((double)j) / 180.0 * Math.PI ) + outerRadius );
-						x[91-j/4] = (int)Math.round( item.getDouble(VisualItem.X2) + innerRadius * Math.cos( ((double)j) / 180.0 * Math.PI ) + innerRadius );
-						y[j/4] = (int)Math.round( -outerRadius * Math.sin( ((double)j) / 180.0 * Math.PI ) + g.getClipBounds().height - 5 );
-						y[91-j/4] = (int)Math.round( -innerRadius * Math.sin( ((double)j) / 180.0 * Math.PI ) + g.getClipBounds().height - 5 );
+					for(int j=0; j<=95; j++) {
+						x[j] = (int)Math.round( item.getX() + outerRadius * Math.cos( ((double)j) / 95.0 * Math.PI ) + outerRadius );
+						y[j] = (int)Math.round( -outerRadius * Math.sin( ((double)j) / 95.0 * Math.PI ) + g.getClipBounds().height - 5 );
+					}
+					for(int j=0; j<=31; j++) {
+						x[96+j] = (int)Math.round( item.getDouble(VisualItem.X2) - innerRadius * Math.cos( ((double)j) / 31.0 * Math.PI ) + innerRadius );
+						y[96+j] = (int)Math.round( -innerRadius * Math.sin( ((double)j) / 31.0 * Math.PI ) + g.getClipBounds().height - 5 );
 					}
 					
 					g.setColor(ColorLib.getColor(ColorLib.red(item.getFillColor()),
@@ -65,7 +67,7 @@ public class ArcRenderer implements prefuse.render.Renderer {
 							ColorLib.blue(item.getFillColor()),
 							(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
 					
-					g.fillPolygon(x, y, 92);
+					g.fillPolygon(x, y, 128);
 				}
 			}
 		}
