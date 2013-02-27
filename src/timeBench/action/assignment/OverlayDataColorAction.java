@@ -1,5 +1,6 @@
 package timeBench.action.assignment;
 
+import ieg.prefuse.data.ParentChildNode;
 import ieg.prefuse.data.expression.IsNanPredicate;
 
 import java.util.Map;
@@ -124,10 +125,10 @@ public class OverlayDataColorAction extends DataColorAction {
         TupleSet ts = m_vis.getVisualGroup(m_group);
         Predicate prednan = new NotPredicate(new IsNanPredicate(new ColumnExpression(m_dataField)));        
         Predicate pred0 = new AndPredicate(prednan,  
-        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level0)));        
+        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( ParentChildNode.DEPTH ), new NumericLiteral(level0)));        
         TupleSet ts0 = new CascadedTable((Table)ts, pred0);  
         Predicate pred1 = new AndPredicate(prednan,
-        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( GranularityAggregationTree.DEPTH ), new NumericLiteral(level1)));
+        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( ParentChildNode.DEPTH ), new NumericLiteral(level1)));
         TupleSet ts1 = new CascadedTable((Table)ts, pred1);
         double[][] result = new double[2][];
 
@@ -187,9 +188,9 @@ public class OverlayDataColorAction extends DataColorAction {
         double f0 = Double.NaN,f1 = Double.NaN;
         switch ( m_type ) {
         case Constants.NUMERICAL:
-        	if(item.getInt(GranularityAggregationTree.DEPTH) >= m_separation_level) {
+        	if(item.getInt(ParentChildNode.DEPTH) >= m_separation_level) {
         		VisualItem parent = item;
-        		while(parent.getInt(GranularityAggregationTree.DEPTH) >= m_separation_level)
+        		while(parent.getInt(ParentChildNode.DEPTH) >= m_separation_level)
         			parent = (VisualItem)(((NodeItem)parent).getParent());
         		double v = item.getDouble(m_dataField);
         		f1 = MathLib.interp(m_scale, v, m_dist[1]);

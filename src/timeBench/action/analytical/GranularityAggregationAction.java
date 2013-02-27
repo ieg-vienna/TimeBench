@@ -1,5 +1,7 @@
 package timeBench.action.analytical;
 
+import ieg.prefuse.data.ParentChildNode;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -178,7 +180,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		
 		for(int i=0; i<dataColumnIndices.length; i++) {
 			parent.setDouble(dataColumnIndices[i],totalValue[i]);
-			parent.setInt(GranularityAggregationTree.DEPTH,level);
+			parent.setInt(ParentChildNode.DEPTH,level);
 						
 			int kind = 0;
 			for(TemporalObject iO : childs) {
