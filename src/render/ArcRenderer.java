@@ -1,5 +1,7 @@
 package render;
 
+import ieg.prefuse.data.ParentChildNode;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -52,14 +54,26 @@ public class ArcRenderer implements prefuse.render.Renderer {
 					int[] y = new int[128];
 		
 					double outerRadius = (child.getDouble(VisualItem.X2)-item.getX())/2.0;		
-					double innerRadius = (child.getX()-item.getDouble(VisualItem.X2))/2.0;							
-					for(int j=0; j<=95; j++) {
-						x[j] = (int)Math.round( item.getX() + outerRadius * Math.cos( ((double)j) / 95.0 * Math.PI ) + outerRadius );
-						y[j] = (int)Math.round( -outerRadius * Math.sin( ((double)j) / 95.0 * Math.PI ) + g.getClipBounds().height - 5 );
-					}
-					for(int j=0; j<=31; j++) {
-						x[96+j] = (int)Math.round( item.getDouble(VisualItem.X2) - innerRadius * Math.cos( ((double)j) / 31.0 * Math.PI ) + innerRadius );
-						y[96+j] = (int)Math.round( -innerRadius * Math.sin( ((double)j) / 31.0 * Math.PI ) + g.getClipBounds().height - 5 );
+					double innerRadius = (child.getX()-item.getDouble(VisualItem.X2))/2.0;
+					if ( item.getColumnIndex(ParentChildNode.DEPTH) == -1 ) {
+						for(int j=0; j<=95; j++) {
+							x[j] = (int)Math.round( item.getX() + outerRadius * Math.cos( ((double)j) / 95.0 * Math.PI ) + outerRadius );
+							y[j] = (int)Math.round( -outerRadius * Math.sin( ((double)j) / 95.0 * Math.PI ) + g.getClipBounds().height - 5 );
+						}
+						for(int j=0; j<=31; j++) {
+							x[96+j] = (int)Math.round( item.getDouble(VisualItem.X2) - innerRadius * Math.cos( ((double)j) / 31.0 * Math.PI ) + innerRadius );
+							y[96+j] = (int)Math.round( -innerRadius * Math.sin( ((double)j) / 31.0 * Math.PI ) + g.getClipBounds().height - 5 );
+						}
+					} else {						
+						int ydirect = item.getInt(ParentChildNode.DEPTH) % 2 == 1 ? -1 : 1;
+						for(int j=0; j<=95; j++) {
+							x[j] = (int)Math.round( item.getX() + outerRadius * Math.cos( ((double)j) / 95.0 * Math.PI ) + outerRadius );
+							y[j] = (int)Math.round( -outerRadius * ydirect * Math.sin( ((double)j) / 95.0 * Math.PI ) + g.getClipBounds().height / 2 );
+						}
+						for(int j=0; j<=31; j++) {
+							x[96+j] = (int)Math.round( item.getDouble(VisualItem.X2) - innerRadius * Math.cos( ((double)j) / 31.0 * Math.PI ) + innerRadius );
+							y[96+j] = (int)Math.round( -innerRadius * ydirect * Math.sin( ((double)j) / 31.0 * Math.PI ) + g.getClipBounds().height / 2 );
+						}
 					}
 					
 					g.setColor(ColorLib.getColor(ColorLib.red(item.getFillColor()),

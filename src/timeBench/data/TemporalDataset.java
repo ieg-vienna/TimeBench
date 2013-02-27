@@ -52,7 +52,15 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     protected String[] additionalNonDataColums = new String[0];
     
-    /**
+    public String[] getAdditionalNonDataColums() {
+		return additionalNonDataColums;
+	}
+
+	public void setAdditionalNonDataColums(String[] additionalNonDataColums) {
+		this.additionalNonDataColums = additionalNonDataColums;
+	}
+
+	/**
      * index for {@link TemporalObject} row numbers by {@link TemporalObject#ID}. 
      */
     private Index indexObjects;
