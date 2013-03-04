@@ -5,12 +5,15 @@ import ieg.prefuse.data.ParentChildNode;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 
 import prefuse.data.Node;
 import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
+import prefuse.util.GraphicsLib;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
@@ -20,6 +23,9 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	 * Draws arcs like for ArcDiagrams
 	 * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
 	 */
+	
+    private GeneralPath m_path = new GeneralPath();
+	
 	public void render(Graphics2D g, VisualItem item) {		
 		if(item instanceof EdgeItem) {
 			NodeItem childNode = ((EdgeItem)item).getSourceItem();
@@ -105,6 +111,13 @@ public class ArcRenderer implements prefuse.render.Renderer {
 					g.setColor(ColorLib.getColor(0, 0, 255, 63));*/
 				
 				g.fillPolygon(x, y, 128);
+
+				/*m_path.reset();
+				m_path.moveTo(x[0], y[0]);
+				float[] pts;
+				for(int i=0; i<=95; i++);
+				GraphicsLib.cardinalSpline(m_path, pts, 0, 96, 0.1, false, 0.0, 0.0);  
+				GraphicsLib.paint(g, item, shape, getStroke(item), getRenderType(item));*/
 			}
 		}
 	}
