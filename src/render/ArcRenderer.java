@@ -55,10 +55,10 @@ public class ArcRenderer implements prefuse.render.Renderer {
 					}
 				}
 				
-				g.setColor(ColorLib.getColor(ColorLib.red(item.getFillColor()),
+				/*g.setColor(ColorLib.getColor(ColorLib.red(item.getFillColor()),
 						ColorLib.green(item.getFillColor()),
 						ColorLib.blue(item.getFillColor()),
-						(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
+						(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));*/
 
 				VisualItem firstParent = parent;
 				while(firstParent.getInt(ParentChildNode.DEPTH) > 0) {
@@ -66,12 +66,17 @@ public class ArcRenderer implements prefuse.render.Renderer {
 					firstParent = (VisualItem)iN.next();
 				}
 				
-				if (firstParent.getInt("class") == 0 )
+				g.setColor(ColorLib.getColor(ColorLib.red(firstParent.getFillColor()),
+						ColorLib.green(firstParent.getFillColor()),
+						ColorLib.blue(firstParent.getFillColor()),
+						(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
+				
+				/*if (firstParent.getInt("class") == 0 )
 					g.setColor(ColorLib.getColor(255,0,0,(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
 				if (firstParent.getInt("class") == 1 )
 					g.setColor(ColorLib.getColor(0,255,0,(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
 				if (firstParent.getInt("class") == 2 )
-					g.setColor(ColorLib.getColor(0,0,255,(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
+					g.setColor(ColorLib.getColor(0,0,255,(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));*/
 	
 				/*if(parent.getInt("class") == 0 && child.getInt("class") == 0)
 					g.setColor(ColorLib.getColor(255, 0, 0, 63));
