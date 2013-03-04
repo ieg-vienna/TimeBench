@@ -34,7 +34,7 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	
 				double outerRadius = (child.getDouble(VisualItem.X2)-parent.getX())/2.0;		
 				double innerRadius = (child.getX()-parent.getDouble(VisualItem.X2))/2.0;
-				if ( parent.getColumnIndex(ParentChildNode.DEPTH) == -1 ) {
+				/*if ( parent.getColumnIndex(ParentChildNode.DEPTH) == -1 ) {
 					for(int j=0; j<=95; j++) {
 						x[j] = (int)Math.round( parent.getX() + outerRadius * Math.cos( ((double)j) / 95.0 * Math.PI ) + outerRadius );
 						y[j] = (int)Math.round( -outerRadius * Math.sin( ((double)j) / 95.0 * Math.PI ) + g.getClipBounds().height - 5 );
@@ -43,17 +43,17 @@ public class ArcRenderer implements prefuse.render.Renderer {
 						x[96+j] = (int)Math.round( parent.getDouble(VisualItem.X2) - innerRadius * Math.cos( ((double)j) / 31.0 * Math.PI ) + innerRadius );
 						y[96+j] = (int)Math.round( -innerRadius * Math.sin( ((double)j) / 31.0 * Math.PI ) + g.getClipBounds().height - 5 );
 					}
-				} else {						
+				} else {*/						
 					int ydirect = parent.getInt(ParentChildNode.DEPTH) % 2 == 1 ? -1 : 1;
 					for(int j=0; j<=95; j++) {
 						x[j] = (int)Math.round( parent.getX() + outerRadius * Math.cos( ((double)j) / 95.0 * Math.PI ) + outerRadius );
-						y[j] = (int)Math.round( -outerRadius * ydirect * Math.sin( ((double)j) / 95.0 * Math.PI ) + g.getClipBounds().height / 2 );
+						y[j] = (int)Math.round( -outerRadius * ydirect * Math.sin( ((double)j) / 95.0 * Math.PI ) + parent.getY() );
 					}
 					for(int j=0; j<=31; j++) {
 						x[96+j] = (int)Math.round( parent.getDouble(VisualItem.X2) - innerRadius * Math.cos( ((double)j) / 31.0 * Math.PI ) + innerRadius );
-						y[96+j] = (int)Math.round( -innerRadius * ydirect * Math.sin( ((double)j) / 31.0 * Math.PI ) + g.getClipBounds().height / 2 );
+						y[96+j] = (int)Math.round( -innerRadius * ydirect * Math.sin( ((double)j) / 31.0 * Math.PI ) + parent.getY() );
 					}
-				}
+				//}
 				
 				/*g.setColor(ColorLib.getColor(ColorLib.red(item.getFillColor()),
 						ColorLib.green(item.getFillColor()),
@@ -70,6 +70,13 @@ public class ArcRenderer implements prefuse.render.Renderer {
 						ColorLib.green(firstParent.getFillColor()),
 						ColorLib.blue(firstParent.getFillColor()),
 						(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
+				
+				if(item.isHover())
+				{
+					g.setColor(ColorLib.getColor(ColorLib.red(firstParent.getFillColor()),
+							ColorLib.green(firstParent.getFillColor()),
+							ColorLib.blue(firstParent.getFillColor())));
+				}
 				
 				/*if (firstParent.getInt("class") == 0 )
 					g.setColor(ColorLib.getColor(255,0,0,(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
@@ -107,7 +114,10 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	 * @see prefuse.render.Renderer#locatePoint(java.awt.geom.Point2D, prefuse.visual.VisualItem)
 	 */
 	public boolean locatePoint(Point2D p, VisualItem item) {
-        return item.getBounds().contains(p);
+        if( item.getBounds().contains(p)) {
+        	return true; // check polygon
+        } else
+        	return false;
 	}
 
 	/**
@@ -115,6 +125,19 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	 * @see prefuse.render.Renderer#setBounds(prefuse.visual.VisualItem)
 	 */
 	public void setBounds(VisualItem item) {
-		item.setBounds(item.getStartX(), item.getStartY(), item.getEndX()-item.getStartX()+1, item.getEndY()-item.getStartY()+1);
+		if(item instanceof EdgeItem) {
+			NodeItem childNode = ((EdgeItem)item).getSourceItem();
+			NodeItem parentNode = ((EdgeItem)item).getTargetItem();
+			if (childNode instanceof VisualItem && parentNode instanceof VisualItem) {
+				VisualItem child = (VisualItem)childNode;
+				VisualItem parent = (VisualItem)parentNode;
+				
+				double outerRadius = (child.getDouble(VisualItem.X2)-parent.getX())/2.0;		
+				
+				int ydirect = parent.getInt(ParentChildNode.DEPTH) % 2 == 1 ? 0 : 1;
+				
+				item.setBounds(parent.getX(),parent.getY()-ydirect*outerRadius,outerRadius*2,outerRadius);
+			}
+		}
 	}
 }
