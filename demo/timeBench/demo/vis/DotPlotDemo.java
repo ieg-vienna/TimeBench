@@ -38,15 +38,19 @@ public class DotPlotDemo {
         TemporalDataset tmpds = DemoEnvironmentFactory
                 .generateRandomNumericalInstantData(100, DATA_COL);
         DataHelper.printTable(System.out, tmpds.getNodeTable());
+//        tmpds.setRoots(new long[] {0, 1, 2});
+//        timeBench.test.DebugHelper.printTemporalDatasetForest(System.out, tmpds);
 
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
+        // display width must be set before the time scale
+        // otherwise the initial layout does not match the display width 
+        display.setSize(700, 450);
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
         vis.addTable(GROUP, tmpds.getTemporalObjectTable());
 
-        // TODO Bug data only in left half of display
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
                 tmpds.getInf() - border, tmpds.getSup() + border,
@@ -64,14 +68,13 @@ public class DotPlotDemo {
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
-        ShapeRenderer dotRenderer = new ShapeRenderer();
+        ShapeRenderer dotRenderer = new ShapeRenderer(8);
         DefaultRendererFactory rf = new DefaultRendererFactory(dotRenderer);
         vis.setRendererFactory(rf);
 
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        // TODO Bug Time Axis TimeUnits Day starts at 1:00
         TimeAxisLayout time_axis = new TimeAxisLayout(GROUP, timeScale);
 
         AxisLayout y_axis = new AxisLayout(GROUP, DATA_COL, Constants.Y_AXIS,
@@ -82,7 +85,7 @@ public class DotPlotDemo {
         // AxisLabelLayout y_labels = new AxisLabelLayout("ylab", y_axis,
         // boundsLabelsY);
 
-        ColorAction color = new ColorAction(GROUP, VisualItem.STROKECOLOR,
+        ColorAction color = new ColorAction(GROUP, VisualItem.FILLCOLOR,
                 ColorLib.rgb(100, 100, 255));
 
         ShapeAction shape = new ShapeAction(GROUP, Constants.SHAPE_ELLIPSE);
@@ -104,7 +107,6 @@ public class DotPlotDemo {
         // --------------------------------------------------------------------
         // STEP 4: set up a display and controls
 
-        display.setSize(700, 450);
         display.setHighQuality(true);
 
         // optional ItemSorter
