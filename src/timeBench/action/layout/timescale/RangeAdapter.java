@@ -105,7 +105,15 @@ public class RangeAdapter extends DefaultBoundedRangeModel {
 		return scale.getDateAtPixel(x, false);
 	}
 
-	public String toString() {
+	public AdvancedTimeScale getFullScale() {
+        return fullScale;
+    }
+
+    public AdvancedTimeScale getActualScale() {
+        return actualScale;
+    }
+
+    public String toString() {
 		DateFormat df = DateFormat.getDateTimeInstance();
 		StringBuilder sb = new StringBuilder();
 		sb.append(df.format(fullScale.getStartDate())).append("[").append(df.format(getRangeStart())).append("]");
