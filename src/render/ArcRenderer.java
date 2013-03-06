@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import prefuse.data.Node;
@@ -24,7 +25,7 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	 * @see prefuse.render.Renderer#render(java.awt.Graphics2D, prefuse.visual.VisualItem)
 	 */
 	
-    private GeneralPath m_path = new GeneralPath();
+    private Hashtable<VisualItem,GeneralPath> m_paths = new Hashtable<VisualItem,GeneralPath>();
 	
 	public void render(Graphics2D g, VisualItem item) {		
 		if(item instanceof EdgeItem) {
@@ -110,14 +111,34 @@ public class ArcRenderer implements prefuse.render.Renderer {
 				if(parent.getInt("class") == 2 && child.getInt("class") == 2)
 					g.setColor(ColorLib.getColor(0, 0, 255, 63));*/
 				
-				g.fillPolygon(x, y, 128);
+				//g.fillPolygon(x, y, 128);
 
-				/*m_path.reset();
-				m_path.moveTo(x[0], y[0]);
-				float[] pts;
-				for(int i=0; i<=95; i++);
-				GraphicsLib.cardinalSpline(m_path, pts, 0, 96, 0.1, false, 0.0, 0.0);  
-				GraphicsLib.paint(g, item, shape, getStroke(item), getRenderType(item));*/
+				GeneralPath path = m_paths.get(item);
+				if(path == null) {
+					path = new GeneralPath();
+					m_paths.put(item, path);
+				}
+				path.reset();
+				path.moveTo(x[0], y[0]);
+				float[] pts = new float[192];
+				for(int i=0; i<=95; i++) {
+					pts[i*2] = x[i];
+					pts[i*2+1] = y[i];
+				}
+				GraphicsLib.cardinalSpline(path, pts, 0, 96, 0.1f, false, 0.0f, 0.0f);  
+				for(int i=0; i<=95; i++) {
+					pts[i*2] = x[i];
+					pts[i*2+1] = y[i];
+				}
+				path.lineTo(x[96], y[96]);
+				for(int i=0; i<=31; i++) {
+					pts[i*2] = x[i+96];
+					pts[i*2+1] = y[i+96];
+				}
+				GraphicsLib.cardinalSpline(path, pts, 0, 32, 0.1f, false, 0.0f, 0.0f);  
+				path.lineTo(x[0], y[0]);
+				BasicStroke stroke = new BasicStroke();
+				g.fill(path);
 			}
 		}
 	}
@@ -128,7 +149,7 @@ public class ArcRenderer implements prefuse.render.Renderer {
 	 */
 	public boolean locatePoint(Point2D p, VisualItem item) {
         if( item.getBounds().contains(p)) {
-        	return true; // check polygon
+        	return m_paths.get(item).contains(p);
         } else
         	return false;
 	}
