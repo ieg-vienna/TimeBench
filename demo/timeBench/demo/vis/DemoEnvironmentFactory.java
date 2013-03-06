@@ -228,6 +228,7 @@ public class DemoEnvironmentFactory {
         TemporalDataset tmpds = new TemporalDataset();
         tmpds.addDataColumn(dataColumn, double.class, 0.0d);
 
+        double value = Math.random() * VALUE_RANGE + MIN_VALUE;
         long time = System.currentTimeMillis();
         CalendarManager calMan = JavaDateCalendarManager.getSingleton();
         TemporalElement elem;
@@ -238,7 +239,9 @@ public class DemoEnvironmentFactory {
                     calMan.getBottomGranularityIdentifier(),
                     calMan.getTopGranularityIdentifier());
             obj = tmpds.addTemporalObject(elem);
-            obj.set(dataColumn, Math.random() * VALUE_RANGE + MIN_VALUE);
+            obj.set(dataColumn, value);
+            // auto-regressive with order 1
+            value = (Math.random() * VALUE_RANGE + MIN_VALUE) * 0.2d + value * 0.8d;
             time += Math.round(Math.random() * (MAX_GAP_MS - MIN_GAP_MS)
                     + MIN_VALUE);
         }
