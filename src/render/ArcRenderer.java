@@ -78,7 +78,7 @@ public class ArcRenderer implements prefuse.render.Renderer {
 						ColorLib.blue(firstParent.getFillColor()),
 						(int)Math.round((1.0-(outerRadius-innerRadius)/outerRadius)*170.0)));
 				
-				if(item.isHover())
+				if(item.isHighlighted())
 				{
 					g.setColor(ColorLib.getColor(ColorLib.red(firstParent.getFillColor()),
 							ColorLib.green(firstParent.getFillColor()),
