@@ -139,6 +139,10 @@ public class ArcRenderer implements prefuse.render.Renderer {
 				path.lineTo(x[0], y[0]);
 				BasicStroke stroke = new BasicStroke();
 				g.fill(path);
+				if (item.isHighlighted()) {
+					g.setColor(Color.white);
+					g.draw(path);
+				}
 			}
 		}
 	}
