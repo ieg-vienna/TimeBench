@@ -104,7 +104,9 @@ public class DemoEnvironmentFactory {
     private void prepareTimeDisplay(final TimeAxisDisplay display,
             RangeAdapter rangeAdapter, final AdvancedTimeScale timeScale) {
         display.setTimeScale(timeScale);
-        display.setBorder(BorderFactory.createEmptyBorder(7, 0, 7, 0));
+        if (display.getBorder() == null) {
+            display.setBorder(BorderFactory.createEmptyBorder(7, 0, 7, 0));
+        }
 
         final TimeScalePainter timeScalePainter = new TimeScalePainter(display);
         timeScalePainter.setTimeScale(timeScale);
