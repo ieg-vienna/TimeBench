@@ -23,10 +23,12 @@ import prefuse.action.assignment.ShapeAction;
 import prefuse.action.assignment.StrokeAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
+import prefuse.controls.HoverActionControl;
 import prefuse.controls.ToolTipControl;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
+import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.Expression;
 import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
@@ -54,6 +56,7 @@ import timeBench.ui.TimeAxisDisplay;
  * <li>More readable tooltip using
  * {@link VisualTable#addColumn(String, Expression)} and custom code in
  * {@link LabelExpression}.
+ * <li>Change color of hovered dots using {@link HoverActionControl}.
  * </ul>
  * 
  * @author Rind
@@ -139,6 +142,8 @@ public class LinePlotDemo {
         // color must be set -> otherwise nothing displayed
         ColorAction color = new ColorAction(GROUP_DATA, VisualItem.FILLCOLOR,
                 ColorLib.rgb(100, 100, 255));
+        color.add(new ColumnExpression(VisualItem.HOVER),
+                ColorLib.rgb(255, 100, 255));
 
         ShapeAction shape = new ShapeAction(GROUP_DATA, Constants.SHAPE_ELLIPSE);
 
@@ -148,6 +153,7 @@ public class LinePlotDemo {
         update.add(y_axis);
         update.add(y_labels);
         update.add(lineLayout);
+        update.add(color);
         update.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, update);
 
@@ -155,7 +161,6 @@ public class LinePlotDemo {
         ActionList draw = new ActionList();
         draw.add(lineCreation);
         draw.add(update);
-        draw.add(color);
         draw.add(shape);
         draw.add(lineColor);
         draw.add(lineStroke);
@@ -167,7 +172,7 @@ public class LinePlotDemo {
 
         // enable anti-aliasing
         display.setHighQuality(true);
-        
+
         // ensure there is space on left for tick mark label (FAR_LEFT setting)
         display.setBorder(BorderFactory.createEmptyBorder(7, 25, 7, 0));
 
@@ -185,6 +190,8 @@ public class LinePlotDemo {
 
         // show value in tooltip
         display.addControlListener(new ToolTipControl(COL_LABEL));
+        display.addControlListener(new prefuse.controls.HoverActionControl(
+                DemoEnvironmentFactory.ACTION_UPDATE));
 
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
