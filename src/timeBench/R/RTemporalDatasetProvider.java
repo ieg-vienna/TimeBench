@@ -93,6 +93,8 @@ public class RTemporalDatasetProvider {
             if ((naHandling != null) && (naHandling.length() > 0)) {
             	missingEstimate = engine.parseAndEval("as.vector("+naHandling+"(" + name + "))",
                     null, true).asDoubles();
+//            	missingEstimate = engine.parseAndEval("as.vector(adjustCVD)",
+//                        null, true).asDoubles();
             }
 //            logger.debug("ts with start: " + Arrays.toString(start)
 //                    + ", frequency: " + frequency + ", obs: " + data.length);
@@ -166,7 +168,9 @@ public class RTemporalDatasetProvider {
                 else if (Math.abs(frequency - 0.1) < 0.005)
                     cal.add(GregorianCalendar.YEAR, 10);
                 else
-                    cal.add(GregorianCalendar.YEAR, 1);
+                	cal.add(GregorianCalendar.YEAR, 1);
+                    //cal.add(GregorianCalendar.DAY_OF_YEAR, 1);
+                    //cal.add(GregorianCalendar.YEAR, 1);
 
                 long sup = cal.getTimeInMillis() - 1;
 //                if (logger.isTraceEnabled())
@@ -185,10 +189,14 @@ public class RTemporalDatasetProvider {
                 //to.set(name, data[i]);
                 to.setInt("rindex", i+1);
                 to.set(name, (double) (Math.round(data[i]*100.0)/100.0));
-                if (Double.isNaN(data[i])){
+                if ( data[i] == REngineConnection.R_NA_int) {
+                //if (Double.isNaN(data[i])){
                 	to.setKind(name, 1);
                 	if (missingEstimate != null && missingEstimate.length > i) {
+                		double estimateValue = (double) (Math.round(missingEstimate[i]*100.0)/100.0);
                 		to.set(name, (double) (Math.round(missingEstimate[i]*100.0)/100.0));
+                		to.setMin(name, (double) estimateValue-100);
+                		to.setMax(name, (double) estimateValue+100);
                 	}
                 }
 //                if (Math.abs(data[i]-260) < 5) {
@@ -290,6 +298,140 @@ public class RTemporalDatasetProvider {
             throw new TemporalDataException("Unsupported R class: "
                     + x.asString());
     }
+    
+    public TemporalDataset getForecast(
+            String name) throws REngineException, REXPMismatchException,
+            TemporalDataException {
+        // check R class
+        REXP x = engine.parseAndEval("class(" + name + "$mean)",null, true);
+        if (!x.isString())
+            throw new TemporalDataException("Unsupported R class: " + x);
+
+        // ts ... simplest R time series class
+        if ("ts".equals(x.asString())) {
+            int[] start = engine
+                    .parseAndEval("start(" + name + "$mean)", null, true)
+                    .asIntegers();
+            double frequency = engine.parseAndEval("frequency(" + name + "$mean)",
+                    null, true).asDouble();
+            double[] data = engine.parseAndEval("as.vector(" + name + "$mean)",
+                    null, true).asDoubles();
+            double[] upperBounds = engine.parseAndEval(name + "$upper[,1]",
+                    null, true).asDoubles();
+            double[] lowerBounds = engine.parseAndEval(name + "$upper[,1]",
+                    null, true).asDoubles();
+            
+            int granularityContextId = JavaDateCalendarManager.Granularities.Top
+                    .toInt();
+            int granularityId = -1;
+            if (Math.abs(frequency - 1.0) < 0.005
+                    || Math.abs(frequency - 0.1) < 0.005)
+                granularityId = JavaDateCalendarManager.Granularities.Year
+                        .toInt();
+            else if (Math.abs(frequency - 4.0) < 0.005)
+                granularityId = JavaDateCalendarManager.Granularities.Quarter
+                        .toInt();
+            else if (Math.abs(frequency - 12.0) < 0.005)
+                granularityId = JavaDateCalendarManager.Granularities.Month
+                        .toInt();
+            else if (Math.abs(frequency - 52.0) < 0.005)
+                granularityId = JavaDateCalendarManager.Granularities.Week
+                        .toInt();
+            else
+                throw new TemporalDataException(
+                        "Unknown granularity. frequency: " + frequency);
+
+//            System.out.println("Granularity ID: "+granularityId);
+            // prepare a calendar
+            GregorianCalendar cal = new GregorianCalendar(
+                    TimeZone.getTimeZone("UTC"));
+            cal.setTimeInMillis(0);
+            cal.set(GregorianCalendar.MONTH, 0);
+            cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
+            cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
+            cal.set(GregorianCalendar.MINUTE, 0);
+            cal.set(GregorianCalendar.YEAR, start[0]);
+            if (frequency - 12.0 < 0.05 && start.length > 1) {
+                // GregorianCalendar.MONTH starts with 0
+                cal.set(GregorianCalendar.MONTH, start[1] - 1);
+            }
+
+            // relational
+            TemporalDataset tmpds = new timeBench.data.TemporalDataset();
+            tmpds.addDataColumn(name, double.class, null);
+            tmpds.addColumn("rindex", int.class, 0);
+
+            for (int i = 0; i < data.length; i++) {
+                long inf = cal.getTimeInMillis();
+
+                if (Math.abs(frequency - 12.0) < 0.005)
+                    cal.add(GregorianCalendar.MONTH, 1);
+                else if (Math.abs(frequency - 4.0) < 0.005)
+                    cal.add(GregorianCalendar.MONTH, 3);
+                else if (Math.abs(frequency - 0.1) < 0.005)
+                    cal.add(GregorianCalendar.YEAR, 10);
+                else
+                    cal.add(GregorianCalendar.YEAR, 1);
+
+                long sup = cal.getTimeInMillis() - 1;
+
+                tmpds.addTemporalElement(
+                        i,
+                        inf,
+                        sup,
+                        granularityId,
+                        granularityContextId,
+                        TemporalDataset.PRIMITIVE_INTERVAL);
+                TemporalObject to = tmpds.addTemporalObject(i, i);
+                to.setInt("rindex", i+1);
+                to.set(name, (double) (Math.round(data[i]*100.0)/100.0));
+                to.setMin(name, lowerBounds[i]);
+                to.setMax(name, upperBounds[i]);
+            }
+
+            return tmpds;
+        } else
+            throw new TemporalDataException("Unsupported R class: "
+                    + x.asString());
+    }
+    
+	public String forecastSARIMA(String sarimaModel, Object key, int n_forecast) {
+		String resultName = "forecast"+Integer.toHexString(key.hashCode());
+		try {
+			engine.parseAndEval("library(forecast)");
+			REXP result = engine.parseAndEval(resultName + " <- forecast("+sarimaModel+", h= "+String.valueOf(n_forecast)+")", null, true);
+			if (result.isNull()) {
+				return null;
+			}
+		} catch (REXPMismatchException e) {
+			e.printStackTrace();
+		} catch (REngineException e) {
+			e.printStackTrace();
+		}
+		return resultName;
+	}
+	
+	public String generateLowerAndUpperBoundsForecast(String name) {
+		String upper = "upper"+name;
+		String lower = "lower"+name;
+		try {
+			REXP result = engine.parseAndEval(lower + " <- ts("+name+"$lower[,1], start=start("+name+
+					"$mean), frequency=frequency("+name+"$mean))", null, true);
+			if (result.isNull()) {
+				return null;
+			}
+			result = engine.parseAndEval(upper + " <- ts("+name+"$upper[,1], start=start("+name+
+					"$mean), frequency=frequency("+name+"$mean))", null, true);
+			if (result.isNull()) {
+				return null;
+			}
+		} catch (REXPMismatchException e) {
+			e.printStackTrace();
+		} catch (REngineException e) {
+			e.printStackTrace();
+		}
+		return name;
+	}
     
     private String getACF_PACF(String name, int diff, int seasondiff, int seasonFrequency, int maxlag, String cmd) throws REngineException, REXPMismatchException {
     	String r_command_lag = "";

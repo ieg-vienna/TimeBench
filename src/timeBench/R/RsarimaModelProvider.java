@@ -89,7 +89,7 @@ public class RsarimaModelProvider {
 	public String estimateSARIMA(String dataset, Object key, int p, int d, int q) {
 		return estimateSARIMA(dataset, key, p, d, q, 0, 0, 0, -1, false);
 	}
-	
+
 	private String standardizeResiduals(String res) {
 		try {
 	    	engine.parseAndEval("rs <- "+res+"$residuals", null, false);
