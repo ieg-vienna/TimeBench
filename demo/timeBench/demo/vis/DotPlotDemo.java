@@ -36,17 +36,19 @@ import timeBench.ui.TimeAxisDisplay;
  */
 public class DotPlotDemo {
 
-    private static final String LABELS = "ylab";
-    private static final String GROUP = "data";
-    private static final String DATA_COL = "value";
+    private static final String COL_DATA = "value";
 
+    private static final String GROUP_DATA = "data";
+    private static final String GROUP_AXIS_LABELS = "ylab";
+    
     /**
      * @param args
      * @throws TemporalDataException
      */
     public static void main(String[] args) throws TemporalDataException {
+//        java.util.Locale.setDefault(java.util.Locale.US);
         TemporalDataset tmpds = DemoEnvironmentFactory
-                .generateRandomNumericalInstantData(100, DATA_COL);
+                .generateRandomNumericalInstantData(100, COL_DATA);
         DataHelper.printTable(System.out, tmpds.getNodeTable());
 
         final Visualization vis = new Visualization();
@@ -57,7 +59,7 @@ public class DotPlotDemo {
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
-        vis.addTable(GROUP, tmpds.getTemporalObjectTable());
+        vis.addTable(GROUP_DATA, tmpds.getTemporalObjectTable());
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -78,26 +80,26 @@ public class DotPlotDemo {
         // STEP 2: set up renderers for the visual data
         ShapeRenderer dotRenderer = new ShapeRenderer(8);
         DefaultRendererFactory rf = new DefaultRendererFactory(dotRenderer);
-        rf.add(new InGroupPredicate(LABELS), new AxisRenderer(
+        rf.add(new InGroupPredicate(GROUP_AXIS_LABELS), new AxisRenderer(
                 Constants.FAR_LEFT, Constants.CENTER));
         vis.setRendererFactory(rf);
 
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP, timeScale);
+        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
 
-        AxisLayout y_axis = new AxisLayout(GROUP, DATA_COL, Constants.Y_AXIS,
+        AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_DATA, Constants.Y_AXIS,
                 VisiblePredicate.TRUE);
 
         // add value axis labels and horizontal grid lines 
-        AxisLabelLayout y_labels = new AxisLabelLayout(LABELS, y_axis);
+        AxisLabelLayout y_labels = new AxisLabelLayout(GROUP_AXIS_LABELS, y_axis);
 
         // color must be set -> otherwise nothing displayed
-        ColorAction color = new ColorAction(GROUP, VisualItem.FILLCOLOR,
+        ColorAction color = new ColorAction(GROUP_DATA, VisualItem.FILLCOLOR,
                 ColorLib.rgb(100, 100, 255));
 
-        ShapeAction shape = new ShapeAction(GROUP, Constants.SHAPE_ELLIPSE);
+        ShapeAction shape = new ShapeAction(GROUP_DATA, Constants.SHAPE_ELLIPSE);
 
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
@@ -128,14 +130,14 @@ public class DotPlotDemo {
         display.setItemSorter(new ItemSorter() {
             public int score(VisualItem item) {
                 int score = super.score(item);
-                if (item.isInGroup(LABELS))
+                if (item.isInGroup(GROUP_AXIS_LABELS))
                     score--;
                 return score;
             }
         });
 
         // show value in tooltip 
-        display.addControlListener(new ToolTipControl(DATA_COL));
+        display.addControlListener(new ToolTipControl(COL_DATA));
 
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
