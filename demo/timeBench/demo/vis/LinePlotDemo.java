@@ -2,6 +2,7 @@ package timeBench.demo.vis;
 
 import ieg.prefuse.action.LinePlotAction;
 import ieg.prefuse.action.layout.LinePlotLayout;
+import ieg.prefuse.action.layout.TickAxisLabelLayout;
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.LineRenderer;
 
@@ -30,6 +31,7 @@ import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.Expression;
+import prefuse.data.query.NumberRangeModel;
 import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.ShapeRenderer;
@@ -52,11 +54,13 @@ import timeBench.ui.TimeAxisDisplay;
  * <p>
  * This extends {@link DotPlotDemo} with the following features:
  * <ul>
- * <li>Line segments between dots using {@link LinePlotAction}.
- * <li>More readable tooltip using
+ * <li>Add line segments between dots using {@link LinePlotAction}.
+ * <li>Show more readable tooltips using
  * {@link VisualTable#addColumn(String, Expression)} and custom code in
  * {@link LabelExpression}.
  * <li>Change color of hovered dots using {@link HoverActionControl}.
+ * <li>Use {@link TickAxisLabelLayout} to avoid horizontal grid lines.
+ * <li>Always show the same value range 0..100 on the y axis. 
  * </ul>
  * 
  * @author Rind
@@ -123,10 +127,12 @@ public class LinePlotDemo {
 
         AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_DATA,
                 Constants.Y_AXIS, VisiblePredicate.TRUE);
+        // set visible value range to 0..100
+        y_axis.setRangeModel(new NumberRangeModel(0.0d, 100d, 0d, 100d));
 
         // add value axis labels and horizontal grid lines
-        AxisLabelLayout y_labels = new AxisLabelLayout(GROUP_AXIS_LABELS,
-                y_axis);
+        AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
+                y_axis, 5);
 
         // lineCreation add lines between all items in the group
         Action lineCreation = new LinePlotAction(GROUP_LINES, GROUP_DATA,
@@ -174,7 +180,7 @@ public class LinePlotDemo {
         display.setHighQuality(true);
 
         // ensure there is space on left for tick mark label (FAR_LEFT setting)
-        display.setBorder(BorderFactory.createEmptyBorder(7, 25, 7, 0));
+        display.setBorder(BorderFactory.createEmptyBorder(7, 20, 7, 0));
 
         // ensure (horizontal) grid lines are in back of data items
         display.setItemSorter(new ItemSorter() {
