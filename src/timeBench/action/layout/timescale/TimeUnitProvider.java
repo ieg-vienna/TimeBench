@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.SortedSet;
-import java.util.TimeZone;
 import java.util.TreeSet;
 
 import timeBench.calendar.Granularity;
@@ -49,82 +48,58 @@ public class TimeUnitProvider {
 	
 	public static TimeUnitProvider createGregorianTimeUnitProvider() {
 		TimeUnitProvider tup = new TimeUnitProvider();
-		// TimeBench calendar currently works in UTC only
-		TimeZone tz = TimeZone.getTimeZone("UTC");
 		
 		// handle two languages (e.g., for MouseTracker)
 		String dataformat = (Locale.getDefault().getLanguage() == "de") ? "dd.MM yyyy" : "MMM d, yyyy";
 
 		SimpleDateFormat milliFormat = new SimpleDateFormat("SSS");
-		milliFormat.setTimeZone(tz);
 		SimpleDateFormat milliFormatFull = new SimpleDateFormat(dataformat + " HH:mm:ss.SSS");
-		milliFormatFull.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("50 Milliseconds", Calendar.MILLISECOND, 50, milliFormat, milliFormat, milliFormatFull));
 
 		SimpleDateFormat secondFormatShort = new SimpleDateFormat("ss");
-		secondFormatShort.setTimeZone(tz);
 		SimpleDateFormat secondFormatLong = new SimpleDateFormat("HH:mm:ss");
-		secondFormatLong.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("Seconds", Calendar.SECOND, secondFormatShort, secondFormatLong, milliFormatFull));
 		tup.add(new GregorianTimeUnit("5 Seconds", Calendar.SECOND, 5, secondFormatShort, secondFormatLong, milliFormatFull));
 		tup.add(new GregorianTimeUnit("15 Seconds", Calendar.SECOND, 15, secondFormatShort, secondFormatLong, milliFormatFull));
 
 		SimpleDateFormat minuteFormatShort = new SimpleDateFormat("mm");
-		minuteFormatShort.setTimeZone(tz);
 		SimpleDateFormat minuteFormatLong = new SimpleDateFormat("HH:mm");
-		minuteFormatLong.setTimeZone(tz);
 		SimpleDateFormat minuteFormatFull = new SimpleDateFormat(dataformat + " HH:mm:ss");
-		minuteFormatFull.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("Minutes", Calendar.MINUTE, minuteFormatShort, minuteFormatLong, minuteFormatFull));
 		tup.add(new GregorianTimeUnit("5 Minutes", Calendar.MINUTE, 5, minuteFormatShort, minuteFormatLong, minuteFormatFull));
 		tup.add(new GregorianTimeUnit("15 Minutes", Calendar.MINUTE, 15, minuteFormatShort, minuteFormatLong, minuteFormatFull));
 
 		SimpleDateFormat hourFormatShort = new SimpleDateFormat("HH");
-		hourFormatShort.setTimeZone(tz);
 		SimpleDateFormat hourFormatLong = new SimpleDateFormat("dd.MM HH:mm");
-		hourFormatLong.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("Hours", Calendar.HOUR, hourFormatShort, hourFormatLong, minuteFormatFull));
 		tup.add(new GregorianTimeUnit("4 Hours", Calendar.HOUR, 4, hourFormatShort, hourFormatLong, minuteFormatFull));
 
 		SimpleDateFormat dayFormatShort = new SimpleDateFormat("dd");
-		dayFormatShort.setTimeZone(tz);
 		DateFormat dayFormatLong = DateFormat.getDateInstance();
-		dayFormatLong.setTimeZone(tz);
 		SimpleDateFormat dayFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
-		dayFormatFull.setTimeZone(tz);
+
 		tup.add(new GregorianTimeUnit("Days", Calendar.DAY_OF_MONTH, dayFormatShort, dayFormatLong, dayFormatFull));
-		
 		SimpleDateFormat weekFormatShort = new SimpleDateFormat("w");
-		weekFormatShort.setTimeZone(tz);
+
 		String weekPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Woche" : "Week";
 		SimpleDateFormat weekFormatLong = new SimpleDateFormat("'" + weekPrefix + "' w");
-		weekFormatLong.setTimeZone(tz);
 		SimpleDateFormat weekFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
-		weekFormatFull.setTimeZone(tz);
 		tup.weekUnit = new GregorianTimeUnit("Weeks", Calendar.WEEK_OF_YEAR, weekFormatShort, weekFormatLong, weekFormatFull);
 		tup.add(tup.weekUnit);
 
 		SimpleDateFormat monthFormatShort = new SimpleDateFormat("MMM");
-		monthFormatShort.setTimeZone(tz);
 		SimpleDateFormat monthFormatLong = new SimpleDateFormat("MMMMM yy");
-		monthFormatLong.setTimeZone(tz);
 		SimpleDateFormat monthFormatFull = new SimpleDateFormat(dataformat);
-		monthFormatFull.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("Months", Calendar.MONTH, monthFormatShort, monthFormatLong, monthFormatFull));
 
 		String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
 		DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
-		quarterFormatShort.setTimeZone(tz);
 		DateFormat quarterFormatLong = new QuarterDateFormat(true, quarterPrefix, false);
-		quarterFormatLong.setTimeZone(tz);
 		DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
-		quarterFormatFull.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("Quarters", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
 
 		SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
-		yearFormatShort.setTimeZone(tz);
 		SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
-		yearFormatLong.setTimeZone(tz);
 		tup.add(new GregorianTimeUnit("Years", Calendar.YEAR, yearFormatShort, yearFormatLong, monthFormatFull));
         tup.add(new GregorianTimeUnit("Decades", Calendar.YEAR, 10, yearFormatShort, yearFormatLong, monthFormatFull));
         tup.add(new GregorianTimeUnit("Centuries", Calendar.YEAR, 100, yearFormatShort, yearFormatLong, monthFormatFull));

@@ -2,6 +2,7 @@ package timeBench.action.layout.timescale;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
@@ -12,6 +13,9 @@ import timeBench.data.TemporalDataException;
 public class GranularityTimeUnit extends TimeUnit {
 
     private static Logger logger = Logger.getLogger(GranularityTimeUnit.class);
+    
+    // TimeBench calendar currently works in UTC only
+    private static final TimeZone TZ = TimeZone.getTimeZone("UTC");
 
     private long maxLengthInMillis;
 
@@ -21,6 +25,9 @@ public class GranularityTimeUnit extends TimeUnit {
     public GranularityTimeUnit(String name, Granularity granularity,
             DateFormat shortFormat, DateFormat longFormat, DateFormat fullFormat) {
         this(name, granularity, 1, shortFormat, longFormat, fullFormat);
+        shortFormat.setTimeZone(TZ);
+        longFormat.setTimeZone(TZ);
+        fullFormat.setTimeZone(TZ);
     }
 
     public GranularityTimeUnit(String name, Granularity granularity,
