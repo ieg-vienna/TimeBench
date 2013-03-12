@@ -357,6 +357,21 @@ public abstract class TemporalElement extends ParentChildNode {
     }
     
     /**
+     * Get the last or only child temporal element as a primitive.
+     * 
+     * @return a temporal element that is child of this temporal element or
+     *         <tt>null</tt>.
+     */
+    public TemporalElement getLastChildPrimitive() {
+        int child = getGraph().getChildRow(m_row, getChildCount() - 1);
+        if (child > -1) {
+            return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(child);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
      * Gets the first granule of an anchored temporal element. For an
      * {@link Instant}, the granule represents the time of the instant. If it is
      * unanchored, <tt>null</tt> is returned. Granules are cached.

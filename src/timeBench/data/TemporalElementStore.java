@@ -546,6 +546,17 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         return instant;
     }
     
+    protected void set(Instant instant, Granule granule)
+            throws TemporalDataException {
+        GenericTemporalElement el = instant.asGeneric();
+        el.setInf(granule.getInf());
+        el.setSup(granule.getSup());
+        el.setGranularityId(granule.getGranularity().getIdentifier());
+        el.setGranularityId(granule.getGranularity()
+                .getGranularityContextIdentifier());
+        granuleCache.addGranule(instant.getRow(), granule);
+    }
+    
     public Span addSpan(long length, int granularityId) {
         int row = this.addTemporalElementAsRow(length, length, granularityId,
                 -1, TemporalElementStore.PRIMITIVE_SPAN);

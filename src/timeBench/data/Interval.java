@@ -1,7 +1,6 @@
 package timeBench.data;
 
-import ieg.prefuse.data.DataHelper;
-
+import timeBench.calendar.Granule;
 
 /**
  * Interval in the relational view. Following the <em>proxy tuple</em> pattern
@@ -51,5 +50,39 @@ public class Interval extends AnchoredTemporalElement {
         } else
             throw new TemporalDataException("Syntax error in temporal element of type interval");
         
+    }
+    
+    public Span getSpan() throws TemporalDataException {
+        TemporalElement last = (TemporalElement) this.getLastChild();
+        if (last != null) {
+            last = last.asPrimitive();
+            
+            if(last instanceof Span)
+                return (Span) last;
+            else if(this.getChildCount() == 2 && last instanceof Instant && this.getFirstChildPrimitive() instanceof Instant) {
+                throw new RuntimeException("Not implemented yet");
+            } else
+                throw new TemporalDataException("Syntax error in temporal element of type interval");
+            
+        } else
+            throw new TemporalDataException("Syntax error in temporal element of type interval");
+    }
+    
+    public void setBegin(Granule granule) throws TemporalDataException {
+        TemporalElement first = (TemporalElement) this.getFirstChildPrimitive();
+        TemporalElement last = (TemporalElement) this.getLastChildPrimitive();
+        if (first != null && last != null) {
+            if (first instanceof Instant && last instanceof Span) {
+                ((Instant) first).set(granule);
+                // TODO convert begin to span granularity
+                long endId = granule.getIdentifier() + ((Span) last).getLength() - 1;
+                Granule endGranule = new Granule(endId, granule.getGranularity());
+                this.setLong(INF, granule.getInf());
+                this.setLong(SUP, endGranule.getSup());
+            } else
+                throw new RuntimeException("Not implemented yet");
+        } else
+            throw new TemporalDataException(
+                    "Syntax error in temporal element of type interval");
     }
 }
