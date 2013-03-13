@@ -50,7 +50,7 @@ import timeBench.data.TemporalObject;
 import timeBench.ui.TimeAxisDisplay;
 
 /**
- * Simple demo of a line plot showing a numerical variable over time.
+ * Intermediate demo of a line plot showing a numerical variable over time.
  * <p>
  * This extends {@link DotPlotDemo} with the following features:
  * <ul>

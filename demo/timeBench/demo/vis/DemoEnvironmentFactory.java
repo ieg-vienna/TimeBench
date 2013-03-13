@@ -2,6 +2,7 @@ package timeBench.demo.vis;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -120,6 +121,9 @@ public class DemoEnvironmentFactory {
             }
 
             public void prePaint(Display d, Graphics2D g) {
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
                 g.transform(d.getInverseTransform());
                 timeScalePainter.paint(g);
                 g.transform(d.getTransform());
