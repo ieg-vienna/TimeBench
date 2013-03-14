@@ -21,6 +21,7 @@ public class Granule {
 	private Long identifier = null;
 	private String label = null;
 	private Granularity granularity = null;
+	private Granule contextGranule = null;
 
 	/**
 	 * When creating a granule from inf and sup, just create the granule where inf is in.
@@ -49,7 +50,10 @@ public class Granule {
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
 	public Granule(long inf,long sup,Granularity granularity) throws TemporalDataException {
-		this(inf,sup,MODE_INF_GRANULE,granularity);
+		this(inf,sup,MODE_INF_GRANULE,granularity,null);
+	}
+	public Granule(long inf,long sup,Granularity granularity,Granule contextGranule) throws TemporalDataException {
+		this(inf,sup,MODE_INF_GRANULE,granularity,contextGranule);
 	}
 
 	/**
@@ -61,17 +65,30 @@ public class Granule {
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
 	public Granule(long inf,long sup,int mode,Granularity granularity) throws TemporalDataException {
+		this(inf,sup,mode,granularity,null);
+	}
+	public Granule(long inf,long sup,int mode,Granularity granularity,Granule contextGranule) throws TemporalDataException {			
 		if(mode == MODE_FORCE) {
 			this.inf = inf;
 			this.sup = sup;
 			this.granularity = granularity;
+			setContextGranule(contextGranule);
 		} else {
 			Granule g2 = granularity.createGranule(inf,sup,mode);
 			this.inf = g2.getInf();
 			this.sup = g2.getSup();
 			this.granularity = granularity;
+			setContextGranule(contextGranule);
 		}
 	}
+	
+	private Granule(long inf,long sup,int mode,Granularity granularity,Granule contextGranule,boolean doubleForce) {
+		this.inf = inf;
+		this.sup = sup;
+		this.granularity = granularity;
+		contextGranule = contextGranule;
+	}
+
 
 	/**
 	 * Constructs a Granule with a given identifier. Only when the context of the granularity is the size of the whole {@link Calendar},
@@ -79,10 +96,15 @@ public class Granule {
 	 * of Unix, is taken.
 	 * @param identifier the identifier used to generate the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
+	 * @throws TemporalDataException 
 	 */
-	public Granule(long identifier,Granularity granularity) {
+	public Granule(long identifier,Granularity granularity) throws TemporalDataException {
+		this(identifier,granularity,null);
+	}
+	public Granule(long identifier,Granularity granularity,Granule contextGranule) throws TemporalDataException {
 		this.identifier = identifier;
 		this.granularity = granularity;
+		setContextGranule(contextGranule);
 	}
 	
 
@@ -92,10 +114,14 @@ public class Granule {
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
 	 */
 	public Granule(Date date, Granularity granularity) throws TemporalDataException {
+		this(date,granularity,null);
+	}
+	public Granule(Date date, Granularity granularity,Granule contextGranule) throws TemporalDataException {
 		Granule g2 = granularity.createGranule(date);
 		this.inf = g2.getInf();
 		this.sup = g2.getSup();
 		this.granularity = granularity;
+		setContextGranule(contextGranule);
 	}
 	
 	/**
@@ -151,6 +177,25 @@ public class Granule {
 			label = granularity.createGranuleLabel(this);
 		return label;
 	}
+	
+	public Granule getContextGranule() {
+		return contextGranule;
+	}
+
+	public boolean isRecurring() {
+		return contextGranule == null;
+	}
+	
+	public boolean isSpecifc() {
+		return contextGranule != null;
+	}
+	
+	private void setContextGranule(Granule contextGranule) throws TemporalDataException {
+		if (contextGranule != null)
+			if(granularity.getGranularityContextIdentifier() != contextGranule.getGranularity().getIdentifier())
+				throw new TemporalDataException("Context Granule must have context granularity as granularity.");
+		this.contextGranule = contextGranule;
+	}
 
 	/**
 	 * @param inf2
@@ -160,4 +205,7 @@ public class Granule {
 	public boolean contains(long chronon) throws TemporalDataException {
 		return granularity.contains(this,chronon);
 	}
+	
+	public static Granule TOP = new Granule(Long.MIN_VALUE,Long.MAX_VALUE,MODE_FORCE,Granularity.TOP,null,true); 					
+	public static Granule CALENDAR = new Granule(Long.MIN_VALUE,Long.MAX_VALUE,MODE_FORCE,Granularity.CALENDAR,TOP,true); 
 }

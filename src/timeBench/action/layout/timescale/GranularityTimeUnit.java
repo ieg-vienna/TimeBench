@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 
 public class GranularityTimeUnit extends TimeUnit {
@@ -34,6 +35,9 @@ public class GranularityTimeUnit extends TimeUnit {
             int factor, DateFormat shortFormat, DateFormat longFormat,
             DateFormat fullFormat) {
         super(name, shortFormat, longFormat, fullFormat);
+        if(granularity.getGranularityContextIdentifier() != JavaDateCalendarManager.Granularities.Top.toInt()) {            
+            throw new RuntimeException("GranularityTimeUnit must have Granularity with context TOP as granularity");
+        }
         this.granularity = granularity;
         this.factor = factor;
 
@@ -43,15 +47,11 @@ public class GranularityTimeUnit extends TimeUnit {
     private static long calculateLengthInMillis(Granularity granularity,
             int factor) {
 
-        Granularity msWithContext = new Granularity(granularity.getCalendar(),
+        try {
+        	Granularity msWithContext = new Granularity(granularity.getCalendar(),
                 granularity.getCalendar().getBottomGranularity()
                         .getIdentifier(), granularity.getIdentifier());
-        try {
-            Granule inf = new Granule(msWithContext.getMinGranuleIdentifier(),
-                    msWithContext);
-            Granule sup = new Granule(msWithContext.getMaxGranuleIdentifier(),
-                    msWithContext);
-            long length = sup.getSup() - inf.getInf() + 1;
+            long length = msWithContext.getMaxLengthInIdentifiers();
             if (logger.isDebugEnabled())
                 logger.debug("length: " + length + " granularity: "
                         + granularity);
@@ -84,7 +84,7 @@ public class GranularityTimeUnit extends TimeUnit {
             long id = getGranuleId(date);
 
             long infId = (id / factor) * factor;
-            Granule g = new Granule(infId, granularity);
+            Granule g = new Granule(infId, granularity, Granule.TOP);
             long prev = g.getInf();
             if (logger.isDebugEnabled())
                 logger.debug("nf date: " + new Date(prev) + " Id: " + infId + " f: " + factor + " g: " + granularity);
@@ -103,7 +103,7 @@ public class GranularityTimeUnit extends TimeUnit {
             long id = getGranuleId(date);
 
             long supId = ((id / factor) + 1) * factor;
-            Granule g = new Granule(supId, granularity);
+            Granule g = new Granule(supId, granularity, Granule.TOP);
             long next = g.getInf();
             if (logger.isDebugEnabled())
                 logger.debug("su date: " + new Date(next) + " Id: " + supId + " f: " + factor + " g: " + granularity);
