@@ -1,5 +1,6 @@
 package timeBench.data;
 
+import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 
 /**
@@ -76,7 +77,7 @@ public class Interval extends AnchoredTemporalElement {
                 ((Instant) first).set(granule);
                 // TODO convert begin to span granularity
                 long endId = granule.getIdentifier() + ((Span) last).getLength() - 1;
-                Granule endGranule = new Granule(endId, granule.getGranularity());
+                Granule endGranule = new Granule(endId, granule.getGranularity(),Granule.TOP);
                 this.setLong(INF, granule.getInf());
                 this.setLong(SUP, endGranule.getSup());
             } else

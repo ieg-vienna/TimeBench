@@ -600,7 +600,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         }
 
         long endId = granule.getIdentifier() + span.getLength() - 1;
-        granule = new Granule(endId, granularity);
+        granule = new Granule(endId, granularity, Granule.TOP);
         long sup = granule.getSup();
 
         GenericTemporalElement interval = addTemporalElement(begin.getInf(),
