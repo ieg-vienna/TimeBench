@@ -839,24 +839,29 @@ public class JavaDateCalendarManager implements CalendarManager {
 		switch(Granularities.fromInt(granule.getGranularity().getIdentifier())) {
 			case Millisecond:
 				result = granule.getIdentifier();
-				result += contextGranule.getInf();
+				if (contextGranule.getGranularity().getIdentifier() != Granularities.Top.toInt())
+					result += contextGranule.getInf();
 				break;
 			case Second:
 				result = granule.getIdentifier()*1000L;
-				result += contextGranule.getInf();
+				if (contextGranule.getGranularity().getIdentifier() != Granularities.Top.toInt())
+					result += contextGranule.getInf();
 				break;
 			case Minute:
 				result = granule.getIdentifier()*60000L;
-				result += contextGranule.getInf();
+				if (contextGranule.getGranularity().getIdentifier() != Granularities.Top.toInt())
+					result += contextGranule.getInf();
 				break;
 			case Hour:
 				result = granule.getIdentifier()*3600000L;
-				result += contextGranule.getInf();
+				if (contextGranule.getGranularity().getIdentifier() != Granularities.Top.toInt())
+					result += contextGranule.getInf();
 				break;
 			case Day:
 			    // Warning does not handle day light saving time 
 				result = granule.getIdentifier()*86400000L;
-				result += contextGranule.getInf();
+				if (contextGranule.getGranularity().getIdentifier() != Granularities.Top.toInt())
+					result += contextGranule.getInf();
 				break;
 			case Week:				
 				switch(Granularities.fromInt(contextGranule.getGranularity().getIdentifier())) {
@@ -955,7 +960,7 @@ public class JavaDateCalendarManager implements CalendarManager {
             case Decade:{
                 GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
                 cal.setTimeInMillis(0);
-                cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier() * 10 + 1971));
+                cal.set(GregorianCalendar.YEAR, (int)(granule.getIdentifier() * 10 + 1));
                 result = cal.getTimeInMillis();
                 break;}
 		}
@@ -1000,11 +1005,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getInf()+86399999L;
 				break;
 			case Week:
-                result = granule.getInf() + 345599999;
+                result = granule.getInf() + 604799999;
                 break;
 			case Month:
 				result = granule.getInf();
 				int monthId = (int)granule.getIdentifier() % 12;
+				if(monthId < 0)
+					monthId+=12;
 				switch(monthId) {
 				case 0:
 				case 2:
@@ -1029,7 +1036,9 @@ public class JavaDateCalendarManager implements CalendarManager {
 				break;
 			case Quarter:
 				result = granule.getInf();
-				int quarterId = (int)granule.getIdentifier() % 3;
+				int quarterId = (int)granule.getIdentifier() % 4;
+				if(quarterId < 0)
+					quarterId+=4;
 				switch(quarterId) {
 				case 0:
 					// 86400000
@@ -1060,7 +1069,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = granule.getInf();
 				GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(result);
-				for(int i = (int)granule.getIdentifier()*10+1971; i<(int)granule.getIdentifier()*10+1971+10; i++) {
+				for(int i = (int)granule.getIdentifier()*10+1; i<(int)granule.getIdentifier()*10+1+10; i++) {
 					if(cal.isLeapYear(i))
 						result += 31622400000L;
 					else
