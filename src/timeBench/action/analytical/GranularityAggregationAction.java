@@ -56,7 +56,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		aggFct = new GranularityAggregationFunction[granularities.length];
 		for(int i=0; i<granularities.length; i++) {
 			this.granularities[i] = new Granularity(this.calendarManager.getDefaultCalendar(),granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
-			aggFct[i] = granularities[i].getAggregationFct();
+			aggFct[i] = new GranularityAggregationMean(); // granularities[i].getAggregationFct();
 		}
 		this.missingValueIdentifier = missingValueIdentifier;
 	}

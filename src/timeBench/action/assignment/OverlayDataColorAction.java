@@ -1,5 +1,6 @@
 package timeBench.action.assignment;
 
+import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.data.ParentChildNode;
 import ieg.prefuse.data.expression.IsNanPredicate;
 
@@ -125,7 +126,8 @@ public class OverlayDataColorAction extends DataColorAction {
         TupleSet ts = m_vis.getVisualGroup(m_group);
         Predicate prednan = new NotPredicate(new IsNanPredicate(new ColumnExpression(m_dataField)));        
         Predicate pred0 = new AndPredicate(prednan,  
-        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( ParentChildNode.DEPTH ), new NumericLiteral(level0)));        
+        	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( ParentChildNode.DEPTH ), new NumericLiteral(level0)));
+        //DataHelper.printTable(System.out, (Table)ts);
         TupleSet ts0 = new CascadedTable((Table)ts, pred0);  
         Predicate pred1 = new AndPredicate(prednan,
         	new ComparisonPredicate(ComparisonPredicate.LTEQ, new ColumnExpression( ParentChildNode.DEPTH ), new NumericLiteral(level1)));
