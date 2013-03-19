@@ -1,5 +1,6 @@
 package timeBench.data.io;
 
+import ieg.prefuse.data.DataHelper;
 import ieg.util.xml.JaxbMarshaller;
 
 import java.io.IOException;
@@ -66,6 +67,10 @@ public class TextTableTemporalDatasetReader extends
         Table table = tableReader.readTable(is);
         TimeZone.setDefault(oldDefault);
 
+        if (logger.isInfoEnabled()) {
+            logger.info("Metadata of raw table:");
+            DataHelper.printMetadata(System.out, table);
+        }
         if (this.spec == null)
             scanTableForSpecification(table, spec);
 
