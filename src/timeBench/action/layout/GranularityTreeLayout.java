@@ -134,6 +134,7 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
     		setY(visualNode,null,bounds.getCenterY());
     		PrefuseLib.setSizeY(visualNode,null,aviivn[Constants.Y_AXIS]*factor);
     	}
+		visualNode.setVisible(true);
 		
     	double xbase = bounds.getX() + (aviivn[Constants.AXIS_COUNT+Constants.X_AXIS])*factor;
     	double ybase = bounds.getY() + (aviivn[Constants.AXIS_COUNT+Constants.Y_AXIS])*factor;
@@ -151,9 +152,17 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
             			y,
             			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor),factor);
             }
-        }
-        
-        
+        } else {
+        	setChildsInvisible(node);
+        }        
+	}
+	
+	private void setChildsInvisible(TemporalObject node) {
+    	for (TemporalObject o : node.childObjects()) {
+    		VisualItem visualNode = m_vis.getVisualItem(m_group, o);
+    		visualNode.setVisible(false);
+    		setChildsInvisible(o);
+    	}
 	}
 
 	private void calculateSizes(TemporalObject root)
