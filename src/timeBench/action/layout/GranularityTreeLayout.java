@@ -292,4 +292,16 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 	public Double getMaxPosition(int axis) {
 		return axis == Constants.X_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
 	}
+
+	public GranularityTreeLayoutSettings[] getSettings() {		
+		return settings;
+	}
+
+	public long[] getMinIdentifiers() {		
+		return minIdentifiers;		
+	}
+	
+	public long[] getMaxIdentifiers() {		
+		return maxIdentifiers;		
+	}
 }
