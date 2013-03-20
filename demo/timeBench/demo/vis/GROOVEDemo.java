@@ -118,8 +118,9 @@ public class GROOVEDemo {
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
 		DefaultRendererFactory rf = new DefaultRendererFactory();
-		rf.add(new InGroupPredicate("GROOVE.nodes"),new ShapeRenderer(1));
+		rf.add(new InGroupPredicate(GROUP_DATA+".nodes"),new ShapeRenderer(1));
         rf.add(new InGroupPredicate("GROOVELabels.nodes"),new LabelRenderer(VisualItem.LABEL));
+
         vis.setRendererFactory(rf);
 
         // --------------------------------------------------------------------
@@ -130,7 +131,7 @@ public class GROOVEDemo {
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.X_AXIS, 0),
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 1),
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.X_AXIS, 0)}
-			,10);
+			,4);
 		
 		OverlayDataColorAction colorAction = new OverlayDataColorAction(GROUP_DATA,"value",Constants.NUMERICAL,VisualItem.FILLCOLOR,true,3);
 
