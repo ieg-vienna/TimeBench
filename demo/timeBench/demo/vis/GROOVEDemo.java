@@ -4,6 +4,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintStream;
 
 import ieg.prefuse.RangeModelTransformationDisplay;
 import ieg.prefuse.data.DataHelper;
@@ -47,6 +51,7 @@ import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.io.TextTableTemporalDatasetReader;
+import timeBench.test.DebugHelper;
 import timeBench.ui.TimeAxisDisplay;
 import visual.sort.TreeItemSorter;
 
@@ -102,7 +107,11 @@ public class GROOVEDemo {
 					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Day.toInt(),JavaDateCalendarManager.Granularities.Week.toInt()),
 					/*new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Hour.toInt(),JavaDateCalendarManager.Granularities.Day.toInt())*/ },
 				-1.0);
-		timeAggregationAction.run(0);				
+		timeAggregationAction.run(0);
+		
+		DebugHelper.printTemporalDatasetGraph(
+				System.out, timeAggregationAction.getGranularityAggregationTree().getTemporalObject(
+						timeAggregationAction.getGranularityAggregationTree().getRoots()[0]));
         
         vis.addGraph(GROUP_DATA, timeAggregationAction.getGranularityAggregationTree());        
         

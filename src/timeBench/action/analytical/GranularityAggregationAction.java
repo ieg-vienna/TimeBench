@@ -153,7 +153,6 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			
 			workingDataset.setRoots(roots);
 			
-			DebugHelper.printTemporalDatasetGraph(System.out, workingDataset.getTemporalObject(roots[0]));
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
