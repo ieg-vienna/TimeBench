@@ -137,13 +137,13 @@ public class GROOVEDemo {
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
         update.add(granularityTreeLayout);
-        update.add(colorAction);
         update.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, update);
 
         // runs once (at startup)
         ActionList draw = new ActionList();
         draw.add(update);
+        draw.add(colorAction);
         draw.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, draw);
 
