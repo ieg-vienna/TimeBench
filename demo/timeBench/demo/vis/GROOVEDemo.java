@@ -154,7 +154,7 @@ public class GROOVEDemo {
         // enable anti-aliasing
         display.setHighQuality(true);
         
-        display.setBorder(BorderFactory.createEmptyBorder(7, 25, 7, 0));
+        //display.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
 		// react on window resize
 		display.addComponentListener(new ComponentAdapter() {
