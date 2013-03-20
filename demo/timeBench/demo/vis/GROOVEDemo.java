@@ -127,10 +127,10 @@ public class GROOVEDemo {
         // STEP 3: create actions to process the visual data
 
 		GranularityTreeLayout granularityTreeLayout = new GranularityTreeLayout(GROUP_DATA, new GranularityTreeLayoutSettings[]{
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.Y_AXIS, 0),
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.X_AXIS, 0),
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 1),
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.X_AXIS, 0)}
+				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.X_AXIS, 0),
+				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 0),
+				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.X_AXIS, 1),
+				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 0)}
 			,4);
 		
 		OverlayDataColorAction colorAction = new OverlayDataColorAction(GROUP_DATA,"value",Constants.NUMERICAL,VisualItem.FILLCOLOR,true,3);
