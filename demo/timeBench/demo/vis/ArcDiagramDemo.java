@@ -304,7 +304,7 @@ public class ArcDiagramDemo {
 				}, MultiPredicatePatternDiscovery.SPACING_ALLOWED);		
 		action4.run(0.0);
 		
-		//DebugHelper.printTemporalDatasetForest(System.out, action4.getTemporalDataset(), "label",TemporalObject.ID);
+		DebugHelper.printTemporalDatasetForest(System.out, action4.getTemporalDataset(), "label",TemporalObject.ID);
 		
 		TemporalDataset patterns = action4.getTemporalDataset();
 		
