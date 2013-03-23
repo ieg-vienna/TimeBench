@@ -27,75 +27,25 @@ public class GranularityTreeLabelLayout extends Layout {
     private GranularityTreeLayout m_layout; // pointer to matching layout, if any
     
     private int m_axis;
-    private boolean m_asc = true;
     
-    private double m_spacing; // desired spacing between axis labels
+    private double m_indent; // desired indentation on the "other" axis; ignored when bounds set
     
-    /**
-     * Create a new AxisLabelLayout layout.
-     * @param group the data group of the axis lines and labels
-     * @param axis the axis type, either {@link prefuse.Constants#X_AXIS}
-     * or {@link prefuse.Constants#Y_AXIS}.
-     */
-    public GranularityTreeLabelLayout(String group, int axis)
-    {
-        this(group, axis, null);
-    }
-    
-    /**
-     * Create a new AxisLabelLayout layout.
-     * @param group the data group of the axis lines and labels
-     * @param axis the axis type, either {@link prefuse.Constants#X_AXIS}
-     * or {@link prefuse.Constants#Y_AXIS}.
-     * @param values the range model that defines the span of the axis
-     * @param bounds the layout bounds within which to place the axis marks
-     */
-    public GranularityTreeLabelLayout(String group, int axis, Rectangle2D bounds)
-    {
-        super(group);
-        if ( bounds != null )
-            setLayoutBounds(bounds);
-        m_axis = axis;
-        m_spacing = 50;
-    }
-    
-    /**
-     * Create a new AxisLabelLayout layout.
-     * @param group the data group of the axis lines and labels
-     * @param layout an {@link AxisLayout} instance to model this layout after.
-     * The axis type and range model of the provided instance will be used.
-     */
     public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout) {
-        this(group, layout, null, 50);
+        this(group, layout, null, 0);
     }
     
-    /**
-     * Create a new AxisLabelLayout layout.
-     * @param group the data group of the axis lines and labels
-     * @param layout an {@link AxisLayout} instance to model this layout after.
-     * The axis type and range model of the provided instance will be used.
-     * @param bounds the layout bounds within which to place the axis marks
-     */
     public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout, Rectangle2D bounds) {
-        this(group, layout, bounds, 50);
+        this(group, layout, bounds, 0);
     }
 
-    /**
-     * Create a new AxisLabelLayout layout.
-     * @param group the data group of the axis lines and labels
-     * @param layout an {@link AxisLayout} instance to model this layout after.
-     * The axis type and range model of the provided instance will be used.
-     * @param bounds the layout bounds within which to place the axis marks
-     * @param spacing the minimum spacing between axis labels
-     */
     public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout, Rectangle2D bounds,
-            double spacing)
+            double indent)
     {
         super(group);
         if ( bounds != null )
             setLayoutBounds(bounds);
         m_layout = layout;
-        m_spacing = spacing;
+        m_indent = indent;
     }
     
     // ------------------------------------------------------------------------
@@ -104,38 +54,18 @@ public class GranularityTreeLabelLayout extends Layout {
      * Get the required minimum spacing between axis labels.
      * @return the axis label spacing
      */
-    public double getSpacing() {
-        return m_spacing;
+    public double getIndent() {
+        return m_indent;
     }
 
     /**
      * Set the required minimum spacing between axis labels.
      * @param spacing the axis label spacing to use
      */
-    public void setSpacing(double spacing) {
-        m_spacing = spacing;
+    public void setIndent(double indent) {
+    	m_indent = indent;
     }
     
-    /**
-     * Indicates if the axis values should be presented in ascending order
-     * along the axis.
-     * @return true if data values increase as pixel coordinates increase,
-     * false if data values decrease as pixel coordinates increase.
-     */
-    public boolean isAscending() {
-        return m_asc;
-    }
-    
-    /**
-     * Sets if the axis values should be presented in ascending order
-     * along the axis.
-     * @param asc true if data values should increase as pixel coordinates
-     * increase, false if data values should decrease as pixel coordinates
-     * increase.
-     */
-    public void setAscending(boolean asc) {
-        m_asc = asc;
-    }
     
     // ------------------------------------------------------------------------
     
