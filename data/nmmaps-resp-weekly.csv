@@ -1,0 +1,3656 @@
+"date","city","resp"
+"1987-01-04","Los Angeles",70
+"1987-01-11","Los Angeles",94
+"1987-01-18","Los Angeles",136
+"1987-01-25","Los Angeles",109
+"1987-02-01","Los Angeles",118
+"1987-02-08","Los Angeles",109
+"1987-02-15","Los Angeles",96
+"1987-02-22","Los Angeles",97
+"1987-03-01","Los Angeles",90
+"1987-03-08","Los Angeles",90
+"1987-03-15","Los Angeles",97
+"1987-03-22","Los Angeles",96
+"1987-03-29","Los Angeles",98
+"1987-04-05","Los Angeles",100
+"1987-04-12","Los Angeles",95
+"1987-04-19","Los Angeles",92
+"1987-04-26","Los Angeles",90
+"1987-05-03","Los Angeles",87
+"1987-05-10","Los Angeles",86
+"1987-05-17","Los Angeles",87
+"1987-05-24","Los Angeles",83
+"1987-05-31","Los Angeles",72
+"1987-06-07","Los Angeles",85
+"1987-06-14","Los Angeles",79
+"1987-06-21","Los Angeles",77
+"1987-06-28","Los Angeles",80
+"1987-07-05","Los Angeles",71
+"1987-07-12","Los Angeles",69
+"1987-07-19","Los Angeles",80
+"1987-07-26","Los Angeles",82
+"1987-08-02","Los Angeles",58
+"1987-08-09","Los Angeles",79
+"1987-08-16","Los Angeles",70
+"1987-08-23","Los Angeles",65
+"1987-08-30","Los Angeles",80
+"1987-09-06","Los Angeles",90
+"1987-09-13","Los Angeles",73
+"1987-09-20","Los Angeles",82
+"1987-09-27","Los Angeles",91
+"1987-10-04","Los Angeles",92
+"1987-10-11","Los Angeles",77
+"1987-10-18","Los Angeles",79
+"1987-10-25","Los Angeles",71
+"1987-11-01","Los Angeles",81
+"1987-11-08","Los Angeles",79
+"1987-11-15","Los Angeles",83
+"1987-11-22","Los Angeles",75
+"1987-11-29","Los Angeles",81
+"1987-12-06","Los Angeles",103
+"1987-12-13","Los Angeles",108
+"1987-12-20","Los Angeles",102
+"1987-12-27","Los Angeles",107
+"1988-01-03","Los Angeles",118
+"1988-01-10","Los Angeles",105
+"1988-01-17","Los Angeles",133
+"1988-01-24","Los Angeles",148
+"1988-01-31","Los Angeles",177
+"1988-02-07","Los Angeles",169
+"1988-02-14","Los Angeles",174
+"1988-02-21","Los Angeles",169
+"1988-02-28","Los Angeles",149
+"1988-03-06","Los Angeles",128
+"1988-03-13","Los Angeles",111
+"1988-03-20","Los Angeles",112
+"1988-03-27","Los Angeles",113
+"1988-04-03","Los Angeles",83
+"1988-04-10","Los Angeles",97
+"1988-04-17","Los Angeles",92
+"1988-04-24","Los Angeles",84
+"1988-05-01","Los Angeles",60
+"1988-05-08","Los Angeles",84
+"1988-05-15","Los Angeles",96
+"1988-05-22","Los Angeles",92
+"1988-05-29","Los Angeles",74
+"1988-06-05","Los Angeles",82
+"1988-06-12","Los Angeles",78
+"1988-06-19","Los Angeles",81
+"1988-06-26","Los Angeles",78
+"1988-07-03","Los Angeles",92
+"1988-07-10","Los Angeles",76
+"1988-07-17","Los Angeles",86
+"1988-07-24","Los Angeles",77
+"1988-07-31","Los Angeles",78
+"1988-08-07","Los Angeles",71
+"1988-08-14","Los Angeles",74
+"1988-08-21","Los Angeles",81
+"1988-08-28","Los Angeles",72
+"1988-09-04","Los Angeles",69
+"1988-09-11","Los Angeles",86
+"1988-09-18","Los Angeles",68
+"1988-09-25","Los Angeles",83
+"1988-10-02","Los Angeles",79
+"1988-10-09","Los Angeles",72
+"1988-10-16","Los Angeles",88
+"1988-10-23","Los Angeles",88
+"1988-10-30","Los Angeles",65
+"1988-11-06","Los Angeles",82
+"1988-11-13","Los Angeles",70
+"1988-11-20","Los Angeles",73
+"1988-11-27","Los Angeles",91
+"1988-12-04","Los Angeles",94
+"1988-12-11","Los Angeles",99
+"1988-12-18","Los Angeles",122
+"1988-12-25","Los Angeles",112
+"1989-01-01","Los Angeles",97
+"1989-01-08","Los Angeles",142
+"1989-01-15","Los Angeles",147
+"1989-01-22","Los Angeles",215
+"1989-01-29","Los Angeles",227
+"1989-02-05","Los Angeles",209
+"1989-02-12","Los Angeles",212
+"1989-02-19","Los Angeles",159
+"1989-02-26","Los Angeles",150
+"1989-03-05","Los Angeles",150
+"1989-03-12","Los Angeles",123
+"1989-03-19","Los Angeles",102
+"1989-03-26","Los Angeles",101
+"1989-04-02","Los Angeles",67
+"1989-04-09","Los Angeles",111
+"1989-04-16","Los Angeles",96
+"1989-04-23","Los Angeles",84
+"1989-04-30","Los Angeles",93
+"1989-05-07","Los Angeles",85
+"1989-05-14","Los Angeles",78
+"1989-05-21","Los Angeles",71
+"1989-05-28","Los Angeles",84
+"1989-06-04","Los Angeles",77
+"1989-06-11","Los Angeles",81
+"1989-06-18","Los Angeles",73
+"1989-06-25","Los Angeles",86
+"1989-07-02","Los Angeles",89
+"1989-07-09","Los Angeles",85
+"1989-07-16","Los Angeles",76
+"1989-07-23","Los Angeles",80
+"1989-07-30","Los Angeles",82
+"1989-08-06","Los Angeles",60
+"1989-08-13","Los Angeles",64
+"1989-08-20","Los Angeles",91
+"1989-08-27","Los Angeles",63
+"1989-09-03","Los Angeles",70
+"1989-09-10","Los Angeles",84
+"1989-09-17","Los Angeles",85
+"1989-09-24","Los Angeles",95
+"1989-10-01","Los Angeles",74
+"1989-10-08","Los Angeles",62
+"1989-10-15","Los Angeles",71
+"1989-10-22","Los Angeles",91
+"1989-10-29","Los Angeles",77
+"1989-11-05","Los Angeles",84
+"1989-11-12","Los Angeles",89
+"1989-11-19","Los Angeles",97
+"1989-11-26","Los Angeles",87
+"1989-12-03","Los Angeles",74
+"1989-12-10","Los Angeles",87
+"1989-12-17","Los Angeles",123
+"1989-12-24","Los Angeles",124
+"1989-12-31","Los Angeles",114
+"1990-01-07","Los Angeles",129
+"1990-01-14","Los Angeles",155
+"1990-01-21","Los Angeles",147
+"1990-01-28","Los Angeles",148
+"1990-02-04","Los Angeles",152
+"1990-02-11","Los Angeles",126
+"1990-02-18","Los Angeles",131
+"1990-02-25","Los Angeles",148
+"1990-03-04","Los Angeles",118
+"1990-03-11","Los Angeles",95
+"1990-03-18","Los Angeles",88
+"1990-03-25","Los Angeles",89
+"1990-04-01","Los Angeles",67
+"1990-04-08","Los Angeles",104
+"1990-04-15","Los Angeles",100
+"1990-04-22","Los Angeles",88
+"1990-04-29","Los Angeles",103
+"1990-05-06","Los Angeles",88
+"1990-05-13","Los Angeles",86
+"1990-05-20","Los Angeles",82
+"1990-05-27","Los Angeles",88
+"1990-06-03","Los Angeles",90
+"1990-06-10","Los Angeles",78
+"1990-06-17","Los Angeles",61
+"1990-06-24","Los Angeles",68
+"1990-07-01","Los Angeles",91
+"1990-07-08","Los Angeles",84
+"1990-07-15","Los Angeles",74
+"1990-07-22","Los Angeles",91
+"1990-07-29","Los Angeles",77
+"1990-08-05","Los Angeles",70
+"1990-08-12","Los Angeles",79
+"1990-08-19","Los Angeles",78
+"1990-08-26","Los Angeles",86
+"1990-09-02","Los Angeles",78
+"1990-09-09","Los Angeles",78
+"1990-09-16","Los Angeles",78
+"1990-09-23","Los Angeles",78
+"1990-09-30","Los Angeles",85
+"1990-10-07","Los Angeles",82
+"1990-10-14","Los Angeles",72
+"1990-10-21","Los Angeles",79
+"1990-10-28","Los Angeles",94
+"1990-11-04","Los Angeles",82
+"1990-11-11","Los Angeles",84
+"1990-11-18","Los Angeles",76
+"1990-11-25","Los Angeles",89
+"1990-12-02","Los Angeles",89
+"1990-12-09","Los Angeles",108
+"1990-12-16","Los Angeles",105
+"1990-12-23","Los Angeles",99
+"1990-12-30","Los Angeles",115
+"1991-01-06","Los Angeles",121
+"1991-01-13","Los Angeles",119
+"1991-01-20","Los Angeles",106
+"1991-01-27","Los Angeles",107
+"1991-02-03","Los Angeles",98
+"1991-02-10","Los Angeles",105
+"1991-02-17","Los Angeles",112
+"1991-02-24","Los Angeles",106
+"1991-03-03","Los Angeles",115
+"1991-03-10","Los Angeles",90
+"1991-03-17","Los Angeles",87
+"1991-03-24","Los Angeles",108
+"1991-03-31","Los Angeles",101
+"1991-04-07","Los Angeles",108
+"1991-04-14","Los Angeles",92
+"1991-04-21","Los Angeles",99
+"1991-04-28","Los Angeles",89
+"1991-05-05","Los Angeles",103
+"1991-05-12","Los Angeles",97
+"1991-05-19","Los Angeles",89
+"1991-05-26","Los Angeles",65
+"1991-06-02","Los Angeles",68
+"1991-06-09","Los Angeles",98
+"1991-06-16","Los Angeles",89
+"1991-06-23","Los Angeles",85
+"1991-06-30","Los Angeles",78
+"1991-07-07","Los Angeles",79
+"1991-07-14","Los Angeles",78
+"1991-07-21","Los Angeles",92
+"1991-07-28","Los Angeles",81
+"1991-08-04","Los Angeles",68
+"1991-08-11","Los Angeles",63
+"1991-08-18","Los Angeles",78
+"1991-08-25","Los Angeles",78
+"1991-09-01","Los Angeles",84
+"1991-09-08","Los Angeles",77
+"1991-09-15","Los Angeles",82
+"1991-09-22","Los Angeles",63
+"1991-09-29","Los Angeles",66
+"1991-10-06","Los Angeles",70
+"1991-10-13","Los Angeles",75
+"1991-10-20","Los Angeles",71
+"1991-10-27","Los Angeles",75
+"1991-11-03","Los Angeles",78
+"1991-11-10","Los Angeles",67
+"1991-11-17","Los Angeles",83
+"1991-11-24","Los Angeles",100
+"1991-12-01","Los Angeles",96
+"1991-12-08","Los Angeles",130
+"1991-12-15","Los Angeles",114
+"1991-12-22","Los Angeles",135
+"1991-12-29","Los Angeles",158
+"1992-01-05","Los Angeles",175
+"1992-01-12","Los Angeles",175
+"1992-01-19","Los Angeles",177
+"1992-01-26","Los Angeles",134
+"1992-02-02","Los Angeles",143
+"1992-02-09","Los Angeles",141
+"1992-02-16","Los Angeles",116
+"1992-02-23","Los Angeles",111
+"1992-03-01","Los Angeles",129
+"1992-03-08","Los Angeles",116
+"1992-03-15","Los Angeles",115
+"1992-03-22","Los Angeles",93
+"1992-03-29","Los Angeles",90
+"1992-04-05","Los Angeles",98
+"1992-04-12","Los Angeles",100
+"1992-04-19","Los Angeles",104
+"1992-04-26","Los Angeles",121
+"1992-05-03","Los Angeles",87
+"1992-05-10","Los Angeles",92
+"1992-05-17","Los Angeles",84
+"1992-05-24","Los Angeles",70
+"1992-05-31","Los Angeles",94
+"1992-06-07","Los Angeles",73
+"1992-06-14","Los Angeles",73
+"1992-06-21","Los Angeles",81
+"1992-06-28","Los Angeles",70
+"1992-07-05","Los Angeles",86
+"1992-07-12","Los Angeles",82
+"1992-07-19","Los Angeles",85
+"1992-07-26","Los Angeles",87
+"1992-08-02","Los Angeles",74
+"1992-08-09","Los Angeles",80
+"1992-08-16","Los Angeles",87
+"1992-08-23","Los Angeles",85
+"1992-08-30","Los Angeles",91
+"1992-09-06","Los Angeles",81
+"1992-09-13","Los Angeles",82
+"1992-09-20","Los Angeles",92
+"1992-09-27","Los Angeles",66
+"1992-10-04","Los Angeles",71
+"1992-10-11","Los Angeles",74
+"1992-10-18","Los Angeles",95
+"1992-10-25","Los Angeles",79
+"1992-11-01","Los Angeles",63
+"1992-11-08","Los Angeles",81
+"1992-11-15","Los Angeles",86
+"1992-11-22","Los Angeles",101
+"1992-11-29","Los Angeles",71
+"1992-12-06","Los Angeles",99
+"1992-12-13","Los Angeles",109
+"1992-12-20","Los Angeles",95
+"1992-12-27","Los Angeles",100
+"1993-01-03","Los Angeles",99
+"1993-01-10","Los Angeles",134
+"1993-01-17","Los Angeles",130
+"1993-01-24","Los Angeles",131
+"1993-01-31","Los Angeles",106
+"1993-02-07","Los Angeles",115
+"1993-02-14","Los Angeles",103
+"1993-02-21","Los Angeles",107
+"1993-02-28","Los Angeles",113
+"1993-03-07","Los Angeles",109
+"1993-03-14","Los Angeles",133
+"1993-03-21","Los Angeles",114
+"1993-03-28","Los Angeles",102
+"1993-04-04","Los Angeles",102
+"1993-04-11","Los Angeles",86
+"1993-04-18","Los Angeles",95
+"1993-04-25","Los Angeles",103
+"1993-05-02","Los Angeles",102
+"1993-05-09","Los Angeles",103
+"1993-05-16","Los Angeles",93
+"1993-05-23","Los Angeles",78
+"1993-05-30","Los Angeles",84
+"1993-06-06","Los Angeles",85
+"1993-06-13","Los Angeles",88
+"1993-06-20","Los Angeles",98
+"1993-06-27","Los Angeles",66
+"1993-07-04","Los Angeles",93
+"1993-07-11","Los Angeles",77
+"1993-07-18","Los Angeles",76
+"1993-07-25","Los Angeles",83
+"1993-08-01","Los Angeles",75
+"1993-08-08","Los Angeles",100
+"1993-08-15","Los Angeles",73
+"1993-08-22","Los Angeles",82
+"1993-08-29","Los Angeles",95
+"1993-09-05","Los Angeles",76
+"1993-09-12","Los Angeles",80
+"1993-09-19","Los Angeles",82
+"1993-09-26","Los Angeles",83
+"1993-10-03","Los Angeles",93
+"1993-10-10","Los Angeles",80
+"1993-10-17","Los Angeles",81
+"1993-10-24","Los Angeles",91
+"1993-10-31","Los Angeles",94
+"1993-11-07","Los Angeles",107
+"1993-11-14","Los Angeles",83
+"1993-11-21","Los Angeles",86
+"1993-11-28","Los Angeles",106
+"1993-12-05","Los Angeles",118
+"1993-12-12","Los Angeles",141
+"1993-12-19","Los Angeles",142
+"1993-12-26","Los Angeles",189
+"1994-01-02","Los Angeles",211
+"1994-01-09","Los Angeles",222
+"1994-01-16","Los Angeles",199
+"1994-01-23","Los Angeles",178
+"1994-01-30","Los Angeles",151
+"1994-02-06","Los Angeles",146
+"1994-02-13","Los Angeles",127
+"1994-02-20","Los Angeles",152
+"1994-02-27","Los Angeles",118
+"1994-03-06","Los Angeles",110
+"1994-03-13","Los Angeles",81
+"1994-03-20","Los Angeles",91
+"1994-03-27","Los Angeles",101
+"1994-04-03","Los Angeles",80
+"1994-04-10","Los Angeles",83
+"1994-04-17","Los Angeles",89
+"1994-04-24","Los Angeles",109
+"1994-05-01","Los Angeles",98
+"1994-05-08","Los Angeles",98
+"1994-05-15","Los Angeles",100
+"1994-05-22","Los Angeles",98
+"1994-05-29","Los Angeles",94
+"1994-06-05","Los Angeles",108
+"1994-06-12","Los Angeles",83
+"1994-06-19","Los Angeles",68
+"1994-06-26","Los Angeles",74
+"1994-07-03","Los Angeles",101
+"1994-07-10","Los Angeles",99
+"1994-07-17","Los Angeles",81
+"1994-07-24","Los Angeles",84
+"1994-07-31","Los Angeles",76
+"1994-08-07","Los Angeles",81
+"1994-08-14","Los Angeles",85
+"1994-08-21","Los Angeles",109
+"1994-08-28","Los Angeles",81
+"1994-09-04","Los Angeles",72
+"1994-09-11","Los Angeles",66
+"1994-09-18","Los Angeles",65
+"1994-09-25","Los Angeles",71
+"1994-10-02","Los Angeles",74
+"1994-10-09","Los Angeles",83
+"1994-10-16","Los Angeles",88
+"1994-10-23","Los Angeles",94
+"1994-10-30","Los Angeles",72
+"1994-11-06","Los Angeles",96
+"1994-11-13","Los Angeles",94
+"1994-11-20","Los Angeles",104
+"1994-11-27","Los Angeles",108
+"1994-12-04","Los Angeles",117
+"1994-12-11","Los Angeles",104
+"1994-12-18","Los Angeles",100
+"1994-12-25","Los Angeles",115
+"1995-01-01","Los Angeles",110
+"1995-01-08","Los Angeles",120
+"1995-01-15","Los Angeles",109
+"1995-01-22","Los Angeles",121
+"1995-01-29","Los Angeles",106
+"1995-02-05","Los Angeles",112
+"1995-02-12","Los Angeles",114
+"1995-02-19","Los Angeles",133
+"1995-02-26","Los Angeles",123
+"1995-03-05","Los Angeles",116
+"1995-03-12","Los Angeles",138
+"1995-03-19","Los Angeles",126
+"1995-03-26","Los Angeles",98
+"1995-04-02","Los Angeles",106
+"1995-04-09","Los Angeles",107
+"1995-04-16","Los Angeles",97
+"1995-04-23","Los Angeles",109
+"1995-04-30","Los Angeles",103
+"1995-05-07","Los Angeles",102
+"1995-05-14","Los Angeles",81
+"1995-05-21","Los Angeles",77
+"1995-05-28","Los Angeles",95
+"1995-06-04","Los Angeles",103
+"1995-06-11","Los Angeles",71
+"1995-06-18","Los Angeles",79
+"1995-06-25","Los Angeles",95
+"1995-07-02","Los Angeles",86
+"1995-07-09","Los Angeles",89
+"1995-07-16","Los Angeles",95
+"1995-07-23","Los Angeles",101
+"1995-07-30","Los Angeles",108
+"1995-08-06","Los Angeles",89
+"1995-08-13","Los Angeles",72
+"1995-08-20","Los Angeles",88
+"1995-08-27","Los Angeles",88
+"1995-09-03","Los Angeles",82
+"1995-09-10","Los Angeles",85
+"1995-09-17","Los Angeles",85
+"1995-09-24","Los Angeles",84
+"1995-10-01","Los Angeles",88
+"1995-10-08","Los Angeles",97
+"1995-10-15","Los Angeles",77
+"1995-10-22","Los Angeles",68
+"1995-10-29","Los Angeles",109
+"1995-11-05","Los Angeles",83
+"1995-11-12","Los Angeles",98
+"1995-11-19","Los Angeles",100
+"1995-11-26","Los Angeles",89
+"1995-12-03","Los Angeles",100
+"1995-12-10","Los Angeles",115
+"1995-12-17","Los Angeles",118
+"1995-12-24","Los Angeles",117
+"1995-12-31","Los Angeles",161
+"1996-01-07","Los Angeles",187
+"1996-01-14","Los Angeles",190
+"1996-01-21","Los Angeles",184
+"1996-01-28","Los Angeles",133
+"1996-02-04","Los Angeles",114
+"1996-02-11","Los Angeles",136
+"1996-02-18","Los Angeles",112
+"1996-02-25","Los Angeles",128
+"1996-03-03","Los Angeles",117
+"1996-03-10","Los Angeles",109
+"1996-03-17","Los Angeles",93
+"1996-03-24","Los Angeles",85
+"1996-03-31","Los Angeles",108
+"1996-04-07","Los Angeles",110
+"1996-04-14","Los Angeles",94
+"1996-04-21","Los Angeles",111
+"1996-04-28","Los Angeles",144
+"1996-05-05","Los Angeles",118
+"1996-05-12","Los Angeles",100
+"1996-05-19","Los Angeles",81
+"1996-05-26","Los Angeles",77
+"1996-06-02","Los Angeles",84
+"1996-06-09","Los Angeles",80
+"1996-06-16","Los Angeles",78
+"1996-06-23","Los Angeles",86
+"1996-06-30","Los Angeles",97
+"1996-07-07","Los Angeles",93
+"1996-07-14","Los Angeles",83
+"1996-07-21","Los Angeles",94
+"1996-07-28","Los Angeles",89
+"1996-08-04","Los Angeles",75
+"1996-08-11","Los Angeles",85
+"1996-08-18","Los Angeles",81
+"1996-08-25","Los Angeles",82
+"1996-09-01","Los Angeles",88
+"1996-09-08","Los Angeles",97
+"1996-09-15","Los Angeles",70
+"1996-09-22","Los Angeles",82
+"1996-09-29","Los Angeles",76
+"1996-10-06","Los Angeles",83
+"1996-10-13","Los Angeles",75
+"1996-10-20","Los Angeles",108
+"1996-10-27","Los Angeles",99
+"1996-11-03","Los Angeles",90
+"1996-11-10","Los Angeles",104
+"1996-11-17","Los Angeles",100
+"1996-11-24","Los Angeles",94
+"1996-12-01","Los Angeles",81
+"1996-12-08","Los Angeles",97
+"1996-12-15","Los Angeles",124
+"1996-12-22","Los Angeles",113
+"1996-12-29","Los Angeles",121
+"1997-01-05","Los Angeles",167
+"1997-01-12","Los Angeles",191
+"1997-01-19","Los Angeles",186
+"1997-01-26","Los Angeles",176
+"1997-02-02","Los Angeles",178
+"1997-02-09","Los Angeles",150
+"1997-02-16","Los Angeles",123
+"1997-02-23","Los Angeles",129
+"1997-03-02","Los Angeles",118
+"1997-03-09","Los Angeles",151
+"1997-03-16","Los Angeles",131
+"1997-03-23","Los Angeles",124
+"1997-03-30","Los Angeles",109
+"1997-04-06","Los Angeles",95
+"1997-04-13","Los Angeles",113
+"1997-04-20","Los Angeles",95
+"1997-04-27","Los Angeles",100
+"1997-05-04","Los Angeles",103
+"1997-05-11","Los Angeles",104
+"1997-05-18","Los Angeles",118
+"1997-05-25","Los Angeles",92
+"1997-06-01","Los Angeles",88
+"1997-06-08","Los Angeles",92
+"1997-06-15","Los Angeles",89
+"1997-06-22","Los Angeles",85
+"1997-06-29","Los Angeles",70
+"1997-07-06","Los Angeles",76
+"1997-07-13","Los Angeles",109
+"1997-07-20","Los Angeles",94
+"1997-07-27","Los Angeles",86
+"1997-08-03","Los Angeles",96
+"1997-08-10","Los Angeles",92
+"1997-08-17","Los Angeles",91
+"1997-08-24","Los Angeles",86
+"1997-08-31","Los Angeles",84
+"1997-09-07","Los Angeles",97
+"1997-09-14","Los Angeles",100
+"1997-09-21","Los Angeles",73
+"1997-09-28","Los Angeles",85
+"1997-10-05","Los Angeles",100
+"1997-10-12","Los Angeles",87
+"1997-10-19","Los Angeles",85
+"1997-10-26","Los Angeles",108
+"1997-11-02","Los Angeles",81
+"1997-11-09","Los Angeles",94
+"1997-11-16","Los Angeles",108
+"1997-11-23","Los Angeles",111
+"1997-11-30","Los Angeles",109
+"1997-12-07","Los Angeles",136
+"1997-12-14","Los Angeles",122
+"1997-12-21","Los Angeles",165
+"1997-12-28","Los Angeles",215
+"1998-01-04","Los Angeles",320
+"1998-01-11","Los Angeles",345
+"1998-01-18","Los Angeles",299
+"1998-01-25","Los Angeles",213
+"1998-02-01","Los Angeles",175
+"1998-02-08","Los Angeles",155
+"1998-02-15","Los Angeles",146
+"1998-02-22","Los Angeles",128
+"1998-03-01","Los Angeles",100
+"1998-03-08","Los Angeles",114
+"1998-03-15","Los Angeles",122
+"1998-03-22","Los Angeles",96
+"1998-03-29","Los Angeles",100
+"1998-04-05","Los Angeles",104
+"1998-04-12","Los Angeles",114
+"1998-04-19","Los Angeles",113
+"1998-04-26","Los Angeles",113
+"1998-05-03","Los Angeles",101
+"1998-05-10","Los Angeles",121
+"1998-05-17","Los Angeles",108
+"1998-05-24","Los Angeles",87
+"1998-05-31","Los Angeles",93
+"1998-06-07","Los Angeles",84
+"1998-06-14","Los Angeles",109
+"1998-06-21","Los Angeles",105
+"1998-06-28","Los Angeles",104
+"1998-07-05","Los Angeles",95
+"1998-07-12","Los Angeles",97
+"1998-07-19","Los Angeles",99
+"1998-07-26","Los Angeles",91
+"1998-08-02","Los Angeles",92
+"1998-08-09","Los Angeles",89
+"1998-08-16","Los Angeles",99
+"1998-08-23","Los Angeles",87
+"1998-08-30","Los Angeles",92
+"1998-09-06","Los Angeles",103
+"1998-09-13","Los Angeles",80
+"1998-09-20","Los Angeles",77
+"1998-09-27","Los Angeles",81
+"1998-10-04","Los Angeles",102
+"1998-10-11","Los Angeles",96
+"1998-10-18","Los Angeles",96
+"1998-10-25","Los Angeles",106
+"1998-11-01","Los Angeles",99
+"1998-11-08","Los Angeles",101
+"1998-11-15","Los Angeles",95
+"1998-11-22","Los Angeles",98
+"1998-11-29","Los Angeles",110
+"1998-12-06","Los Angeles",100
+"1998-12-13","Los Angeles",122
+"1998-12-20","Los Angeles",125
+"1998-12-27","Los Angeles",116
+"1999-01-03","Los Angeles",134
+"1999-01-10","Los Angeles",85
+"1999-01-17","Los Angeles",92
+"1999-01-24","Los Angeles",91
+"1999-01-31","Los Angeles",89
+"1999-02-07","Los Angeles",87
+"1999-02-14","Los Angeles",79
+"1999-02-21","Los Angeles",90
+"1999-02-28","Los Angeles",79
+"1999-03-07","Los Angeles",99
+"1999-03-14","Los Angeles",98
+"1999-03-21","Los Angeles",80
+"1999-03-28","Los Angeles",75
+"1999-04-04","Los Angeles",80
+"1999-04-11","Los Angeles",79
+"1999-04-18","Los Angeles",84
+"1999-04-25","Los Angeles",81
+"1999-05-02","Los Angeles",71
+"1999-05-09","Los Angeles",75
+"1999-05-16","Los Angeles",74
+"1999-05-23","Los Angeles",68
+"1999-05-30","Los Angeles",62
+"1999-06-06","Los Angeles",74
+"1999-06-13","Los Angeles",67
+"1999-06-20","Los Angeles",68
+"1999-06-27","Los Angeles",57
+"1999-07-04","Los Angeles",42
+"1999-07-11","Los Angeles",57
+"1999-07-18","Los Angeles",54
+"1999-07-25","Los Angeles",52
+"1999-08-01","Los Angeles",56
+"1999-08-08","Los Angeles",55
+"1999-08-15","Los Angeles",61
+"1999-08-22","Los Angeles",57
+"1999-08-29","Los Angeles",45
+"1999-09-05","Los Angeles",49
+"1999-09-12","Los Angeles",61
+"1999-09-19","Los Angeles",62
+"1999-09-26","Los Angeles",53
+"1999-10-03","Los Angeles",72
+"1999-10-10","Los Angeles",65
+"1999-10-17","Los Angeles",65
+"1999-10-24","Los Angeles",94
+"1999-10-31","Los Angeles",86
+"1999-11-07","Los Angeles",81
+"1999-11-14","Los Angeles",73
+"1999-11-21","Los Angeles",66
+"1999-11-28","Los Angeles",97
+"1999-12-05","Los Angeles",106
+"1999-12-12","Los Angeles",146
+"1999-12-19","Los Angeles",170
+"1999-12-26","Los Angeles",243
+"2000-01-02","Los Angeles",232
+"2000-01-09","Los Angeles",219
+"2000-01-16","Los Angeles",198
+"2000-01-23","Los Angeles",162
+"2000-01-30","Los Angeles",145
+"2000-02-06","Los Angeles",108
+"2000-02-13","Los Angeles",108
+"2000-02-20","Los Angeles",96
+"2000-02-27","Los Angeles",114
+"2000-03-05","Los Angeles",114
+"2000-03-12","Los Angeles",117
+"2000-03-19","Los Angeles",103
+"2000-03-26","Los Angeles",111
+"2000-04-02","Los Angeles",107
+"2000-04-09","Los Angeles",88
+"2000-04-16","Los Angeles",83
+"2000-04-23","Los Angeles",95
+"2000-04-30","Los Angeles",84
+"2000-05-07","Los Angeles",83
+"2000-05-14","Los Angeles",69
+"2000-05-21","Los Angeles",96
+"2000-05-28","Los Angeles",91
+"2000-06-04","Los Angeles",73
+"2000-06-11","Los Angeles",80
+"2000-06-18","Los Angeles",77
+"2000-06-25","Los Angeles",86
+"2000-07-02","Los Angeles",89
+"2000-07-09","Los Angeles",73
+"2000-07-16","Los Angeles",73
+"2000-07-23","Los Angeles",93
+"2000-07-30","Los Angeles",80
+"2000-08-06","Los Angeles",82
+"2000-08-13","Los Angeles",78
+"2000-08-20","Los Angeles",67
+"2000-08-27","Los Angeles",87
+"2000-09-03","Los Angeles",74
+"2000-09-10","Los Angeles",79
+"2000-09-17","Los Angeles",84
+"2000-09-24","Los Angeles",76
+"2000-10-01","Los Angeles",76
+"2000-10-08","Los Angeles",86
+"2000-10-15","Los Angeles",87
+"2000-10-22","Los Angeles",83
+"2000-10-29","Los Angeles",93
+"2000-11-05","Los Angeles",94
+"2000-11-12","Los Angeles",92
+"2000-11-19","Los Angeles",79
+"2000-11-26","Los Angeles",96
+"2000-12-03","Los Angeles",103
+"2000-12-10","Los Angeles",97
+"2000-12-17","Los Angeles",87
+"2000-12-24","Los Angeles",120
+"2000-12-31","Los Angeles",131
+"1987-01-04","New York",62
+"1987-01-11","New York",145
+"1987-01-18","New York",124
+"1987-01-25","New York",137
+"1987-02-01","New York",111
+"1987-02-08","New York",121
+"1987-02-15","New York",114
+"1987-02-22","New York",127
+"1987-03-01","New York",117
+"1987-03-08","New York",109
+"1987-03-15","New York",105
+"1987-03-22","New York",113
+"1987-03-29","New York",102
+"1987-04-05","New York",97
+"1987-04-12","New York",106
+"1987-04-19","New York",79
+"1987-04-26","New York",97
+"1987-05-03","New York",114
+"1987-05-10","New York",95
+"1987-05-17","New York",96
+"1987-05-24","New York",100
+"1987-05-31","New York",107
+"1987-06-07","New York",101
+"1987-06-14","New York",83
+"1987-06-21","New York",102
+"1987-06-28","New York",83
+"1987-07-05","New York",97
+"1987-07-12","New York",96
+"1987-07-19","New York",101
+"1987-07-26","New York",84
+"1987-08-02","New York",84
+"1987-08-09","New York",101
+"1987-08-16","New York",83
+"1987-08-23","New York",86
+"1987-08-30","New York",87
+"1987-09-06","New York",94
+"1987-09-13","New York",93
+"1987-09-20","New York",99
+"1987-09-27","New York",99
+"1987-10-04","New York",98
+"1987-10-11","New York",96
+"1987-10-18","New York",110
+"1987-10-25","New York",127
+"1987-11-01","New York",108
+"1987-11-08","New York",104
+"1987-11-15","New York",99
+"1987-11-22","New York",115
+"1987-11-29","New York",98
+"1987-12-06","New York",105
+"1987-12-13","New York",96
+"1987-12-20","New York",117
+"1987-12-27","New York",109
+"1988-01-03","New York",107
+"1988-01-10","New York",124
+"1988-01-17","New York",126
+"1988-01-24","New York",115
+"1988-01-31","New York",121
+"1988-02-07","New York",126
+"1988-02-14","New York",131
+"1988-02-21","New York",150
+"1988-02-28","New York",132
+"1988-03-06","New York",140
+"1988-03-13","New York",160
+"1988-03-20","New York",137
+"1988-03-27","New York",132
+"1988-04-03","New York",119
+"1988-04-10","New York",138
+"1988-04-17","New York",101
+"1988-04-24","New York",105
+"1988-05-01","New York",107
+"1988-05-08","New York",86
+"1988-05-15","New York",98
+"1988-05-22","New York",94
+"1988-05-29","New York",109
+"1988-06-05","New York",91
+"1988-06-12","New York",74
+"1988-06-19","New York",110
+"1988-06-26","New York",92
+"1988-07-03","New York",79
+"1988-07-10","New York",92
+"1988-07-17","New York",93
+"1988-07-24","New York",86
+"1988-07-31","New York",99
+"1988-08-07","New York",106
+"1988-08-14","New York",106
+"1988-08-21","New York",102
+"1988-08-28","New York",101
+"1988-09-04","New York",92
+"1988-09-11","New York",90
+"1988-09-18","New York",93
+"1988-09-25","New York",102
+"1988-10-02","New York",88
+"1988-10-09","New York",107
+"1988-10-16","New York",100
+"1988-10-23","New York",128
+"1988-10-30","New York",97
+"1988-11-06","New York",115
+"1988-11-13","New York",123
+"1988-11-20","New York",109
+"1988-11-27","New York",114
+"1988-12-04","New York",99
+"1988-12-11","New York",101
+"1988-12-18","New York",123
+"1988-12-25","New York",137
+"1989-01-01","New York",124
+"1989-01-08","New York",140
+"1989-01-15","New York",144
+"1989-01-22","New York",125
+"1989-01-29","New York",101
+"1989-02-05","New York",139
+"1989-02-12","New York",144
+"1989-02-19","New York",117
+"1989-02-26","New York",145
+"1989-03-05","New York",134
+"1989-03-12","New York",124
+"1989-03-19","New York",121
+"1989-03-26","New York",140
+"1989-04-02","New York",113
+"1989-04-09","New York",114
+"1989-04-16","New York",108
+"1989-04-23","New York",114
+"1989-04-30","New York",112
+"1989-05-07","New York",102
+"1989-05-14","New York",89
+"1989-05-21","New York",104
+"1989-05-28","New York",104
+"1989-06-04","New York",98
+"1989-06-11","New York",85
+"1989-06-18","New York",95
+"1989-06-25","New York",106
+"1989-07-02","New York",102
+"1989-07-09","New York",79
+"1989-07-16","New York",117
+"1989-07-23","New York",124
+"1989-07-30","New York",93
+"1989-08-06","New York",91
+"1989-08-13","New York",102
+"1989-08-20","New York",93
+"1989-08-27","New York",79
+"1989-09-03","New York",70
+"1989-09-10","New York",114
+"1989-09-17","New York",99
+"1989-09-24","New York",85
+"1989-10-01","New York",87
+"1989-10-08","New York",68
+"1989-10-15","New York",82
+"1989-10-22","New York",98
+"1989-10-29","New York",95
+"1989-11-05","New York",107
+"1989-11-12","New York",111
+"1989-11-19","New York",112
+"1989-11-26","New York",126
+"1989-12-03","New York",125
+"1989-12-10","New York",126
+"1989-12-17","New York",112
+"1989-12-24","New York",126
+"1989-12-31","New York",157
+"1990-01-07","New York",156
+"1990-01-14","New York",164
+"1990-01-21","New York",173
+"1990-01-28","New York",194
+"1990-02-04","New York",158
+"1990-02-11","New York",170
+"1990-02-18","New York",150
+"1990-02-25","New York",138
+"1990-03-04","New York",139
+"1990-03-11","New York",126
+"1990-03-18","New York",123
+"1990-03-25","New York",117
+"1990-04-01","New York",121
+"1990-04-08","New York",109
+"1990-04-15","New York",116
+"1990-04-22","New York",115
+"1990-04-29","New York",106
+"1990-05-06","New York",109
+"1990-05-13","New York",96
+"1990-05-20","New York",116
+"1990-05-27","New York",99
+"1990-06-03","New York",105
+"1990-06-10","New York",106
+"1990-06-17","New York",81
+"1990-06-24","New York",96
+"1990-07-01","New York",106
+"1990-07-08","New York",91
+"1990-07-15","New York",90
+"1990-07-22","New York",93
+"1990-07-29","New York",100
+"1990-08-05","New York",79
+"1990-08-12","New York",101
+"1990-08-19","New York",89
+"1990-08-26","New York",85
+"1990-09-02","New York",77
+"1990-09-09","New York",95
+"1990-09-16","New York",87
+"1990-09-23","New York",91
+"1990-09-30","New York",119
+"1990-10-07","New York",96
+"1990-10-14","New York",101
+"1990-10-21","New York",99
+"1990-10-28","New York",107
+"1990-11-04","New York",73
+"1990-11-11","New York",103
+"1990-11-18","New York",95
+"1990-11-25","New York",108
+"1990-12-02","New York",105
+"1990-12-09","New York",127
+"1990-12-16","New York",122
+"1990-12-23","New York",124
+"1990-12-30","New York",145
+"1991-01-06","New York",132
+"1991-01-13","New York",141
+"1991-01-20","New York",160
+"1991-01-27","New York",121
+"1991-02-03","New York",125
+"1991-02-10","New York",124
+"1991-02-17","New York",91
+"1991-02-24","New York",104
+"1991-03-03","New York",104
+"1991-03-10","New York",116
+"1991-03-17","New York",104
+"1991-03-24","New York",97
+"1991-03-31","New York",94
+"1991-04-07","New York",97
+"1991-04-14","New York",107
+"1991-04-21","New York",96
+"1991-04-28","New York",96
+"1991-05-05","New York",105
+"1991-05-12","New York",96
+"1991-05-19","New York",92
+"1991-05-26","New York",84
+"1991-06-02","New York",104
+"1991-06-09","New York",99
+"1991-06-16","New York",87
+"1991-06-23","New York",99
+"1991-06-30","New York",87
+"1991-07-07","New York",85
+"1991-07-14","New York",85
+"1991-07-21","New York",92
+"1991-07-28","New York",86
+"1991-08-04","New York",96
+"1991-08-11","New York",85
+"1991-08-18","New York",85
+"1991-08-25","New York",111
+"1991-09-01","New York",101
+"1991-09-08","New York",93
+"1991-09-15","New York",86
+"1991-09-22","New York",92
+"1991-09-29","New York",82
+"1991-10-06","New York",83
+"1991-10-13","New York",80
+"1991-10-20","New York",85
+"1991-10-27","New York",87
+"1991-11-03","New York",92
+"1991-11-10","New York",113
+"1991-11-17","New York",106
+"1991-11-24","New York",76
+"1991-12-01","New York",113
+"1991-12-08","New York",94
+"1991-12-15","New York",93
+"1991-12-22","New York",111
+"1991-12-29","New York",138
+"1992-01-05","New York",136
+"1992-01-12","New York",122
+"1992-01-19","New York",138
+"1992-01-26","New York",141
+"1992-02-02","New York",124
+"1992-02-09","New York",115
+"1992-02-16","New York",124
+"1992-02-23","New York",100
+"1992-03-01","New York",95
+"1992-03-08","New York",95
+"1992-03-15","New York",98
+"1992-03-22","New York",101
+"1992-03-29","New York",102
+"1992-04-05","New York",98
+"1992-04-12","New York",89
+"1992-04-19","New York",71
+"1992-04-26","New York",87
+"1992-05-03","New York",91
+"1992-05-10","New York",76
+"1992-05-17","New York",76
+"1992-05-24","New York",88
+"1992-05-31","New York",77
+"1992-06-07","New York",82
+"1992-06-14","New York",94
+"1992-06-21","New York",82
+"1992-06-28","New York",68
+"1992-07-05","New York",63
+"1992-07-12","New York",73
+"1992-07-19","New York",92
+"1992-07-26","New York",62
+"1992-08-02","New York",86
+"1992-08-09","New York",81
+"1992-08-16","New York",67
+"1992-08-23","New York",68
+"1992-08-30","New York",73
+"1992-09-06","New York",68
+"1992-09-13","New York",91
+"1992-09-20","New York",74
+"1992-09-27","New York",66
+"1992-10-04","New York",74
+"1992-10-11","New York",80
+"1992-10-18","New York",73
+"1992-10-25","New York",98
+"1992-11-01","New York",90
+"1992-11-08","New York",85
+"1992-11-15","New York",84
+"1992-11-22","New York",93
+"1992-11-29","New York",83
+"1992-12-06","New York",78
+"1992-12-13","New York",81
+"1992-12-20","New York",97
+"1992-12-27","New York",70
+"1993-01-03","New York",115
+"1993-01-10","New York",111
+"1993-01-17","New York",97
+"1993-01-24","New York",102
+"1993-01-31","New York",112
+"1993-02-07","New York",133
+"1993-02-14","New York",164
+"1993-02-21","New York",180
+"1993-02-28","New York",176
+"1993-03-07","New York",164
+"1993-03-14","New York",150
+"1993-03-21","New York",153
+"1993-03-28","New York",108
+"1993-04-04","New York",89
+"1993-04-11","New York",86
+"1993-04-18","New York",90
+"1993-04-25","New York",82
+"1993-05-02","New York",88
+"1993-05-09","New York",96
+"1993-05-16","New York",75
+"1993-05-23","New York",75
+"1993-05-30","New York",84
+"1993-06-06","New York",68
+"1993-06-13","New York",80
+"1993-06-20","New York",78
+"1993-06-27","New York",88
+"1993-07-04","New York",70
+"1993-07-11","New York",93
+"1993-07-18","New York",86
+"1993-07-25","New York",84
+"1993-08-01","New York",74
+"1993-08-08","New York",66
+"1993-08-15","New York",78
+"1993-08-22","New York",70
+"1993-08-29","New York",73
+"1993-09-05","New York",60
+"1993-09-12","New York",76
+"1993-09-19","New York",84
+"1993-09-26","New York",68
+"1993-10-03","New York",83
+"1993-10-10","New York",102
+"1993-10-17","New York",96
+"1993-10-24","New York",89
+"1993-10-31","New York",98
+"1993-11-07","New York",83
+"1993-11-14","New York",86
+"1993-11-21","New York",74
+"1993-11-28","New York",86
+"1993-12-05","New York",82
+"1993-12-12","New York",103
+"1993-12-19","New York",98
+"1993-12-26","New York",101
+"1994-01-02","New York",115
+"1994-01-09","New York",109
+"1994-01-16","New York",109
+"1994-01-23","New York",110
+"1994-01-30","New York",119
+"1994-02-06","New York",113
+"1994-02-13","New York",98
+"1994-02-20","New York",110
+"1994-02-27","New York",83
+"1994-03-06","New York",94
+"1994-03-13","New York",87
+"1994-03-20","New York",96
+"1994-03-27","New York",97
+"1994-04-03","New York",88
+"1994-04-10","New York",72
+"1994-04-17","New York",83
+"1994-04-24","New York",93
+"1994-05-01","New York",95
+"1994-05-08","New York",81
+"1994-05-15","New York",103
+"1994-05-22","New York",87
+"1994-05-29","New York",81
+"1994-06-05","New York",70
+"1994-06-12","New York",89
+"1994-06-19","New York",70
+"1994-06-26","New York",78
+"1994-07-03","New York",68
+"1994-07-10","New York",76
+"1994-07-17","New York",62
+"1994-07-24","New York",69
+"1994-07-31","New York",77
+"1994-08-07","New York",66
+"1994-08-14","New York",67
+"1994-08-21","New York",69
+"1994-08-28","New York",81
+"1994-09-04","New York",91
+"1994-09-11","New York",89
+"1994-09-18","New York",101
+"1994-09-25","New York",73
+"1994-10-02","New York",68
+"1994-10-09","New York",83
+"1994-10-16","New York",82
+"1994-10-23","New York",94
+"1994-10-30","New York",98
+"1994-11-06","New York",81
+"1994-11-13","New York",84
+"1994-11-20","New York",98
+"1994-11-27","New York",62
+"1994-12-04","New York",104
+"1994-12-11","New York",102
+"1994-12-18","New York",94
+"1994-12-25","New York",121
+"1995-01-01","New York",154
+"1995-01-08","New York",155
+"1995-01-15","New York",164
+"1995-01-22","New York",128
+"1995-01-29","New York",115
+"1995-02-05","New York",126
+"1995-02-12","New York",97
+"1995-02-19","New York",113
+"1995-02-26","New York",121
+"1995-03-05","New York",99
+"1995-03-12","New York",93
+"1995-03-19","New York",97
+"1995-03-26","New York",90
+"1995-04-02","New York",91
+"1995-04-09","New York",97
+"1995-04-16","New York",94
+"1995-04-23","New York",77
+"1995-04-30","New York",70
+"1995-05-07","New York",68
+"1995-05-14","New York",66
+"1995-05-21","New York",80
+"1995-05-28","New York",70
+"1995-06-04","New York",71
+"1995-06-11","New York",84
+"1995-06-18","New York",77
+"1995-06-25","New York",80
+"1995-07-02","New York",72
+"1995-07-09","New York",64
+"1995-07-16","New York",83
+"1995-07-23","New York",77
+"1995-07-30","New York",74
+"1995-08-06","New York",71
+"1995-08-13","New York",74
+"1995-08-20","New York",88
+"1995-08-27","New York",68
+"1995-09-03","New York",64
+"1995-09-10","New York",82
+"1995-09-17","New York",73
+"1995-09-24","New York",86
+"1995-10-01","New York",87
+"1995-10-08","New York",80
+"1995-10-15","New York",90
+"1995-10-22","New York",93
+"1995-10-29","New York",91
+"1995-11-05","New York",74
+"1995-11-12","New York",102
+"1995-11-19","New York",90
+"1995-11-26","New York",93
+"1995-12-03","New York",98
+"1995-12-10","New York",95
+"1995-12-17","New York",104
+"1995-12-24","New York",113
+"1995-12-31","New York",126
+"1996-01-07","New York",142
+"1996-01-14","New York",124
+"1996-01-21","New York",111
+"1996-01-28","New York",128
+"1996-02-04","New York",99
+"1996-02-11","New York",107
+"1996-02-18","New York",89
+"1996-02-25","New York",94
+"1996-03-03","New York",90
+"1996-03-10","New York",91
+"1996-03-17","New York",99
+"1996-03-24","New York",93
+"1996-03-31","New York",95
+"1996-04-07","New York",88
+"1996-04-14","New York",102
+"1996-04-21","New York",93
+"1996-04-28","New York",86
+"1996-05-05","New York",77
+"1996-05-12","New York",93
+"1996-05-19","New York",78
+"1996-05-26","New York",74
+"1996-06-02","New York",80
+"1996-06-09","New York",83
+"1996-06-16","New York",73
+"1996-06-23","New York",71
+"1996-06-30","New York",65
+"1996-07-07","New York",69
+"1996-07-14","New York",60
+"1996-07-21","New York",81
+"1996-07-28","New York",71
+"1996-08-04","New York",65
+"1996-08-11","New York",64
+"1996-08-18","New York",52
+"1996-08-25","New York",80
+"1996-09-01","New York",79
+"1996-09-08","New York",82
+"1996-09-15","New York",84
+"1996-09-22","New York",71
+"1996-09-29","New York",79
+"1996-10-06","New York",79
+"1996-10-13","New York",79
+"1996-10-20","New York",82
+"1996-10-27","New York",96
+"1996-11-03","New York",70
+"1996-11-10","New York",85
+"1996-11-17","New York",78
+"1996-11-24","New York",105
+"1996-12-01","New York",130
+"1996-12-08","New York",149
+"1996-12-15","New York",168
+"1996-12-22","New York",146
+"1996-12-29","New York",148
+"1997-01-05","New York",171
+"1997-01-12","New York",117
+"1997-01-19","New York",118
+"1997-01-26","New York",136
+"1997-02-02","New York",101
+"1997-02-09","New York",100
+"1997-02-16","New York",111
+"1997-02-23","New York",91
+"1997-03-02","New York",110
+"1997-03-09","New York",109
+"1997-03-16","New York",104
+"1997-03-23","New York",112
+"1997-03-30","New York",77
+"1997-04-06","New York",87
+"1997-04-13","New York",79
+"1997-04-20","New York",71
+"1997-04-27","New York",88
+"1997-05-04","New York",87
+"1997-05-11","New York",81
+"1997-05-18","New York",94
+"1997-05-25","New York",79
+"1997-06-01","New York",79
+"1997-06-08","New York",62
+"1997-06-15","New York",84
+"1997-06-22","New York",86
+"1997-06-29","New York",80
+"1997-07-06","New York",76
+"1997-07-13","New York",79
+"1997-07-20","New York",78
+"1997-07-27","New York",68
+"1997-08-03","New York",75
+"1997-08-10","New York",63
+"1997-08-17","New York",71
+"1997-08-24","New York",80
+"1997-08-31","New York",61
+"1997-09-07","New York",98
+"1997-09-14","New York",89
+"1997-09-21","New York",68
+"1997-09-28","New York",71
+"1997-10-05","New York",63
+"1997-10-12","New York",79
+"1997-10-19","New York",77
+"1997-10-26","New York",104
+"1997-11-02","New York",90
+"1997-11-09","New York",78
+"1997-11-16","New York",82
+"1997-11-23","New York",80
+"1997-11-30","New York",88
+"1997-12-07","New York",91
+"1997-12-14","New York",106
+"1997-12-21","New York",119
+"1997-12-28","New York",109
+"1998-01-04","New York",130
+"1998-01-11","New York",177
+"1998-01-18","New York",115
+"1998-01-25","New York",110
+"1998-02-01","New York",132
+"1998-02-08","New York",103
+"1998-02-15","New York",120
+"1998-02-22","New York",95
+"1998-03-01","New York",123
+"1998-03-08","New York",105
+"1998-03-15","New York",98
+"1998-03-22","New York",98
+"1998-03-29","New York",83
+"1998-04-05","New York",85
+"1998-04-12","New York",87
+"1998-04-19","New York",80
+"1998-04-26","New York",86
+"1998-05-03","New York",94
+"1998-05-10","New York",61
+"1998-05-17","New York",83
+"1998-05-24","New York",71
+"1998-05-31","New York",75
+"1998-06-07","New York",91
+"1998-06-14","New York",70
+"1998-06-21","New York",71
+"1998-06-28","New York",75
+"1998-07-05","New York",63
+"1998-07-12","New York",79
+"1998-07-19","New York",89
+"1998-07-26","New York",76
+"1998-08-02","New York",89
+"1998-08-09","New York",67
+"1998-08-16","New York",70
+"1998-08-23","New York",89
+"1998-08-30","New York",94
+"1998-09-06","New York",68
+"1998-09-13","New York",87
+"1998-09-20","New York",80
+"1998-09-27","New York",83
+"1998-10-04","New York",79
+"1998-10-11","New York",87
+"1998-10-18","New York",96
+"1998-10-25","New York",93
+"1998-11-01","New York",84
+"1998-11-08","New York",91
+"1998-11-15","New York",97
+"1998-11-22","New York",97
+"1998-11-29","New York",84
+"1998-12-06","New York",102
+"1998-12-13","New York",80
+"1998-12-20","New York",126
+"1998-12-27","New York",102
+"1999-01-03","New York",132
+"1999-01-10","New York",155
+"1999-01-17","New York",180
+"1999-01-24","New York",180
+"1999-01-31","New York",177
+"1999-02-07","New York",166
+"1999-02-14","New York",147
+"1999-02-21","New York",128
+"1999-02-28","New York",116
+"1999-03-07","New York",104
+"1999-03-14","New York",102
+"1999-03-21","New York",113
+"1999-03-28","New York",87
+"1999-04-04","New York",94
+"1999-04-11","New York",98
+"1999-04-18","New York",87
+"1999-04-25","New York",73
+"1999-05-02","New York",79
+"1999-05-09","New York",87
+"1999-05-16","New York",68
+"1999-05-23","New York",82
+"1999-05-30","New York",76
+"1999-06-06","New York",88
+"1999-06-13","New York",76
+"1999-06-20","New York",62
+"1999-06-27","New York",67
+"1999-07-04","New York",79
+"1999-07-11","New York",63
+"1999-07-18","New York",71
+"1999-07-25","New York",85
+"1999-08-01","New York",62
+"1999-08-08","New York",64
+"1999-08-15","New York",67
+"1999-08-22","New York",61
+"1999-08-29","New York",82
+"1999-09-05","New York",65
+"1999-09-12","New York",64
+"1999-09-19","New York",64
+"1999-09-26","New York",86
+"1999-10-03","New York",63
+"1999-10-10","New York",89
+"1999-10-17","New York",86
+"1999-10-24","New York",72
+"1999-10-31","New York",81
+"1999-11-07","New York",68
+"1999-11-14","New York",89
+"1999-11-21","New York",91
+"1999-11-28","New York",84
+"1999-12-05","New York",91
+"1999-12-12","New York",97
+"1999-12-19","New York",113
+"1999-12-26","New York",108
+"2000-01-02","New York",143
+"2000-01-09","New York",175
+"2000-01-16","New York",149
+"2000-01-23","New York",135
+"2000-01-30","New York",115
+"2000-02-06","New York",127
+"2000-02-13","New York",116
+"2000-02-20","New York",101
+"2000-02-27","New York",86
+"2000-03-05","New York",102
+"2000-03-12","New York",92
+"2000-03-19","New York",74
+"2000-03-26","New York",73
+"2000-04-02","New York",77
+"2000-04-09","New York",91
+"2000-04-16","New York",66
+"2000-04-23","New York",68
+"2000-04-30","New York",78
+"2000-05-07","New York",85
+"2000-05-14","New York",70
+"2000-05-21","New York",74
+"2000-05-28","New York",73
+"2000-06-04","New York",71
+"2000-06-11","New York",83
+"2000-06-18","New York",74
+"2000-06-25","New York",72
+"2000-07-02","New York",73
+"2000-07-09","New York",89
+"2000-07-16","New York",72
+"2000-07-23","New York",62
+"2000-07-30","New York",91
+"2000-08-06","New York",84
+"2000-08-13","New York",71
+"2000-08-20","New York",61
+"2000-08-27","New York",76
+"2000-09-03","New York",80
+"2000-09-10","New York",70
+"2000-09-17","New York",73
+"2000-09-24","New York",74
+"2000-10-01","New York",66
+"2000-10-08","New York",76
+"2000-10-15","New York",90
+"2000-10-22","New York",98
+"2000-10-29","New York",89
+"2000-11-05","New York",81
+"2000-11-12","New York",85
+"2000-11-19","New York",88
+"2000-11-26","New York",92
+"2000-12-03","New York",100
+"2000-12-10","New York",76
+"2000-12-17","New York",103
+"2000-12-24","New York",86
+"2000-12-31","New York",110
+"1987-01-04","Chicago",45
+"1987-01-11","Chicago",72
+"1987-01-18","Chicago",71
+"1987-01-25","Chicago",64
+"1987-02-01","Chicago",58
+"1987-02-08","Chicago",64
+"1987-02-15","Chicago",69
+"1987-02-22","Chicago",55
+"1987-03-01","Chicago",70
+"1987-03-08","Chicago",52
+"1987-03-15","Chicago",52
+"1987-03-22","Chicago",64
+"1987-03-29","Chicago",39
+"1987-04-05","Chicago",53
+"1987-04-12","Chicago",73
+"1987-04-19","Chicago",62
+"1987-04-26","Chicago",53
+"1987-05-03","Chicago",48
+"1987-05-10","Chicago",57
+"1987-05-17","Chicago",66
+"1987-05-24","Chicago",53
+"1987-05-31","Chicago",64
+"1987-06-07","Chicago",59
+"1987-06-14","Chicago",51
+"1987-06-21","Chicago",61
+"1987-06-28","Chicago",45
+"1987-07-05","Chicago",46
+"1987-07-12","Chicago",54
+"1987-07-19","Chicago",45
+"1987-07-26","Chicago",54
+"1987-08-02","Chicago",58
+"1987-08-09","Chicago",54
+"1987-08-16","Chicago",53
+"1987-08-23","Chicago",50
+"1987-08-30","Chicago",66
+"1987-09-06","Chicago",60
+"1987-09-13","Chicago",64
+"1987-09-20","Chicago",63
+"1987-09-27","Chicago",65
+"1987-10-04","Chicago",56
+"1987-10-11","Chicago",67
+"1987-10-18","Chicago",66
+"1987-10-25","Chicago",51
+"1987-11-01","Chicago",69
+"1987-11-08","Chicago",58
+"1987-11-15","Chicago",49
+"1987-11-22","Chicago",58
+"1987-11-29","Chicago",53
+"1987-12-06","Chicago",47
+"1987-12-13","Chicago",58
+"1987-12-20","Chicago",75
+"1987-12-27","Chicago",69
+"1988-01-03","Chicago",86
+"1988-01-10","Chicago",66
+"1988-01-17","Chicago",80
+"1988-01-24","Chicago",66
+"1988-01-31","Chicago",59
+"1988-02-07","Chicago",61
+"1988-02-14","Chicago",66
+"1988-02-21","Chicago",67
+"1988-02-28","Chicago",71
+"1988-03-06","Chicago",62
+"1988-03-13","Chicago",81
+"1988-03-20","Chicago",74
+"1988-03-27","Chicago",66
+"1988-04-03","Chicago",66
+"1988-04-10","Chicago",78
+"1988-04-17","Chicago",58
+"1988-04-24","Chicago",90
+"1988-05-01","Chicago",77
+"1988-05-08","Chicago",65
+"1988-05-15","Chicago",68
+"1988-05-22","Chicago",52
+"1988-05-29","Chicago",53
+"1988-06-05","Chicago",63
+"1988-06-12","Chicago",67
+"1988-06-19","Chicago",59
+"1988-06-26","Chicago",61
+"1988-07-03","Chicago",49
+"1988-07-10","Chicago",48
+"1988-07-17","Chicago",50
+"1988-07-24","Chicago",60
+"1988-07-31","Chicago",53
+"1988-08-07","Chicago",52
+"1988-08-14","Chicago",55
+"1988-08-21","Chicago",54
+"1988-08-28","Chicago",52
+"1988-09-04","Chicago",60
+"1988-09-11","Chicago",73
+"1988-09-18","Chicago",46
+"1988-09-25","Chicago",50
+"1988-10-02","Chicago",53
+"1988-10-09","Chicago",57
+"1988-10-16","Chicago",71
+"1988-10-23","Chicago",53
+"1988-10-30","Chicago",57
+"1988-11-06","Chicago",68
+"1988-11-13","Chicago",61
+"1988-11-20","Chicago",61
+"1988-11-27","Chicago",63
+"1988-12-04","Chicago",50
+"1988-12-11","Chicago",56
+"1988-12-18","Chicago",58
+"1988-12-25","Chicago",73
+"1989-01-01","Chicago",70
+"1989-01-08","Chicago",62
+"1989-01-15","Chicago",75
+"1989-01-22","Chicago",68
+"1989-01-29","Chicago",76
+"1989-02-05","Chicago",69
+"1989-02-12","Chicago",87
+"1989-02-19","Chicago",76
+"1989-02-26","Chicago",94
+"1989-03-05","Chicago",87
+"1989-03-12","Chicago",91
+"1989-03-19","Chicago",67
+"1989-03-26","Chicago",73
+"1989-04-02","Chicago",82
+"1989-04-09","Chicago",78
+"1989-04-16","Chicago",69
+"1989-04-23","Chicago",59
+"1989-04-30","Chicago",62
+"1989-05-07","Chicago",78
+"1989-05-14","Chicago",80
+"1989-05-21","Chicago",81
+"1989-05-28","Chicago",55
+"1989-06-04","Chicago",61
+"1989-06-11","Chicago",64
+"1989-06-18","Chicago",63
+"1989-06-25","Chicago",55
+"1989-07-02","Chicago",62
+"1989-07-09","Chicago",49
+"1989-07-16","Chicago",51
+"1989-07-23","Chicago",45
+"1989-07-30","Chicago",51
+"1989-08-06","Chicago",53
+"1989-08-13","Chicago",59
+"1989-08-20","Chicago",55
+"1989-08-27","Chicago",52
+"1989-09-03","Chicago",56
+"1989-09-10","Chicago",70
+"1989-09-17","Chicago",47
+"1989-09-24","Chicago",76
+"1989-10-01","Chicago",68
+"1989-10-08","Chicago",62
+"1989-10-15","Chicago",62
+"1989-10-22","Chicago",62
+"1989-10-29","Chicago",57
+"1989-11-05","Chicago",44
+"1989-11-12","Chicago",72
+"1989-11-19","Chicago",69
+"1989-11-26","Chicago",56
+"1989-12-03","Chicago",56
+"1989-12-10","Chicago",68
+"1989-12-17","Chicago",78
+"1989-12-24","Chicago",106
+"1989-12-31","Chicago",117
+"1990-01-07","Chicago",149
+"1990-01-14","Chicago",133
+"1990-01-21","Chicago",97
+"1990-01-28","Chicago",83
+"1990-02-04","Chicago",81
+"1990-02-11","Chicago",72
+"1990-02-18","Chicago",84
+"1990-02-25","Chicago",60
+"1990-03-04","Chicago",68
+"1990-03-11","Chicago",62
+"1990-03-18","Chicago",72
+"1990-03-25","Chicago",71
+"1990-04-01","Chicago",63
+"1990-04-08","Chicago",52
+"1990-04-15","Chicago",58
+"1990-04-22","Chicago",52
+"1990-04-29","Chicago",67
+"1990-05-06","Chicago",61
+"1990-05-13","Chicago",60
+"1990-05-20","Chicago",60
+"1990-05-27","Chicago",57
+"1990-06-03","Chicago",78
+"1990-06-10","Chicago",66
+"1990-06-17","Chicago",66
+"1990-06-24","Chicago",50
+"1990-07-01","Chicago",64
+"1990-07-08","Chicago",41
+"1990-07-15","Chicago",65
+"1990-07-22","Chicago",35
+"1990-07-29","Chicago",55
+"1990-08-05","Chicago",49
+"1990-08-12","Chicago",64
+"1990-08-19","Chicago",39
+"1990-08-26","Chicago",56
+"1990-09-02","Chicago",74
+"1990-09-09","Chicago",52
+"1990-09-16","Chicago",44
+"1990-09-23","Chicago",38
+"1990-09-30","Chicago",50
+"1990-10-07","Chicago",57
+"1990-10-14","Chicago",60
+"1990-10-21","Chicago",58
+"1990-10-28","Chicago",65
+"1990-11-04","Chicago",68
+"1990-11-11","Chicago",68
+"1990-11-18","Chicago",61
+"1990-11-25","Chicago",65
+"1990-12-02","Chicago",56
+"1990-12-09","Chicago",58
+"1990-12-16","Chicago",57
+"1990-12-23","Chicago",58
+"1990-12-30","Chicago",80
+"1991-01-06","Chicago",69
+"1991-01-13","Chicago",60
+"1991-01-20","Chicago",67
+"1991-01-27","Chicago",89
+"1991-02-03","Chicago",69
+"1991-02-10","Chicago",92
+"1991-02-17","Chicago",83
+"1991-02-24","Chicago",74
+"1991-03-03","Chicago",89
+"1991-03-10","Chicago",90
+"1991-03-17","Chicago",67
+"1991-03-24","Chicago",72
+"1991-03-31","Chicago",74
+"1991-04-07","Chicago",60
+"1991-04-14","Chicago",56
+"1991-04-21","Chicago",51
+"1991-04-28","Chicago",72
+"1991-05-05","Chicago",65
+"1991-05-12","Chicago",71
+"1991-05-19","Chicago",51
+"1991-05-26","Chicago",51
+"1991-06-02","Chicago",66
+"1991-06-09","Chicago",62
+"1991-06-16","Chicago",57
+"1991-06-23","Chicago",46
+"1991-06-30","Chicago",63
+"1991-07-07","Chicago",75
+"1991-07-14","Chicago",35
+"1991-07-21","Chicago",51
+"1991-07-28","Chicago",55
+"1991-08-04","Chicago",50
+"1991-08-11","Chicago",53
+"1991-08-18","Chicago",54
+"1991-08-25","Chicago",54
+"1991-09-01","Chicago",54
+"1991-09-08","Chicago",50
+"1991-09-15","Chicago",60
+"1991-09-22","Chicago",50
+"1991-09-29","Chicago",55
+"1991-10-06","Chicago",51
+"1991-10-13","Chicago",57
+"1991-10-20","Chicago",65
+"1991-10-27","Chicago",69
+"1991-11-03","Chicago",58
+"1991-11-10","Chicago",81
+"1991-11-17","Chicago",49
+"1991-11-24","Chicago",69
+"1991-12-01","Chicago",63
+"1991-12-08","Chicago",89
+"1991-12-15","Chicago",87
+"1991-12-22","Chicago",102
+"1991-12-29","Chicago",93
+"1992-01-05","Chicago",102
+"1992-01-12","Chicago",97
+"1992-01-19","Chicago",82
+"1992-01-26","Chicago",73
+"1992-02-02","Chicago",63
+"1992-02-09","Chicago",78
+"1992-02-16","Chicago",71
+"1992-02-23","Chicago",72
+"1992-03-01","Chicago",68
+"1992-03-08","Chicago",60
+"1992-03-15","Chicago",59
+"1992-03-22","Chicago",71
+"1992-03-29","Chicago",63
+"1992-04-05","Chicago",63
+"1992-04-12","Chicago",48
+"1992-04-19","Chicago",65
+"1992-04-26","Chicago",62
+"1992-05-03","Chicago",75
+"1992-05-10","Chicago",54
+"1992-05-17","Chicago",48
+"1992-05-24","Chicago",59
+"1992-05-31","Chicago",64
+"1992-06-07","Chicago",56
+"1992-06-14","Chicago",45
+"1992-06-21","Chicago",77
+"1992-06-28","Chicago",58
+"1992-07-05","Chicago",61
+"1992-07-12","Chicago",51
+"1992-07-19","Chicago",53
+"1992-07-26","Chicago",48
+"1992-08-02","Chicago",56
+"1992-08-09","Chicago",54
+"1992-08-16","Chicago",43
+"1992-08-23","Chicago",49
+"1992-08-30","Chicago",45
+"1992-09-06","Chicago",55
+"1992-09-13","Chicago",46
+"1992-09-20","Chicago",47
+"1992-09-27","Chicago",48
+"1992-10-04","Chicago",55
+"1992-10-11","Chicago",70
+"1992-10-18","Chicago",54
+"1992-10-25","Chicago",59
+"1992-11-01","Chicago",64
+"1992-11-08","Chicago",51
+"1992-11-15","Chicago",62
+"1992-11-22","Chicago",50
+"1992-11-29","Chicago",64
+"1992-12-06","Chicago",65
+"1992-12-13","Chicago",63
+"1992-12-20","Chicago",71
+"1992-12-27","Chicago",48
+"1993-01-03","Chicago",73
+"1993-01-10","Chicago",63
+"1993-01-17","Chicago",65
+"1993-01-24","Chicago",78
+"1993-01-31","Chicago",59
+"1993-02-07","Chicago",66
+"1993-02-14","Chicago",70
+"1993-02-21","Chicago",78
+"1993-02-28","Chicago",62
+"1993-03-07","Chicago",87
+"1993-03-14","Chicago",88
+"1993-03-21","Chicago",90
+"1993-03-28","Chicago",108
+"1993-04-04","Chicago",95
+"1993-04-11","Chicago",100
+"1993-04-18","Chicago",100
+"1993-04-25","Chicago",89
+"1993-05-02","Chicago",76
+"1993-05-09","Chicago",67
+"1993-05-16","Chicago",62
+"1993-05-23","Chicago",60
+"1993-05-30","Chicago",48
+"1993-06-06","Chicago",59
+"1993-06-13","Chicago",59
+"1993-06-20","Chicago",66
+"1993-06-27","Chicago",49
+"1993-07-04","Chicago",48
+"1993-07-11","Chicago",55
+"1993-07-18","Chicago",65
+"1993-07-25","Chicago",58
+"1993-08-01","Chicago",57
+"1993-08-08","Chicago",59
+"1993-08-15","Chicago",40
+"1993-08-22","Chicago",49
+"1993-08-29","Chicago",71
+"1993-09-05","Chicago",56
+"1993-09-12","Chicago",67
+"1993-09-19","Chicago",57
+"1993-09-26","Chicago",57
+"1993-10-03","Chicago",72
+"1993-10-10","Chicago",76
+"1993-10-17","Chicago",74
+"1993-10-24","Chicago",61
+"1993-10-31","Chicago",65
+"1993-11-07","Chicago",54
+"1993-11-14","Chicago",62
+"1993-11-21","Chicago",69
+"1993-11-28","Chicago",67
+"1993-12-05","Chicago",82
+"1993-12-12","Chicago",69
+"1993-12-19","Chicago",70
+"1993-12-26","Chicago",60
+"1994-01-02","Chicago",71
+"1994-01-09","Chicago",100
+"1994-01-16","Chicago",77
+"1994-01-23","Chicago",96
+"1994-01-30","Chicago",81
+"1994-02-06","Chicago",75
+"1994-02-13","Chicago",75
+"1994-02-20","Chicago",83
+"1994-02-27","Chicago",70
+"1994-03-06","Chicago",73
+"1994-03-13","Chicago",70
+"1994-03-20","Chicago",65
+"1994-03-27","Chicago",63
+"1994-04-03","Chicago",63
+"1994-04-10","Chicago",65
+"1994-04-17","Chicago",74
+"1994-04-24","Chicago",72
+"1994-05-01","Chicago",65
+"1994-05-08","Chicago",59
+"1994-05-15","Chicago",58
+"1994-05-22","Chicago",58
+"1994-05-29","Chicago",58
+"1994-06-05","Chicago",57
+"1994-06-12","Chicago",69
+"1994-06-19","Chicago",62
+"1994-06-26","Chicago",59
+"1994-07-03","Chicago",47
+"1994-07-10","Chicago",61
+"1994-07-17","Chicago",47
+"1994-07-24","Chicago",44
+"1994-07-31","Chicago",41
+"1994-08-07","Chicago",57
+"1994-08-14","Chicago",61
+"1994-08-21","Chicago",52
+"1994-08-28","Chicago",54
+"1994-09-04","Chicago",53
+"1994-09-11","Chicago",62
+"1994-09-18","Chicago",49
+"1994-09-25","Chicago",51
+"1994-10-02","Chicago",67
+"1994-10-09","Chicago",64
+"1994-10-16","Chicago",58
+"1994-10-23","Chicago",57
+"1994-10-30","Chicago",64
+"1994-11-06","Chicago",62
+"1994-11-13","Chicago",69
+"1994-11-20","Chicago",48
+"1994-11-27","Chicago",58
+"1994-12-04","Chicago",56
+"1994-12-11","Chicago",56
+"1994-12-18","Chicago",84
+"1994-12-25","Chicago",78
+"1995-01-01","Chicago",76
+"1995-01-08","Chicago",66
+"1995-01-15","Chicago",90
+"1995-01-22","Chicago",85
+"1995-01-29","Chicago",98
+"1995-02-05","Chicago",110
+"1995-02-12","Chicago",104
+"1995-02-19","Chicago",91
+"1995-02-26","Chicago",85
+"1995-03-05","Chicago",86
+"1995-03-12","Chicago",85
+"1995-03-19","Chicago",84
+"1995-03-26","Chicago",71
+"1995-04-02","Chicago",70
+"1995-04-09","Chicago",68
+"1995-04-16","Chicago",64
+"1995-04-23","Chicago",60
+"1995-04-30","Chicago",62
+"1995-05-07","Chicago",79
+"1995-05-14","Chicago",70
+"1995-05-21","Chicago",62
+"1995-05-28","Chicago",68
+"1995-06-04","Chicago",53
+"1995-06-11","Chicago",67
+"1995-06-18","Chicago",49
+"1995-06-25","Chicago",59
+"1995-07-02","Chicago",41
+"1995-07-09","Chicago",61
+"1995-07-16","Chicago",80
+"1995-07-23","Chicago",69
+"1995-07-30","Chicago",51
+"1995-08-06","Chicago",44
+"1995-08-13","Chicago",68
+"1995-08-20","Chicago",62
+"1995-08-27","Chicago",67
+"1995-09-03","Chicago",54
+"1995-09-10","Chicago",53
+"1995-09-17","Chicago",52
+"1995-09-24","Chicago",57
+"1995-10-01","Chicago",66
+"1995-10-08","Chicago",66
+"1995-10-15","Chicago",57
+"1995-10-22","Chicago",60
+"1995-10-29","Chicago",66
+"1995-11-05","Chicago",62
+"1995-11-12","Chicago",58
+"1995-11-19","Chicago",58
+"1995-11-26","Chicago",58
+"1995-12-03","Chicago",70
+"1995-12-10","Chicago",59
+"1995-12-17","Chicago",71
+"1995-12-24","Chicago",72
+"1995-12-31","Chicago",89
+"1996-01-07","Chicago",78
+"1996-01-14","Chicago",93
+"1996-01-21","Chicago",82
+"1996-01-28","Chicago",64
+"1996-02-04","Chicago",70
+"1996-02-11","Chicago",68
+"1996-02-18","Chicago",66
+"1996-02-25","Chicago",56
+"1996-03-03","Chicago",57
+"1996-03-10","Chicago",59
+"1996-03-17","Chicago",86
+"1996-03-24","Chicago",79
+"1996-03-31","Chicago",55
+"1996-04-07","Chicago",80
+"1996-04-14","Chicago",83
+"1996-04-21","Chicago",65
+"1996-04-28","Chicago",68
+"1996-05-05","Chicago",67
+"1996-05-12","Chicago",59
+"1996-05-19","Chicago",60
+"1996-05-26","Chicago",60
+"1996-06-02","Chicago",57
+"1996-06-09","Chicago",64
+"1996-06-16","Chicago",47
+"1996-06-23","Chicago",49
+"1996-06-30","Chicago",64
+"1996-07-07","Chicago",56
+"1996-07-14","Chicago",52
+"1996-07-21","Chicago",47
+"1996-07-28","Chicago",50
+"1996-08-04","Chicago",45
+"1996-08-11","Chicago",40
+"1996-08-18","Chicago",44
+"1996-08-25","Chicago",48
+"1996-09-01","Chicago",53
+"1996-09-08","Chicago",56
+"1996-09-15","Chicago",57
+"1996-09-22","Chicago",57
+"1996-09-29","Chicago",50
+"1996-10-06","Chicago",44
+"1996-10-13","Chicago",63
+"1996-10-20","Chicago",73
+"1996-10-27","Chicago",69
+"1996-11-03","Chicago",61
+"1996-11-10","Chicago",52
+"1996-11-17","Chicago",85
+"1996-11-24","Chicago",76
+"1996-12-01","Chicago",90
+"1996-12-08","Chicago",98
+"1996-12-15","Chicago",95
+"1996-12-22","Chicago",79
+"1996-12-29","Chicago",98
+"1997-01-05","Chicago",85
+"1997-01-12","Chicago",86
+"1997-01-19","Chicago",69
+"1997-01-26","Chicago",82
+"1997-02-02","Chicago",69
+"1997-02-09","Chicago",66
+"1997-02-16","Chicago",65
+"1997-02-23","Chicago",80
+"1997-03-02","Chicago",95
+"1997-03-09","Chicago",71
+"1997-03-16","Chicago",68
+"1997-03-23","Chicago",70
+"1997-03-30","Chicago",63
+"1997-04-06","Chicago",54
+"1997-04-13","Chicago",68
+"1997-04-20","Chicago",78
+"1997-04-27","Chicago",67
+"1997-05-04","Chicago",66
+"1997-05-11","Chicago",67
+"1997-05-18","Chicago",59
+"1997-05-25","Chicago",57
+"1997-06-01","Chicago",61
+"1997-06-08","Chicago",50
+"1997-06-15","Chicago",54
+"1997-06-22","Chicago",55
+"1997-06-29","Chicago",52
+"1997-07-06","Chicago",62
+"1997-07-13","Chicago",65
+"1997-07-20","Chicago",48
+"1997-07-27","Chicago",51
+"1997-08-03","Chicago",39
+"1997-08-10","Chicago",40
+"1997-08-17","Chicago",50
+"1997-08-24","Chicago",49
+"1997-08-31","Chicago",54
+"1997-09-07","Chicago",49
+"1997-09-14","Chicago",46
+"1997-09-21","Chicago",52
+"1997-09-28","Chicago",54
+"1997-10-05","Chicago",63
+"1997-10-12","Chicago",56
+"1997-10-19","Chicago",71
+"1997-10-26","Chicago",53
+"1997-11-02","Chicago",67
+"1997-11-09","Chicago",70
+"1997-11-16","Chicago",50
+"1997-11-23","Chicago",58
+"1997-11-30","Chicago",58
+"1997-12-07","Chicago",73
+"1997-12-14","Chicago",69
+"1997-12-21","Chicago",63
+"1997-12-28","Chicago",84
+"1998-01-04","Chicago",79
+"1998-01-11","Chicago",85
+"1998-01-18","Chicago",93
+"1998-01-25","Chicago",99
+"1998-02-01","Chicago",98
+"1998-02-08","Chicago",83
+"1998-02-15","Chicago",84
+"1998-02-22","Chicago",85
+"1998-03-01","Chicago",107
+"1998-03-08","Chicago",74
+"1998-03-15","Chicago",74
+"1998-03-22","Chicago",69
+"1998-03-29","Chicago",66
+"1998-04-05","Chicago",46
+"1998-04-12","Chicago",45
+"1998-04-19","Chicago",71
+"1998-04-26","Chicago",61
+"1998-05-03","Chicago",51
+"1998-05-10","Chicago",55
+"1998-05-17","Chicago",47
+"1998-05-24","Chicago",62
+"1998-05-31","Chicago",56
+"1998-06-07","Chicago",40
+"1998-06-14","Chicago",55
+"1998-06-21","Chicago",65
+"1998-06-28","Chicago",48
+"1998-07-05","Chicago",64
+"1998-07-12","Chicago",60
+"1998-07-19","Chicago",54
+"1998-07-26","Chicago",59
+"1998-08-02","Chicago",55
+"1998-08-09","Chicago",57
+"1998-08-16","Chicago",61
+"1998-08-23","Chicago",60
+"1998-08-30","Chicago",63
+"1998-09-06","Chicago",53
+"1998-09-13","Chicago",68
+"1998-09-20","Chicago",56
+"1998-09-27","Chicago",67
+"1998-10-04","Chicago",52
+"1998-10-11","Chicago",68
+"1998-10-18","Chicago",65
+"1998-10-25","Chicago",62
+"1998-11-01","Chicago",59
+"1998-11-08","Chicago",57
+"1998-11-15","Chicago",58
+"1998-11-22","Chicago",64
+"1998-11-29","Chicago",60
+"1998-12-06","Chicago",62
+"1998-12-13","Chicago",60
+"1998-12-20","Chicago",89
+"1998-12-27","Chicago",91
+"1999-01-03","Chicago",80
+"1999-01-10","Chicago",74
+"1999-01-17","Chicago",101
+"1999-01-24","Chicago",78
+"1999-01-31","Chicago",92
+"1999-02-07","Chicago",81
+"1999-02-14","Chicago",102
+"1999-02-21","Chicago",101
+"1999-02-28","Chicago",88
+"1999-03-07","Chicago",101
+"1999-03-14","Chicago",109
+"1999-03-21","Chicago",103
+"1999-03-28","Chicago",84
+"1999-04-04","Chicago",63
+"1999-04-11","Chicago",62
+"1999-04-18","Chicago",69
+"1999-04-25","Chicago",69
+"1999-05-02","Chicago",57
+"1999-05-09","Chicago",60
+"1999-05-16","Chicago",56
+"1999-05-23","Chicago",50
+"1999-05-30","Chicago",47
+"1999-06-06","Chicago",63
+"1999-06-13","Chicago",63
+"1999-06-20","Chicago",56
+"1999-06-27","Chicago",48
+"1999-07-04","Chicago",56
+"1999-07-11","Chicago",54
+"1999-07-18","Chicago",41
+"1999-07-25","Chicago",50
+"1999-08-01","Chicago",68
+"1999-08-08","Chicago",52
+"1999-08-15","Chicago",60
+"1999-08-22","Chicago",44
+"1999-08-29","Chicago",47
+"1999-09-05","Chicago",38
+"1999-09-12","Chicago",53
+"1999-09-19","Chicago",55
+"1999-09-26","Chicago",48
+"1999-10-03","Chicago",39
+"1999-10-10","Chicago",61
+"1999-10-17","Chicago",67
+"1999-10-24","Chicago",63
+"1999-10-31","Chicago",65
+"1999-11-07","Chicago",59
+"1999-11-14","Chicago",53
+"1999-11-21","Chicago",62
+"1999-11-28","Chicago",52
+"1999-12-05","Chicago",68
+"1999-12-12","Chicago",77
+"1999-12-19","Chicago",70
+"1999-12-26","Chicago",85
+"2000-01-02","Chicago",119
+"2000-01-09","Chicago",102
+"2000-01-16","Chicago",108
+"2000-01-23","Chicago",103
+"2000-01-30","Chicago",97
+"2000-02-06","Chicago",75
+"2000-02-13","Chicago",64
+"2000-02-20","Chicago",58
+"2000-02-27","Chicago",82
+"2000-03-05","Chicago",67
+"2000-03-12","Chicago",51
+"2000-03-19","Chicago",56
+"2000-03-26","Chicago",56
+"2000-04-02","Chicago",55
+"2000-04-09","Chicago",55
+"2000-04-16","Chicago",44
+"2000-04-23","Chicago",55
+"2000-04-30","Chicago",64
+"2000-05-07","Chicago",63
+"2000-05-14","Chicago",49
+"2000-05-21","Chicago",48
+"2000-05-28","Chicago",53
+"2000-06-04","Chicago",39
+"2000-06-11","Chicago",52
+"2000-06-18","Chicago",44
+"2000-06-25","Chicago",41
+"2000-07-02","Chicago",52
+"2000-07-09","Chicago",47
+"2000-07-16","Chicago",53
+"2000-07-23","Chicago",39
+"2000-07-30","Chicago",57
+"2000-08-06","Chicago",49
+"2000-08-13","Chicago",57
+"2000-08-20","Chicago",37
+"2000-08-27","Chicago",52
+"2000-09-03","Chicago",44
+"2000-09-10","Chicago",40
+"2000-09-17","Chicago",46
+"2000-09-24","Chicago",56
+"2000-10-01","Chicago",55
+"2000-10-08","Chicago",65
+"2000-10-15","Chicago",51
+"2000-10-22","Chicago",57
+"2000-10-29","Chicago",51
+"2000-11-05","Chicago",51
+"2000-11-12","Chicago",58
+"2000-11-19","Chicago",65
+"2000-11-26","Chicago",64
+"2000-12-03","Chicago",57
+"2000-12-10","Chicago",57
+"2000-12-17","Chicago",68
+"2000-12-24","Chicago",74
+"2000-12-31","Chicago",77
+"1987-01-04","Dallas/Fort Worth",21
+"1987-01-11","Dallas/Fort Worth",32
+"1987-01-18","Dallas/Fort Worth",32
+"1987-01-25","Dallas/Fort Worth",42
+"1987-02-01","Dallas/Fort Worth",38
+"1987-02-08","Dallas/Fort Worth",29
+"1987-02-15","Dallas/Fort Worth",34
+"1987-02-22","Dallas/Fort Worth",16
+"1987-03-01","Dallas/Fort Worth",20
+"1987-03-08","Dallas/Fort Worth",24
+"1987-03-15","Dallas/Fort Worth",31
+"1987-03-22","Dallas/Fort Worth",41
+"1987-03-29","Dallas/Fort Worth",20
+"1987-04-05","Dallas/Fort Worth",29
+"1987-04-12","Dallas/Fort Worth",27
+"1987-04-19","Dallas/Fort Worth",32
+"1987-04-26","Dallas/Fort Worth",14
+"1987-05-03","Dallas/Fort Worth",32
+"1987-05-10","Dallas/Fort Worth",14
+"1987-05-17","Dallas/Fort Worth",29
+"1987-05-24","Dallas/Fort Worth",14
+"1987-05-31","Dallas/Fort Worth",11
+"1987-06-07","Dallas/Fort Worth",20
+"1987-06-14","Dallas/Fort Worth",21
+"1987-06-21","Dallas/Fort Worth",25
+"1987-06-28","Dallas/Fort Worth",24
+"1987-07-05","Dallas/Fort Worth",23
+"1987-07-12","Dallas/Fort Worth",15
+"1987-07-19","Dallas/Fort Worth",20
+"1987-07-26","Dallas/Fort Worth",18
+"1987-08-02","Dallas/Fort Worth",21
+"1987-08-09","Dallas/Fort Worth",25
+"1987-08-16","Dallas/Fort Worth",17
+"1987-08-23","Dallas/Fort Worth",23
+"1987-08-30","Dallas/Fort Worth",12
+"1987-09-06","Dallas/Fort Worth",16
+"1987-09-13","Dallas/Fort Worth",31
+"1987-09-20","Dallas/Fort Worth",15
+"1987-09-27","Dallas/Fort Worth",13
+"1987-10-04","Dallas/Fort Worth",26
+"1987-10-11","Dallas/Fort Worth",15
+"1987-10-18","Dallas/Fort Worth",19
+"1987-10-25","Dallas/Fort Worth",20
+"1987-11-01","Dallas/Fort Worth",20
+"1987-11-08","Dallas/Fort Worth",25
+"1987-11-15","Dallas/Fort Worth",17
+"1987-11-22","Dallas/Fort Worth",27
+"1987-11-29","Dallas/Fort Worth",25
+"1987-12-06","Dallas/Fort Worth",26
+"1987-12-13","Dallas/Fort Worth",23
+"1987-12-20","Dallas/Fort Worth",27
+"1987-12-27","Dallas/Fort Worth",26
+"1988-01-03","Dallas/Fort Worth",34
+"1988-01-10","Dallas/Fort Worth",33
+"1988-01-17","Dallas/Fort Worth",35
+"1988-01-24","Dallas/Fort Worth",31
+"1988-01-31","Dallas/Fort Worth",30
+"1988-02-07","Dallas/Fort Worth",29
+"1988-02-14","Dallas/Fort Worth",34
+"1988-02-21","Dallas/Fort Worth",35
+"1988-02-28","Dallas/Fort Worth",33
+"1988-03-06","Dallas/Fort Worth",37
+"1988-03-13","Dallas/Fort Worth",30
+"1988-03-20","Dallas/Fort Worth",28
+"1988-03-27","Dallas/Fort Worth",23
+"1988-04-03","Dallas/Fort Worth",28
+"1988-04-10","Dallas/Fort Worth",31
+"1988-04-17","Dallas/Fort Worth",27
+"1988-04-24","Dallas/Fort Worth",25
+"1988-05-01","Dallas/Fort Worth",23
+"1988-05-08","Dallas/Fort Worth",26
+"1988-05-15","Dallas/Fort Worth",22
+"1988-05-22","Dallas/Fort Worth",22
+"1988-05-29","Dallas/Fort Worth",25
+"1988-06-05","Dallas/Fort Worth",16
+"1988-06-12","Dallas/Fort Worth",38
+"1988-06-19","Dallas/Fort Worth",22
+"1988-06-26","Dallas/Fort Worth",21
+"1988-07-03","Dallas/Fort Worth",23
+"1988-07-10","Dallas/Fort Worth",16
+"1988-07-17","Dallas/Fort Worth",16
+"1988-07-24","Dallas/Fort Worth",20
+"1988-07-31","Dallas/Fort Worth",21
+"1988-08-07","Dallas/Fort Worth",16
+"1988-08-14","Dallas/Fort Worth",19
+"1988-08-21","Dallas/Fort Worth",20
+"1988-08-28","Dallas/Fort Worth",20
+"1988-09-04","Dallas/Fort Worth",21
+"1988-09-11","Dallas/Fort Worth",13
+"1988-09-18","Dallas/Fort Worth",16
+"1988-09-25","Dallas/Fort Worth",20
+"1988-10-02","Dallas/Fort Worth",23
+"1988-10-09","Dallas/Fort Worth",22
+"1988-10-16","Dallas/Fort Worth",23
+"1988-10-23","Dallas/Fort Worth",16
+"1988-10-30","Dallas/Fort Worth",22
+"1988-11-06","Dallas/Fort Worth",20
+"1988-11-13","Dallas/Fort Worth",33
+"1988-11-20","Dallas/Fort Worth",26
+"1988-11-27","Dallas/Fort Worth",31
+"1988-12-04","Dallas/Fort Worth",28
+"1988-12-11","Dallas/Fort Worth",30
+"1988-12-18","Dallas/Fort Worth",26
+"1988-12-25","Dallas/Fort Worth",24
+"1989-01-01","Dallas/Fort Worth",35
+"1989-01-08","Dallas/Fort Worth",41
+"1989-01-15","Dallas/Fort Worth",43
+"1989-01-22","Dallas/Fort Worth",33
+"1989-01-29","Dallas/Fort Worth",34
+"1989-02-05","Dallas/Fort Worth",35
+"1989-02-12","Dallas/Fort Worth",40
+"1989-02-19","Dallas/Fort Worth",51
+"1989-02-26","Dallas/Fort Worth",28
+"1989-03-05","Dallas/Fort Worth",42
+"1989-03-12","Dallas/Fort Worth",28
+"1989-03-19","Dallas/Fort Worth",40
+"1989-03-26","Dallas/Fort Worth",36
+"1989-04-02","Dallas/Fort Worth",20
+"1989-04-09","Dallas/Fort Worth",20
+"1989-04-16","Dallas/Fort Worth",34
+"1989-04-23","Dallas/Fort Worth",22
+"1989-04-30","Dallas/Fort Worth",16
+"1989-05-07","Dallas/Fort Worth",15
+"1989-05-14","Dallas/Fort Worth",24
+"1989-05-21","Dallas/Fort Worth",22
+"1989-05-28","Dallas/Fort Worth",19
+"1989-06-04","Dallas/Fort Worth",14
+"1989-06-11","Dallas/Fort Worth",20
+"1989-06-18","Dallas/Fort Worth",36
+"1989-06-25","Dallas/Fort Worth",21
+"1989-07-02","Dallas/Fort Worth",21
+"1989-07-09","Dallas/Fort Worth",19
+"1989-07-16","Dallas/Fort Worth",11
+"1989-07-23","Dallas/Fort Worth",12
+"1989-07-30","Dallas/Fort Worth",23
+"1989-08-06","Dallas/Fort Worth",20
+"1989-08-13","Dallas/Fort Worth",20
+"1989-08-20","Dallas/Fort Worth",16
+"1989-08-27","Dallas/Fort Worth",17
+"1989-09-03","Dallas/Fort Worth",16
+"1989-09-10","Dallas/Fort Worth",19
+"1989-09-17","Dallas/Fort Worth",20
+"1989-09-24","Dallas/Fort Worth",23
+"1989-10-01","Dallas/Fort Worth",17
+"1989-10-08","Dallas/Fort Worth",23
+"1989-10-15","Dallas/Fort Worth",18
+"1989-10-22","Dallas/Fort Worth",24
+"1989-10-29","Dallas/Fort Worth",22
+"1989-11-05","Dallas/Fort Worth",15
+"1989-11-12","Dallas/Fort Worth",29
+"1989-11-19","Dallas/Fort Worth",23
+"1989-11-26","Dallas/Fort Worth",30
+"1989-12-03","Dallas/Fort Worth",29
+"1989-12-10","Dallas/Fort Worth",37
+"1989-12-17","Dallas/Fort Worth",37
+"1989-12-24","Dallas/Fort Worth",44
+"1989-12-31","Dallas/Fort Worth",85
+"1990-01-07","Dallas/Fort Worth",106
+"1990-01-14","Dallas/Fort Worth",77
+"1990-01-21","Dallas/Fort Worth",53
+"1990-01-28","Dallas/Fort Worth",50
+"1990-02-04","Dallas/Fort Worth",39
+"1990-02-11","Dallas/Fort Worth",35
+"1990-02-18","Dallas/Fort Worth",40
+"1990-02-25","Dallas/Fort Worth",37
+"1990-03-04","Dallas/Fort Worth",26
+"1990-03-11","Dallas/Fort Worth",33
+"1990-03-18","Dallas/Fort Worth",29
+"1990-03-25","Dallas/Fort Worth",39
+"1990-04-01","Dallas/Fort Worth",27
+"1990-04-08","Dallas/Fort Worth",22
+"1990-04-15","Dallas/Fort Worth",31
+"1990-04-22","Dallas/Fort Worth",32
+"1990-04-29","Dallas/Fort Worth",21
+"1990-05-06","Dallas/Fort Worth",30
+"1990-05-13","Dallas/Fort Worth",17
+"1990-05-20","Dallas/Fort Worth",26
+"1990-05-27","Dallas/Fort Worth",25
+"1990-06-03","Dallas/Fort Worth",28
+"1990-06-10","Dallas/Fort Worth",25
+"1990-06-17","Dallas/Fort Worth",25
+"1990-06-24","Dallas/Fort Worth",21
+"1990-07-01","Dallas/Fort Worth",19
+"1990-07-08","Dallas/Fort Worth",12
+"1990-07-15","Dallas/Fort Worth",20
+"1990-07-22","Dallas/Fort Worth",17
+"1990-07-29","Dallas/Fort Worth",26
+"1990-08-05","Dallas/Fort Worth",17
+"1990-08-12","Dallas/Fort Worth",21
+"1990-08-19","Dallas/Fort Worth",21
+"1990-08-26","Dallas/Fort Worth",23
+"1990-09-02","Dallas/Fort Worth",25
+"1990-09-09","Dallas/Fort Worth",24
+"1990-09-16","Dallas/Fort Worth",25
+"1990-09-23","Dallas/Fort Worth",19
+"1990-09-30","Dallas/Fort Worth",17
+"1990-10-07","Dallas/Fort Worth",22
+"1990-10-14","Dallas/Fort Worth",16
+"1990-10-21","Dallas/Fort Worth",18
+"1990-10-28","Dallas/Fort Worth",20
+"1990-11-04","Dallas/Fort Worth",16
+"1990-11-11","Dallas/Fort Worth",18
+"1990-11-18","Dallas/Fort Worth",33
+"1990-11-25","Dallas/Fort Worth",31
+"1990-12-02","Dallas/Fort Worth",29
+"1990-12-09","Dallas/Fort Worth",22
+"1990-12-16","Dallas/Fort Worth",28
+"1990-12-23","Dallas/Fort Worth",28
+"1990-12-30","Dallas/Fort Worth",38
+"1991-01-06","Dallas/Fort Worth",22
+"1991-01-13","Dallas/Fort Worth",22
+"1991-01-20","Dallas/Fort Worth",41
+"1991-01-27","Dallas/Fort Worth",26
+"1991-02-03","Dallas/Fort Worth",29
+"1991-02-10","Dallas/Fort Worth",25
+"1991-02-17","Dallas/Fort Worth",34
+"1991-02-24","Dallas/Fort Worth",33
+"1991-03-03","Dallas/Fort Worth",29
+"1991-03-10","Dallas/Fort Worth",38
+"1991-03-17","Dallas/Fort Worth",43
+"1991-03-24","Dallas/Fort Worth",41
+"1991-03-31","Dallas/Fort Worth",36
+"1991-04-07","Dallas/Fort Worth",33
+"1991-04-14","Dallas/Fort Worth",30
+"1991-04-21","Dallas/Fort Worth",25
+"1991-04-28","Dallas/Fort Worth",28
+"1991-05-05","Dallas/Fort Worth",32
+"1991-05-12","Dallas/Fort Worth",36
+"1991-05-19","Dallas/Fort Worth",31
+"1991-05-26","Dallas/Fort Worth",26
+"1991-06-02","Dallas/Fort Worth",28
+"1991-06-09","Dallas/Fort Worth",38
+"1991-06-16","Dallas/Fort Worth",39
+"1991-06-23","Dallas/Fort Worth",35
+"1991-06-30","Dallas/Fort Worth",17
+"1991-07-07","Dallas/Fort Worth",32
+"1991-07-14","Dallas/Fort Worth",21
+"1991-07-21","Dallas/Fort Worth",21
+"1991-07-28","Dallas/Fort Worth",17
+"1991-08-04","Dallas/Fort Worth",20
+"1991-08-11","Dallas/Fort Worth",23
+"1991-08-18","Dallas/Fort Worth",24
+"1991-08-25","Dallas/Fort Worth",20
+"1991-09-01","Dallas/Fort Worth",25
+"1991-09-08","Dallas/Fort Worth",35
+"1991-09-15","Dallas/Fort Worth",22
+"1991-09-22","Dallas/Fort Worth",24
+"1991-09-29","Dallas/Fort Worth",31
+"1991-10-06","Dallas/Fort Worth",31
+"1991-10-13","Dallas/Fort Worth",16
+"1991-10-20","Dallas/Fort Worth",32
+"1991-10-27","Dallas/Fort Worth",22
+"1991-11-03","Dallas/Fort Worth",25
+"1991-11-10","Dallas/Fort Worth",28
+"1991-11-17","Dallas/Fort Worth",26
+"1991-11-24","Dallas/Fort Worth",24
+"1991-12-01","Dallas/Fort Worth",40
+"1991-12-08","Dallas/Fort Worth",36
+"1991-12-15","Dallas/Fort Worth",25
+"1991-12-22","Dallas/Fort Worth",36
+"1991-12-29","Dallas/Fort Worth",45
+"1992-01-05","Dallas/Fort Worth",51
+"1992-01-12","Dallas/Fort Worth",39
+"1992-01-19","Dallas/Fort Worth",41
+"1992-01-26","Dallas/Fort Worth",37
+"1992-02-02","Dallas/Fort Worth",29
+"1992-02-09","Dallas/Fort Worth",36
+"1992-02-16","Dallas/Fort Worth",33
+"1992-02-23","Dallas/Fort Worth",35
+"1992-03-01","Dallas/Fort Worth",32
+"1992-03-08","Dallas/Fort Worth",40
+"1992-03-15","Dallas/Fort Worth",36
+"1992-03-22","Dallas/Fort Worth",38
+"1992-03-29","Dallas/Fort Worth",25
+"1992-04-05","Dallas/Fort Worth",22
+"1992-04-12","Dallas/Fort Worth",27
+"1992-04-19","Dallas/Fort Worth",35
+"1992-04-26","Dallas/Fort Worth",27
+"1992-05-03","Dallas/Fort Worth",18
+"1992-05-10","Dallas/Fort Worth",25
+"1992-05-17","Dallas/Fort Worth",29
+"1992-05-24","Dallas/Fort Worth",31
+"1992-05-31","Dallas/Fort Worth",33
+"1992-06-07","Dallas/Fort Worth",32
+"1992-06-14","Dallas/Fort Worth",30
+"1992-06-21","Dallas/Fort Worth",27
+"1992-06-28","Dallas/Fort Worth",24
+"1992-07-05","Dallas/Fort Worth",34
+"1992-07-12","Dallas/Fort Worth",24
+"1992-07-19","Dallas/Fort Worth",21
+"1992-07-26","Dallas/Fort Worth",25
+"1992-08-02","Dallas/Fort Worth",29
+"1992-08-09","Dallas/Fort Worth",26
+"1992-08-16","Dallas/Fort Worth",23
+"1992-08-23","Dallas/Fort Worth",20
+"1992-08-30","Dallas/Fort Worth",27
+"1992-09-06","Dallas/Fort Worth",27
+"1992-09-13","Dallas/Fort Worth",20
+"1992-09-20","Dallas/Fort Worth",21
+"1992-09-27","Dallas/Fort Worth",21
+"1992-10-04","Dallas/Fort Worth",25
+"1992-10-11","Dallas/Fort Worth",30
+"1992-10-18","Dallas/Fort Worth",25
+"1992-10-25","Dallas/Fort Worth",18
+"1992-11-01","Dallas/Fort Worth",34
+"1992-11-08","Dallas/Fort Worth",22
+"1992-11-15","Dallas/Fort Worth",21
+"1992-11-22","Dallas/Fort Worth",29
+"1992-11-29","Dallas/Fort Worth",26
+"1992-12-06","Dallas/Fort Worth",36
+"1992-12-13","Dallas/Fort Worth",46
+"1992-12-20","Dallas/Fort Worth",37
+"1992-12-27","Dallas/Fort Worth",32
+"1993-01-03","Dallas/Fort Worth",35
+"1993-01-10","Dallas/Fort Worth",47
+"1993-01-17","Dallas/Fort Worth",34
+"1993-01-24","Dallas/Fort Worth",42
+"1993-01-31","Dallas/Fort Worth",31
+"1993-02-07","Dallas/Fort Worth",41
+"1993-02-14","Dallas/Fort Worth",45
+"1993-02-21","Dallas/Fort Worth",48
+"1993-02-28","Dallas/Fort Worth",43
+"1993-03-07","Dallas/Fort Worth",37
+"1993-03-14","Dallas/Fort Worth",33
+"1993-03-21","Dallas/Fort Worth",36
+"1993-03-28","Dallas/Fort Worth",40
+"1993-04-04","Dallas/Fort Worth",43
+"1993-04-11","Dallas/Fort Worth",32
+"1993-04-18","Dallas/Fort Worth",38
+"1993-04-25","Dallas/Fort Worth",34
+"1993-05-02","Dallas/Fort Worth",32
+"1993-05-09","Dallas/Fort Worth",35
+"1993-05-16","Dallas/Fort Worth",27
+"1993-05-23","Dallas/Fort Worth",32
+"1993-05-30","Dallas/Fort Worth",32
+"1993-06-06","Dallas/Fort Worth",26
+"1993-06-13","Dallas/Fort Worth",25
+"1993-06-20","Dallas/Fort Worth",25
+"1993-06-27","Dallas/Fort Worth",19
+"1993-07-04","Dallas/Fort Worth",29
+"1993-07-11","Dallas/Fort Worth",25
+"1993-07-18","Dallas/Fort Worth",25
+"1993-07-25","Dallas/Fort Worth",30
+"1993-08-01","Dallas/Fort Worth",20
+"1993-08-08","Dallas/Fort Worth",20
+"1993-08-15","Dallas/Fort Worth",24
+"1993-08-22","Dallas/Fort Worth",20
+"1993-08-29","Dallas/Fort Worth",20
+"1993-09-05","Dallas/Fort Worth",16
+"1993-09-12","Dallas/Fort Worth",22
+"1993-09-19","Dallas/Fort Worth",22
+"1993-09-26","Dallas/Fort Worth",26
+"1993-10-03","Dallas/Fort Worth",33
+"1993-10-10","Dallas/Fort Worth",26
+"1993-10-17","Dallas/Fort Worth",36
+"1993-10-24","Dallas/Fort Worth",24
+"1993-10-31","Dallas/Fort Worth",26
+"1993-11-07","Dallas/Fort Worth",31
+"1993-11-14","Dallas/Fort Worth",31
+"1993-11-21","Dallas/Fort Worth",35
+"1993-11-28","Dallas/Fort Worth",34
+"1993-12-05","Dallas/Fort Worth",38
+"1993-12-12","Dallas/Fort Worth",35
+"1993-12-19","Dallas/Fort Worth",37
+"1993-12-26","Dallas/Fort Worth",54
+"1994-01-02","Dallas/Fort Worth",78
+"1994-01-09","Dallas/Fort Worth",94
+"1994-01-16","Dallas/Fort Worth",82
+"1994-01-23","Dallas/Fort Worth",73
+"1994-01-30","Dallas/Fort Worth",37
+"1994-02-06","Dallas/Fort Worth",36
+"1994-02-13","Dallas/Fort Worth",43
+"1994-02-20","Dallas/Fort Worth",32
+"1994-02-27","Dallas/Fort Worth",32
+"1994-03-06","Dallas/Fort Worth",31
+"1994-03-13","Dallas/Fort Worth",29
+"1994-03-20","Dallas/Fort Worth",33
+"1994-03-27","Dallas/Fort Worth",33
+"1994-04-03","Dallas/Fort Worth",22
+"1994-04-10","Dallas/Fort Worth",29
+"1994-04-17","Dallas/Fort Worth",24
+"1994-04-24","Dallas/Fort Worth",30
+"1994-05-01","Dallas/Fort Worth",30
+"1994-05-08","Dallas/Fort Worth",25
+"1994-05-15","Dallas/Fort Worth",35
+"1994-05-22","Dallas/Fort Worth",30
+"1994-05-29","Dallas/Fort Worth",28
+"1994-06-05","Dallas/Fort Worth",42
+"1994-06-12","Dallas/Fort Worth",26
+"1994-06-19","Dallas/Fort Worth",34
+"1994-06-26","Dallas/Fort Worth",29
+"1994-07-03","Dallas/Fort Worth",24
+"1994-07-10","Dallas/Fort Worth",24
+"1994-07-17","Dallas/Fort Worth",22
+"1994-07-24","Dallas/Fort Worth",32
+"1994-07-31","Dallas/Fort Worth",30
+"1994-08-07","Dallas/Fort Worth",27
+"1994-08-14","Dallas/Fort Worth",27
+"1994-08-21","Dallas/Fort Worth",30
+"1994-08-28","Dallas/Fort Worth",30
+"1994-09-04","Dallas/Fort Worth",19
+"1994-09-11","Dallas/Fort Worth",27
+"1994-09-18","Dallas/Fort Worth",23
+"1994-09-25","Dallas/Fort Worth",20
+"1994-10-02","Dallas/Fort Worth",21
+"1994-10-09","Dallas/Fort Worth",26
+"1994-10-16","Dallas/Fort Worth",33
+"1994-10-23","Dallas/Fort Worth",24
+"1994-10-30","Dallas/Fort Worth",34
+"1994-11-06","Dallas/Fort Worth",26
+"1994-11-13","Dallas/Fort Worth",32
+"1994-11-20","Dallas/Fort Worth",27
+"1994-11-27","Dallas/Fort Worth",25
+"1994-12-04","Dallas/Fort Worth",37
+"1994-12-11","Dallas/Fort Worth",35
+"1994-12-18","Dallas/Fort Worth",39
+"1994-12-25","Dallas/Fort Worth",37
+"1995-01-01","Dallas/Fort Worth",44
+"1995-01-08","Dallas/Fort Worth",45
+"1995-01-15","Dallas/Fort Worth",36
+"1995-01-22","Dallas/Fort Worth",43
+"1995-01-29","Dallas/Fort Worth",52
+"1995-02-05","Dallas/Fort Worth",31
+"1995-02-12","Dallas/Fort Worth",53
+"1995-02-19","Dallas/Fort Worth",33
+"1995-02-26","Dallas/Fort Worth",39
+"1995-03-05","Dallas/Fort Worth",52
+"1995-03-12","Dallas/Fort Worth",49
+"1995-03-19","Dallas/Fort Worth",34
+"1995-03-26","Dallas/Fort Worth",42
+"1995-04-02","Dallas/Fort Worth",34
+"1995-04-09","Dallas/Fort Worth",31
+"1995-04-16","Dallas/Fort Worth",30
+"1995-04-23","Dallas/Fort Worth",41
+"1995-04-30","Dallas/Fort Worth",35
+"1995-05-07","Dallas/Fort Worth",34
+"1995-05-14","Dallas/Fort Worth",29
+"1995-05-21","Dallas/Fort Worth",24
+"1995-05-28","Dallas/Fort Worth",40
+"1995-06-04","Dallas/Fort Worth",26
+"1995-06-11","Dallas/Fort Worth",32
+"1995-06-18","Dallas/Fort Worth",24
+"1995-06-25","Dallas/Fort Worth",24
+"1995-07-02","Dallas/Fort Worth",35
+"1995-07-09","Dallas/Fort Worth",17
+"1995-07-16","Dallas/Fort Worth",28
+"1995-07-23","Dallas/Fort Worth",30
+"1995-07-30","Dallas/Fort Worth",36
+"1995-08-06","Dallas/Fort Worth",23
+"1995-08-13","Dallas/Fort Worth",27
+"1995-08-20","Dallas/Fort Worth",26
+"1995-08-27","Dallas/Fort Worth",28
+"1995-09-03","Dallas/Fort Worth",30
+"1995-09-10","Dallas/Fort Worth",29
+"1995-09-17","Dallas/Fort Worth",26
+"1995-09-24","Dallas/Fort Worth",24
+"1995-10-01","Dallas/Fort Worth",22
+"1995-10-08","Dallas/Fort Worth",34
+"1995-10-15","Dallas/Fort Worth",23
+"1995-10-22","Dallas/Fort Worth",32
+"1995-10-29","Dallas/Fort Worth",32
+"1995-11-05","Dallas/Fort Worth",38
+"1995-11-12","Dallas/Fort Worth",28
+"1995-11-19","Dallas/Fort Worth",36
+"1995-11-26","Dallas/Fort Worth",28
+"1995-12-03","Dallas/Fort Worth",36
+"1995-12-10","Dallas/Fort Worth",40
+"1995-12-17","Dallas/Fort Worth",35
+"1995-12-24","Dallas/Fort Worth",43
+"1995-12-31","Dallas/Fort Worth",55
+"1996-01-07","Dallas/Fort Worth",68
+"1996-01-14","Dallas/Fort Worth",57
+"1996-01-21","Dallas/Fort Worth",51
+"1996-01-28","Dallas/Fort Worth",47
+"1996-02-04","Dallas/Fort Worth",47
+"1996-02-11","Dallas/Fort Worth",39
+"1996-02-18","Dallas/Fort Worth",39
+"1996-02-25","Dallas/Fort Worth",37
+"1996-03-03","Dallas/Fort Worth",40
+"1996-03-10","Dallas/Fort Worth",43
+"1996-03-17","Dallas/Fort Worth",43
+"1996-03-24","Dallas/Fort Worth",29
+"1996-03-31","Dallas/Fort Worth",57
+"1996-04-07","Dallas/Fort Worth",41
+"1996-04-14","Dallas/Fort Worth",42
+"1996-04-21","Dallas/Fort Worth",29
+"1996-04-28","Dallas/Fort Worth",36
+"1996-05-05","Dallas/Fort Worth",40
+"1996-05-12","Dallas/Fort Worth",27
+"1996-05-19","Dallas/Fort Worth",39
+"1996-05-26","Dallas/Fort Worth",28
+"1996-06-02","Dallas/Fort Worth",25
+"1996-06-09","Dallas/Fort Worth",35
+"1996-06-16","Dallas/Fort Worth",32
+"1996-06-23","Dallas/Fort Worth",21
+"1996-06-30","Dallas/Fort Worth",33
+"1996-07-07","Dallas/Fort Worth",33
+"1996-07-14","Dallas/Fort Worth",34
+"1996-07-21","Dallas/Fort Worth",27
+"1996-07-28","Dallas/Fort Worth",25
+"1996-08-04","Dallas/Fort Worth",20
+"1996-08-11","Dallas/Fort Worth",30
+"1996-08-18","Dallas/Fort Worth",29
+"1996-08-25","Dallas/Fort Worth",26
+"1996-09-01","Dallas/Fort Worth",24
+"1996-09-08","Dallas/Fort Worth",20
+"1996-09-15","Dallas/Fort Worth",26
+"1996-09-22","Dallas/Fort Worth",27
+"1996-09-29","Dallas/Fort Worth",25
+"1996-10-06","Dallas/Fort Worth",29
+"1996-10-13","Dallas/Fort Worth",33
+"1996-10-20","Dallas/Fort Worth",20
+"1996-10-27","Dallas/Fort Worth",25
+"1996-11-03","Dallas/Fort Worth",22
+"1996-11-10","Dallas/Fort Worth",31
+"1996-11-17","Dallas/Fort Worth",19
+"1996-11-24","Dallas/Fort Worth",31
+"1996-12-01","Dallas/Fort Worth",34
+"1996-12-08","Dallas/Fort Worth",44
+"1996-12-15","Dallas/Fort Worth",39
+"1996-12-22","Dallas/Fort Worth",31
+"1996-12-29","Dallas/Fort Worth",39
+"1997-01-05","Dallas/Fort Worth",50
+"1997-01-12","Dallas/Fort Worth",56
+"1997-01-19","Dallas/Fort Worth",62
+"1997-01-26","Dallas/Fort Worth",46
+"1997-02-02","Dallas/Fort Worth",57
+"1997-02-09","Dallas/Fort Worth",47
+"1997-02-16","Dallas/Fort Worth",50
+"1997-02-23","Dallas/Fort Worth",62
+"1997-03-02","Dallas/Fort Worth",36
+"1997-03-09","Dallas/Fort Worth",41
+"1997-03-16","Dallas/Fort Worth",50
+"1997-03-23","Dallas/Fort Worth",40
+"1997-03-30","Dallas/Fort Worth",35
+"1997-04-06","Dallas/Fort Worth",44
+"1997-04-13","Dallas/Fort Worth",36
+"1997-04-20","Dallas/Fort Worth",34
+"1997-04-27","Dallas/Fort Worth",36
+"1997-05-04","Dallas/Fort Worth",39
+"1997-05-11","Dallas/Fort Worth",27
+"1997-05-18","Dallas/Fort Worth",30
+"1997-05-25","Dallas/Fort Worth",31
+"1997-06-01","Dallas/Fort Worth",21
+"1997-06-08","Dallas/Fort Worth",37
+"1997-06-15","Dallas/Fort Worth",36
+"1997-06-22","Dallas/Fort Worth",23
+"1997-06-29","Dallas/Fort Worth",29
+"1997-07-06","Dallas/Fort Worth",26
+"1997-07-13","Dallas/Fort Worth",33
+"1997-07-20","Dallas/Fort Worth",37
+"1997-07-27","Dallas/Fort Worth",24
+"1997-08-03","Dallas/Fort Worth",24
+"1997-08-10","Dallas/Fort Worth",26
+"1997-08-17","Dallas/Fort Worth",33
+"1997-08-24","Dallas/Fort Worth",31
+"1997-08-31","Dallas/Fort Worth",24
+"1997-09-07","Dallas/Fort Worth",24
+"1997-09-14","Dallas/Fort Worth",34
+"1997-09-21","Dallas/Fort Worth",29
+"1997-09-28","Dallas/Fort Worth",23
+"1997-10-05","Dallas/Fort Worth",27
+"1997-10-12","Dallas/Fort Worth",24
+"1997-10-19","Dallas/Fort Worth",32
+"1997-10-26","Dallas/Fort Worth",38
+"1997-11-02","Dallas/Fort Worth",34
+"1997-11-09","Dallas/Fort Worth",25
+"1997-11-16","Dallas/Fort Worth",38
+"1997-11-23","Dallas/Fort Worth",44
+"1997-11-30","Dallas/Fort Worth",34
+"1997-12-07","Dallas/Fort Worth",36
+"1997-12-14","Dallas/Fort Worth",38
+"1997-12-21","Dallas/Fort Worth",38
+"1997-12-28","Dallas/Fort Worth",44
+"1998-01-04","Dallas/Fort Worth",53
+"1998-01-11","Dallas/Fort Worth",52
+"1998-01-18","Dallas/Fort Worth",49
+"1998-01-25","Dallas/Fort Worth",54
+"1998-02-01","Dallas/Fort Worth",60
+"1998-02-08","Dallas/Fort Worth",58
+"1998-02-15","Dallas/Fort Worth",60
+"1998-02-22","Dallas/Fort Worth",47
+"1998-03-01","Dallas/Fort Worth",42
+"1998-03-08","Dallas/Fort Worth",41
+"1998-03-15","Dallas/Fort Worth",38
+"1998-03-22","Dallas/Fort Worth",46
+"1998-03-29","Dallas/Fort Worth",41
+"1998-04-05","Dallas/Fort Worth",44
+"1998-04-12","Dallas/Fort Worth",34
+"1998-04-19","Dallas/Fort Worth",39
+"1998-04-26","Dallas/Fort Worth",43
+"1998-05-03","Dallas/Fort Worth",42
+"1998-05-10","Dallas/Fort Worth",42
+"1998-05-17","Dallas/Fort Worth",36
+"1998-05-24","Dallas/Fort Worth",34
+"1998-05-31","Dallas/Fort Worth",39
+"1998-06-07","Dallas/Fort Worth",23
+"1998-06-14","Dallas/Fort Worth",36
+"1998-06-21","Dallas/Fort Worth",30
+"1998-06-28","Dallas/Fort Worth",33
+"1998-07-05","Dallas/Fort Worth",25
+"1998-07-12","Dallas/Fort Worth",26
+"1998-07-19","Dallas/Fort Worth",26
+"1998-07-26","Dallas/Fort Worth",33
+"1998-08-02","Dallas/Fort Worth",31
+"1998-08-09","Dallas/Fort Worth",19
+"1998-08-16","Dallas/Fort Worth",22
+"1998-08-23","Dallas/Fort Worth",24
+"1998-08-30","Dallas/Fort Worth",26
+"1998-09-06","Dallas/Fort Worth",25
+"1998-09-13","Dallas/Fort Worth",32
+"1998-09-20","Dallas/Fort Worth",29
+"1998-09-27","Dallas/Fort Worth",26
+"1998-10-04","Dallas/Fort Worth",29
+"1998-10-11","Dallas/Fort Worth",25
+"1998-10-18","Dallas/Fort Worth",34
+"1998-10-25","Dallas/Fort Worth",28
+"1998-11-01","Dallas/Fort Worth",46
+"1998-11-08","Dallas/Fort Worth",25
+"1998-11-15","Dallas/Fort Worth",33
+"1998-11-22","Dallas/Fort Worth",31
+"1998-11-29","Dallas/Fort Worth",33
+"1998-12-06","Dallas/Fort Worth",33
+"1998-12-13","Dallas/Fort Worth",44
+"1998-12-20","Dallas/Fort Worth",36
+"1998-12-27","Dallas/Fort Worth",39
+"1999-01-03","Dallas/Fort Worth",45
+"1999-01-10","Dallas/Fort Worth",38
+"1999-01-17","Dallas/Fort Worth",42
+"1999-01-24","Dallas/Fort Worth",40
+"1999-01-31","Dallas/Fort Worth",58
+"1999-02-07","Dallas/Fort Worth",60
+"1999-02-14","Dallas/Fort Worth",53
+"1999-02-21","Dallas/Fort Worth",71
+"1999-02-28","Dallas/Fort Worth",70
+"1999-03-07","Dallas/Fort Worth",63
+"1999-03-14","Dallas/Fort Worth",60
+"1999-03-21","Dallas/Fort Worth",53
+"1999-03-28","Dallas/Fort Worth",48
+"1999-04-04","Dallas/Fort Worth",45
+"1999-04-11","Dallas/Fort Worth",44
+"1999-04-18","Dallas/Fort Worth",31
+"1999-04-25","Dallas/Fort Worth",26
+"1999-05-02","Dallas/Fort Worth",34
+"1999-05-09","Dallas/Fort Worth",33
+"1999-05-16","Dallas/Fort Worth",32
+"1999-05-23","Dallas/Fort Worth",31
+"1999-05-30","Dallas/Fort Worth",32
+"1999-06-06","Dallas/Fort Worth",44
+"1999-06-13","Dallas/Fort Worth",32
+"1999-06-20","Dallas/Fort Worth",25
+"1999-06-27","Dallas/Fort Worth",40
+"1999-07-04","Dallas/Fort Worth",26
+"1999-07-11","Dallas/Fort Worth",30
+"1999-07-18","Dallas/Fort Worth",26
+"1999-07-25","Dallas/Fort Worth",25
+"1999-08-01","Dallas/Fort Worth",26
+"1999-08-08","Dallas/Fort Worth",33
+"1999-08-15","Dallas/Fort Worth",38
+"1999-08-22","Dallas/Fort Worth",28
+"1999-08-29","Dallas/Fort Worth",34
+"1999-09-05","Dallas/Fort Worth",27
+"1999-09-12","Dallas/Fort Worth",30
+"1999-09-19","Dallas/Fort Worth",28
+"1999-09-26","Dallas/Fort Worth",24
+"1999-10-03","Dallas/Fort Worth",19
+"1999-10-10","Dallas/Fort Worth",28
+"1999-10-17","Dallas/Fort Worth",24
+"1999-10-24","Dallas/Fort Worth",41
+"1999-10-31","Dallas/Fort Worth",32
+"1999-11-07","Dallas/Fort Worth",27
+"1999-11-14","Dallas/Fort Worth",32
+"1999-11-21","Dallas/Fort Worth",45
+"1999-11-28","Dallas/Fort Worth",32
+"1999-12-05","Dallas/Fort Worth",38
+"1999-12-12","Dallas/Fort Worth",44
+"1999-12-19","Dallas/Fort Worth",37
+"1999-12-26","Dallas/Fort Worth",33
+"2000-01-02","Dallas/Fort Worth",64
+"2000-01-09","Dallas/Fort Worth",72
+"2000-01-16","Dallas/Fort Worth",80
+"2000-01-23","Dallas/Fort Worth",65
+"2000-01-30","Dallas/Fort Worth",64
+"2000-02-06","Dallas/Fort Worth",42
+"2000-02-13","Dallas/Fort Worth",47
+"2000-02-20","Dallas/Fort Worth",52
+"2000-02-27","Dallas/Fort Worth",45
+"2000-03-05","Dallas/Fort Worth",35
+"2000-03-12","Dallas/Fort Worth",32
+"2000-03-19","Dallas/Fort Worth",32
+"2000-03-26","Dallas/Fort Worth",36
+"2000-04-02","Dallas/Fort Worth",42
+"2000-04-09","Dallas/Fort Worth",31
+"2000-04-16","Dallas/Fort Worth",30
+"2000-04-23","Dallas/Fort Worth",28
+"2000-04-30","Dallas/Fort Worth",38
+"2000-05-07","Dallas/Fort Worth",21
+"2000-05-14","Dallas/Fort Worth",36
+"2000-05-21","Dallas/Fort Worth",43
+"2000-05-28","Dallas/Fort Worth",28
+"2000-06-04","Dallas/Fort Worth",30
+"2000-06-11","Dallas/Fort Worth",30
+"2000-06-18","Dallas/Fort Worth",33
+"2000-06-25","Dallas/Fort Worth",38
+"2000-07-02","Dallas/Fort Worth",27
+"2000-07-09","Dallas/Fort Worth",30
+"2000-07-16","Dallas/Fort Worth",36
+"2000-07-23","Dallas/Fort Worth",29
+"2000-07-30","Dallas/Fort Worth",27
+"2000-08-06","Dallas/Fort Worth",25
+"2000-08-13","Dallas/Fort Worth",30
+"2000-08-20","Dallas/Fort Worth",31
+"2000-08-27","Dallas/Fort Worth",21
+"2000-09-03","Dallas/Fort Worth",36
+"2000-09-10","Dallas/Fort Worth",34
+"2000-09-17","Dallas/Fort Worth",16
+"2000-09-24","Dallas/Fort Worth",31
+"2000-10-01","Dallas/Fort Worth",28
+"2000-10-08","Dallas/Fort Worth",31
+"2000-10-15","Dallas/Fort Worth",31
+"2000-10-22","Dallas/Fort Worth",41
+"2000-10-29","Dallas/Fort Worth",34
+"2000-11-05","Dallas/Fort Worth",25
+"2000-11-12","Dallas/Fort Worth",27
+"2000-11-19","Dallas/Fort Worth",13
+"2000-11-26","Dallas/Fort Worth",38
+"2000-12-03","Dallas/Fort Worth",34
+"2000-12-10","Dallas/Fort Worth",48
+"2000-12-17","Dallas/Fort Worth",44
+"2000-12-24","Dallas/Fort Worth",43
+"2000-12-31","Dallas/Fort Worth",45
+"1987-01-04","Houston",10
+"1987-01-11","Houston",26
+"1987-01-18","Houston",35
+"1987-01-25","Houston",22
+"1987-02-01","Houston",29
+"1987-02-08","Houston",26
+"1987-02-15","Houston",16
+"1987-02-22","Houston",15
+"1987-03-01","Houston",12
+"1987-03-08","Houston",24
+"1987-03-15","Houston",23
+"1987-03-22","Houston",17
+"1987-03-29","Houston",28
+"1987-04-05","Houston",14
+"1987-04-12","Houston",20
+"1987-04-19","Houston",12
+"1987-04-26","Houston",17
+"1987-05-03","Houston",11
+"1987-05-10","Houston",21
+"1987-05-17","Houston",12
+"1987-05-24","Houston",20
+"1987-05-31","Houston",11
+"1987-06-07","Houston",14
+"1987-06-14","Houston",11
+"1987-06-21","Houston",17
+"1987-06-28","Houston",12
+"1987-07-05","Houston",20
+"1987-07-12","Houston",11
+"1987-07-19","Houston",11
+"1987-07-26","Houston",12
+"1987-08-02","Houston",17
+"1987-08-09","Houston",16
+"1987-08-16","Houston",13
+"1987-08-23","Houston",16
+"1987-08-30","Houston",22
+"1987-09-06","Houston",15
+"1987-09-13","Houston",16
+"1987-09-20","Houston",11
+"1987-09-27","Houston",24
+"1987-10-04","Houston",17
+"1987-10-11","Houston",20
+"1987-10-18","Houston",9
+"1987-10-25","Houston",11
+"1987-11-01","Houston",14
+"1987-11-08","Houston",21
+"1987-11-15","Houston",9
+"1987-11-22","Houston",15
+"1987-11-29","Houston",13
+"1987-12-06","Houston",23
+"1987-12-13","Houston",16
+"1987-12-20","Houston",12
+"1987-12-27","Houston",12
+"1988-01-03","Houston",19
+"1988-01-10","Houston",22
+"1988-01-17","Houston",25
+"1988-01-24","Houston",30
+"1988-01-31","Houston",31
+"1988-02-07","Houston",41
+"1988-02-14","Houston",26
+"1988-02-21","Houston",31
+"1988-02-28","Houston",27
+"1988-03-06","Houston",25
+"1988-03-13","Houston",21
+"1988-03-20","Houston",20
+"1988-03-27","Houston",24
+"1988-04-03","Houston",21
+"1988-04-10","Houston",19
+"1988-04-17","Houston",16
+"1988-04-24","Houston",16
+"1988-05-01","Houston",24
+"1988-05-08","Houston",16
+"1988-05-15","Houston",11
+"1988-05-22","Houston",13
+"1988-05-29","Houston",26
+"1988-06-05","Houston",18
+"1988-06-12","Houston",15
+"1988-06-19","Houston",21
+"1988-06-26","Houston",14
+"1988-07-03","Houston",17
+"1988-07-10","Houston",16
+"1988-07-17","Houston",12
+"1988-07-24","Houston",15
+"1988-07-31","Houston",21
+"1988-08-07","Houston",23
+"1988-08-14","Houston",15
+"1988-08-21","Houston",17
+"1988-08-28","Houston",15
+"1988-09-04","Houston",12
+"1988-09-11","Houston",11
+"1988-09-18","Houston",15
+"1988-09-25","Houston",14
+"1988-10-02","Houston",11
+"1988-10-09","Houston",18
+"1988-10-16","Houston",17
+"1988-10-23","Houston",24
+"1988-10-30","Houston",14
+"1988-11-06","Houston",20
+"1988-11-13","Houston",19
+"1988-11-20","Houston",16
+"1988-11-27","Houston",16
+"1988-12-04","Houston",15
+"1988-12-11","Houston",10
+"1988-12-18","Houston",18
+"1988-12-25","Houston",28
+"1989-01-01","Houston",26
+"1989-01-08","Houston",22
+"1989-01-15","Houston",30
+"1989-01-22","Houston",24
+"1989-01-29","Houston",22
+"1989-02-05","Houston",30
+"1989-02-12","Houston",28
+"1989-02-19","Houston",38
+"1989-02-26","Houston",19
+"1989-03-05","Houston",21
+"1989-03-12","Houston",25
+"1989-03-19","Houston",16
+"1989-03-26","Houston",21
+"1989-04-02","Houston",18
+"1989-04-09","Houston",19
+"1989-04-16","Houston",15
+"1989-04-23","Houston",13
+"1989-04-30","Houston",19
+"1989-05-07","Houston",22
+"1989-05-14","Houston",17
+"1989-05-21","Houston",18
+"1989-05-28","Houston",20
+"1989-06-04","Houston",18
+"1989-06-11","Houston",10
+"1989-06-18","Houston",7
+"1989-06-25","Houston",14
+"1989-07-02","Houston",12
+"1989-07-09","Houston",16
+"1989-07-16","Houston",15
+"1989-07-23","Houston",15
+"1989-07-30","Houston",18
+"1989-08-06","Houston",11
+"1989-08-13","Houston",13
+"1989-08-20","Houston",14
+"1989-08-27","Houston",17
+"1989-09-03","Houston",12
+"1989-09-10","Houston",17
+"1989-09-17","Houston",8
+"1989-09-24","Houston",15
+"1989-10-01","Houston",14
+"1989-10-08","Houston",20
+"1989-10-15","Houston",16
+"1989-10-22","Houston",14
+"1989-10-29","Houston",15
+"1989-11-05","Houston",19
+"1989-11-12","Houston",15
+"1989-11-19","Houston",18
+"1989-11-26","Houston",18
+"1989-12-03","Houston",16
+"1989-12-10","Houston",26
+"1989-12-17","Houston",31
+"1989-12-24","Houston",33
+"1989-12-31","Houston",32
+"1990-01-07","Houston",41
+"1990-01-14","Houston",35
+"1990-01-21","Houston",26
+"1990-01-28","Houston",26
+"1990-02-04","Houston",29
+"1990-02-11","Houston",26
+"1990-02-18","Houston",29
+"1990-02-25","Houston",21
+"1990-03-04","Houston",14
+"1990-03-11","Houston",18
+"1990-03-18","Houston",16
+"1990-03-25","Houston",20
+"1990-04-01","Houston",18
+"1990-04-08","Houston",29
+"1990-04-15","Houston",26
+"1990-04-22","Houston",20
+"1990-04-29","Houston",14
+"1990-05-06","Houston",17
+"1990-05-13","Houston",20
+"1990-05-20","Houston",14
+"1990-05-27","Houston",15
+"1990-06-03","Houston",25
+"1990-06-10","Houston",26
+"1990-06-17","Houston",11
+"1990-06-24","Houston",15
+"1990-07-01","Houston",22
+"1990-07-08","Houston",17
+"1990-07-15","Houston",15
+"1990-07-22","Houston",18
+"1990-07-29","Houston",17
+"1990-08-05","Houston",15
+"1990-08-12","Houston",22
+"1990-08-19","Houston",19
+"1990-08-26","Houston",16
+"1990-09-02","Houston",13
+"1990-09-09","Houston",14
+"1990-09-16","Houston",19
+"1990-09-23","Houston",17
+"1990-09-30","Houston",19
+"1990-10-07","Houston",15
+"1990-10-14","Houston",15
+"1990-10-21","Houston",19
+"1990-10-28","Houston",13
+"1990-11-04","Houston",11
+"1990-11-11","Houston",17
+"1990-11-18","Houston",21
+"1990-11-25","Houston",17
+"1990-12-02","Houston",20
+"1990-12-09","Houston",23
+"1990-12-16","Houston",25
+"1990-12-23","Houston",19
+"1990-12-30","Houston",23
+"1991-01-06","Houston",18
+"1991-01-13","Houston",27
+"1991-01-20","Houston",22
+"1991-01-27","Houston",26
+"1991-02-03","Houston",27
+"1991-02-10","Houston",26
+"1991-02-17","Houston",18
+"1991-02-24","Houston",17
+"1991-03-03","Houston",25
+"1991-03-10","Houston",16
+"1991-03-17","Houston",14
+"1991-03-24","Houston",19
+"1991-03-31","Houston",14
+"1991-04-07","Houston",18
+"1991-04-14","Houston",24
+"1991-04-21","Houston",18
+"1991-04-28","Houston",24
+"1991-05-05","Houston",19
+"1991-05-12","Houston",22
+"1991-05-19","Houston",15
+"1991-05-26","Houston",22
+"1991-06-02","Houston",21
+"1991-06-09","Houston",9
+"1991-06-16","Houston",23
+"1991-06-23","Houston",17
+"1991-06-30","Houston",11
+"1991-07-07","Houston",8
+"1991-07-14","Houston",21
+"1991-07-21","Houston",21
+"1991-07-28","Houston",19
+"1991-08-04","Houston",18
+"1991-08-11","Houston",16
+"1991-08-18","Houston",15
+"1991-08-25","Houston",20
+"1991-09-01","Houston",22
+"1991-09-08","Houston",21
+"1991-09-15","Houston",17
+"1991-09-22","Houston",17
+"1991-09-29","Houston",18
+"1991-10-06","Houston",11
+"1991-10-13","Houston",20
+"1991-10-20","Houston",15
+"1991-10-27","Houston",17
+"1991-11-03","Houston",17
+"1991-11-10","Houston",23
+"1991-11-17","Houston",17
+"1991-11-24","Houston",27
+"1991-12-01","Houston",26
+"1991-12-08","Houston",30
+"1991-12-15","Houston",22
+"1991-12-22","Houston",26
+"1991-12-29","Houston",21
+"1992-01-05","Houston",28
+"1992-01-12","Houston",27
+"1992-01-19","Houston",27
+"1992-01-26","Houston",22
+"1992-02-02","Houston",20
+"1992-02-09","Houston",20
+"1992-02-16","Houston",24
+"1992-02-23","Houston",25
+"1992-03-01","Houston",19
+"1992-03-08","Houston",15
+"1992-03-15","Houston",18
+"1992-03-22","Houston",22
+"1992-03-29","Houston",17
+"1992-04-05","Houston",19
+"1992-04-12","Houston",29
+"1992-04-19","Houston",22
+"1992-04-26","Houston",19
+"1992-05-03","Houston",17
+"1992-05-10","Houston",25
+"1992-05-17","Houston",21
+"1992-05-24","Houston",22
+"1992-05-31","Houston",19
+"1992-06-07","Houston",21
+"1992-06-14","Houston",19
+"1992-06-21","Houston",15
+"1992-06-28","Houston",17
+"1992-07-05","Houston",18
+"1992-07-12","Houston",13
+"1992-07-19","Houston",14
+"1992-07-26","Houston",23
+"1992-08-02","Houston",10
+"1992-08-09","Houston",13
+"1992-08-16","Houston",14
+"1992-08-23","Houston",12
+"1992-08-30","Houston",17
+"1992-09-06","Houston",12
+"1992-09-13","Houston",12
+"1992-09-20","Houston",14
+"1992-09-27","Houston",20
+"1992-10-04","Houston",23
+"1992-10-11","Houston",16
+"1992-10-18","Houston",26
+"1992-10-25","Houston",11
+"1992-11-01","Houston",13
+"1992-11-08","Houston",20
+"1992-11-15","Houston",13
+"1992-11-22","Houston",13
+"1992-11-29","Houston",16
+"1992-12-06","Houston",24
+"1992-12-13","Houston",23
+"1992-12-20","Houston",15
+"1992-12-27","Houston",24
+"1993-01-03","Houston",23
+"1993-01-10","Houston",28
+"1993-01-17","Houston",30
+"1993-01-24","Houston",24
+"1993-01-31","Houston",26
+"1993-02-07","Houston",18
+"1993-02-14","Houston",24
+"1993-02-21","Houston",17
+"1993-02-28","Houston",19
+"1993-03-07","Houston",19
+"1993-03-14","Houston",27
+"1993-03-21","Houston",23
+"1993-03-28","Houston",20
+"1993-04-04","Houston",24
+"1993-04-11","Houston",19
+"1993-04-18","Houston",29
+"1993-04-25","Houston",27
+"1993-05-02","Houston",16
+"1993-05-09","Houston",24
+"1993-05-16","Houston",19
+"1993-05-23","Houston",20
+"1993-05-30","Houston",12
+"1993-06-06","Houston",20
+"1993-06-13","Houston",14
+"1993-06-20","Houston",14
+"1993-06-27","Houston",15
+"1993-07-04","Houston",19
+"1993-07-11","Houston",15
+"1993-07-18","Houston",11
+"1993-07-25","Houston",12
+"1993-08-01","Houston",18
+"1993-08-08","Houston",25
+"1993-08-15","Houston",17
+"1993-08-22","Houston",14
+"1993-08-29","Houston",16
+"1993-09-05","Houston",21
+"1993-09-12","Houston",16
+"1993-09-19","Houston",16
+"1993-09-26","Houston",18
+"1993-10-03","Houston",18
+"1993-10-10","Houston",20
+"1993-10-17","Houston",12
+"1993-10-24","Houston",20
+"1993-10-31","Houston",22
+"1993-11-07","Houston",14
+"1993-11-14","Houston",19
+"1993-11-21","Houston",26
+"1993-11-28","Houston",22
+"1993-12-05","Houston",21
+"1993-12-12","Houston",16
+"1993-12-19","Houston",26
+"1993-12-26","Houston",13
+"1994-01-02","Houston",43
+"1994-01-09","Houston",41
+"1994-01-16","Houston",27
+"1994-01-23","Houston",22
+"1994-01-30","Houston",34
+"1994-02-06","Houston",37
+"1994-02-13","Houston",26
+"1994-02-20","Houston",18
+"1994-02-27","Houston",21
+"1994-03-06","Houston",22
+"1994-03-13","Houston",20
+"1994-03-20","Houston",16
+"1994-03-27","Houston",33
+"1994-04-03","Houston",19
+"1994-04-10","Houston",20
+"1994-04-17","Houston",20
+"1994-04-24","Houston",22
+"1994-05-01","Houston",9
+"1994-05-08","Houston",22
+"1994-05-15","Houston",14
+"1994-05-22","Houston",20
+"1994-05-29","Houston",21
+"1994-06-05","Houston",17
+"1994-06-12","Houston",16
+"1994-06-19","Houston",19
+"1994-06-26","Houston",23
+"1994-07-03","Houston",29
+"1994-07-10","Houston",25
+"1994-07-17","Houston",19
+"1994-07-24","Houston",16
+"1994-07-31","Houston",15
+"1994-08-07","Houston",19
+"1994-08-14","Houston",18
+"1994-08-21","Houston",18
+"1994-08-28","Houston",14
+"1994-09-04","Houston",15
+"1994-09-11","Houston",15
+"1994-09-18","Houston",15
+"1994-09-25","Houston",13
+"1994-10-02","Houston",18
+"1994-10-09","Houston",15
+"1994-10-16","Houston",19
+"1994-10-23","Houston",20
+"1994-10-30","Houston",25
+"1994-11-06","Houston",17
+"1994-11-13","Houston",22
+"1994-11-20","Houston",11
+"1994-11-27","Houston",24
+"1994-12-04","Houston",24
+"1994-12-11","Houston",22
+"1994-12-18","Houston",25
+"1994-12-25","Houston",19
+"1995-01-01","Houston",26
+"1995-01-08","Houston",32
+"1995-01-15","Houston",25
+"1995-01-22","Houston",22
+"1995-01-29","Houston",34
+"1995-02-05","Houston",24
+"1995-02-12","Houston",20
+"1995-02-19","Houston",28
+"1995-02-26","Houston",16
+"1995-03-05","Houston",30
+"1995-03-12","Houston",26
+"1995-03-19","Houston",25
+"1995-03-26","Houston",27
+"1995-04-02","Houston",28
+"1995-04-09","Houston",23
+"1995-04-16","Houston",18
+"1995-04-23","Houston",20
+"1995-04-30","Houston",26
+"1995-05-07","Houston",21
+"1995-05-14","Houston",20
+"1995-05-21","Houston",20
+"1995-05-28","Houston",22
+"1995-06-04","Houston",22
+"1995-06-11","Houston",15
+"1995-06-18","Houston",21
+"1995-06-25","Houston",14
+"1995-07-02","Houston",16
+"1995-07-09","Houston",17
+"1995-07-16","Houston",20
+"1995-07-23","Houston",14
+"1995-07-30","Houston",16
+"1995-08-06","Houston",14
+"1995-08-13","Houston",17
+"1995-08-20","Houston",20
+"1995-08-27","Houston",12
+"1995-09-03","Houston",18
+"1995-09-10","Houston",25
+"1995-09-17","Houston",11
+"1995-09-24","Houston",16
+"1995-10-01","Houston",20
+"1995-10-08","Houston",15
+"1995-10-15","Houston",15
+"1995-10-22","Houston",15
+"1995-10-29","Houston",21
+"1995-11-05","Houston",20
+"1995-11-12","Houston",27
+"1995-11-19","Houston",25
+"1995-11-26","Houston",24
+"1995-12-03","Houston",23
+"1995-12-10","Houston",15
+"1995-12-17","Houston",26
+"1995-12-24","Houston",20
+"1995-12-31","Houston",33
+"1996-01-07","Houston",33
+"1996-01-14","Houston",38
+"1996-01-21","Houston",30
+"1996-01-28","Houston",34
+"1996-02-04","Houston",30
+"1996-02-11","Houston",22
+"1996-02-18","Houston",31
+"1996-02-25","Houston",18
+"1996-03-03","Houston",24
+"1996-03-10","Houston",19
+"1996-03-17","Houston",24
+"1996-03-24","Houston",26
+"1996-03-31","Houston",29
+"1996-04-07","Houston",22
+"1996-04-14","Houston",24
+"1996-04-21","Houston",25
+"1996-04-28","Houston",23
+"1996-05-05","Houston",15
+"1996-05-12","Houston",34
+"1996-05-19","Houston",13
+"1996-05-26","Houston",18
+"1996-06-02","Houston",20
+"1996-06-09","Houston",16
+"1996-06-16","Houston",20
+"1996-06-23","Houston",19
+"1996-06-30","Houston",20
+"1996-07-07","Houston",14
+"1996-07-14","Houston",17
+"1996-07-21","Houston",13
+"1996-07-28","Houston",18
+"1996-08-04","Houston",12
+"1996-08-11","Houston",20
+"1996-08-18","Houston",15
+"1996-08-25","Houston",14
+"1996-09-01","Houston",13
+"1996-09-08","Houston",16
+"1996-09-15","Houston",19
+"1996-09-22","Houston",18
+"1996-09-29","Houston",21
+"1996-10-06","Houston",18
+"1996-10-13","Houston",28
+"1996-10-20","Houston",18
+"1996-10-27","Houston",15
+"1996-11-03","Houston",23
+"1996-11-10","Houston",18
+"1996-11-17","Houston",18
+"1996-11-24","Houston",18
+"1996-12-01","Houston",28
+"1996-12-08","Houston",16
+"1996-12-15","Houston",27
+"1996-12-22","Houston",32
+"1996-12-29","Houston",20
+"1997-01-05","Houston",29
+"1997-01-12","Houston",32
+"1997-01-19","Houston",40
+"1997-01-26","Houston",30
+"1997-02-02","Houston",26
+"1997-02-09","Houston",24
+"1997-02-16","Houston",27
+"1997-02-23","Houston",28
+"1997-03-02","Houston",24
+"1997-03-09","Houston",22
+"1997-03-16","Houston",33
+"1997-03-23","Houston",20
+"1997-03-30","Houston",19
+"1997-04-06","Houston",29
+"1997-04-13","Houston",27
+"1997-04-20","Houston",32
+"1997-04-27","Houston",29
+"1997-05-04","Houston",21
+"1997-05-11","Houston",28
+"1997-05-18","Houston",28
+"1997-05-25","Houston",28
+"1997-06-01","Houston",22
+"1997-06-08","Houston",28
+"1997-06-15","Houston",23
+"1997-06-22","Houston",20
+"1997-06-29","Houston",24
+"1997-07-06","Houston",20
+"1997-07-13","Houston",17
+"1997-07-20","Houston",16
+"1997-07-27","Houston",19
+"1997-08-03","Houston",17
+"1997-08-10","Houston",14
+"1997-08-17","Houston",28
+"1997-08-24","Houston",15
+"1997-08-31","Houston",17
+"1997-09-07","Houston",21
+"1997-09-14","Houston",13
+"1997-09-21","Houston",11
+"1997-09-28","Houston",22
+"1997-10-05","Houston",20
+"1997-10-12","Houston",13
+"1997-10-19","Houston",15
+"1997-10-26","Houston",18
+"1997-11-02","Houston",22
+"1997-11-09","Houston",21
+"1997-11-16","Houston",24
+"1997-11-23","Houston",21
+"1997-11-30","Houston",27
+"1997-12-07","Houston",21
+"1997-12-14","Houston",27
+"1997-12-21","Houston",38
+"1997-12-28","Houston",33
+"1998-01-04","Houston",33
+"1998-01-11","Houston",35
+"1998-01-18","Houston",34
+"1998-01-25","Houston",37
+"1998-02-01","Houston",34
+"1998-02-08","Houston",25
+"1998-02-15","Houston",22
+"1998-02-22","Houston",20
+"1998-03-01","Houston",16
+"1998-03-08","Houston",18
+"1998-03-15","Houston",31
+"1998-03-22","Houston",25
+"1998-03-29","Houston",20
+"1998-04-05","Houston",32
+"1998-04-12","Houston",24
+"1998-04-19","Houston",19
+"1998-04-26","Houston",19
+"1998-05-03","Houston",27
+"1998-05-10","Houston",14
+"1998-05-17","Houston",36
+"1998-05-24","Houston",21
+"1998-05-31","Houston",23
+"1998-06-07","Houston",27
+"1998-06-14","Houston",12
+"1998-06-21","Houston",18
+"1998-06-28","Houston",16
+"1998-07-05","Houston",15
+"1998-07-12","Houston",16
+"1998-07-19","Houston",15
+"1998-07-26","Houston",15
+"1998-08-02","Houston",22
+"1998-08-09","Houston",26
+"1998-08-16","Houston",18
+"1998-08-23","Houston",21
+"1998-08-30","Houston",26
+"1998-09-06","Houston",19
+"1998-09-13","Houston",20
+"1998-09-20","Houston",17
+"1998-09-27","Houston",20
+"1998-10-04","Houston",27
+"1998-10-11","Houston",19
+"1998-10-18","Houston",19
+"1998-10-25","Houston",26
+"1998-11-01","Houston",25
+"1998-11-08","Houston",19
+"1998-11-15","Houston",22
+"1998-11-22","Houston",14
+"1998-11-29","Houston",23
+"1998-12-06","Houston",27
+"1998-12-13","Houston",22
+"1998-12-20","Houston",32
+"1998-12-27","Houston",26
+"1999-01-03","Houston",27
+"1999-01-10","Houston",27
+"1999-01-17","Houston",29
+"1999-01-24","Houston",31
+"1999-01-31","Houston",30
+"1999-02-07","Houston",25
+"1999-02-14","Houston",27
+"1999-02-21","Houston",32
+"1999-02-28","Houston",28
+"1999-03-07","Houston",36
+"1999-03-14","Houston",28
+"1999-03-21","Houston",20
+"1999-03-28","Houston",27
+"1999-04-04","Houston",28
+"1999-04-11","Houston",29
+"1999-04-18","Houston",22
+"1999-04-25","Houston",36
+"1999-05-02","Houston",27
+"1999-05-09","Houston",25
+"1999-05-16","Houston",20
+"1999-05-23","Houston",24
+"1999-05-30","Houston",18
+"1999-06-06","Houston",23
+"1999-06-13","Houston",19
+"1999-06-20","Houston",14
+"1999-06-27","Houston",18
+"1999-07-04","Houston",12
+"1999-07-11","Houston",14
+"1999-07-18","Houston",16
+"1999-07-25","Houston",14
+"1999-08-01","Houston",18
+"1999-08-08","Houston",20
+"1999-08-15","Houston",23
+"1999-08-22","Houston",12
+"1999-08-29","Houston",13
+"1999-09-05","Houston",8
+"1999-09-12","Houston",22
+"1999-09-19","Houston",17
+"1999-09-26","Houston",15
+"1999-10-03","Houston",18
+"1999-10-10","Houston",22
+"1999-10-17","Houston",17
+"1999-10-24","Houston",17
+"1999-10-31","Houston",17
+"1999-11-07","Houston",23
+"1999-11-14","Houston",14
+"1999-11-21","Houston",18
+"1999-11-28","Houston",22
+"1999-12-05","Houston",20
+"1999-12-12","Houston",22
+"1999-12-19","Houston",23
+"1999-12-26","Houston",32
+"2000-01-02","Houston",47
+"2000-01-09","Houston",41
+"2000-01-16","Houston",34
+"2000-01-23","Houston",39
+"2000-01-30","Houston",19
+"2000-02-06","Houston",32
+"2000-02-13","Houston",31
+"2000-02-20","Houston",23
+"2000-02-27","Houston",26
+"2000-03-05","Houston",25
+"2000-03-12","Houston",21
+"2000-03-19","Houston",17
+"2000-03-26","Houston",12
+"2000-04-02","Houston",24
+"2000-04-09","Houston",19
+"2000-04-16","Houston",9
+"2000-04-23","Houston",23
+"2000-04-30","Houston",19
+"2000-05-07","Houston",21
+"2000-05-14","Houston",24
+"2000-05-21","Houston",24
+"2000-05-28","Houston",24
+"2000-06-04","Houston",26
+"2000-06-11","Houston",24
+"2000-06-18","Houston",22
+"2000-06-25","Houston",18
+"2000-07-02","Houston",12
+"2000-07-09","Houston",15
+"2000-07-16","Houston",14
+"2000-07-23","Houston",15
+"2000-07-30","Houston",20
+"2000-08-06","Houston",18
+"2000-08-13","Houston",14
+"2000-08-20","Houston",15
+"2000-08-27","Houston",18
+"2000-09-03","Houston",19
+"2000-09-10","Houston",21
+"2000-09-17","Houston",16
+"2000-09-24","Houston",28
+"2000-10-01","Houston",14
+"2000-10-08","Houston",19
+"2000-10-15","Houston",20
+"2000-10-22","Houston",19
+"2000-10-29","Houston",21
+"2000-11-05","Houston",21
+"2000-11-12","Houston",16
+"2000-11-19","Houston",26
+"2000-11-26","Houston",20
+"2000-12-03","Houston",27
+"2000-12-10","Houston",28
+"2000-12-17","Houston",16
+"2000-12-24","Houston",24
+"2000-12-31","Houston",26
