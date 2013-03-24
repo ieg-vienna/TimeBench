@@ -167,7 +167,8 @@ public class DemoEnvironmentFactory {
                         JRangeSlider.HORIZONTAL,
                         JRangeSlider.LEFTRIGHT_TOPBOTTOM));
             }
-            south.add(new TimeScaleHeader(rangeAdapter.getFullScale()));
+            // TODO bug: the overview time scale shows a twice as long period  
+//            south.add(new TimeScaleHeader(rangeAdapter.getFullScale()));
         } else {
             TimeScaleStatusBar statusBar = new TimeScaleStatusBar(timeScale);
             // Mac-Workaround: GrowBox hides Label
