@@ -7,6 +7,7 @@ import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.LineRenderer;
 
 import java.awt.BasicStroke;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 
@@ -26,13 +27,13 @@ import prefuse.action.assignment.ShapeAction;
 import prefuse.action.assignment.StrokeAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
+import prefuse.controls.ControlAdapter;
 import prefuse.controls.ToolTipControl;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.io.DataIOException;
-import prefuse.data.query.NumberRangeModel;
 import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.ShapeRenderer;
@@ -42,6 +43,9 @@ import prefuse.visual.VisualTable;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
 import prefuse.visual.sort.ItemSorter;
+import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
+import timeBench.action.analytical.IndexingAction;
+import timeBench.action.analytical.TemporalDataIndexingAction;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
@@ -72,14 +76,15 @@ import timeBench.ui.TimeAxisDisplay;
  * 
  * @author Rind
  */
-public class MultipleLinePlotDemo {
+public class IndexingDemo {
 
-    private static final String FILE_DATA = "data/nmmaps-resp-5weekly-rows.csv";
-    // private static final String FILE_SPEC = "data/nmmaps-resp-spec.xml";
+    private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
+    private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month.toInt();
 
-    private static final String COL_DATA = "resp";
-    private static final String COL_CITY = "city";
+    private static final String COL_DATA = "value";
+    private static final String COL_CITY = "category";
     private static final String COL_LABEL = "label";
+    private static final String COL_INDEXED = "indexed";
 
     private static final String GROUP_DATA = "data";
     private static final String GROUP_AXIS_LABELS = "ylab";
@@ -108,14 +113,18 @@ public class MultipleLinePlotDemo {
         Calendar calendar = CalendarManagerFactory.getSingleton(
                 CalendarManagers.JavaDate).getDefaultCalendar();
         TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-                new Granularity(calendar,
-                        JavaDateCalendarManager.Granularities.Week.toInt(),
+                new Granularity(calendar, GRANULARITY_ID,
                         JavaDateCalendarManager.Granularities.Top.toInt()));
-        TemporalDataset tmpds = reader.readData(FILE_DATA);
+        TemporalDataset tmpdsOrig = reader.readData(FILE_DATA);
 
-        DataHelper.printTable(System.out, tmpds.getNodeTable());
-        DataHelper.printTable(System.out, tmpds.getTemporalElements()
+        DataHelper.printMetadata(System.out, tmpdsOrig.getNodeTable());
+        DataHelper.printMetadata(System.out, tmpdsOrig.getTemporalElements()
                 .getNodeTable());
+        
+        ColumnToRowsTemporalDataTransformation transform = new ColumnToRowsTemporalDataTransformation();
+        TemporalDataset tmpds = transform.toRows(tmpdsOrig);
+        
+        DataHelper.printMetadata(System.out, tmpds.getNodeTable());
 
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
@@ -128,6 +137,8 @@ public class MultipleLinePlotDemo {
         VisualTable vt = vis.addTable(GROUP_DATA,
                 tmpds.getTemporalObjectTable());
         vt.addColumn(COL_LABEL, new LabelExpression());
+        // add a column that will store indexed values
+        vt.addColumn(COL_INDEXED, double.class);
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -156,12 +167,14 @@ public class MultipleLinePlotDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
+        IndexingAction indexing = new TemporalDataIndexingAction(GROUP_DATA, COL_DATA, COL_INDEXED, COL_CITY);
 
-        AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_DATA,
+        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
+        
+        AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_INDEXED,
                 Constants.Y_AXIS, VisiblePredicate.TRUE);
         // set visible value range to 0..100
-        y_axis.setRangeModel(new NumberRangeModel(0.0d, 50d, 0d, 50d));
+//        y_axis.setRangeModel(new NumberRangeModel(0.0d, 400d, 0d, 400d));
 
         // add value axis labels and horizontal grid lines
         AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
@@ -190,6 +203,7 @@ public class MultipleLinePlotDemo {
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
         update.add(time_axis);
+        update.add(indexing);
         update.add(y_axis);
         update.add(y_labels);
         update.add(lineLayout);
@@ -232,6 +246,7 @@ public class MultipleLinePlotDemo {
         display.addControlListener(new ToolTipControl(COL_LABEL));
         display.addControlListener(new prefuse.controls.HoverActionControl(
                 DemoEnvironmentFactory.ACTION_UPDATE));
+        display.addControlListener(new IndexingControl(indexing));
 
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
@@ -269,6 +284,21 @@ public class MultipleLinePlotDemo {
 
             return String.format("%tF %s: %3.0f", cal, t.getString(COL_CITY),
                     value);
+        }
+    }
+    
+    static class IndexingControl extends ControlAdapter {
+
+        protected IndexingAction action;
+
+        public IndexingControl(IndexingAction action) {
+            this.action = action;
+        }
+
+        @Override
+        public void itemClicked(VisualItem item, MouseEvent e) {
+            action.setIndexedPoint(item);
+            item.getVisualization().run(DemoEnvironmentFactory.ACTION_UPDATE);
         }
     }
 }
