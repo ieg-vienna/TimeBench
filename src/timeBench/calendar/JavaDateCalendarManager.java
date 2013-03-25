@@ -941,7 +941,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					} else {
 						cal.set(GregorianCalendar.YEAR, year+1970);
 					}
-					System.out.println(cal.get(GregorianCalendar.YEAR) + " " + year + " " + granule.getGranularity().getGranularityContextIdentifier());
+//					System.out.println(cal.get(GregorianCalendar.YEAR) + " " + year + " " + granule.getGranularity().getGranularityContextIdentifier());
 					cal.set(GregorianCalendar.MONTH, (int)(granule.getIdentifier()%4*3));
 					result = cal.getTimeInMillis();
 				}
