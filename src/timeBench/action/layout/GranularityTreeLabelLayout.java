@@ -1,5 +1,8 @@
 package timeBench.action.layout;
 
+import ieg.prefuse.data.LinkedTree;
+import ieg.prefuse.data.LinkedTree.LinkedNode;
+
 import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
 import java.util.Iterator;
@@ -8,6 +11,7 @@ import java.util.logging.Logger;
 import prefuse.Constants;
 import prefuse.action.layout.Layout;
 import prefuse.data.Schema;
+import prefuse.data.Tuple;
 import prefuse.data.query.ObjectRangeModel;
 import prefuse.data.tuple.TupleSet;
 import prefuse.data.util.Index;
@@ -16,6 +20,8 @@ import prefuse.util.PrefuseLib;
 import prefuse.util.ui.ValuedRangeModel;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
+import timeBench.calendar.Granule;
+import timeBench.data.TemporalDataException;
 
 
 public class GranularityTreeLabelLayout extends Layout {
@@ -28,121 +34,103 @@ public class GranularityTreeLabelLayout extends Layout {
     
     private int m_axis;
     
-    private double m_indent; // desired indentation on the "other" axis; ignored when bounds set
-    
-    public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout) {
-        this(group, layout, null, 0);
-    }
-    
-    public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout, Rectangle2D bounds) {
-        this(group, layout, bounds, 0);
-    }
-
-    public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout, Rectangle2D bounds,
-            double indent)
+    public GranularityTreeLabelLayout(String group, GranularityTreeLayout layout, int axis, Rectangle2D bounds)
     {
         super(group);
-        if ( bounds != null )
-            setLayoutBounds(bounds);
         m_layout = layout;
-        m_indent = indent;
+        m_axis = axis;
+        setLayoutBounds(bounds);
     }
-    
-    // ------------------------------------------------------------------------
-       
-    /**
-     * Get the required minimum spacing between axis labels.
-     * @return the axis label spacing
-     */
-    public double getIndent() {
-        return m_indent;
-    }
-
-    /**
-     * Set the required minimum spacing between axis labels.
-     * @param spacing the axis label spacing to use
-     */
-    public void setIndent(double indent) {
-    	m_indent = indent;
-    }
-    
-    
+            
     // ------------------------------------------------------------------------
     
     /**
      * @see prefuse.action.GroupAction#run(double)
      */
-    public void run(double frac) {      
+    public void run(double frac) {
         VisualTable labels = getTable();
-
-        for(int i=0; i<m_layout.getSettings().length; i++) {
-        	GranularityTreeLayoutSettings settings = m_layout.getSettings()[i];
-        	if(settings.getTargetAxis() == m_axis) {
-        		 //m_layout.getMinIdentifiers()[i];
-        	}
+                
+        LinkedTree labelSource =  m_layout.getLabels()[m_axis];
+        int depth = 0;
+        int leaves = 0;
+        Iterator iLeaf = labelSource.leaves();
+        while (iLeaf.hasNext()) {
+        	depth = Math.max(depth, ((Tuple)iLeaf.next()).getInt(LinkedTree.FIELD_DEPTH));
+        	leaves++;
         }
+        double indent = 0;
+        String indentAxis;
+        String distributeAxis;
+        double indentedOrigin = 0;
+        if (m_axis == Constants.X_AXIS) {
+        	distributeAxis = VisualItem.X;
+        	indentAxis = VisualItem.Y;
+        	indent = m_bounds.getHeight() / (double)depth;
+        	indentedOrigin = m_bounds.getY();
+        } else {
+        	distributeAxis = VisualItem.Y;
+        	indentAxis = VisualItem.X;
+        	indent = m_bounds.getWidth() / (double)depth;
+        	indentedOrigin = m_bounds.getX();
+        }        	
         
-        Iterator iter = labels.tuples();
-        while ( iter.hasNext() ) {
+    	while(labels.getRowCount() < labelSource.getRowCount()) {
+    		int newRow = labels.addRow();
+    		labels.setVisible(newRow,false);
+    	}
+
+    	for(int i=0; i<labelSource.getRowCount(); i++) {
+			try {
+				Granule g = ((Granule)labelSource.get(i,"granule"));
+				if (g != null)
+					labels.setString(i,VisualItem.LABEL,g.getLabel());
+				PrefuseLib.updateBoolean((VisualItem)labels.getTuple(i), VisualItem.VISIBLE, g != null);        	
+			} catch (TemporalDataException e) {
+				labels.setString(i,VisualItem.LABEL,e.getMessage());
+			}
+			double indentedPosition = indentedOrigin + indent * (labelSource.getInt(i, LinkedTree.FIELD_DEPTH)-1) + indent/2;
+			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), indentAxis, indentedPosition);
+			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), distributeAxis, labelSource.getDouble(i, "position"));
+    	}    	
+        
+        for(int i=labelSource.getRowCount(); i < labels.getRowCount(); i++ ) {
+        	PrefuseLib.updateBoolean((VisualItem)labels.getTuple(i), VisualItem.VISIBLE, false);
         }
         
         // get rid of any labels that are no longer being used
         garbageCollect(labels);
     }
     
-    // ------------------------------------------------------------------------
-    // Quantitative Axis Layout
+    /*private void setChildValues(VisualTable labels,LinkedNode parent,int depth,double indentedOrigin,double indent,double distributeMin,
+    		double distributeMax,String indentAxis,String distributeAxis) {
+    	Iterator<Tuple> childs = parent.children();
+    	int childCount = 0;
+    	while(childs.hasNext()) {
+    		childs.next();
+    		childCount++;
+    	}
+		double distributeRange = (distributeMax-distributeMin)/(double)childCount;
+    	childs = parent.children();
+    	while(childs.hasNext()) {
+    		LinkedNode nextChild = (LinkedNode)childs.next();
+    		int i = nextChild.getRow();
+    		try {
+    			labels.getTuple(i).setString(VisualItem.LABEL,((Granule)nextChild.get("granule")).getLabel());
+    			PrefuseLib.updateBoolean((VisualItem)labels.getTuple(i), VisualItem.VISIBLE, true);        	
+    			double indentedPosition = indentedOrigin + indent * depth + indent/2;
+    			double distributedPosition = distributeMin + distributeRange * i + distributeRange / 2;
+    			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), indentAxis, indentedPosition);
+    			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), distributeAxis, distributedPosition);
+    		} catch (TemporalDataException e) {
+			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    			PrefuseLib.update((VisualItem)labels.getTuple(i), VisualItem.LABEL, e.getLocalizedMessage());
+    		}
+    		setChildValues(labels,nextChild,depth+1,indentedOrigin,indent,distributeMin+distributeRange*i,
+    			distributeMin+distributeRange*(i+1),indentAxis,distributeAxis);
+    	}
+    }*/
         
-    /**
-     * Get the "breadth" of a rectangle, based on the axis type.
-     */
-    protected double getBreadth(Rectangle2D b) {
-        switch ( m_axis ) {
-        case Constants.X_AXIS:
-            return b.getWidth();
-        default:
-            return b.getHeight();
-        }
-    }    
-    
-    /**
-     * Set the layout values for an axis label item.
-     */
-    protected void set(VisualItem item, double xOrY, Rectangle2D b) {
-        switch ( m_axis ) {
-        case Constants.X_AXIS:
-            xOrY = xOrY + b.getMinX();
-            PrefuseLib.updateDouble(item, VisualItem.X,  xOrY);
-            PrefuseLib.updateDouble(item, VisualItem.Y,  b.getMinY());
-            PrefuseLib.updateDouble(item, VisualItem.X2, xOrY);
-            PrefuseLib.updateDouble(item, VisualItem.Y2, b.getMaxY());
-            break;
-        case Constants.Y_AXIS:
-            xOrY = b.getMaxY() - xOrY - 1;
-            PrefuseLib.updateDouble(item, VisualItem.X,  b.getMinX());
-            PrefuseLib.updateDouble(item, VisualItem.Y,  xOrY);
-            PrefuseLib.updateDouble(item, VisualItem.X2, b.getMaxX());
-            PrefuseLib.updateDouble(item, VisualItem.Y2, xOrY);
-        }
-    }
-    
-    /**
-     * Reset an axis label VisualItem
-     */
-    protected void reset(VisualItem item) {
-        item.setVisible(false);
-        item.setEndVisible(false);
-        item.setStartStrokeColor(item.getStrokeColor());
-        item.revertToDefault(VisualItem.STROKECOLOR);
-        item.revertToDefault(VisualItem.ENDSTROKECOLOR);
-        item.setStartTextColor(item.getTextColor());
-        item.revertToDefault(VisualItem.TEXTCOLOR);
-        item.revertToDefault(VisualItem.ENDTEXTCOLOR);
-        item.setStartFillColor(item.getFillColor());
-        item.revertToDefault(VisualItem.FILLCOLOR);
-        item.revertToDefault(VisualItem.ENDFILLCOLOR);
-    }
-    
     /**
      * Remove axis labels no longer being used.
      */
@@ -174,4 +162,4 @@ public class GranularityTreeLabelLayout extends Layout {
         }
     }
     
-} // end of class AxisLabels
+}

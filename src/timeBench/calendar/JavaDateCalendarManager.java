@@ -808,7 +808,7 @@ public class JavaDateCalendarManager implements CalendarManager {
                 }
 				break;
             case Decade:
-                result = String.format("%ds",granule.getIdentifier()*10+1);
+                result = String.format("%ds",granule.getIdentifier()*10);
                 break;
 			default:
 				result = String.format("%d",granule.getIdentifier()+1);
@@ -1306,7 +1306,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				case Quarter:
 					return 13L;
 				case Year:
-					return 51L;				
+					return 52L;				
                 case Decade:
                     return 521L;
 				case Calendar:

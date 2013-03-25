@@ -32,7 +32,7 @@ public class TreeItemSorter extends ItemSorter {
             type = DECORATOR;
         }
         
-        int score = (1<<(26+type));
+        int score = (1<<(26+type));              
                 
         if (item.getSourceTuple() instanceof ParentChildNode) {
             for(ParentChildNode node = (ParentChildNode)item.getSourceTuple(); node.getFirstParent() != null; node = node.getFirstParent()) {

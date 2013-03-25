@@ -1,9 +1,11 @@
 package timeBench.demo.vis;
 
+import java.awt.BasicStroke;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -25,6 +27,7 @@ import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.ShapeAction;
+import prefuse.action.assignment.StrokeAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ToolTipControl;
@@ -41,6 +44,7 @@ import prefuse.visual.sort.ItemSorter;
 import timeBench.action.analytical.GranularityAggregationAction;
 import timeBench.action.analytical.GranularityAggregationSettings;
 import timeBench.action.assignment.OverlayDataColorAction;
+import timeBench.action.layout.GranularityTreeLabelLayout;
 import timeBench.action.layout.GranularityTreeLayout;
 import timeBench.action.layout.GranularityTreeLayoutSettings;
 import timeBench.action.layout.TimeAxisLayout;
@@ -64,7 +68,8 @@ public class GROOVEDemo {
     private static final String COL_DATA = "value";
 
     private static final String GROUP_DATA = "data";
-    private static final String GROUP_AXIS_LABELS = "ylab";
+    private static final String GROUP_X_LABELS = "xlab";
+    private static final String GROUP_Y_LABELS = "ylab";
     
 	private static final String DATASET_FILE_NAME = "data\\cardiovascular_mb.csv";
 
@@ -87,7 +92,7 @@ public class GROOVEDemo {
 			System.exit(1);
 		}
     	
-        DataHelper.printTable(System.out, tmpds.getNodeTable());
+        //DataHelper.printTable(System.out, tmpds.getNodeTable());
 
         final Visualization vis = new Visualization();
         final RangeModelTransformationDisplay display = new RangeModelTransformationDisplay(vis, new String[] {"update"});
@@ -109,9 +114,9 @@ public class GROOVEDemo {
 				-1.0);
 		timeAggregationAction.run(0);
 		
-		DebugHelper.printTemporalDatasetGraph(
+		/*DebugHelper.printTemporalDatasetGraph(
 				System.out, timeAggregationAction.getGranularityAggregationTree().getTemporalObject(
-						timeAggregationAction.getGranularityAggregationTree().getRoots()[0]));
+						timeAggregationAction.getGranularityAggregationTree().getRoots()[0]));*/
         
         vis.addGraph(GROUP_DATA, timeAggregationAction.getGranularityAggregationTree());        
         
@@ -119,7 +124,8 @@ public class GROOVEDemo {
         // STEP 2: set up renderers for the visual data
 		DefaultRendererFactory rf = new DefaultRendererFactory();
 		rf.add(new InGroupPredicate(GROUP_DATA+".nodes"),new ShapeRenderer(1));
-        rf.add(new InGroupPredicate("GROOVELabels.nodes"),new LabelRenderer(VisualItem.LABEL));
+        rf.add(new InGroupPredicate(GROUP_X_LABELS),new	LabelRenderer(VisualItem.LABEL));
+        rf.add(new InGroupPredicate(GROUP_Y_LABELS),new LabelRenderer(VisualItem.LABEL));
 
         vis.setRendererFactory(rf);
 
@@ -133,11 +139,18 @@ public class GROOVEDemo {
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 0)}
 			,4);
 		
+		GranularityTreeLabelLayout xLabelLayout = new GranularityTreeLabelLayout(GROUP_X_LABELS, granularityTreeLayout, Constants.X_AXIS,
+				new Rectangle2D.Double(100,0,1400,100));
+		GranularityTreeLabelLayout yLabelLayout = new GranularityTreeLabelLayout(GROUP_Y_LABELS, granularityTreeLayout, Constants.Y_AXIS,
+				new Rectangle2D.Double(0,100,100,800));
+		
 		OverlayDataColorAction colorAction = new OverlayDataColorAction(GROUP_DATA,"value",Constants.NUMERICAL,VisualItem.FILLCOLOR,true,3);
 
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
         update.add(granularityTreeLayout);
+        update.add(xLabelLayout);
+        update.add(yLabelLayout);
         update.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, update);
 
@@ -145,6 +158,8 @@ public class GROOVEDemo {
         ActionList draw = new ActionList();
         draw.add(update);
         draw.add(colorAction);
+        draw.add(new StrokeAction(GROUP_X_LABELS,new BasicStroke(0)));
+        draw.add(new StrokeAction(GROUP_Y_LABELS,new BasicStroke(0)));
         draw.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, draw);
 
@@ -154,7 +169,7 @@ public class GROOVEDemo {
         // enable anti-aliasing
         display.setHighQuality(true);
         
-        //display.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        display.setBorder(BorderFactory.createEmptyBorder(100, 100, 0, 0));
 
 		// react on window resize
 		display.addComponentListener(new ComponentAdapter() {
