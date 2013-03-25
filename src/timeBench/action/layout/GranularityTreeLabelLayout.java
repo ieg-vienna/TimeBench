@@ -81,7 +81,7 @@ public class GranularityTreeLabelLayout extends Layout {
 
     	for(int i=0; i<labelSource.getRowCount(); i++) {
 			try {
-				Granule g = ((Granule)labelSource.get(i,"granule"));
+				Granule g = ((Granule)labelSource.get(i,GranularityTreeLayout.FIELD_GRANULE));
 				if (g != null)
 					labels.setString(i,VisualItem.LABEL,g.getLabel());
 				PrefuseLib.updateBoolean((VisualItem)labels.getTuple(i), VisualItem.VISIBLE, g != null);        	
@@ -90,7 +90,7 @@ public class GranularityTreeLabelLayout extends Layout {
 			}
 			double indentedPosition = indentedOrigin + indent * (labelSource.getInt(i, LinkedTree.FIELD_DEPTH)-1) + indent/2;
 			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), indentAxis, indentedPosition);
-			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), distributeAxis, labelSource.getDouble(i, "position"));
+			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), distributeAxis, labelSource.getDouble(i, GranularityTreeLayout.FIELD_POSITION));
     	}    	
         
         for(int i=labelSource.getRowCount(); i < labels.getRowCount(); i++ ) {
@@ -100,37 +100,7 @@ public class GranularityTreeLabelLayout extends Layout {
         // get rid of any labels that are no longer being used
         garbageCollect(labels);
     }
-    
-    /*private void setChildValues(VisualTable labels,LinkedNode parent,int depth,double indentedOrigin,double indent,double distributeMin,
-    		double distributeMax,String indentAxis,String distributeAxis) {
-    	Iterator<Tuple> childs = parent.children();
-    	int childCount = 0;
-    	while(childs.hasNext()) {
-    		childs.next();
-    		childCount++;
-    	}
-		double distributeRange = (distributeMax-distributeMin)/(double)childCount;
-    	childs = parent.children();
-    	while(childs.hasNext()) {
-    		LinkedNode nextChild = (LinkedNode)childs.next();
-    		int i = nextChild.getRow();
-    		try {
-    			labels.getTuple(i).setString(VisualItem.LABEL,((Granule)nextChild.get("granule")).getLabel());
-    			PrefuseLib.updateBoolean((VisualItem)labels.getTuple(i), VisualItem.VISIBLE, true);        	
-    			double indentedPosition = indentedOrigin + indent * depth + indent/2;
-    			double distributedPosition = distributeMin + distributeRange * i + distributeRange / 2;
-    			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), indentAxis, indentedPosition);
-    			PrefuseLib.updateDouble((VisualItem)labels.getTuple(i), distributeAxis, distributedPosition);
-    		} catch (TemporalDataException e) {
-			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    			PrefuseLib.update((VisualItem)labels.getTuple(i), VisualItem.LABEL, e.getLocalizedMessage());
-    		}
-    		setChildValues(labels,nextChild,depth+1,indentedOrigin,indent,distributeMin+distributeRange*i,
-    			distributeMin+distributeRange*(i+1),indentAxis,distributeAxis);
-    	}
-    }*/
-        
+            
     /**
      * Remove axis labels no longer being used.
      */

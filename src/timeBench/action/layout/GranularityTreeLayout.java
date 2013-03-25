@@ -33,6 +33,9 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
 	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
 	
+	public static final String FIELD_POSITION = "_position";
+	public static final String FIELD_GRANULE = "_granule";
+	
     // XXX assume depth is given via size of settings
     protected int depth;
 
@@ -71,8 +74,8 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         LinkedNode[] labelRoots = new LinkedNode[Constants.AXIS_COUNT];
 
     	Schema s = new Schema(1);
-    	s.addColumn("granule", Granule.class);
-    	s.addColumn("position", double.class);
+    	s.addColumn(FIELD_GRANULE, Granule.class);
+    	s.addColumn(FIELD_POSITION, double.class);
         for(int i=0; i<Constants.AXIS_COUNT; i++) {
         	axisActive[i] = false;
         	labels[i] = new LinkedTree(s);
@@ -129,23 +132,23 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 			e.printStackTrace();
 		}
         
-        printLabels(labels[Constants.X_AXIS].getRoot());
+        //_printLabels(labels[Constants.X_AXIS].getRoot());
     }
     
-    private void printLabels(LinkedNode parent) {
+    private void _printLabels(LinkedNode parent) {
     	Iterator children = parent.children();
     	while(children.hasNext()) {
     		LinkedNode child = (LinkedNode)children.next();
     		for(int i=0; i<child.getDepth(); i++)
     			System.out.print("  ");
     		try {
-				System.out.print(((Granule)child.get("granule")).getLabel());
+				System.out.print(((Granule)child.get(FIELD_GRANULE)).getLabel());
 			} catch (TemporalDataException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     		System.out.println();
-    		printLabels(child);
+    		_printLabels(child);
     	}
     }
 
@@ -170,7 +173,7 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 		visualNode.setVisible(true);
 		
 		if (level > 0)
-			currentLabels[settings[level-1].getTargetAxis()].setDouble("position",
+			currentLabels[settings[level-1].getTargetAxis()].setDouble(FIELD_POSITION,
 				settings[level-1].getTargetAxis() == Constants.X_AXIS ? bounds.getCenterX() : bounds.getCenterY());
 		
     	double xbase = bounds.getX() + (aviivn[Constants.AXIS_COUNT+Constants.X_AXIS])*factor;
@@ -193,7 +196,7 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
                    	nextLabels[settings[level].getTargetAxis()] = (LinkedNode)childIterator.next();
                	else
                		nextLabels[settings[level].getTargetAxis()] = currentLabels[settings[level].getTargetAxis()].addChild();
-            	nextLabels[settings[level].getTargetAxis()].set("granule",o.getTemporalElement().getGranule());
+            	nextLabels[settings[level].getTargetAxis()].set(FIELD_GRANULE,o.getTemporalElement().getGranule());
             	calculatePositions(o, level + 1, new Rectangle2D.Double(x,
             			y,
             			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor),factor,nextLabels);
