@@ -21,6 +21,7 @@ import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.Granularity;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -29,6 +30,17 @@ import timeBench.data.io.schema.DateInstantEncoding;
 import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.data.io.schema.TemporalObjectEncoding;
 
+/**
+ * Reads a TemporalDataset and either tries to automatically detect the temporal
+ * column or use a given data format specification.
+ * 
+ * <p>
+ * Added: 2011-09-27 / AR<br>
+ * Modifications: 2013-03-25 / AR / autoGranularity
+ * </p>
+ * 
+ * @author Alexander Rind
+ */
 public class TextTableTemporalDatasetReader extends
         AbstractTemporalDatasetReader {
 
@@ -36,11 +48,29 @@ public class TextTableTemporalDatasetReader extends
             .getLogger(TextTableTemporalDatasetReader.class);
 
     private TemporalDataColumnSpecification spec = null;
+    
+    private Granularity autoGranularity = null;
 
+    /**
+     * Reads a TemporalDataset and tries to automatically detect the temporal
+     * column. Granules of the bottom granularity are assumed.
+     */
     public TextTableTemporalDatasetReader() {
         this.spec = null;
     }
     
+    /**
+     * Reads a TemporalDataset and tries to automatically detect the temporal
+     * column. The temporal elements will be instants based on the given
+     * granularity.
+     * 
+     * @param granularity
+     */
+    public TextTableTemporalDatasetReader(Granularity granularity) {
+        super();
+        this.autoGranularity = granularity;
+    }
+
     public TextTableTemporalDatasetReader(TemporalDataColumnSpecification spec) {
         super();
         this.spec = spec;
@@ -81,7 +111,7 @@ public class TextTableTemporalDatasetReader extends
     }
 
     // TODO should the class remember the spec or stay in auto-detection mode  
-    private static void scanTableForSpecification(Table table,
+    private void scanTableForSpecification(Table table,
             TemporalDataColumnSpecification spec) throws TemporalDataException {
 
         Calendar calendar = CalendarManagerFactory.getSingleton(
@@ -105,7 +135,8 @@ public class TextTableTemporalDatasetReader extends
         DateInstantEncoding enc = new DateInstantEncoding("default",
                 temporalColumn);
         enc.setDataColumns(dataColumns.toArray(new String[0]));
-        enc.setGranularity(calendar.getBottomGranularity());
+        enc.setGranularity(autoGranularity != null ? autoGranularity : 
+                calendar.getBottomGranularity());
         spec.addEncoding(enc);
     }
 
