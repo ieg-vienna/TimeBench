@@ -56,7 +56,7 @@ public class GranularityTreeLabelLayout extends Layout {
         Iterator iLeaf = labelSource.leaves();
         while (iLeaf.hasNext()) {
         	depth = Math.max(depth, ((Tuple)iLeaf.next()).getInt(LinkedTree.FIELD_DEPTH));
-        	leaves++;
+        	leaves++;        	
         }
         double indent = 0;
         String indentAxis;
