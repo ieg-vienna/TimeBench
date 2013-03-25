@@ -111,14 +111,14 @@ public class GranularityTreeLabelLayout extends Layout {
     protected void set(VisualItem item, double xOrY, Rectangle2D b) {
         switch ( m_axis ) {
         case Constants.X_AXIS:
-            xOrY = m_asc ? xOrY + b.getMinX() : b.getMaxX() - xOrY;
+            xOrY = xOrY + b.getMinX();
             PrefuseLib.updateDouble(item, VisualItem.X,  xOrY);
             PrefuseLib.updateDouble(item, VisualItem.Y,  b.getMinY());
             PrefuseLib.updateDouble(item, VisualItem.X2, xOrY);
             PrefuseLib.updateDouble(item, VisualItem.Y2, b.getMaxY());
             break;
         case Constants.Y_AXIS:
-            xOrY = m_asc ? b.getMaxY() - xOrY - 1 : xOrY + b.getMinY();
+            xOrY = b.getMaxY() - xOrY - 1;
             PrefuseLib.updateDouble(item, VisualItem.X,  b.getMinX());
             PrefuseLib.updateDouble(item, VisualItem.Y,  xOrY);
             PrefuseLib.updateDouble(item, VisualItem.X2, b.getMaxX());
