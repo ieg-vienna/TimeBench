@@ -47,7 +47,7 @@ public abstract class IndexingAction extends ItemAction {
                 : "default";
         Double factor = factors.get(code);
         factor = factor != null ? factor : 1.0;
-        double value = item.getDouble(absoluteValueField) * factor * 100;
+        double value = item.getDouble(absoluteValueField) * factor * 100 - 100;
         item.set(indexedValueField, value);
     }
 
@@ -84,4 +84,14 @@ public abstract class IndexingAction extends ItemAction {
         this.factors.clear();
     }
 
+//    public void setIndexedPoint(VisualItem indexedItem) {
+//        if (indexedItem != null
+//                && indexedItem.getSourceTuple() instanceof TemporalObject) {
+//            setIndexedPoint(((TemporalObject) indexedItem.getSourceTuple())
+//                    .getTemporalElement());
+//        } else {
+//            throw new IllegalArgumentException(
+//                    "Indexing visual item is not a temporal object");
+//        }
+//    }
 }
