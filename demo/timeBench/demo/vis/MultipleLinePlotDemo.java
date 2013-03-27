@@ -67,7 +67,7 @@ import timeBench.ui.TimeAxisDisplay;
  * <li>Set color depending on a column holding the "city".
  * <li>Add line segments using {@link CategoryLinePlotAction} so that only
  * points of a city are connected.
- * <li>Load data from a file using a data format specification.
+ * <li>Load data from a file using a specified granularity.
  * </ul>
  * 
  * @author Rind

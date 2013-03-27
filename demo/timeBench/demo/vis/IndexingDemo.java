@@ -34,6 +34,7 @@ import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.io.DataIOException;
+import prefuse.data.query.NumberRangeModel;
 import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.ShapeRenderer;
@@ -66,12 +67,15 @@ import timeBench.ui.TimeAxisDisplay;
  * respiratory diseases in multiple cities. The data has 2 references (time and
  * city) and one characteristic (mortality count).
  * <p>
- * This extends {@link LinePlotDemo} with the following features:
+ * This extends {@link MultipleLinePlotDemo} with the following features:
  * <ul>
- * <li>Set color depending on a column holding the "city".
- * <li>Add line segments using {@link CategoryLinePlotAction} so that only
- * points of a city are connected.
- * <li>Load data from a file using a data format specification.
+ * <li>Transforming the abstract data from a pivot table to key value pairs,
+ * retaining references to a shared temporal element 
+ * ({@link ColumnToRowsTemporalDataTransformation}).
+ * <li>Calculating indexed values in a new column of the visual table 
+ * ({@link TemporalDataIndexingAction}).
+ * <li>Updating the indexing point using an interactive control 
+ * ({@link IndexingControl}).
  * </ul>
  * 
  * @author Rind
@@ -168,13 +172,14 @@ public class IndexingDemo {
         // STEP 3: create actions to process the visual data
 
         IndexingAction indexing = new TemporalDataIndexingAction(GROUP_DATA, COL_DATA, COL_INDEXED, COL_CITY);
+        indexing.setIndexedPoint((VisualItem) vt.tuples().next());
 
         TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
         
         AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_INDEXED,
                 Constants.Y_AXIS, VisiblePredicate.TRUE);
         // set visible value range to 0..100
-//        y_axis.setRangeModel(new NumberRangeModel(0.0d, 400d, 0d, 400d));
+        y_axis.setRangeModel(new NumberRangeModel(0.0d, 400.0d, 0d, 400d));
 
         // add value axis labels and horizontal grid lines
         AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
