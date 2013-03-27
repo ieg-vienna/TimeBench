@@ -91,9 +91,8 @@ public class GanttDemo {
             long earliestStart = startDate;
             for (TemporalObject prev : obj.childObjects()) {
                 earliestStart = Math.max(earliestStart, prev
-                        .getTemporalElement().getSup());
+                        .getTemporalElement().getSup() + 1);
             }
-            earliestStart++;
 
             Granule granule = new Granule(earliestStart, earliestStart,
                     granularity);
