@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Vector;
 
 import prefuse.action.Action;
+import prefuse.data.Graph;
 import prefuse.data.Node;
+import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.expression.AndPredicate;
 import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.ColumnExpression;
@@ -14,6 +17,7 @@ import prefuse.data.expression.NotPredicate;
 import prefuse.data.expression.ObjectLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.util.DataLib;
+import prefuse.util.collections.IntIterator;
 import prefuse.visual.AggregateItem;
 import prefuse.visual.AggregateTable;
 import prefuse.visual.VisualItem;
@@ -131,9 +135,13 @@ public class HorizonGraphAction extends Action {
         // create helper points
         Object[] vars = DataLib.ordinalArray(ctrlPts.getNodes(), fieldVariable);
         for (Object variable : vars) {
-            System.out.println(variable);
+//            System.out.println(variable);
             addHelpNodes(ctrlPts, variable, settings.BandsCount, settings.getBandWidth());
+            // add extreme value bands
+            addHelpNodesForExtremeValues(ctrlPts, variable);
         }
+        
+
 
         // shift bands over each other
         joinBands(ctrlPts, settings.BandsCount, settings.getBandWidth());
@@ -385,6 +393,95 @@ public class HorizonGraphAction extends Action {
         return new Vector<TimeValuePair>();
     }
 
+    /**
+     * Calculates all points which outside the specified bounds.
+     * The points later make up a single polygon for the extreme values. 
+     * @param table the data table, from which the points are calculated
+     * @param bound the value bound of the extreme value band
+     * @param bandWidth the width of a single band, e.g. _settings.getBandWidth()
+     * @return a list of the calculated points
+     */
+    private List<TimeValuePair> getPointsInExtremeBand(TemporalDataset ctrlPts,
+            Object variable, double bound, double bandWidth)
+    {
+        List<TimeValuePair> pointsInBand = new Vector<TimeValuePair>();
+
+        Predicate predVar = new ComparisonPredicate(ComparisonPredicate.EQ,
+                new ColumnExpression(fieldVariable),
+                new ObjectLiteral(variable));
+        Predicate predReal = new ComparisonPredicate(ComparisonPredicate.EQ,
+                new ColumnExpression(COL_IS_HELP_NODE), new BooleanLiteral(
+                        false));
+        Iterator<TemporalObject> rows = ctrlPts.temporalObjects(
+                new AndPredicate(predVar, predReal)).iterator();
+
+        if (!rows.hasNext())
+            return pointsInBand;
+
+        TimeValuePair p1 = new TimeValuePair(ctrlPts.getInf(), 0);
+
+        double lastY = 0;
+        double sign = Math.signum(bound);
+
+        TemporalObject t;
+
+        boolean finished = false;
+        while (!finished) {
+        
+            // add the current point if it's between the bounds     
+            
+            if((sign == 1 && p1.value > bound && lastY != bandWidth) || (sign == -1 && p1.value < bound && lastY != -bandWidth))
+            {
+                pointsInBand.add(new TimeValuePair(p1.time, lastY));
+                pointsInBand.add(new TimeValuePair(p1.time, lastY = bandWidth * sign));
+            }           
+            
+            // get the next point
+            TimeValuePair p2;
+            if(rows.hasNext())
+            {
+                t = rows.next();
+                p2 = new TimeValuePair(t.getTemporalElement().getInf(),
+                        t.getDouble(COL_Y_POSITION));
+            }
+            else
+            {
+                finished = true;
+                p2 = new TimeValuePair(p1.time, 0);
+            }
+            
+            TimeValuePair min = p1.value < p2.value ? p1 : p2;
+            TimeValuePair max = p1.value < p2.value ? p2 : p1;
+                        
+            if(min.value <= bound && max.value >= bound && min.value != max.value)
+            {
+                double hx = (bound - p1.value) / ((p2.value - p1.value) / (p2.time - p1.time)) + p1.time;
+    
+                if(sign == 1 && p1.value < p2.value || sign == -1 && p1.value > p2.value)
+                {
+                    pointsInBand.add(new TimeValuePair(Math.round(hx), lastY));
+                    pointsInBand.add(new TimeValuePair(Math.round(hx), lastY = bandWidth * sign));
+                }
+                else
+                {
+                    pointsInBand.add(new TimeValuePair(Math.round(hx), lastY));
+                    pointsInBand.add(new TimeValuePair(Math.round(hx), lastY = 0));
+                }
+            }
+                                        
+            p1 = p2;
+        }
+        
+        if(p1.value == bandWidth)
+            pointsInBand.add(new TimeValuePair(p1.time, 0));
+        
+        for(TimeValuePair d : pointsInBand)
+            if(d.value != 0)
+                return pointsInBand;
+        
+        return new Vector<TimeValuePair>();
+    }
+        
     static class TimeValuePair {
         long time;
         double value;
@@ -395,6 +492,32 @@ public class HorizonGraphAction extends Action {
         }
     }
 
+    /**
+     * Calls getPointsInExtremeBand(...) to determinate the help node positions
+     * for the positive and negative extreme bands and adds the nodes to the graph instance.
+     * @param graph the graph instance, where the help node should be added
+     * @param table the data table, from which the help node positions are calculated
+     * @param bandsCount the count of bands, e.g. _settings.BandsCount
+     * @param bandWidth the width of a single band, e.g. _settings.getBandWidth()
+     */
+    private void addHelpNodesForExtremeValues(TemporalDataset ctrlPts, Object variable)
+    {
+        double bandWidth = settings.getBandWidth();
+        
+        List<TimeValuePair> pointsInPositiveExtremeValues = getPointsInExtremeBand(ctrlPts, variable, bandWidth * settings.BandsCount, bandWidth);
+        for(TimeValuePair point : pointsInPositiveExtremeValues) {
+            System.out.println("pos. extr.:"  + point.time + " " + point.value + " " + variable);
+            addHelpNode(ctrlPts, variable, HorizonGraphAction.BAND_ID_POSITIVE_EXTREME_VALUES, point.time, point.value);
+        }
+        
+        List<TimeValuePair> pointsInNegativeExtremeValues = getPointsInExtremeBand(ctrlPts, variable, -bandWidth * settings.BandsCount, bandWidth);
+        for(TimeValuePair point : pointsInNegativeExtremeValues) {
+            System.out.println("neg. extr.:"  + point.time + " " + point.value + " " + variable);
+            addHelpNode(ctrlPts, variable, HorizonGraphAction.BAND_ID_NEGATIVE_EXTREME_VALUES, point.time, point.value);
+        }
+    }
+    
+    
     /**
      * Performs the band join operation. After joining the bands, the different
      * colored polygons will be rendered on top of each other. The polygons for
@@ -476,10 +599,10 @@ public class HorizonGraphAction extends Action {
                 addAggregate(aggregates, variable, -bandId);
             }
 
-            // addAggregate(visualGraph, aggregates, variable,
-            // BAND_ID_POSITIVE_EXTREME_VALUES);
-            // addAggregate(visualGraph, aggregates, variable,
-            // BAND_ID_NEGATIVE_EXTREME_VALUES);
+            addAggregate(aggregates, variable,
+                    BAND_ID_POSITIVE_EXTREME_VALUES);
+            addAggregate(aggregates, variable,
+                    BAND_ID_NEGATIVE_EXTREME_VALUES);
             addAggregate(aggregates, variable, BAND_ID_NULL_VALUES);
         }
     }
