@@ -733,6 +733,10 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         return temporalElements.addInterval(span, end);
     }
     
+	public GenericTemporalElement addIndeterminateInterval(Interval begin, Interval end) {
+		return temporalElements.addIndeterminateInterval(begin, end);
+	}
+    
     public AnchoredTemporalElement addAnchoredSet(TemporalElement... elements) throws TemporalDataException {
         return temporalElements.addAnchoredSet(elements);
     }
@@ -802,5 +806,4 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
 		
 		return result;
 	}
-
 }

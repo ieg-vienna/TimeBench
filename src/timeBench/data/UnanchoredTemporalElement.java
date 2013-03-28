@@ -41,6 +41,17 @@ public class UnanchoredTemporalElement extends TemporalElement {
     public long getLength() {
         return super.getLong(TemporalElement.INF);
     }
+    
+    /**
+     * Sets the length of the temporal element. This is the number of granules
+     * in the current granularity.
+     * 
+     * @value the length of the temporal element
+     */
+    @Override
+    public void setLength(long value) {
+        super.setLong(TemporalElement.INF,value);
+    }
 
     // TODO do we need setLength --> I don't think so
 

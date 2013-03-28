@@ -141,6 +141,21 @@ public abstract class TemporalElement extends ParentChildNode {
      */
     // TODO does it make sense to have a common method for all temporal elements?
     public abstract long getLength();
+    
+    /**
+     * Sets the length of the temporal element.
+     * 
+     * <p>
+     * This can be either
+     * <li>the number of chronons in the bottom granularity for anchored
+     * temporal elements or
+     * <li>the number of granules in the current granularity for unanchored
+     * temporal elements.
+     * 
+     * @value the length of the temporal element
+     */
+    // TODO does it make sense to have a common method for all temporal elements?
+    public abstract void setLength(long value);
 
     /**
      * Get the temporal dataset of which this element is a member.

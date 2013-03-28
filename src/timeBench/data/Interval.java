@@ -86,4 +86,20 @@ public class Interval extends AnchoredTemporalElement {
             throw new TemporalDataException(
                     "Syntax error in temporal element of type interval");
     }
+
+	public void setDuration(Granularity g,long value) throws TemporalDataException {
+        TemporalElement first = (TemporalElement) this.getFirstChildPrimitive();
+        TemporalElement last = (TemporalElement) this.getLastChildPrimitive();
+        if (first != null && last != null) {
+            if (first instanceof Instant && last instanceof Span) {            	
+            	((Span)last).setLength(value);           
+            	Granule startGranule = new Granule(((Instant) first).getInf(),((Instant) first).getSup(),g); 
+            	Granule endGranule = new Granule(startGranule.getIdentifier()+value-1, g,Granule.TOP);
+            	this.setLong(SUP, endGranule.getSup());
+            } else
+                throw new RuntimeException("Not implemented yet");
+        } else
+            throw new TemporalDataException(
+                    "Syntax error in temporal element of type interval");		
+	}
 }
