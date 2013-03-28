@@ -47,7 +47,7 @@ public abstract class IndexingAction extends ItemAction {
                 : "default";
         Double factor = factors.get(code);
         factor = factor != null ? factor : 1.0;
-        double value = item.getDouble(absoluteValueField) * factor * 100 - 100;
+        double value = item.getDouble(absoluteValueField) * factor - 1; // * 100 - 100;
         item.set(indexedValueField, value);
     }
 

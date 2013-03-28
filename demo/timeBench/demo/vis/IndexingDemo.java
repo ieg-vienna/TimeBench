@@ -179,7 +179,7 @@ public class IndexingDemo {
         AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_INDEXED,
                 Constants.Y_AXIS, VisiblePredicate.TRUE);
         // set visible value range to 0..100
-        y_axis.setRangeModel(new NumberRangeModel(0.0d, 400.0d, 0d, 400d));
+        y_axis.setRangeModel(new NumberRangeModel(-1.0d, 4.0d, -1d, 4d));
 
         // add value axis labels and horizontal grid lines
         AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,

@@ -27,6 +27,7 @@ import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 import timeBench.data.expression.GranularityPredicate;
+import timeBench.ui.HorizonSettings;
 
 /**
  * Complex action for creating a horizon graph as polygons. Actually two new
@@ -36,13 +37,13 @@ import timeBench.data.expression.GranularityPredicate;
  * <p>
  * This action should be decomposed into smaller units.
  * 
- * @author Rind
+ * @author Rind (based on work by Atanasov and Schindler)
  */
 public class HorizonGraphAction extends Action {
 
     public static final String COL_INDEXED_VALUE = "indexedValue";
     private static final String COL_BAND_ID = "band_id";
-    private static final String COL_IS_HELP_NODE = "help_node";
+    public static final String COL_IS_HELP_NODE = "help_node";
     public static final String COL_Y_POSITION = "y_value";
     public static final String COL_COLOR_INDEX = null;
 
@@ -64,21 +65,21 @@ public class HorizonGraphAction extends Action {
 
     private TemporalDataIndexingAction indexing;
 
-    private int bandsCount = 3;
-    private int bandWidth = 25;
+    private HorizonSettings settings;
 
     public IndexingAction getIndexing() {
         return indexing;
     }
 
     public HorizonGraphAction(String groupData, String groupControlPoints,
-            String groupBands, String fieldVariable, String fieldValue) {
+            String groupBands, String fieldVariable, String fieldValue, HorizonSettings settings) {
         super();
         this.groupData = groupData;
         this.groupControlPoints = groupControlPoints;
         this.groupBands = groupBands;
         this.fieldVariable = fieldVariable;
         this.fieldValue = fieldValue;
+        this.settings = settings;
 
         indexing = new TemporalDataIndexingAction(groupControlPoints,
                 fieldValue, COL_Y_POSITION, fieldVariable);
@@ -131,11 +132,11 @@ public class HorizonGraphAction extends Action {
         Object[] vars = DataLib.ordinalArray(ctrlPts.getNodes(), fieldVariable);
         for (Object variable : vars) {
             System.out.println(variable);
-            addHelpNodes(ctrlPts, variable, bandsCount, bandWidth);
+            addHelpNodes(ctrlPts, variable, settings.BandsCount, settings.getBandWidth());
         }
 
         // shift bands over each other
-        joinBands(ctrlPts, bandsCount, bandWidth);
+        joinBands(ctrlPts, settings.BandsCount, settings.getBandWidth());
         // mirror
         applyMirrorTransformation(ctrlPts);
         // TODO offset
@@ -152,14 +153,14 @@ public class HorizonGraphAction extends Action {
                         newNode.getDouble(COL_Y_POSITION) + offset);
             }
 
-            offset -= bandWidth * 11.0 / 10.0; // factor of 0.1 space between
+            offset -= settings.getBandWidth() * 11.0 / 10.0; // factor of 0.1 space between
                                                // two parameters
             // ATTENTION: HorizonAxisLabel needs to be changed if the factor is
             // changed here
         }
 
         // create aggregate tuple set for bands & add items to bands
-        initBands(bandWidth, vars);
+        initBands(vars);
     }
 
     private void initControlPointSchema(TemporalDataset tmpds,
@@ -461,7 +462,7 @@ public class HorizonGraphAction extends Action {
      *            a set of the different variables (e.g. { "insulin-dose",
      *            "glucose" })
      */
-    private void initBands(int bandsCount, Object[] variableSet) {
+    private void initBands(Object[] variableSet) {
         m_vis.removeGroup(groupBands);
         AggregateTable aggregates = m_vis.addAggregates(groupBands);
 
@@ -470,7 +471,7 @@ public class HorizonGraphAction extends Action {
         aggregates.addColumn(COL_COLOR_INDEX, int.class);
 
         for (Object variable : variableSet) {
-            for (int bandId = 1; bandId <= bandsCount; bandId++) {
+            for (int bandId = 1; bandId <= settings.BandsCount; bandId++) {
                 addAggregate(aggregates, variable, bandId);
                 addAggregate(aggregates, variable, -bandId);
             }

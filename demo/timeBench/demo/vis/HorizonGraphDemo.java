@@ -20,18 +20,22 @@ import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
+import prefuse.data.expression.ColumnExpression;
+import prefuse.data.expression.NotPredicate;
 import prefuse.data.io.DataIOException;
 import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.PolygonRenderer;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
+import prefuse.util.DataLib;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
@@ -52,6 +56,9 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.data.io.TextTableTemporalDatasetReader;
+import timeBench.ui.HorizonAxisLabels;
+import timeBench.ui.HorizonLegend;
+import timeBench.ui.HorizonSettings;
 import timeBench.ui.TimeAxisDisplay;
 import timeBench.util.HorizonColorPalette;
 
@@ -73,6 +80,7 @@ import timeBench.util.HorizonColorPalette;
  */
 public class HorizonGraphDemo {
 
+//    private static final String FILE_DATA = "data/nmmaps-resp-2short-matrix.csv";
     private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
     private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month
             .toInt();
@@ -119,12 +127,23 @@ public class HorizonGraphDemo {
         DataHelper.printMetadata(System.out, tmpds.getTemporalElements()
                 .getNodeTable());
         System.out.println();
+        
+        Object[] variables = DataLib.ordinalArray(tmpds.getNodes(), COL_CITY);
 
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         // display width must be set before the time scale
         // otherwise the initial layout does not match the display width
         display.setSize(700, 450);
+        
+        HorizonSettings settings = new HorizonSettings();
+        settings.Indexing = true;
+        settings.BandsCount = 3;
+        settings.IsLegendVisible = true;
+        settings.BandsCount = 4;
+        settings.setBandWidth(0.25);
+        
+        
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
@@ -150,11 +169,11 @@ public class HorizonGraphDemo {
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
-        ShapeRenderer dotRenderer = new ShapeRenderer(6);
+        ShapeRenderer dotRenderer = new ShapeRenderer(1);
         DefaultRendererFactory rf = new DefaultRendererFactory(dotRenderer);
         rf.add(new InGroupPredicate(GROUP_BANDS), new PolygonRenderer());
-        rf.add(new InGroupPredicate(GROUP_AXIS_LABELS), new AxisRenderer(
-                Constants.FAR_LEFT, Constants.CENTER));
+//        rf.add(new InGroupPredicate(GROUP_AXIS_LABELS), new AxisRenderer(
+//                Constants.FAR_LEFT, Constants.CENTER));
         vis.setRendererFactory(rf);
 
         // --------------------------------------------------------------------
@@ -165,7 +184,7 @@ public class HorizonGraphDemo {
         // indexing.setIndexedPoint((VisualItem) vg.nodes().next());
 
         HorizonGraphAction horizon = new HorizonGraphAction(GROUP_DATA,
-                GROUP_CONTROL_POINTS, GROUP_BANDS, COL_CITY, COL_DATA);
+                GROUP_CONTROL_POINTS, GROUP_BANDS, COL_CITY, COL_DATA, settings);
 
         TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_CONTROL_POINTS,
                 timeScale);
@@ -173,12 +192,14 @@ public class HorizonGraphDemo {
         AxisLayout y_axis = new AxisLayout(GROUP_CONTROL_POINTS,
                 HorizonGraphAction.COL_Y_POSITION, Constants.Y_AXIS,
                 VisiblePredicate.TRUE);
+        if(settings.IsLegendVisible) y_axis.setMargin(0, 0, HorizonLegend.HEIGHT, 0);
+        else                          y_axis.setMargin(0, 0, 0, 0);
         // set visible value range to 0..100
         // y_axis.setRangeModel(new NumberRangeModel(0.0d, 50.0d, 0d, 50d));
 
         // add value axis labels and horizontal grid lines
-        AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
-                y_axis, 5);
+//        AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
+//                y_axis, 5);
 
         // lineCreation add lines between all items in the group
         // Action lineCreation = new CategoryLinePlotAction(GROUP_LINES,
@@ -194,11 +215,12 @@ public class HorizonGraphDemo {
         // BasicStroke(3f));
 
         // color must be set -> otherwise nothing displayed
-        // ColorAction color = new DataColorAction(GROUP_CONTROL_POINTS,
-        // COL_CITY,
-        // Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
-        // color.add(new ColumnExpression(VisualItem.HOVER),
-        // ColorLib.rgb(255, 100, 255));
+        ColorAction color = new ColorAction(GROUP_CONTROL_POINTS,
+                new NotPredicate(new ColumnExpression(
+                        HorizonGraphAction.COL_IS_HELP_NODE)),
+                VisualItem.FILLCOLOR, ColorLib.gray(128));
+        color.add(new ColumnExpression(VisualItem.HOVER),
+                ColorLib.rgb(255, 100, 255));
 
         int[] palette = HorizonColorPalette.getColorPalette("default")
                 .getColors(3);
@@ -211,24 +233,24 @@ public class HorizonGraphDemo {
 
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
-        update.add(horizon);
         update.add(time_axis);
         update.add(y_axis);
-        update.add(y_labels);
+//        update.add(y_labels);
         update.add(new PolygonAggregateLayout(GROUP_BANDS));
         update.add(aggregateColorAction);
-        // update.add(color);
+        update.add(color);
         update.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, update);
 
         // runs once (at startup)
         ActionList draw = new ActionList();
+        draw.add(horizon);
         // draw.add(lineCreation);
         draw.add(update);
         // draw.add(shape);
         // draw.add(lineColor);
         // draw.add(lineStroke);
-        draw.add(new RepaintAction());
+//        draw.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, draw);
 
         // --------------------------------------------------------------------
@@ -241,21 +263,24 @@ public class HorizonGraphDemo {
         display.setBorder(BorderFactory.createEmptyBorder(7, 20, 7, 0));
 
         // ensure (horizontal) grid lines are in back of data items
-        display.setItemSorter(new ItemSorter() {
-            public int score(VisualItem item) {
-                int score = super.score(item);
-                if (GROUP_LINES.equals(item.getGroup()))
-                    score -= 1;
-                if (item.isInGroup(GROUP_AXIS_LABELS))
-                    score -= 2;
-                return score;
-            }
-        });
+//        display.setItemSorter(new ItemSorter() {
+//            public int score(VisualItem item) {
+//                int score = super.score(item);
+//                if (GROUP_LINES.equals(item.getGroup()))
+//                    score -= 1;
+//                if (item.isInGroup(GROUP_AXIS_LABELS))
+//                    score -= 2;
+//                return score;
+//            }
+//        });
+        
+        display.addPaintListener(new HorizonAxisLabels(variables, settings.IsLegendVisible));
+        display.addPaintListener(new HorizonLegend(settings) );
 
         // show value in tooltip
         // display.addControlListener(new ToolTipControl(COL_LABEL));
-        // display.addControlListener(new prefuse.controls.HoverActionControl(
-        // DemoEnvironmentFactory.ACTION_UPDATE));
+//         display.addControlListener(new prefuse.controls.HoverActionControl(
+//         DemoEnvironmentFactory.ACTION_UPDATE));
         // display.addControlListener(new IndexingControl(indexing)); TODO
 
         // --------------------------------------------------------------------
