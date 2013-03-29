@@ -41,7 +41,7 @@ public class BasicTimeScale implements TimeScale {
 
 	protected TimeUnit timeUnit;
 	protected TimeUnitProvider timeUnitProvider;
-	protected int minimumPixelPerUnit = 20;
+	protected int minimumPixelPerUnit = 28;
 
 	/**
 	 * Create a default {@link BasicTimeScale} with a default

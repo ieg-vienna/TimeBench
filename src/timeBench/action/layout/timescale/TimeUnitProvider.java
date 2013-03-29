@@ -106,6 +106,9 @@ public class TimeUnitProvider {
         tup.add(new GregorianTimeUnit("Millennia", Calendar.YEAR, 1000, yearFormatShort, yearFormatLong, yearFormatLong));
         // TODO better short format for centuries and millennia 
 
+//        for (TimeUnit u : tup.timeUnits) {
+//            System.out.printf("%15s %15d%n", u.getName(), u.getMaxLengthInMillis());
+//        }
 		return tup;
 	}
 
@@ -154,7 +157,7 @@ public class TimeUnitProvider {
         SimpleDateFormat dayFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
         tup.add(new GranularityTimeUnit("Days", day, dayFormatShort, dayFormatLong, dayFormatFull));
 
-        SimpleDateFormat weekFormatShort = new SimpleDateFormat("w");
+        SimpleDateFormat weekFormatShort = new SimpleDateFormat("w"); // "'W' w"
         String weekPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Woche" : "Week";
         SimpleDateFormat weekFormatLong = new SimpleDateFormat("'" + weekPrefix + "' w");
         SimpleDateFormat weekFormatFull = new SimpleDateFormat(dataformat + " HH:mm");
@@ -168,7 +171,7 @@ public class TimeUnitProvider {
 
         String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
         DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
-        DateFormat quarterFormatLong = new QuarterDateFormat(true, quarterPrefix, false);
+        DateFormat quarterFormatLong = new QuarterDateFormat(true, "Q ", false);
         DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
         tup.add(new GranularityTimeUnit("Quarters", quarter, 1, quarterFormatShort, quarterFormatLong, quarterFormatFull));
         
@@ -179,6 +182,9 @@ public class TimeUnitProvider {
         tup.add(new GranularityTimeUnit("Centuries", decade, 10, yearFormatShort, yearFormatLong, monthFormatFull));
         tup.add(new GranularityTimeUnit("Millennia", decade, 100, yearFormatShort, yearFormatLong, yearFormatLong));
         
+//        for (TimeUnit u : tup.timeUnits) {
+//            System.out.printf("%15s %15d%n", u.getName(), u.getMaxLengthInMillis());
+//        }
         return tup;
     }
 
