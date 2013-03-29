@@ -104,7 +104,7 @@ public class HorizonGraphDemo {
      */
     public static void main(String[] args) throws TemporalDataException,
             IOException, JAXBException, DataIOException {
-        // java.util.Locale.setDefault(java.util.Locale.US);
+         java.util.Locale.setDefault(java.util.Locale.US);
         Calendar calendar = CalendarManagerFactory.getSingleton(
                 CalendarManagers.JavaDate).getDefaultCalendar();
         TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
@@ -152,7 +152,7 @@ public class HorizonGraphDemo {
         // add a column that will store indexed values
         // tmpds.addDataColumn(COL_INDEXED, double.class, 0d);
 
-        long border = (tmpds.getSup() - tmpds.getInf()) / 20;
+        long border = (tmpds.getSup() - tmpds.getInf()) / 10;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
                 tmpds.getInf() - border, tmpds.getSup() + border,
                 display.getWidth() - 1);

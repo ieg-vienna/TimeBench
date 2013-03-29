@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import prefuse.Display;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
+import prefuse.util.ColorLib;
 import prefuse.util.display.PaintListener;
 import prefuse.util.ui.JRangeSlider;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
@@ -47,6 +48,29 @@ public class DemoEnvironmentFactory {
     public static final String ACTION_INIT = "init";
     public static final String ACTION_UPDATE = "update";
 
+    /**
+     * 10-class Paired qualitative color scheme from colorbrewer2.org
+     */
+    public static int[] pairedQualitative = { ColorLib.rgb(166, 206, 227),
+            ColorLib.rgb(31, 120, 180), ColorLib.rgb(178, 223, 138),
+            ColorLib.rgb(51, 160, 44), ColorLib.rgb(251, 154, 153),
+            ColorLib.rgb(227, 26, 28), ColorLib.rgb(253, 191, 111),
+            ColorLib.rgb(255, 127, 0), ColorLib.rgb(202, 178, 214),
+            ColorLib.rgb(106, 61, 154) };
+
+    public static int[] set3Qualitative = { ColorLib.rgb(141, 211, 199),
+            ColorLib.rgb(255, 255, 179), ColorLib.rgb(190, 186, 218),
+            ColorLib.rgb(251, 128, 114), ColorLib.rgb(128, 177, 211),
+            ColorLib.rgb(253, 180, 98), ColorLib.rgb(179, 222, 105),
+            ColorLib.rgb(252, 205, 229) };
+
+    public static int[] set1Qualitative = { ColorLib.rgb(228, 26, 28),
+            ColorLib.rgb(55, 126, 184), ColorLib.rgb(77, 175, 74),
+            ColorLib.rgb(152, 78, 163), ColorLib.rgb(255, 127, 0),
+            ColorLib.rgb(255, 255, 51), ColorLib.rgb(166, 86, 40),
+            ColorLib.rgb(247, 129, 191), ColorLib.rgb(153, 153, 153) };
+
+    
     /**
      * demo name to be displayed in the window title
      */
