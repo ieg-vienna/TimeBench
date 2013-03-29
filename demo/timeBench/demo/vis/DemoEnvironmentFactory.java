@@ -127,7 +127,7 @@ public class DemoEnvironmentFactory {
     }
 
     private void prepareTimeDisplay(final TimeAxisDisplay display,
-            RangeAdapter rangeAdapter, final AdvancedTimeScale timeScale) {
+            final RangeAdapter rangeAdapter, final AdvancedTimeScale timeScale) {
         display.setTimeScale(timeScale);
         if (display.getBorder() == null) {
             display.setBorder(BorderFactory.createEmptyBorder(7, 0, 7, 0));
@@ -157,6 +157,9 @@ public class DemoEnvironmentFactory {
         // react on window resize
         display.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
+                if (rangeAdapter != null) {
+                    rangeAdapter.getFullScale().setDisplayWidth(display.getWidth() - 1);
+                }
                 timeScale.setDisplayWidth(display.getWidth() - 1);
             }
         });
@@ -192,7 +195,7 @@ public class DemoEnvironmentFactory {
                         JRangeSlider.LEFTRIGHT_TOPBOTTOM));
             }
             // TODO bug: the overview time scale shows a twice as long period  
-//            south.add(new TimeScaleHeader(rangeAdapter.getFullScale()));
+            south.add(new TimeScaleHeader(rangeAdapter.getFullScale()));
         } else {
             TimeScaleStatusBar statusBar = new TimeScaleStatusBar(timeScale);
             // Mac-Workaround: GrowBox hides Label
