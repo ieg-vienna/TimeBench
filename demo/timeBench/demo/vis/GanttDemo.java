@@ -188,7 +188,9 @@ public class GanttDemo {
         draw.add(new ColorAction(GROUP_CAPTIONS, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
         draw.add(new ColorAction(GROUP_DATA + ".nodes", VisualItem.FILLCOLOR,
-                ColorLib.rgb(0, 90, 50)));
+                ColorLib.rgb(77, 175, 74))); // green from ColorBrewer Set 1
+//                ColorLib.rgb(141, 211, 199))); // green from ColorBrewer Set 3
+//                ColorLib.rgb(0, 90, 50))); // proposed by WA
         draw.add(new ColorAction(GROUP_DATA + ".edges", VisualItem.STROKECOLOR,
                 ColorLib.color(Color.DARK_GRAY)));
         draw.add(new RepaintAction());

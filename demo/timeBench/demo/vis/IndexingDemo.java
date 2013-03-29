@@ -95,16 +95,6 @@ public class IndexingDemo {
     private static final String GROUP_LINES = "lines";
 
     /**
-     * 10-class Paired qualitative color scheme from colorbrewer2.org
-     */
-    private static int[] palette = { ColorLib.rgb(166, 206, 227),
-            ColorLib.rgb(31, 120, 180), ColorLib.rgb(178, 223, 138),
-            ColorLib.rgb(51, 160, 44), ColorLib.rgb(251, 154, 153),
-            ColorLib.rgb(227, 26, 28), ColorLib.rgb(253, 191, 111),
-            ColorLib.rgb(255, 127, 0), ColorLib.rgb(202, 178, 214),
-            ColorLib.rgb(106, 61, 154) };;
-
-    /**
      * @param args
      * @throws TemporalDataException
      * @throws JAXBException
@@ -193,13 +183,13 @@ public class IndexingDemo {
 
         // visual attributes of line segments (can be created directly in add())
         Action lineColor = new DataColorAction(GROUP_LINES, COL_CITY,
-                Constants.NOMINAL, VisualItem.STROKECOLOR, setAlpha(palette,
+                Constants.NOMINAL, VisualItem.STROKECOLOR, setAlpha(DemoEnvironmentFactory.set3Qualitative,
                         127));
         Action lineStroke = new StrokeAction(GROUP_LINES, new BasicStroke(3f));
 
         // color must be set -> otherwise nothing displayed
         ColorAction color = new DataColorAction(GROUP_DATA, COL_CITY,
-                Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
+                Constants.NOMINAL, VisualItem.FILLCOLOR, DemoEnvironmentFactory.set3Qualitative);
         color.add(new ColumnExpression(VisualItem.HOVER),
                 ColorLib.rgb(255, 100, 255));
 
