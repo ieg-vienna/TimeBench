@@ -6,6 +6,7 @@
 <key id="_granularityContextID" attr.name="_granularityContextID" attr.type="int" for="node"/>
 <key id="_kind" attr.name="_kind" attr.type="int" for="node"/>
 <key id="class" attr.name="class" attr.type="long" for="node"/>
+<key id="depth" attr.name="depth" attr.type="long" for="node"/>
 <key id="label" attr.name="label" attr.type="string" for="node"/>
 <graph id="temporalData" edgedefault="directed">
 <node id="t0">
