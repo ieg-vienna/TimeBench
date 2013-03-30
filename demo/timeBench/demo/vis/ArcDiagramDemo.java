@@ -252,7 +252,7 @@ public class ArcDiagramDemo {
 		
         //UILib.setPlatformLookAndFeel();
 
-		try {
+		/*try {
 	        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader();
 	        sourceDataset = reader.readData(datasetFileName);			
 		} catch(TemporalDataException e) {
@@ -315,7 +315,7 @@ public class ArcDiagramDemo {
 		
 		//DebugHelper.printTemporalDatasetForest(System.out, action4.getTemporalDataset(), "label",TemporalObject.ID);
 		
-		TemporalDataset patterns = action4.getTemporalDataset();
+		TemporalDataset patterns = action4.getTemporalDataset();*/
 						
         /*try {
             GraphMLTemporalDatasetWriter writer = new GraphMLTemporalDatasetWriter();
@@ -327,7 +327,8 @@ public class ArcDiagramDemo {
 			e.printStackTrace();
 		}*/      
         
-		/*TemporalDataset events = null;
+    	Locale.setDefault(Locale.US);
+		TemporalDataset events = null;
 		TemporalDataset patterns = null;
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
@@ -336,7 +337,7 @@ public class ArcDiagramDemo {
 			events = gmltdr.readData(is);
 			is.close();
 			events.setRoots(null);
-			//DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
+			DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
 			gmltdr = new GraphMLTemporalDatasetReader();
 			f = new File("data\\cardiovascular_patterns.graphml");
 			is = new FileInputStream(f);
@@ -352,7 +353,7 @@ public class ArcDiagramDemo {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 
 		
         final JComponent display = createVisualization(patterns,events);
