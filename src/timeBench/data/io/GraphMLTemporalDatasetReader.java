@@ -210,6 +210,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private void configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException
     {
+        System.out.println("consider KEY for column: " + reader.getAttributeValue(null, Tokens.ATTRNAME));
     	//Check if TemporalElement attribute, which can be ignored since they are known
     	if(!reader.getAttributeValue(null, Tokens.ID).startsWith(TEMP_ELEMENT_ATTR_PREFIX)) {
 			@SuppressWarnings("rawtypes")
@@ -220,16 +221,15 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			if(Tokens.STRING.equals(typeString))
 				type = String.class;
 			else if(Tokens.INT.equals(typeString))
-				type = Integer.class;
+				type = int.class;
 			else if(Tokens.LONG.equals(typeString))
-				type = Long.class;
+				type = long.class;
 			else if(Tokens.DOUBLE.equals(typeString))
-				type = Double.class;
+				type = double.class;
 			else if(Tokens.FLOAT.equals(typeString))
-				type = Float.class;
+				type = float.class;
 			else if(Tokens.BOOLEAN.equals(typeString))
-				type = Boolean.class;
-			
+				type = boolean.class;
 			//generate a new data column for the TemporalDataset
 			tds.addDataColumn(reader.getAttributeValue(null, Tokens.ATTRNAME), type, null);
     	}
