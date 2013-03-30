@@ -197,7 +197,6 @@ public class ArcRenderer implements prefuse.render.Renderer {
 				double outerRadius = (child.getDouble(VisualItem.X2)-parent.getX())/2.0;		
 				
 				int ydirect = parent.getInt(ParentChildNode.DEPTH) % 2 == 1 ? 0 : 1;
-				
 				item.setBounds(parent.getX(),parent.getY()-ydirect*outerRadius,outerRadius*2,outerRadius);
 			}
 		}

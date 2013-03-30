@@ -282,8 +282,11 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				node.set(currentCol, Integer.parseInt(value));
 			else if(Double.class.equals(currentType))
 				node.set(currentCol, Double.parseDouble(value));
-			else if(Long.class.equals(currentType))
+			else if(Long.class.equals(currentType)) {
+				if(value.endsWith("L"))	// TL not sure is this is allowed for GraphML, but "best practice" is being lenient
+					value = value.substring(0, value.length()-1);
 				node.set(currentCol, Long.parseLong(value));
+			}
 			else if(Float.class.equals(currentType))
 				node.set(currentCol, Float.parseFloat(value));
 			else if(Boolean.class.equals(currentType)) 

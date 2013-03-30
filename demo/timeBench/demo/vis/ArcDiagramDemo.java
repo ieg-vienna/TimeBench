@@ -8,6 +8,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -71,6 +76,8 @@ import timeBench.data.expression.TemporalComparisonPredicate;
 import timeBench.data.expression.TemporalElementArrayExpression;
 import timeBench.data.expression.TemporalElementExpression;
 import timeBench.data.expression.TemporalShiftExpression;
+import timeBench.data.io.GraphMLTemporalDatasetReader;
+import timeBench.data.io.GraphMLTemporalDatasetWriter;
 import timeBench.data.io.TextTableTemporalDatasetReader;
 import timeBench.test.DebugHelper;
 import timeBench.test.DebugHelper.TemporalElementInformation;
@@ -280,7 +287,7 @@ public class ArcDiagramDemo {
 
 		TemporalDataset events = action2.getTemporalDataset();
 
-		//DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
+		DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
 		
 		MultiPredicatePatternDiscovery action3 = new MultiPredicatePatternDiscovery(events, 
 				events, new Predicate[] {
@@ -306,9 +313,47 @@ public class ArcDiagramDemo {
 				}, MultiPredicatePatternDiscovery.SPACING_ALLOWED);		
 		action4.run(0.0);
 		
-		DebugHelper.printTemporalDatasetForest(System.out, action4.getTemporalDataset(), "label",TemporalObject.ID);
+		//DebugHelper.printTemporalDatasetForest(System.out, action4.getTemporalDataset(), "label",TemporalObject.ID);
 		
 		TemporalDataset patterns = action4.getTemporalDataset();
+						
+        /*try {
+            GraphMLTemporalDatasetWriter writer = new GraphMLTemporalDatasetWriter();
+            events.setRoots(new long[] {0});
+			writer.writeData(events, "data\\cardiovascular_events.graphml");
+	        writer.writeData(patterns, "data\\cardiovascular_patterns.graphml");
+		} catch (DataIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/      
+        
+		/*TemporalDataset events = null;
+		TemporalDataset patterns = null;
+		try {
+			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
+			File f = new File("data\\cardiovascular_events.graphml");
+			InputStream is = new FileInputStream(f);
+			events = gmltdr.readData(is);
+			is.close();
+			events.setRoots(null);
+			//DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
+			gmltdr = new GraphMLTemporalDatasetReader();
+			f = new File("data\\cardiovascular_patterns.graphml");
+			is = new FileInputStream(f);
+			patterns = gmltdr.readData(is);
+			is.close();
+			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);
+		} catch (DataIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+
 		
         final JComponent display = createVisualization(patterns,events);
 
