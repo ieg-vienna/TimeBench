@@ -152,9 +152,11 @@ public class ArcDiagramDemo {
         layout.add(time_axis);
         layout.add(time_axis2);
         layout.add(new DataColorAction("events", "class", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR, new int[] { ColorLib.rgb(255,0,0), ColorLib.rgb(0,255,0),ColorLib.rgb(0,0,255)}));
+        		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
+        		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set1Qualitative[6]}));
         layout.add(new DataColorAction("patterns.nodes", "class", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR, new int[] { ColorLib.rgb(255,0,0), ColorLib.rgb(0,255,0),ColorLib.rgb(0,0,255)}));
+        		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
+        		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set1Qualitative[6]}));
         // layout.add(new SizeAction(DATA, 1)); // TODO try granularity -> size
         layout.add(new RepaintAction());
         vis.putAction("layout", layout);
