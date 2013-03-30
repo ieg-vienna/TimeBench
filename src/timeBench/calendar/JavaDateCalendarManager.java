@@ -788,10 +788,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Week:
 				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Month || 
 					Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Quarter ) {
-					result = String.format("%d",granule.getIdentifier()); 
+					result = String.format("W%d",granule.getIdentifier()); 
 				}
 				else
-					result = String.format("%d",granule.getIdentifier()+1);
+					result = String.format("W%d",granule.getIdentifier()+1);
 				break;
 			case Month:
 				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Year ) {
@@ -799,7 +799,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 					cal.setTimeInMillis(granule.getInf());
 					result = cal.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, Locale.getDefault());
 				} else
-					result = String.format("%d",granule.getIdentifier()+1);
+					result = String.format("M%d",granule.getIdentifier()+1);
+				break;
+			case Quarter:
+				result = String.format("Q%d",granule.getIdentifier()+1);
 				break;
 			case Year:
                 if(Granularities.Decade == Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier())) {
