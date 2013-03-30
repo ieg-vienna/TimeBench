@@ -517,7 +517,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 					case Month: {
 						GregorianCalendar cal = new GregorianCalendar(); cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 						cal.setTimeInMillis(granule.getInf());
-						result = cal.get(GregorianCalendar.WEEK_OF_MONTH);
+						result = cal.get(GregorianCalendar.WEEK_OF_MONTH)-1;
 						break;
 						}
 					case Quarter: {
