@@ -243,9 +243,9 @@ public class PlanningLinesDemo {
         draw.add(new ColorAction(GROUP_DATA_RIGHT + ".nodes", VisualItem.STROKECOLOR,
                 ColorLib.rgb(0, 0, 0)));
         draw.add(new ColorAction(GROUP_DATA_MAXDURATION + ".nodes", VisualItem.FILLCOLOR,
-                ColorLib.rgb(254, 217, 142)));
+        		DemoEnvironmentFactory.set3Qualitative[1]));
         draw.add(new ColorAction(GROUP_DATA_MINDURATION + ".nodes", VisualItem.FILLCOLOR,
-                ColorLib.rgb(254, 153, 41)));
+        		DemoEnvironmentFactory.set3Qualitative[5]));
         draw.add(new ColorAction(GROUP_DATA_MINDURATION + ".edges", VisualItem.STROKECOLOR,
                 ColorLib.rgb(127,127,127)));
         draw.add(new RepaintAction());
