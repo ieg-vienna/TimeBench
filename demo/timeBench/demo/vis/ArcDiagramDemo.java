@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.event.ChangeEvent;
@@ -232,15 +233,15 @@ public class ArcDiagramDemo {
 		TemporalDataset patterns = null;
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
-			File f = new File("data\\cardiovascular_events.graphml");
-			InputStream is = new FileInputStream(f);
+			File f = new File("data\\cardiovascular_events.graphml.gz");
+			InputStream is =  new GZIPInputStream(new FileInputStream(f));
 			events = gmltdr.readData(is);
 			is.close();
 			events.setRoots(null);
 			DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
 			gmltdr = new GraphMLTemporalDatasetReader();
-			f = new File("data\\cardiovascular_patterns.graphml");
-			is = new FileInputStream(f);
+			f = new File("data\\cardiovascular_patterns.graphml.gz");
+			is = new GZIPInputStream(new FileInputStream(f));
 			patterns = gmltdr.readData(is);
 			is.close();
 			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);
