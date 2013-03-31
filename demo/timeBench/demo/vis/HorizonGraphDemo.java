@@ -3,7 +3,6 @@ package timeBench.demo.vis;
 import ieg.prefuse.action.assignment.PaletteIndexColorAction;
 import ieg.prefuse.action.layout.CategoryLinePlotAction;
 import ieg.prefuse.action.layout.PolygonAggregateLayout;
-import ieg.prefuse.action.layout.TickAxisLabelLayout;
 import ieg.prefuse.data.DataHelper;
 
 import java.awt.event.MouseEvent;
@@ -20,8 +19,6 @@ import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.DataColorAction;
-import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ControlAdapter;
 import prefuse.data.Schema;
@@ -30,7 +27,6 @@ import prefuse.data.expression.AbstractExpression;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.NotPredicate;
 import prefuse.data.io.DataIOException;
-import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.PolygonRenderer;
 import prefuse.render.ShapeRenderer;
@@ -40,7 +36,6 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
-import prefuse.visual.sort.ItemSorter;
 import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
 import timeBench.action.analytical.IndexingAction;
 import timeBench.action.layout.HorizonGraphAction;
@@ -90,8 +85,8 @@ public class HorizonGraphDemo {
     private static final String COL_LABEL = "label";
 
     private static final String GROUP_DATA = "data";
-    private static final String GROUP_AXIS_LABELS = "ylab";
-    private static final String GROUP_LINES = "lines";
+//    private static final String GROUP_AXIS_LABELS = "ylab";
+//    private static final String GROUP_LINES = "lines";
     private static final String GROUP_BANDS = "groupBands";
     private static final String GROUP_CONTROL_POINTS = "groupHelpers";
 

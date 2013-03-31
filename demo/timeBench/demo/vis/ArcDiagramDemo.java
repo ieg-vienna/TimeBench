@@ -147,8 +147,8 @@ public class ArcDiagramDemo {
      * @throws TemporalDataException
      */
     public static void main(String[] args) throws TemporalDataException {
-		String datasetFileName = "data\\cardiovascular_mb.csv";
-		TemporalDataset sourceDataset = null;
+//		String datasetFileName = "data\\cardiovascular_mb.csv";
+//		TemporalDataset sourceDataset = null;
 		
         //UILib.setPlatformLookAndFeel();
 

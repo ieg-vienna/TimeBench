@@ -38,7 +38,6 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.ItemSorter;
-import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.IntervalAxisLayout2;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
@@ -55,9 +54,6 @@ import timeBench.data.Interval;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
-import timeBench.demo.vis.DemoEnvironmentFactory;
-import timeBench.demo.vis.IntervalDemo;
-import timeBench.test.DebugHelper;
 import timeBench.test.DebugHelper2;
 import timeBench.ui.TimeAxisDisplay;
 
@@ -90,6 +86,7 @@ public class PlanningLinesDemo {
     private static final String GROUP_DATA_MINDURATION = "data_minduration";
     private static final String GROUP_DATA_MAXDURATION = "data_maxduration";
 
+    @SuppressWarnings("unused")
     private static void schedule(TemporalDataset tmpds, long startDate,
             Granularity granularity) throws TemporalDataException {
         // forward planning -- move tasks based on dependencies
@@ -132,6 +129,7 @@ public class PlanningLinesDemo {
      * @param args
      * @throws TemporalDataException
      */
+    @SuppressWarnings("unused")
     public static void main(String[] args) throws TemporalDataException {
         java.util.Locale.setDefault(java.util.Locale.US);
         UILib.setPlatformLookAndFeel();

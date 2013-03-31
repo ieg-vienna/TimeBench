@@ -1,5 +1,7 @@
 package timeBench.demo.vis;
 
+import ieg.prefuse.RangeModelTransformationDisplay;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.event.ComponentAdapter;
@@ -7,57 +9,36 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.PrintStream;
-
-import ieg.prefuse.RangeModelTransformationDisplay;
-import ieg.prefuse.data.DataHelper;
-import ieg.util.xml.JaxbMarshaller;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import prefuse.Constants;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.ShapeAction;
 import prefuse.action.assignment.StrokeAction;
-import prefuse.action.layout.AxisLabelLayout;
-import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ToolTipControl;
 import prefuse.data.io.DataIOException;
-import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.LabelRenderer;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
-import prefuse.visual.expression.VisiblePredicate;
-import prefuse.visual.sort.ItemSorter;
 import timeBench.action.analytical.GranularityAggregationAction;
 import timeBench.action.analytical.GranularityAggregationSettings;
 import timeBench.action.assignment.OverlayDataColorAction;
 import timeBench.action.layout.GranularityTreeLabelLayout;
 import timeBench.action.layout.GranularityTreeLayout;
 import timeBench.action.layout.GranularityTreeLayoutSettings;
-import timeBench.action.layout.TimeAxisLayout;
-import timeBench.action.layout.timescale.AdvancedTimeScale;
-import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.io.TextTableTemporalDatasetReader;
-import timeBench.test.DebugHelper;
-import timeBench.ui.TimeAxisDisplay;
 import visual.sort.TreeItemSorter;
 
 /**
