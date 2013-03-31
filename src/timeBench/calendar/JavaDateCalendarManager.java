@@ -788,10 +788,10 @@ public class JavaDateCalendarManager implements CalendarManager {
 			case Week:
 				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Month || 
 					Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Quarter ) {
-					result = String.format("W%d",granule.getIdentifier()); 
+					result = String.format("%d",granule.getIdentifier()); 
 				}
 				else
-					result = String.format("W%d",granule.getIdentifier()+1);
+					result = String.format("%d",granule.getIdentifier()+1);
 				break;
 			case Month:
 				if(Granularities.fromInt(granule.getGranularity().getGranularityContextIdentifier()) == Granularities.Year ) {
