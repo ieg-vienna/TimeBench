@@ -3,97 +3,47 @@ package timeBench.demo.vis;
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.IntervalBarRenderer;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import prefuse.Constants;
-import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
-import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
-import prefuse.action.filter.VisibilityFilter;
 import prefuse.action.layout.AxisLayout;
-import prefuse.controls.HoverActionControl;
-import prefuse.controls.ToolTipControl;
-import prefuse.data.expression.AndPredicate;
-import prefuse.data.expression.ColumnExpression;
-import prefuse.data.expression.ComparisonPredicate;
-import prefuse.data.expression.NumericLiteral;
-import prefuse.data.expression.Predicate;
 import prefuse.data.io.DataIOException;
-import prefuse.render.AbstractShapeRenderer;
-import prefuse.render.AxisRenderer;
-import prefuse.render.DefaultRendererFactory;
 import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
-import prefuse.render.ShapeRenderer;
-import prefuse.util.ColorLib;
-import prefuse.util.display.PaintListener;
-import prefuse.util.ui.JRangeSlider;
-import prefuse.util.ui.UILib;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
-import prefuse.visual.VisualTable;
 import render.ArcRenderer;
-import timeBench.action.analytical.GranularityAggregationAction;
-import timeBench.action.analytical.GranularityAggregationSettings;
-import timeBench.action.analytical.IntervalEventFindingAction;
-import timeBench.action.analytical.MultiPredicatePatternDiscovery;
 import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
-import timeBench.calendar.CalendarManagers;
-import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.controls.BranchHighlightControl;
-import timeBench.controls.RangePanControl;
-import timeBench.controls.RangeZoomControl;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
-import timeBench.data.expression.TemporalComparisonPredicate;
-import timeBench.data.expression.TemporalElementArrayExpression;
-import timeBench.data.expression.TemporalElementExpression;
-import timeBench.data.expression.TemporalShiftExpression;
 import timeBench.data.io.GraphMLTemporalDatasetReader;
-import timeBench.data.io.GraphMLTemporalDatasetWriter;
-import timeBench.data.io.TextTableTemporalDatasetReader;
 import timeBench.test.DebugHelper;
-import timeBench.test.DebugHelper.TemporalElementInformation;
-import timeBench.ui.MouseTracker;
 import timeBench.ui.TimeAxisDisplay;
-import timeBench.ui.TimeScaleHeader;
-import timeBench.ui.TimeScalePainter;
-import timeBench.ui.actions.RangePanAction;
-import timeBench.ui.actions.RangeZoomAction;
 import visual.sort.SizeItemSorter;
 
 public class ArcDiagramDemo {
 
     private static final String MAXX_FIELD = VisualItem.X2;
 
-    private static JComponent createVisualization(TemporalDataset patterns, TemporalDataset events) {
+    private static void createVisualization(TemporalDataset patterns, TemporalDataset events) {
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         display.setSize(1200, 300);
@@ -110,6 +60,21 @@ public class ArcDiagramDemo {
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
+
+        long border = (events.getSup() - events.getInf()) / 20;
+        final AdvancedTimeScale timeScale = new AdvancedTimeScale(
+                events.getInf() - border, events.getSup() + border,
+                display.getWidth() - 1);
+        final AdvancedTimeScale overviewTimeScale = new AdvancedTimeScale(timeScale);
+        RangeAdapter rangeAdapter = new RangeAdapter(overviewTimeScale,
+                timeScale);
+
+        timeScale.setAdjustDateRangeOnResize(true);
+        timeScale.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
+            }
+        });
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
@@ -132,19 +97,6 @@ public class ArcDiagramDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        long border = (patterns.getSup() - patterns.getInf()) / 20;
-        final AdvancedTimeScale timeScale = new AdvancedTimeScale(
-        		patterns.getInf() - border, patterns.getSup() + border, display.getWidth() - 1);
-        AdvancedTimeScale overviewTimeScale = new AdvancedTimeScale(timeScale);
-        RangeAdapter rangeAdapter = new RangeAdapter(overviewTimeScale, timeScale);
-
-        timeScale.setAdjustDateRangeOnResize(true);
-        timeScale.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                vis.run("layout");
-            }
-        });
-
         ActionList layout = new ActionList();
         AxisLayout y_axis = new AxisLayout("events", VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis);
@@ -166,80 +118,28 @@ public class ArcDiagramDemo {
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         // layout.add(new SizeAction(DATA, 1)); // TODO try granularity -> size
         layout.add(new RepaintAction());
-        vis.putAction("layout", layout);
+        vis.putAction(DemoEnvironmentFactory.ACTION_INIT, layout);
+        vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, layout);
 
         // --------------------------------------------------------------------
         // STEP 4: set up a display and controls
-        display.setTimeScale(timeScale);
         display.setHighQuality(true);
         display.setBorder(BorderFactory.createEmptyBorder(7, 0, 7, 0));
         display.setItemSorter(new SizeItemSorter());
 
-        final TimeScalePainter timeScalePainter = new TimeScalePainter(display);
-        timeScalePainter.setPaintWeekend(false);
-        timeScalePainter.setTimeScale(timeScale);
-
-        final MouseTracker mouseTracker = new MouseTracker(display, timeScale);
-
-        display.addPaintListener(new PaintListener() {
-            public void postPaint(Display d, Graphics2D g) {
-                mouseTracker.paintTimeAtPosition(g);
-            }
-
-            public void prePaint(Display d, Graphics2D g) {
-                g.transform(d.getInverseTransform());
-                timeScalePainter.paint(g);
-                g.transform(d.getTransform());
-            }
-        });
-
-        // react on window resize
-        display.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
-                timeScale.setDisplayWidth(display.getWidth() - 1);
-            }
-        });
 
         //display.addControlListener(new ToolTipControl("caption"));
-        display.addControlListener(new RangePanControl(rangeAdapter));
-        display.addControlListener(new RangeZoomControl(rangeAdapter));
         display.addControlListener(new BranchHighlightControl());
               
-        vis.run("layout");
+//        vis.run("layout");
        
-       
-        
         // --------------------------------------------------------------------
-        // STEP 5: set up Swing GUI
-        JPanel box = new JPanel(new BorderLayout());
-        box.add(new TimeScaleHeader(timeScale), BorderLayout.NORTH);
-        box.add(display);
-        Box south = Box.createVerticalBox();
-        south.add(new JRangeSlider(rangeAdapter, JRangeSlider.HORIZONTAL, JRangeSlider.LEFTRIGHT_TOPBOTTOM));
-        south.add(new TimeScaleHeader(overviewTimeScale));
-        box.add(south, BorderLayout.SOUTH);
-        
-        //JToolBar toolbar = new JToolBar();
-        //toolbar.setOrientation(JToolBar.VERTICAL);
-        //toolbar.add(new RangeZoomAction(rangeAdapter, 10));
-        //toolbar.add(new RangeZoomAction(rangeAdapter, -10));
-        //toolbar.add(new RangePanAction(rangeAdapter, -20));
-        //toolbar.add(new RangePanAction(rangeAdapter, 20));
-        //box.add(toolbar, BorderLayout.EAST);
+        // STEP 5: launching the visualization
 
-        return box;
-    }
-
-    private static void createAndShowGUI(JComponent display) {
-        JFrame frame = new JFrame();
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("TimeBench | ArcDiagram Demo using MultiPredicatePatternDiscovery");
-
-        frame.getContentPane().add(display);
-
-        frame.pack();
-        frame.setVisible(true);
+        DemoEnvironmentFactory env = new DemoEnvironmentFactory("gantt chart");
+        env.setPaintWeekends(false);
+        System.out.println("--------");
+        env.show(display, rangeAdapter);
     }
 
     /**
@@ -354,14 +254,11 @@ public class ArcDiagramDemo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+        DataHelper.printMetadata(System.out, events.getNodeTable());
+		DataHelper.printMetadata(System.out, patterns.getNodeTable());
 
 		
-        final JComponent display = createVisualization(patterns,events);
-
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI(display);
-            }
-        });
+        createVisualization(patterns,events);
     }
 }
