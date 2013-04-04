@@ -2,7 +2,6 @@ package timeBench.action.analytical;
 
 import ieg.prefuse.data.ParentChildNode;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -12,7 +11,6 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.data.GenericTemporalElement;
 import timeBench.data.GranularityAggregationTree;
 import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.Instant;
@@ -20,7 +18,6 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
-import timeBench.test.DebugHelper;
 
 /**
  * 

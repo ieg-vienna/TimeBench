@@ -54,7 +54,7 @@ import timeBench.data.Interval;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
-import timeBench.test.DebugHelper2;
+import timeBench.util.DebugHelper;
 import timeBench.ui.TimeAxisDisplay;
 
 /**
@@ -141,7 +141,7 @@ public class PlanningLinesDemo {
                 JavaDateCalendarManager.getSingleton()
                         .getTopGranularityIdentifier());
 
-        TemporalDataset tmpds = DebugHelper2
+        TemporalDataset tmpds = DebugHelper
                 .generateIndeterminateProjectPlan(20, granularity);
         schedule(tmpds, System.currentTimeMillis(), granularity);
         // DataHelper.printTable(System.out, tmpds.getNodeTable());

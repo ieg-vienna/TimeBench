@@ -52,7 +52,7 @@ import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.demo.vis.DemoEnvironmentFactory;
 import timeBench.demo.vis.IntervalDemo;
-import timeBench.test.DebugHelper;
+import timeBench.util.DebugHelper;
 import timeBench.ui.TimeAxisDisplay;
 
 /**

@@ -1,32 +1,24 @@
 package timeBench.action.layout;
 
+import ieg.prefuse.RangeModelTransformationProvider;
+import ieg.prefuse.data.LinkedTree;
+import ieg.prefuse.data.LinkedTree.LinkedNode;
+
+import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import prefuse.Constants;
-import prefuse.action.GroupAction;
 import prefuse.action.layout.Layout;
 import prefuse.data.Schema;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.util.PrefuseLib;
 import prefuse.util.ui.ValuedRangeModel;
-import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
-
-import ieg.prefuse.RangeModelTransformationProvider;
-import ieg.prefuse.data.DataHelper;
-import ieg.prefuse.data.LinkedTree;
-import ieg.prefuse.data.LinkedTree.LinkedNode;
-import ieg.prefuse.data.query.NestedNumberRangeModel;
-
-import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-
 import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTree;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalObject;
-import timeBench.test.DebugHelper;
 
 public class GranularityTreeLayout extends Layout implements RangeModelTransformationProvider {
 
