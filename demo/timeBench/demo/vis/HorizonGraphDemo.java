@@ -55,6 +55,7 @@ import timeBench.ui.HorizonAxisLabels;
 import timeBench.ui.HorizonLegend;
 import timeBench.ui.HorizonSettings;
 import timeBench.ui.TimeAxisDisplay;
+import timeBench.util.DemoEnvironmentFactory;
 import timeBench.util.HorizonColorPalette;
 
 /**

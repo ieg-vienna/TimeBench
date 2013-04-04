@@ -39,6 +39,7 @@ import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.io.TextTableTemporalDatasetReader;
+import timeBench.util.DemoEnvironmentFactory;
 import visual.sort.TreeItemSorter;
 
 /**

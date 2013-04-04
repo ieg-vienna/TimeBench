@@ -55,6 +55,7 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.util.DebugHelper;
+import timeBench.util.DemoEnvironmentFactory;
 import timeBench.ui.TimeAxisDisplay;
 
 /**

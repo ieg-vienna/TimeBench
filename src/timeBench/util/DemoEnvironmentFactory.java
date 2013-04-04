@@ -1,4 +1,4 @@
-package timeBench.demo.vis;
+package timeBench.util;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;

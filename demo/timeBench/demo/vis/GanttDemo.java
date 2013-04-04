@@ -50,9 +50,9 @@ import timeBench.data.Interval;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
-import timeBench.demo.vis.DemoEnvironmentFactory;
 import timeBench.demo.vis.IntervalDemo;
 import timeBench.util.DebugHelper;
+import timeBench.util.DemoEnvironmentFactory;
 import timeBench.ui.TimeAxisDisplay;
 
 /**

@@ -27,6 +27,7 @@ import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.util.DebugHelper;
+import timeBench.util.DemoEnvironmentFactory;
 import timeBench.ui.TimeAxisDisplay;
 
 /**

@@ -37,6 +37,7 @@ import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.data.io.GraphMLTemporalDatasetReader;
 import timeBench.util.DebugHelper;
+import timeBench.util.DemoEnvironmentFactory;
 import timeBench.ui.TimeAxisDisplay;
 import visual.sort.SizeItemSorter;
 

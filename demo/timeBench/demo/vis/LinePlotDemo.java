@@ -48,6 +48,7 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.ui.TimeAxisDisplay;
+import timeBench.util.DemoEnvironmentFactory;
 
 /**
  * Intermediate demo of a line plot showing a numerical variable over time.

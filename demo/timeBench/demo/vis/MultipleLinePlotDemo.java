@@ -55,6 +55,7 @@ import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.data.io.TextTableTemporalDatasetReader;
 import timeBench.ui.TimeAxisDisplay;
+import timeBench.util.DemoEnvironmentFactory;
 
 /**
  * Intermediate demo of a line plot showing multiple numerical variables over

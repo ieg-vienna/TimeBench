@@ -29,6 +29,7 @@ import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.ui.TimeAxisDisplay;
+import timeBench.util.DemoEnvironmentFactory;
 
 /**
  * Simple demo of a dot plot showing a numerical variable over time. 
