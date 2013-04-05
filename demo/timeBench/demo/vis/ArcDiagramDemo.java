@@ -3,13 +3,7 @@ package timeBench.demo.vis;
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.IntervalBarRenderer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
-import java.util.zip.GZIPInputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.event.ChangeEvent;
@@ -36,9 +30,9 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.data.io.GraphMLTemporalDatasetReader;
+import timeBench.ui.TimeAxisDisplay;
 import timeBench.util.DebugHelper;
 import timeBench.util.DemoEnvironmentFactory;
-import timeBench.ui.TimeAxisDisplay;
 import visual.sort.SizeItemSorter;
 
 public class ArcDiagramDemo {
@@ -138,7 +132,7 @@ public class ArcDiagramDemo {
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
 
-        DemoEnvironmentFactory env = new DemoEnvironmentFactory("gantt chart");
+        DemoEnvironmentFactory env = new DemoEnvironmentFactory("arc diagram");
         env.setPaintWeekends(false);
         System.out.println("--------");
         env.show(display, rangeAdapter);
@@ -154,32 +148,21 @@ public class ArcDiagramDemo {
 		TemporalDataset patterns = null;
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
-			File f = new File("data\\cardiovascular_events.graphml.gz");
-			InputStream is =  new GZIPInputStream(new FileInputStream(f));
-			events = gmltdr.readData(is);
-			is.close();
+			events = gmltdr.readData("data/cardiovascular_events.graphml.gz");
+			
 			events.setRoots(null);
 			DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
+			
 			gmltdr = new GraphMLTemporalDatasetReader();
-			f = new File("data\\cardiovascular_patterns.graphml.gz");
-			is = new GZIPInputStream(new FileInputStream(f));
-			patterns = gmltdr.readData(is);
-			is.close();
+			patterns = gmltdr.readData("data/cardiovascular_patterns.graphml.gz");
+			
 			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);
 		} catch (DataIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
         DataHelper.printMetadata(System.out, events.getNodeTable());
 		DataHelper.printMetadata(System.out, patterns.getNodeTable());
-
 		
         createVisualization(patterns,events);
     }

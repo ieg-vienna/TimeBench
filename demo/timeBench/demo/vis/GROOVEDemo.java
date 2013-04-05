@@ -54,7 +54,7 @@ public class GROOVEDemo {
     private static final String GROUP_X_LABELS = "xlab";
     private static final String GROUP_Y_LABELS = "ylab";
     
-	private static final String DATASET_FILE_NAME = "data\\cardiovascular_mb.csv";
+	private static final String DATASET_FILE_NAME = "data/cardiovascular_mb.csv";
 
     
     /**
@@ -202,7 +202,7 @@ public class GROOVEDemo {
 		JFrame frame = new JFrame();
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("HypoVis Studio");
+		frame.setTitle("GROOVE");
 
 		frame.getContentPane().add(display);
 		
