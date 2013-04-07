@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Vector;
 
 import prefuse.action.Action;
-import prefuse.data.Graph;
 import prefuse.data.Node;
-import prefuse.data.Table;
-import prefuse.data.Tuple;
 import prefuse.data.expression.AndPredicate;
 import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.ColumnExpression;
@@ -17,12 +14,10 @@ import prefuse.data.expression.NotPredicate;
 import prefuse.data.expression.ObjectLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.util.DataLib;
-import prefuse.util.collections.IntIterator;
 import prefuse.visual.AggregateItem;
 import prefuse.visual.AggregateTable;
 import prefuse.visual.VisualItem;
-import timeBench.action.analytical.IndexingAction;
-import timeBench.action.analytical.TemporalDataIndexingAction;
+import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.Instant;
@@ -67,11 +62,11 @@ public class HorizonGraphAction extends Action {
      */
     private String fieldValue;
 
-    private TemporalDataIndexingAction indexing;
+    private InterpolationIndexingAction indexing;
 
     private HorizonSettings settings;
 
-    public IndexingAction getIndexing() {
+    public InterpolationIndexingAction getIndexing() {
         return indexing;
     }
 
@@ -85,7 +80,7 @@ public class HorizonGraphAction extends Action {
         this.fieldValue = fieldValue;
         this.settings = settings;
 
-        indexing = new TemporalDataIndexingAction(groupControlPoints,
+        indexing = new InterpolationIndexingAction(groupControlPoints,
                 fieldValue, COL_Y_POSITION, fieldVariable);
     }
 
@@ -128,8 +123,6 @@ public class HorizonGraphAction extends Action {
 
         // indexing
         indexing.setVisualization(m_vis);
-        indexing.setIndexedPoint((VisualItem) m_vis
-                .getVisualGroup(groupControlPoints).tuples().next());
         indexing.run(frac);
 
         // create helper points
@@ -169,6 +162,8 @@ public class HorizonGraphAction extends Action {
 
         // create aggregate tuple set for bands & add items to bands
         initBands(vars);
+        
+//        ieg.prefuse.data.DataHelper.printTable(System.out, m_vis.getVisualGroup(groupControlPoints), COL_Y_POSITION, VisualItem.VISIBLE, VisualItem.INTERACTIVE);
     }
 
     private void initControlPointSchema(TemporalDataset tmpds,
@@ -506,13 +501,13 @@ public class HorizonGraphAction extends Action {
         
         List<TimeValuePair> pointsInPositiveExtremeValues = getPointsInExtremeBand(ctrlPts, variable, bandWidth * settings.BandsCount, bandWidth);
         for(TimeValuePair point : pointsInPositiveExtremeValues) {
-            System.out.println("pos. extr.:"  + point.time + " " + point.value + " " + variable);
+//            System.out.println("pos. extr.:"  + point.time + " " + point.value + " " + variable);
             addHelpNode(ctrlPts, variable, HorizonGraphAction.BAND_ID_POSITIVE_EXTREME_VALUES, point.time, point.value);
         }
         
         List<TimeValuePair> pointsInNegativeExtremeValues = getPointsInExtremeBand(ctrlPts, variable, -bandWidth * settings.BandsCount, bandWidth);
         for(TimeValuePair point : pointsInNegativeExtremeValues) {
-            System.out.println("neg. extr.:"  + point.time + " " + point.value + " " + variable);
+//            System.out.println("neg. extr.:"  + point.time + " " + point.value + " " + variable);
             addHelpNode(ctrlPts, variable, HorizonGraphAction.BAND_ID_NEGATIVE_EXTREME_VALUES, point.time, point.value);
         }
     }

@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
 
 import prefuse.Constants;
+import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
@@ -37,11 +38,12 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
 import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
-import timeBench.action.analytical.IndexingAction;
+import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.action.layout.HorizonGraphAction;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
+import timeBench.action.layout.timescale.TimeScale;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
@@ -277,13 +279,14 @@ public class HorizonGraphDemo {
         // display.addControlListener(new ToolTipControl(COL_LABEL));
 //         display.addControlListener(new prefuse.controls.HoverActionControl(
 //         DemoEnvironmentFactory.ACTION_UPDATE));
-        // display.addControlListener(new IndexingControl(indexing)); TODO
+        display.addControlListener(new IndexingControl(horizon.getIndexing(), timeScale)); // TODO
+        horizon.getIndexing().setIndexTime(tmpds.getInf());
 
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
 
         DemoEnvironmentFactory env = new DemoEnvironmentFactory(
-                "multiple line plot");
+                "horizon graph");
         env.setPaintWeekends(false);
         env.show(display, rangeAdapter);
     }
@@ -320,16 +323,28 @@ public class HorizonGraphDemo {
 
     static class IndexingControl extends ControlAdapter {
 
-        protected IndexingAction action;
+        protected InterpolationIndexingAction action;
+        protected TimeScale timeScale;
 
-        public IndexingControl(IndexingAction action) {
+        public IndexingControl(InterpolationIndexingAction action,
+                TimeScale timeScale) {
             this.action = action;
+            this.timeScale = timeScale;
         }
 
         @Override
         public void itemClicked(VisualItem item, MouseEvent e) {
-            action.setIndexedPoint(item);
-            item.getVisualization().run(DemoEnvironmentFactory.ACTION_UPDATE);
+            this.mouseClicked(e);
         }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            long time = timeScale.getDateAtPixel(e.getX());
+            // System.out.println("item " + e.getX() + " " + time);
+            action.setIndexTime(time);
+            ((Display) e.getComponent()).getVisualization().run(
+                    DemoEnvironmentFactory.ACTION_INIT);
+        }
+
     }
 }
