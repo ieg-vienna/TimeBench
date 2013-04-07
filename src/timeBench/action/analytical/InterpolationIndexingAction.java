@@ -40,7 +40,7 @@ public class InterpolationIndexingAction extends IndexingAction {
         Iterator items = m_vis.items(m_group);
         if (! items.hasNext()) {
             // empty tuple set -> nothing to do 
-            System.out.println("empty tuple set -> nothing to do");
+//            System.out.println("empty tuple set -> nothing to do");
             return;
         }
         Tuple tuple = ((VisualItem) items.next()).getSourceTuple();
@@ -59,23 +59,24 @@ public class InterpolationIndexingAction extends IndexingAction {
                 + windowSize, Index.TYPE_AII);
 
         
-        System.out.printf("searching window: %tF - %tF %n", (indexTime-windowSize), (indexTime+windowSize));
+//        System.out.printf("searching window: %tF - %tF %n", (indexTime-windowSize), (indexTime+windowSize));
         
         while (ii.hasNext()) {
             GenericTemporalElement el = store.getTemporalElementByRow(ii.nextInt());
-            System.out.println("in window: " + el);
+//            System.out.println("in window: " + el);
             if (el.isAnchored()) {
                 for (TemporalObject obj : el.temporalObjects(tmpds)) {
+//                    System.out.println("     with: " + obj + " value=" + obj.getDouble(absoluteValueField));
                     if (el.getSup() < indexTime) {
                         TemporalObject prev = left.get(obj.get(categoryField));
-                        if (prev != null
-                                && prev.getTemporalElement().getSup() < el.getSup()) {
+                        if (prev == null
+                                || prev.getTemporalElement().getSup() < el.getSup()) {
                             left.put(obj.get(categoryField), obj);
                         }
                     } else if (el.getInf() > indexTime) {
                         TemporalObject prev = right.get(obj.get(categoryField));
-                        if (prev != null
-                                && prev.getTemporalElement().getInf() > el.getInf()) {
+                        if (prev == null
+                                || prev.getTemporalElement().getInf() > el.getInf()) {
                             right.put(obj.get(categoryField), obj);
                         }
                     } else {
@@ -85,10 +86,11 @@ public class InterpolationIndexingAction extends IndexingAction {
                 }
             }
         }
+//        System.out.println("structures center: " + center.size() + " left: " + left.size() + " right: " + right.size());
         
         for (Map.Entry<Object, TemporalObject> e : center.entrySet()) {
             factors.put(e.getKey(), 1.0d / e.getValue().getDouble(absoluteValueField));
-            System.out.println("center key=" + e.getKey() + " value=" + e.getValue().getDouble(absoluteValueField));
+//            System.out.println("center key=" + e.getKey() + " value=" + e.getValue().getDouble(absoluteValueField));
             left.remove(e.getKey());
             right.remove(e.getKey());
         }
@@ -101,11 +103,11 @@ public class InterpolationIndexingAction extends IndexingAction {
                         + (indexTime - l.getTemporalElement().getSup())
                         * (r.getDouble(absoluteValueField) - l.getDouble(absoluteValueField))
                         / (r.getTemporalElement().getInf() - l.getTemporalElement().getSup());
-                System.out.println("interp key=" + e.getKey() + " value=" + value);
+//                System.out.println("interp key=" + e.getKey() + " value=" + value);
                 factors.put(e.getKey(), 1.0d / value);
             } else {
                 factors.put(e.getKey(), 1.0d / l.getDouble(absoluteValueField));
-                System.out.println("left## key=" + e.getKey() + " value=" + l.getDouble(absoluteValueField));
+//                System.out.println("left## key=" + e.getKey() + " value=" + l.getDouble(absoluteValueField));
             }
             right.remove(e.getKey());
         }
@@ -113,7 +115,7 @@ public class InterpolationIndexingAction extends IndexingAction {
         for (Map.Entry<Object, TemporalObject> e : right.entrySet()) {
             TemporalObject r = e.getValue();
             factors.put(e.getKey(), 1.0d / r.getDouble(absoluteValueField));
-            System.out.println("right# key=" + e.getKey() + " value=" + r.getDouble(absoluteValueField));
+//            System.out.println("right# key=" + e.getKey() + " value=" + r.getDouble(absoluteValueField));
         }
     }
 
