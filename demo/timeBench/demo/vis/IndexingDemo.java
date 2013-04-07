@@ -17,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
 
 import prefuse.Constants;
+import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
@@ -45,11 +46,12 @@ import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
 import prefuse.visual.sort.ItemSorter;
 import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
-import timeBench.action.analytical.IndexingAction;
+import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.action.analytical.TemporalDataIndexingAction;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
+import timeBench.action.layout.timescale.TimeScale;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
@@ -162,8 +164,8 @@ public class IndexingDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        IndexingAction indexing = new TemporalDataIndexingAction(GROUP_DATA, COL_DATA, COL_INDEXED, COL_CITY);
-        indexing.setIndexedPoint((VisualItem) vt.tuples().next());
+        InterpolationIndexingAction indexing = new InterpolationIndexingAction(GROUP_DATA, COL_DATA, COL_INDEXED, COL_CITY);
+        indexing.setIndexTime(tmpds.getInf());
 
         TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
         
@@ -242,7 +244,7 @@ public class IndexingDemo {
         display.addControlListener(new ToolTipControl(COL_LABEL));
         display.addControlListener(new prefuse.controls.HoverActionControl(
                 DemoEnvironmentFactory.ACTION_UPDATE));
-        display.addControlListener(new IndexingControl(indexing));
+        display.addControlListener(new IndexingControl(indexing, timeScale));
 
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
@@ -285,16 +287,28 @@ public class IndexingDemo {
     
     static class IndexingControl extends ControlAdapter {
 
-        protected IndexingAction action;
+        protected InterpolationIndexingAction action;
+        protected TimeScale timeScale;
 
-        public IndexingControl(IndexingAction action) {
+        public IndexingControl(InterpolationIndexingAction action,
+                TimeScale timeScale) {
             this.action = action;
+            this.timeScale = timeScale;
         }
 
         @Override
         public void itemClicked(VisualItem item, MouseEvent e) {
-            action.setIndexedPoint(item);
-            item.getVisualization().run(DemoEnvironmentFactory.ACTION_UPDATE);
+            this.mouseClicked(e);
         }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            long time = timeScale.getDateAtPixel(e.getX());
+            // System.out.println("item " + e.getX() + " " + time);
+            action.setIndexTime(time);
+            ((Display) e.getComponent()).getVisualization().run(
+                    DemoEnvironmentFactory.ACTION_UPDATE);
+        }
+
     }
 }
