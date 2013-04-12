@@ -2,9 +2,14 @@ package timeBench.data.expression;
 
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
+import prefuse.data.expression.ColumnExpression;
+import prefuse.data.expression.ExpressionVisitor;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalElementStore;
 
+// TODO should this class be exposed to the public or hidden inside TemporalTable
+// TODO should it be flexible to accept id as expression (e.g., [field]+1)? 
+// TODO rename to TemporalElementByIdExpression?
 public class TemporalColumnExpression extends TemporalExpression {
 
     protected final String field;
@@ -22,6 +27,7 @@ public class TemporalColumnExpression extends TemporalExpression {
         this.primitive = primitive;
     }
 
+    // TODO should this extend TemporalExpression? in that case getType() inherited
     @SuppressWarnings("rawtypes")
     @Override
     public Class getType(Schema s) {
@@ -45,5 +51,13 @@ public class TemporalColumnExpression extends TemporalExpression {
 
     public boolean isPrimitive() {
         return primitive;
+    }
+
+    @Override
+    public void visit(ExpressionVisitor v) {
+        super.visit(v);
+        // expose id column to ExpressionAnalyzer.getReferencedColumns()
+        ColumnExpression c = new ColumnExpression(field);
+        v.down(); c.visit(v); v.up();
     }
 }

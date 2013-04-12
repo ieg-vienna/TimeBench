@@ -3,6 +3,11 @@ package timeBench.data;
 import prefuse.data.DataTypeException;
 import prefuse.data.column.LongColumn;
 
+/**
+ * Simple realization of a temporal column without caching.
+ * @author Rind
+ */
+@Deprecated
 public class TemporalColumn extends LongColumn {
 
     private TemporalElementStore tmpstr;
