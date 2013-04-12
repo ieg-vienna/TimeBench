@@ -2,10 +2,8 @@ package timeBench.data.expression;
 
 import java.util.ArrayList;
 
-import groovy.lang.Newify;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
-import prefuse.data.expression.AbstractExpression;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalElement;
 
@@ -43,7 +41,8 @@ public class TemporalShiftExpression extends TemporalExpression {
 	/* (non-Javadoc)
 	 * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)
 	 */
-	@Override
+	@SuppressWarnings("rawtypes")
+    @Override
 	public Class getType(Schema s) {
 		if (temporalElementExpression != null)
 			return TemporalElement.class;

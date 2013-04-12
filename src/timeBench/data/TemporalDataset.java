@@ -52,7 +52,15 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      */
     protected String[] additionalNonDataColums = new String[0];
     
-    /**
+    public String[] getAdditionalNonDataColums() {
+		return additionalNonDataColums;
+	}
+
+	public void setAdditionalNonDataColums(String[] additionalNonDataColums) {
+		this.additionalNonDataColums = additionalNonDataColums;
+	}
+
+	/**
      * index for {@link TemporalObject} row numbers by {@link TemporalObject#ID}. 
      */
     private Index indexObjects;
@@ -727,6 +735,10 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         return temporalElements.addInterval(span, end);
     }
     
+	public GenericTemporalElement addIndeterminateInterval(Interval begin, Interval end) {
+		return temporalElements.addIndeterminateInterval(begin, end);
+	}
+    
     public AnchoredTemporalElement addAnchoredSet(TemporalElement... elements) throws TemporalDataException {
         return temporalElements.addAnchoredSet(elements);
     }
@@ -758,16 +770,34 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
 
     @Override
     public long getInf() {
-        // TODO ignore unanchored temporal elements (use IntervalIndex?)
-        Table elem = temporalElements.getNodeTable(); 
-        return elem.getLong(elem.getMetadata(TemporalElement.INF).getMinimumRow(), TemporalElement.INF);
+        // TODO use IntervalIndex instead (?)
+        IntIterator elIterator = temporalElements.getNodeTable()
+                .index(TemporalElement.INF).allRows(Index.TYPE_ASCENDING);
+        while (elIterator.hasNext()) {
+            TemporalElement el = temporalElements
+                    .getTemporalPrimitiveByRow(elIterator.nextInt());
+            if (el.isAnchored()) {
+                return el.getLong(TemporalElement.INF);
+            }
+        }
+        // no anchored elements in dataset
+        return Long.MIN_VALUE;
     }
 
     @Override
     public long getSup() {
-        // TODO ignore unanchored temporal elements (use IntervalIndex?)
-        Table elem = temporalElements.getNodeTable(); 
-        return elem.getLong(elem.getMetadata(TemporalElement.SUP).getMaximumRow(), TemporalElement.SUP);
+        // TODO use IntervalIndex instead (?)
+        IntIterator elIterator = temporalElements.getNodeTable()
+                .index(TemporalElement.SUP).allRows(Index.TYPE_DESCENDING);
+        while (elIterator.hasNext()) {
+            TemporalElement el = temporalElements
+                    .getTemporalPrimitiveByRow(elIterator.nextInt());
+            if (el.isAnchored()) {
+                return el.getLong(TemporalElement.SUP);
+            }
+        }
+        // no anchored elements in dataset
+        return Long.MAX_VALUE;
     }
 
 	public TemporalObject addCloneOf(TemporalObject source) {					
@@ -778,5 +808,4 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
 		
 		return result;
 	}
-
 }

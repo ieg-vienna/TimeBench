@@ -2,6 +2,8 @@ package timeBench.data;
 
 import java.util.Collections;
 
+import timeBench.calendar.Granule;
+
 /**
  * Instant in the relational view. Following the
  * <em>proxy tuple</em> pattern [Heer & Agrawala, 2006] it provides an object
@@ -31,5 +33,9 @@ public class Instant extends AnchoredTemporalElement {
     public int getChildCount() {
         // an instant should not have children (speedup?)
         return 0;
+    }
+    
+    public void set(Granule granule) throws TemporalDataException {
+        ((TemporalElementStore) getGraph()).set(this, granule);
     }
 }

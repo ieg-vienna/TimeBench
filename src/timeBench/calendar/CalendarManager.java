@@ -153,6 +153,8 @@ public interface CalendarManager {
 	 */
 	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException;
 
+	public long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException;
+	
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException;
 
 	public long getStartOfTime();

@@ -76,6 +76,9 @@ public class IntervalEventFindingAction extends Action implements TemporalDatase
 					Predicate iTemplate = templates[j];
 					boolean satisfied = false;
 					for (int i = 0; i < openEvents.size(); i++) {
+						// ignore patterns that already contain the event
+						if(openObjectLists.get(i).contains(iSource))
+							continue;
 						// if the next line belongs to event
 						openObjectLists.get(i).add(iSource);		
 						if (satisfies(openObjectLists.get(i),templates[openEvents.get(i)])) {

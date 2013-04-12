@@ -15,7 +15,7 @@ import timeBench.data.TemporalElement;
  * @author Tim Lammarsch
  *
  */
-public class TemporalExpression extends AbstractExpression {
+public abstract class TemporalExpression extends AbstractExpression {
 
 	/* (non-Javadoc)
 	 * @see prefuse.data.expression.Expression#getType(prefuse.data.Schema)

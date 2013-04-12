@@ -195,6 +195,10 @@ public class Granularity {
 	public long getMaxGranuleIdentifier() throws TemporalDataException {
 		return calendar.getMaxGranuleIdentifier(this);		
 	}
+	
+	public long getMaxLengthInIdentifiers() throws TemporalDataException {
+		return calendar.getMaxLengthInIdentifiers(this);		
+	}
 
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {		
 		return calendar.contains(granule,chronon);
@@ -208,4 +212,9 @@ public class Granularity {
                 append("cal", calendar).
                 toString();
     }
+    
+    public static Granularity CALENDAR = new Granularity(null,JavaDateCalendarManager.Granularities.Calendar.toInt(),
+    		JavaDateCalendarManager.Granularities.Top.toInt());
+    public static Granularity TOP = new Granularity(null,JavaDateCalendarManager.Granularities.Top.toInt(),
+    		JavaDateCalendarManager.Granularities.Top.toInt());
 }

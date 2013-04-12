@@ -2,8 +2,6 @@ package timeBench.controls;
 
 import ieg.prefuse.controls.AbstractBrushControl;
 
-import java.awt.Graphics2D;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,23 +9,17 @@ import java.util.Set;
 
 import prefuse.Display;
 import prefuse.Visualization;
-import prefuse.action.ActionList;
 import prefuse.data.Node;
-import prefuse.data.Tuple;
-import prefuse.util.ColorLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.tuple.TableNodeItem;
-import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
-import timeBench.test.DebugHelper;
 
 public class AbstractGROOVEControl extends AbstractBrushControl {	
 	private ArrayList<VisualItem> selectedItems = new ArrayList<VisualItem>();

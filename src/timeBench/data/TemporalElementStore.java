@@ -549,6 +549,17 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         return instant;
     }
     
+    protected void set(Instant instant, Granule granule)
+            throws TemporalDataException {
+        GenericTemporalElement el = instant.asGeneric();
+        el.setInf(granule.getInf());
+        el.setSup(granule.getSup());
+        el.setGranularityId(granule.getGranularity().getIdentifier());
+        el.setGranularityId(granule.getGranularity()
+                .getGranularityContextIdentifier());
+        granuleCache.addGranule(instant.getRow(), granule);
+    }
+    
     public Span addSpan(long length, int granularityId) {
         int row = this.addTemporalElementAsRow(length, length, granularityId,
                 -1, TemporalElementStore.PRIMITIVE_SPAN);
@@ -592,7 +603,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         }
 
         long endId = granule.getIdentifier() + span.getLength() - 1;
-        granule = new Granule(endId, granularity);
+        granule = new Granule(endId, granularity, Granule.TOP);
         long sup = granule.getSup();
 
         GenericTemporalElement interval = addTemporalElement(begin.getInf(),
@@ -611,6 +622,19 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
             throws TemporalDataException {
         throw new UnsupportedOperationException();
     }
+    
+	public GenericTemporalElement addIndeterminateInterval(Interval begin, Interval end) {
+        GenericTemporalElement interval = addTemporalElement(begin.getInf(),
+                end.getSup(), begin.getGranularityId(),
+                begin.getGranularityContextId(),
+                TemporalElementStore.PRIMITIVE_SET);
+
+        // add edges to temporal element graph
+        interval.linkWithChild(begin);
+        interval.linkWithChild(end);
+
+        return interval;
+	}
     
     public AnchoredTemporalElement addAnchoredSet(TemporalElement... elements) throws TemporalDataException {
         TemporalElement anchor = null;

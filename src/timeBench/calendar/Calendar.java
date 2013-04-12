@@ -187,6 +187,10 @@ public class Calendar {
 	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException {
 		return calendarManager.getMaxGranuleIdentifier(granularity);
 	}
+	
+	public long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException {
+		return calendarManager.getMaxLengthInIdentifiers(granularity);
+	}
 
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {
 		return calendarManager.contains(granule,chronon);

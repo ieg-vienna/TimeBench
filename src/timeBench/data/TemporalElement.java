@@ -141,6 +141,21 @@ public abstract class TemporalElement extends ParentChildNode implements Compara
      */
     // TODO does it make sense to have a common method for all temporal elements?
     public abstract long getLength();
+    
+    /**
+     * Sets the length of the temporal element.
+     * 
+     * <p>
+     * This can be either
+     * <li>the number of chronons in the bottom granularity for anchored
+     * temporal elements or
+     * <li>the number of granules in the current granularity for unanchored
+     * temporal elements.
+     * 
+     * @value the length of the temporal element
+     */
+    // TODO does it make sense to have a common method for all temporal elements?
+    public abstract void setLength(long value);
 
     /**
      * Get the temporal dataset of which this element is a member.
@@ -349,6 +364,21 @@ public abstract class TemporalElement extends ParentChildNode implements Compara
      */
     public TemporalElement getFirstChildPrimitive() {
         int child = getGraph().getChildRow(m_row, 0);
+        if (child > -1) {
+            return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(child);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Get the last or only child temporal element as a primitive.
+     * 
+     * @return a temporal element that is child of this temporal element or
+     *         <tt>null</tt>.
+     */
+    public TemporalElement getLastChildPrimitive() {
+        int child = getGraph().getChildRow(m_row, getChildCount() - 1);
         if (child > -1) {
             return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(child);
         } else {

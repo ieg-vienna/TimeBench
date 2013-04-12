@@ -1,5 +1,7 @@
 package timeBench.action.analytical;
 
+import ieg.prefuse.data.ParentChildNode;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -63,6 +65,26 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 		try {					
 
 		resultDataset = new TemporalDataset(sourceDataset.getDataColumnSchema());
+			
+		if (sourceDataset.getNodeTable().getColumnNumber(ParentChildNode.DEPTH) == -1) {
+			sourceDataset.getNodeTable().addColumn(ParentChildNode.DEPTH, int.class, 0);
+			String[] andc = sourceDataset.getAdditionalNonDataColums();
+			String[] andc2 = new String[andc.length+1];
+			for(int i=0; i<andc.length; i++)
+				andc2[i] = andc[i];
+			andc2[andc.length] = ParentChildNode.DEPTH;
+			sourceDataset.setAdditionalNonDataColums(andc2);
+		}
+		
+		if (resultDataset.getNodeTable().getColumnNumber(ParentChildNode.DEPTH) == -1) {
+			resultDataset.getNodeTable().addColumn(ParentChildNode.DEPTH, int.class, 0);
+			String[] andc = resultDataset.getAdditionalNonDataColums();
+			String[] andc2 = new String[andc.length+1];
+			for(int i=0; i<andc.length; i++)
+				andc2[i] = andc[i];
+			andc2[andc.length] = ParentChildNode.DEPTH;
+			resultDataset.setAdditionalNonDataColums(andc2);
+		}
 		
 		if (resultDataset.getEdgeTable().getColumn(predicateColumn) == null)
 			resultDataset.getEdgeTable().addColumn(predicateColumn, long.class);
@@ -129,6 +151,8 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 				for(int i=0; i<checkList.size()-1; i++) {
 					if (!sourceToResult.containsKey(checkList.get(i).getId())) {
 						TemporalObject newReference = resultDataset.addCloneOf((checkList.get(i)));
+						// Set depth according to position in pattern 					
+						newReference.setInt(ParentChildNode.DEPTH, i);
 						if (i==0) {
 							resultRoots.add(newReference.getId());
 						}
@@ -143,6 +167,8 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 				}
 				// add new event to pattern
 				TemporalObject newReference = resultDataset.addCloneOf(newObject);
+				// Set depth according to position in pattern 					
+				newReference.setInt(ParentChildNode.DEPTH, checkList.size()-1);
 				int rowNumber = resultDataset.getTemporalObject(sourceToResult.get(checkList.get(checkList.size()-2).getId())).linkWithChild(newReference).getRow();
 				resultDataset.getEdgeTable().setLong(rowNumber, predicateColumn, predicate);
 			}
