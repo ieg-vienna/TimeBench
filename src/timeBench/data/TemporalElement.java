@@ -4,6 +4,7 @@ import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
 
 import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;
 import timeBench.calendar.Granule;
 
@@ -326,7 +327,7 @@ public abstract class TemporalElement extends ParentChildNode implements Compara
      * 
      * @return temporal objects occurring with the temporal element
      */
-    public Iterable<TemporalObject> temporalObjects() {
+    public Iterable<Tuple> temporalObjects() {
         return ((TemporalElementStore) this.m_graph).getTemporalObjectsByElementId(getId());
     }
     

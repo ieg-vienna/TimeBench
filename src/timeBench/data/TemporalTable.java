@@ -14,18 +14,16 @@ public class TemporalTable extends Table {
         String idColumn = name + ID_POSTFIX; 
         this.addColumn(idColumn, long.class, -1l);
         this.addColumn(name, new TemporalColumn(this, idColumn, store));
-        // TODO index idColumn?
-        // TODO store.register(tmpds);
+        store.register(this, idColumn);
+        // index idColumn -> done by store.register(...)
     }
 
     @Override
     protected Column removeColumn(int idx) {
         Column col = this.getColumn(idx);
         if (col instanceof TemporalColumn) {
-//            ((TemporalColumn)col).unregister();
-            // TODO store.unregister(this);
-            
             String idColumn = super.getColumnName(idx) + ID_POSTFIX;
+            ((TemporalColumn)col).store.unregister(this, idColumn);
             super.removeColumn(idColumn);
         }
         return super.removeColumn(idx);
