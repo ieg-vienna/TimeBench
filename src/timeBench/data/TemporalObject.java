@@ -31,8 +31,13 @@ public class TemporalObject extends ParentChildNode {
      * the data field containing the identifier of the temporal element. Foreign
      * key to the temporal element table.
      */
-    public static final String TEMPORAL_ELEMENT_ID = "_temporal_id"; 
+    public static final String TEMPORAL_ELEMENT = "_temporal"; 
     
+    /**
+     * the data field containing the identifier of the temporal element. Foreign
+     * key to the temporal element table.
+     */
+    public static final String TEMPORAL_ELEMENT_ID = TemporalTable.idColumnNameFor(TEMPORAL_ELEMENT); 
     
     /**
      * creates an invalid TemporalObject. Use {@link TemporalDataset} as a
@@ -65,6 +70,7 @@ public class TemporalObject extends ParentChildNode {
      * @return the temporal element
      */
     public GenericTemporalElement getTemporalElement() {
+        // TODO use typed primitive which is cached?
         long teId = super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID);
         // the temporal object graph, is actually the temporal dataset 
         return ((TemporalDataset) m_graph).getTemporalElement(teId);
@@ -89,15 +95,6 @@ public class TemporalObject extends ParentChildNode {
      */
     public TemporalObject getFirstParentObject() {
         return (TemporalObject) super.getFirstParent();
-    }
-    
-    /**
-     * Gets the number of parent temporal objects.
-     * 
-     * @return the number of parent temporal objects.
-     */
-    public int getParentCount() {
-        return super.m_graph.getOutDegree(this);
     }
     
     /**

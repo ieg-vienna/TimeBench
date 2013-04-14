@@ -11,7 +11,7 @@ public class TemporalTable extends Table {
     public static final String ID_POSTFIX = "_id";
 
     public void addTemporalColumn(String name, TemporalElementStore store) {
-        String idColumn = name + ID_POSTFIX; 
+        String idColumn = TemporalTable.idColumnNameFor(name);
         this.addColumn(idColumn, long.class, -1l);
         this.addColumn(name, new TemporalColumn(this, idColumn, store));
         store.register(this, idColumn);
@@ -22,11 +22,15 @@ public class TemporalTable extends Table {
     protected Column removeColumn(int idx) {
         Column col = this.getColumn(idx);
         if (col instanceof TemporalColumn) {
-            String idColumn = super.getColumnName(idx) + ID_POSTFIX;
+            String idColumn = TemporalTable.idColumnNameFor(super.getColumnName(idx));
             ((TemporalColumn)col).store.unregister(this, idColumn);
             super.removeColumn(idColumn);
         }
         return super.removeColumn(idx);
+    }
+    
+    public static String idColumnNameFor(String name) {
+        return name + ID_POSTFIX;
     }
 
     static class TemporalColumn extends ExpressionColumn {
