@@ -127,7 +127,7 @@ public class TemporalObject extends ParentChildNode {
      */
     @Override
     public String toString() {
-        return "TemporalObject[id=" + super.getRow() + ", temporal id="
+        return "TemporalObject[id=" + super.getLong(ID) + ", temporal id="
                 + super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID)
                 + "]";
     }
