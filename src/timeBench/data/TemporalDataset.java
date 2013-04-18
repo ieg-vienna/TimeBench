@@ -151,7 +151,11 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         // TODO check temporal objects columns (primary and foreign key) -- exception in constructor?
         // WARNING: The methods getDataColumnIndices() assumes that these
         //          two columns have indices 0 -- 2
-        
+
+        // TODO derived TemporalObjects currently not available by element.temporalObject() 
+//        temporalElements.register(this.getNodeTable(),
+//                TemporalObject.TEMPORAL_ELEMENT_ID);
+
         init(temporalObjects, temporalElements);
     }
 
