@@ -5,7 +5,8 @@ import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
 import timeBench.action.layout.timescale.BasicTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
-import timeBench.data.GenericTemporalElement;
+import timeBench.data.AnchoredTemporalElement;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -62,21 +63,27 @@ public class IntervalAxisLayout extends TimeAxisLayout {
 	 * 
 	 * @see at.ac.tuwien.cs.timevis.ui.TimeLayout#layoutItem(prefuse.visual.VisualItem)
 	 */
-	protected void layoutItem(VisualItem vi) {
-        GenericTemporalElement te = ((TemporalObject) vi.getSourceTuple())
+    protected void layoutItem(VisualItem vi) {
+        TemporalElement te = ((TemporalObject) vi.getSourceTuple())
                 .getTemporalElement();
-        int pixelInf = timeScale.getPixelForDate(te.getInf());
-        int pixelSup = timeScale.getPixelForDate(te.getSup());
+        
+        if (te.isAnchored()) {
+            AnchoredTemporalElement ate = (AnchoredTemporalElement) te
+                    .asPrimitive();
 
-        if (super.getAxis() == Constants.X_AXIS) {
-            vi.setX(pixelInf);
-            vi.setInt(maxXField, pixelSup);
-        } else {
-        	// TODO test y axis layout direction 
-            vi.setY(pixelInf);
-            vi.setInt(maxXField, pixelSup);
+            int pixelInf = timeScale.getPixelForDate(ate.getInf());
+            int pixelSup = timeScale.getPixelForDate(ate.getSup());
+
+            if (super.getAxis() == Constants.X_AXIS) {
+                vi.setX(pixelInf);
+                vi.setInt(maxXField, pixelSup);
+            } else {
+                // TODO test y axis layout direction
+                vi.setY(pixelInf);
+                vi.setInt(maxXField, pixelSup);
+            }
         }
-	}
+    }
 
 	public String getMaxXField() {
 		return maxXField;

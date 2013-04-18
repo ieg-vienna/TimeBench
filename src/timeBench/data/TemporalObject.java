@@ -69,11 +69,12 @@ public class TemporalObject extends ParentChildNode {
     /**
      * @return the temporal element
      */
-    public GenericTemporalElement getTemporalElement() {
-        // TODO use typed primitive which is cached?
-        long teId = super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID);
-        // the temporal object graph, is actually the temporal dataset 
-        return ((TemporalDataset) m_graph).getTemporalElement(teId);
+    public TemporalElement getTemporalElement() {
+        // use typed primitive which is cached?
+        return (TemporalElement) get(TEMPORAL_ELEMENT);
+//        long teId = super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID);
+//        // the temporal object graph, is actually the temporal dataset 
+//        return ((TemporalDataset) m_graph).getTemporalElement(teId);
     }
 
     /**

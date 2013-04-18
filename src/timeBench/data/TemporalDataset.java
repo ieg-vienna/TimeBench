@@ -819,7 +819,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     }
 
 	public TemporalObject addCloneOf(TemporalObject source) {					
-		TemporalObject result = addTemporalObject(temporalElements.addCloneOf(source.getTemporalElement()));
+		TemporalObject result = addTemporalObject(temporalElements.addCloneOf(source.getTemporalElement().asGeneric()));
 		for(int i : getDataColumnIndices()) {
 			result.set(i, source.get(i));
 		}

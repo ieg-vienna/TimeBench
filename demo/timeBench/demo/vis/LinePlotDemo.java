@@ -44,6 +44,7 @@ import prefuse.visual.sort.ItemSorter;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
@@ -219,8 +220,8 @@ public class LinePlotDemo {
         public Object get(Tuple t) {
             double value = t.getDouble(COL_DATA);
 
-            long date = ((TemporalObject) ((VisualItem) t).getSourceTuple())
-                    .getTemporalElement().getInf();
+            long date = ((AnchoredTemporalElement) t
+                    .get(TemporalObject.TEMPORAL_ELEMENT)).getInf();
             GregorianCalendar cal = new GregorianCalendar(
                     java.util.TimeZone.getTimeZone("UTC"));
             cal.setTimeInMillis(date);

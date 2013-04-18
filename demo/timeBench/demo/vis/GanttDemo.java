@@ -46,6 +46,7 @@ import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.Interval;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -90,8 +91,9 @@ public class GanttDemo {
         for (TemporalObject obj : tmpds.temporalObjects()) {
             long earliestStart = startDate;
             for (TemporalObject prev : obj.childObjects()) {
-                earliestStart = Math.max(earliestStart, prev
-                        .getTemporalElement().getSup() + 1);
+                earliestStart = Math.max(earliestStart,
+                        ((AnchoredTemporalElement) prev.getTemporalElement())
+                                .getSup() + 1);
             }
 
             Granule granule = new Granule(earliestStart, earliestStart,
