@@ -102,7 +102,7 @@ public class TemporalTable extends Table {
         public TemporalElement get(int row) {
             // workaround to empty cache if temp. el. was removed
             TemporalElement te = (TemporalElement) super.get(row);
-            if (! te.isValid()) {
+            if (te != null && ! te.isValid()) {
                 super.invalidateCache(row, row);
                 te = (TemporalElement) super.get(row);
             }
