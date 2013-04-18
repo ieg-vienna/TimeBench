@@ -82,25 +82,37 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     public TemporalDataset() {
         this(new TemporalElementStore());
     }
-    
-    public TemporalDataset(TemporalElementStore temporalElements) {
-        // temporal objects are by default in an directed graph
-        super();
 
-        this.temporalElements = temporalElements;
-        temporalElements.register(this);
+    /**
+     * Constructs an empty {@link TemporalDataset} using the given
+     * {@link TemporalElementStore}.
+     * 
+     * @param temporalElements
+     *            data structure to store temporal elements.
+     */
+    public TemporalDataset(TemporalElementStore temporalElements) {
+        super(new TemporalTable());
 
         // add temporal objects columns (primary and foreign key)
-        // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
-        super.getNodeTable().addColumn(TemporalObject.ID, long.class, -1);
-        super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID, long.class, -1);
-        
-        // add indices
-        this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
-        this.indexObjectsByElements = super.getNodeTable().index(
-                TemporalObject.TEMPORAL_ELEMENT_ID);
+        TemporalTable temporalObjects = (TemporalTable) super.getNodeTable();
 
-        initTupleManagers();
+        // WARNING: The methods getDataColumnIndices() assumes that these
+        //          two columns have indices 0 -- 2
+        temporalObjects.addColumn(TemporalObject.ID, long.class, -1);
+
+        // super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID,
+        // new TemporalColumn(temporalElements));
+        // super.getNodeTable().addColumn(TemporalObject.TEMPORAL_ELEMENT_ID,
+        // long.class, -1);
+        // temporalElements.register(this.getNodeTable(),
+        // TemporalObject.TEMPORAL_ELEMENT_ID);
+        temporalObjects.addTemporalColumn(TemporalObject.TEMPORAL_ELEMENT,
+                temporalElements);
+        // registration at store & index of id column -> TemporalTable
+
+        // TODO warning TEMPORAL_ELEMENT_ID vs. TEMPORAL_ELEMENT
+
+        init(temporalObjects, temporalElements);
     }
 
     /**
@@ -126,6 +138,9 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * Warning: experimental -- know what you do!
      * 
      * @param temporalObjects
+     *            the table with temporal objects. A {@link Table} with the
+     *            columns {@link TemporalObject#ID} and
+     *            {@link TemporalObject#TEMPORAL_ELEMENT_ID} already present.
      * @param temporalObjectsEdges
      * @param temporalElements
      * @throws TemporalDataException
@@ -133,17 +148,36 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     public TemporalDataset(Table temporalObjects, Table temporalObjectsEdges, TemporalElementStore temporalElements) throws TemporalDataException {
         super(temporalObjects, temporalObjectsEdges);
         
+        // TODO check temporal objects columns (primary and foreign key) -- exception in constructor?
+        // WARNING: The methods getDataColumnIndices() assumes that these
+        //          two columns have indices 0 -- 2
+
+        // TODO derived TemporalObjects currently not available by element.temporalObject() 
+//        temporalElements.register(this.getNodeTable(),
+//                TemporalObject.TEMPORAL_ELEMENT_ID);
+
+        init(temporalObjects, temporalElements);
+    }
+
+    /**
+     * common initialization of a TemporalDataset.
+     * 
+     * @param temporalObjects
+     * @param temporalElements
+     */
+    private void init(Table temporalObjects,
+            TemporalElementStore temporalElements) {
+
         this.temporalElements = temporalElements;
 
-        // TODO check temporal objects columns (primary and foreign key)
-        // WARNING: The methods getDataColumnIndices() assumes that these two columns have indices 0 and 1 
-        
         // add indices
-        this.indexObjects = super.getNodeTable().index(TemporalObject.ID);
-        this.indexObjectsByElements = super.getNodeTable().index(
-                TemporalObject.TEMPORAL_ELEMENT_ID);
+        this.indexObjects = temporalObjects.index(TemporalObject.ID);
+        this.indexObjectsByElements = temporalObjects
+                .index(TemporalObject.TEMPORAL_ELEMENT_ID);
 
-        initTupleManagers();
+        // assign to temporal object graph
+        // nodes of temporal object graph --> TemporalObject
+        super.initTupleManagers(TemporalObject.class, TableEdge.class);
     }
 
     /**
@@ -198,8 +232,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return array of column indices.
      */
     public int[] getDataColumnIndices() {
-        // WARNING: The methods assumes that the non-data columns have indices 0 and 1 
-        final int TEMPORAL_OBJECT_NONDATA_COLUMS = 2;
+        // WARNING: The methods assumes that the non-data columns have indices 0 -- 2 
+        final int TEMPORAL_OBJECT_NONDATA_COLUMS = 3;
         int[] cols;
 
         if (additionalNonDataColums.length == 0) {        
@@ -236,20 +270,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         return cols;
     }
     
-    /**
-     * Set tuple managers for temporal elements, temporal primitives, and
-     * temporal objects and use them in the underlying data structures.
-     * 
-     * <p>
-     * This method is called from all constructors and will cause all existing
-     * Tuples retrieved from this dataset to be invalidated.
-     */
-    private void initTupleManagers() {
-        // assign to temporal object graph
-        // nodes of temporal object graph --> TemporalObject
-        super.initTupleManagers(TemporalObject.class, TableEdge.class);
-    }
-
     @Deprecated
     public TemporalDataset clone() {
         throw new UnsupportedOperationException("clone no longer needed");
@@ -799,7 +819,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     }
 
 	public TemporalObject addCloneOf(TemporalObject source) {					
-		TemporalObject result = addTemporalObject(temporalElements.addCloneOf(source.getTemporalElement()));
+		TemporalObject result = addTemporalObject(temporalElements.addCloneOf(source.getTemporalElement().asGeneric()));
 		for(int i : getDataColumnIndices()) {
 			result.set(i, source.get(i));
 		}

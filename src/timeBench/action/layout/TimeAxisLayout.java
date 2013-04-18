@@ -12,7 +12,7 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.VisiblePredicate;
 import timeBench.action.layout.timescale.TimeScale;
-import timeBench.data.GenericTemporalElement;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
@@ -132,17 +132,21 @@ public class TimeAxisLayout extends Layout {
      *            the item to layout
      */
     protected void layoutItem(VisualItem vi) {
-        GenericTemporalElement te = ((TemporalObject) vi.getSourceTuple())
+        TemporalElement te = ((TemporalObject) vi.getSourceTuple())
                 .getTemporalElement();
-        long time = (placement == Placement.INF) ? te.getInf()
-                : (placement == Placement.SUP) ? te.getSup()
-                        : (te.getInf() + te.getSup()) / 2;
-        int pixel = timeScale.getPixelForDate(time);
+        if (te.isAnchored()) {
+            AnchoredTemporalElement ate = (AnchoredTemporalElement) te
+                    .asPrimitive();
+            long time = (placement == Placement.INF) ? ate.getInf()
+                    : (placement == Placement.SUP) ? ate.getSup() : (ate
+                            .getInf() + ate.getSup()) / 2;
+            int pixel = timeScale.getPixelForDate(time);
 
-        if (m_axis == Constants.X_AXIS) {
-            vi.setX(pixel);
-        } else {
-            vi.setY(pixel);
+            if (m_axis == Constants.X_AXIS) {
+                vi.setX(pixel);
+            } else {
+                vi.setY(pixel);
+            }
         }
     }
 

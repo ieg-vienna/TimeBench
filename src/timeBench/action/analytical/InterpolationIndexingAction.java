@@ -8,6 +8,7 @@ import prefuse.data.Tuple;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
 import prefuse.visual.VisualItem;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
@@ -70,13 +71,15 @@ public class InterpolationIndexingAction extends IndexingAction {
                     if (el.getSup() < indexTime) {
                         TemporalObject prev = left.get(obj.get(categoryField));
                         if (prev == null
-                                || prev.getTemporalElement().getSup() < el.getSup()) {
+                                || el.getSup() > ((AnchoredTemporalElement) prev
+                                        .getTemporalElement()).getSup()) {
                             left.put(obj.get(categoryField), obj);
                         }
                     } else if (el.getInf() > indexTime) {
                         TemporalObject prev = right.get(obj.get(categoryField));
                         if (prev == null
-                                || prev.getTemporalElement().getInf() > el.getInf()) {
+                                || el.getInf() < ((AnchoredTemporalElement) prev
+                                        .getTemporalElement()).getInf()) {
                             right.put(obj.get(categoryField), obj);
                         }
                     } else {
@@ -98,11 +101,16 @@ public class InterpolationIndexingAction extends IndexingAction {
         for (Map.Entry<Object, TemporalObject> e : left.entrySet()) {
             TemporalObject l = e.getValue();
             TemporalObject r = right.get(e.getKey());
+            
             if (r != null) {
+                long leftTime = ((AnchoredTemporalElement) l.getTemporalElement()).getSup();
+                long rightTime = ((AnchoredTemporalElement) r.getTemporalElement()).getInf();
+
                 double value = l.getDouble(absoluteValueField)
-                        + (indexTime - l.getTemporalElement().getSup())
-                        * (r.getDouble(absoluteValueField) - l.getDouble(absoluteValueField))
-                        / (r.getTemporalElement().getInf() - l.getTemporalElement().getSup());
+                        + (indexTime - leftTime)
+                        * (r.getDouble(absoluteValueField) - l
+                                .getDouble(absoluteValueField))
+                        / (rightTime - leftTime);
 //                System.out.println("interp key=" + e.getKey() + " value=" + value);
                 factors.put(e.getKey(), 1.0d / value);
             } else {

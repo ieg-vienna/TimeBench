@@ -50,6 +50,7 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
@@ -252,8 +253,8 @@ public class MultipleLinePlotDemo {
         public Object get(Tuple t) {
             double value = t.getDouble(COL_DATA);
 
-            long date = ((TemporalObject) ((VisualItem) t).getSourceTuple())
-                    .getTemporalElement().getInf();
+            long date = ((AnchoredTemporalElement) t
+                    .get(TemporalObject.TEMPORAL_ELEMENT)).getInf();
             GregorianCalendar cal = new GregorianCalendar(
                     java.util.TimeZone.getTimeZone("UTC"));
             cal.setTimeInMillis(date);

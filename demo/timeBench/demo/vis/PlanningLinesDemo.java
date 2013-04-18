@@ -116,13 +116,13 @@ public class PlanningLinesDemo {
                     granularity);
             ((Interval) obj.getTemporalElement().getFirstChildPrimitive())	// Set first interval by granule
                     .setBegin(granule);
-            obj.getTemporalElement().setInf( ((Interval) obj.getTemporalElement().getFirstChildPrimitive()).getInf()); // Set parent by first child
+            obj.getTemporalElement().asGeneric().setInf( ((Interval) obj.getTemporalElement().getFirstChildPrimitive()).getInf()); // Set parent by first child
 
             granule = new Granule(earliestStart+oldDiff, earliestStart+oldDiff,
                     granularity);
             ((Interval) obj.getTemporalElement().getLastChildPrimitive())	// Set last interval by whatever
                     .setBegin(granule);
-            obj.getTemporalElement().setSup( ((Interval) obj.getTemporalElement().getLastChildPrimitive()).getSup()); // Set parent by last child
+            obj.getTemporalElement().asGeneric().setSup( ((Interval) obj.getTemporalElement().getLastChildPrimitive()).getSup()); // Set parent by last child
         }
     }
 
@@ -319,7 +319,7 @@ public class PlanningLinesDemo {
     	
     	protected void layoutItem(VisualItem vi) {		
             GenericTemporalElement te = ((TemporalObject) vi.getSourceTuple())
-                    .getTemporalElement();           
+                    .getTemporalElement().asGeneric();           
             
             long inf =
             		((Interval)te.getFirstChildPrimitive()).getInf() +

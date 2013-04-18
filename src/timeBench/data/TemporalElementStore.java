@@ -4,6 +4,7 @@ import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TableEdge;
 import prefuse.data.tuple.TupleManager;
@@ -60,7 +62,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
      */
     private IntervalIndex indexElementIntervals = null;
     
-    private List<TemporalDataset> temporalData = new LinkedList<TemporalDataset>();
+    private List<TemporalData> temporalData = new LinkedList<TemporalData>();
     
     /**
      * Cache for first granules of temporal elements (Lazy initialization).
@@ -136,14 +138,6 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         throw new UnsupportedOperationException("clone no longer needed");
     }
     
-    protected void register(TemporalDataset tmpds) {
-        this.temporalData.add(tmpds);
-    }
-
-    protected void unregister(TemporalDataset tmpds) {
-        this.temporalData.add(tmpds);
-    }
-
     // ----- TEMPORAL ELEMENT ACCESSORS -----
 
     /**
@@ -276,6 +270,32 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
 
     // ----- TEMPORAL OBJECT ACCESSORS -----
 
+    // TODO need these to be public? -> not if TemporalTable is used
+    protected void register(Table table, String field) {
+        TemporalData entry = new TemporalData();
+        entry.table = table;
+        entry.index = table.index(field);
+        this.temporalData.add(entry);
+    }
+
+    protected boolean unregister(Table table, String field) {
+        Index index = table.getIndex(field);
+        Iterator<TemporalData> i = temporalData.iterator();
+        while (i.hasNext()) {
+            TemporalData entry = i.next();
+            if (entry.table == table && entry.index == index) {
+                i.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+	private static class TemporalData {
+	    Table table;
+	    Index index;
+	}
+
     /**
      * Get an iterator over all {@link TemporalObject}s occurring with the given
      * temporal element.
@@ -286,23 +306,34 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
      *         occurring with the temporal element
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Iterable<TemporalObject> getTemporalObjectsByElementId(
+    public Iterable<Tuple> getTemporalObjectsByElementId(
             long temporalId) {
         
-        // TODO handle element store without datasets
-        if (temporalData.size() < 1) {
-            throw new UnsupportedOperationException();
+        ArrayList<Iterator> iis = new ArrayList<Iterator>();
+        for (TemporalData data : temporalData) {
+            // id + index -> rows iterator
+            IntIterator rows = data.index.rows(temporalId);
+            // rows + table -> tuple iterator
+            Iterator ii = data.table.tuples(rows);
+            if (ii.hasNext()) {
+                // only consider if at least one tuple is present
+                iis.add(ii);
+            }
+        }
+        
+        Iterator result;
+        if (iis.size() < 1) {
+            // handle element store without datasets or without objs. for el.
+            result = Collections.emptyList().iterator();
+        } else if (iis.size() == 1) {
+            result = iis.get(0);
+        } else {
+            Iterator[] iiArray = new Iterator[iis.size()];
+            iiArray = iis.toArray(iiArray);
+            result = new CompositeIterator(iiArray);
         }
             
-        ArrayList<Iterator<TemporalObject>> iis = new ArrayList<Iterator<TemporalObject>>();
-        for (TemporalDataset tmpds : temporalData) {
-            Iterator<TemporalObject> ii = tmpds
-                    .getTemporalObjectsByElementIdIterator(temporalId);
-            iis.add(ii);
-        }
-
-        Iterator[] iiArray = new Iterator[iis.size()];
-        return new CustomIterable(new CompositeIterator(iis.toArray(iiArray)));
+        return new CustomIterable(result);
     }
 
     /**

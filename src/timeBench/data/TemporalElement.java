@@ -2,8 +2,8 @@ package timeBench.data;
 
 import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
-
 import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;
 import timeBench.calendar.Granule;
 
@@ -20,7 +20,7 @@ import timeBench.calendar.Granule;
  * 
  * @author Rind
  */
-public abstract class TemporalElement extends ParentChildNode {
+public abstract class TemporalElement extends ParentChildNode implements Comparable<TemporalElement> {
 
 	protected static TemporalElementStore temporalDataHeap = new TemporalElementStore();
 	
@@ -326,7 +326,7 @@ public abstract class TemporalElement extends ParentChildNode {
      * 
      * @return temporal objects occurring with the temporal element
      */
-    public Iterable<TemporalObject> temporalObjects() {
+    public Iterable<Tuple> temporalObjects() {
         return ((TemporalElementStore) this.m_graph).getTemporalObjectsByElementId(getId());
     }
     
@@ -425,5 +425,43 @@ public abstract class TemporalElement extends ParentChildNode {
                 + super.getLong(TemporalElement.SUP) + ", granularityId="
                 + getGranularityId() + ", granularityContextId="
                 + getGranularityContextId() + ", kind=" + getKind() + "]";
+    }
+
+    @Override
+    public int compareTo(TemporalElement aThat) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+
+        // this optimization is usually worthwhile, and can always be added
+        if (this == aThat) return EQUAL;
+
+        // primitive numbers follow this form
+        if (this.getLong(INF) < aThat.getLong(INF)) return BEFORE;
+        if (this.getLong(INF) > aThat.getLong(INF)) return AFTER;
+
+        if (this.getLong(SUP) < aThat.getLong(SUP)) return BEFORE;
+        if (this.getLong(SUP) > aThat.getLong(SUP)) return AFTER;
+
+        // ID and Graph absolutely identify a TemporalElement tuple
+        if (this.getLong(ID) < aThat.getLong(ID)) return BEFORE;
+        if (this.getLong(ID) > aThat.getLong(ID)) return AFTER;
+
+        if (this.getGraph() == aThat.getGraph()) return EQUAL;
+        
+        if (this.getGraph().hashCode() < aThat.getGraph().hashCode())
+            return BEFORE;
+        else
+            return AFTER;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TemporalElement) {
+            TemporalElement el = (TemporalElement) obj;
+            return this.getId() == el.getId() && this.getGraph() == el.getGraph();
+        } else {
+            return false;
+        }
     }
 }

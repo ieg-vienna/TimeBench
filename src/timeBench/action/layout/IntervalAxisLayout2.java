@@ -5,7 +5,9 @@ import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
 import timeBench.action.layout.timescale.BasicTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.GenericTemporalElement;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -79,27 +81,32 @@ public class IntervalAxisLayout2 extends TimeAxisLayout {
 	 * 
 	 * @see at.ac.tuwien.cs.timevis.ui.TimeLayout#layoutItem(prefuse.visual.VisualItem)
 	 */
-	protected void layoutItem(VisualItem vi) {		
-        GenericTemporalElement te = ((TemporalObject) vi.getSourceTuple())
-                .getTemporalElement();
-        
-        if(pathToInterval != null) {
-        	for(int i=0; i<pathToInterval.length; i++)
-        		te = (GenericTemporalElement)te.getChild(pathToInterval[i]);
-        }
-        
-        int pixelInf = timeScale.getPixelForDate(te.getInf());
-        int pixelSup = timeScale.getPixelForDate(te.getSup());
-        double pixelWidth = (double)pixelSup-(double)pixelInf+1.0;
-        double pixelMed = (double)pixelInf+pixelWidth/2.0;
+    protected void layoutItem(VisualItem vi) {
+        TemporalElement te = (TemporalElement) vi
+                .get(TemporalObject.TEMPORAL_ELEMENT);
 
-        if (super.getAxis() == Constants.X_AXIS) {
-            vi.setX(pixelMed);
-            vi.setSizeX(pixelWidth);
-        } else {
-        	// TODO test y axis layout direction 
-            vi.setY(pixelMed);
-            vi.setSizeY(pixelWidth);
+        if (pathToInterval != null) {
+            for (int i = 0; i < pathToInterval.length; i++)
+                te = (GenericTemporalElement) te.getChild(pathToInterval[i]);
         }
-	}
+
+        if (te.isAnchored()) {
+            AnchoredTemporalElement ate = (AnchoredTemporalElement) te
+                    .asPrimitive();
+
+            int pixelInf = timeScale.getPixelForDate(ate.getInf());
+            int pixelSup = timeScale.getPixelForDate(ate.getSup());
+            double pixelWidth = (double) pixelSup - (double) pixelInf + 1.0;
+            double pixelMed = (double) pixelInf + pixelWidth / 2.0;
+
+            if (super.getAxis() == Constants.X_AXIS) {
+                vi.setX(pixelMed);
+                vi.setSizeX(pixelWidth);
+            } else {
+                // TODO test y axis layout direction
+                vi.setY(pixelMed);
+                vi.setSizeY(pixelWidth);
+            }
+        }
+    }
 }

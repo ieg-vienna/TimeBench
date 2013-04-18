@@ -19,6 +19,7 @@ import prefuse.visual.AggregateTable;
 import prefuse.visual.VisualItem;
 import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
@@ -337,7 +338,8 @@ public class HorizonGraphAction extends Action {
             TimeValuePair p2;
             if (rows.hasNext()) {
                 t = rows.next();
-                p2 = new TimeValuePair(t.getTemporalElement().getInf(),
+                p2 = new TimeValuePair(
+                        ((AnchoredTemporalElement) t.getTemporalElement()).getInf(),
                         t.getDouble(COL_Y_POSITION));
             } else {
                 finished = true;
@@ -436,7 +438,9 @@ public class HorizonGraphAction extends Action {
             if(rows.hasNext())
             {
                 t = rows.next();
-                p2 = new TimeValuePair(t.getTemporalElement().getInf(),
+                p2 = new TimeValuePair(
+                        ((AnchoredTemporalElement) t.getTemporalElement())
+                                .getInf(),
                         t.getDouble(COL_Y_POSITION));
             }
             else
