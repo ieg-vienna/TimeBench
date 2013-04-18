@@ -2,7 +2,6 @@ package timeBench.data;
 
 import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
-
 import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;
@@ -429,8 +428,31 @@ public abstract class TemporalElement extends ParentChildNode implements Compara
     }
 
     @Override
-    public int compareTo(TemporalElement o) {
-        return Long.valueOf(this.getId()).compareTo(o.getId());
+    public int compareTo(TemporalElement aThat) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+
+        // this optimization is usually worthwhile, and can always be added
+        if (this == aThat) return EQUAL;
+
+        // primitive numbers follow this form
+        if (this.getLong(INF) < aThat.getLong(INF)) return BEFORE;
+        if (this.getLong(INF) > aThat.getLong(INF)) return AFTER;
+
+        if (this.getLong(SUP) < aThat.getLong(SUP)) return BEFORE;
+        if (this.getLong(SUP) > aThat.getLong(SUP)) return AFTER;
+
+        // ID and Graph absolutely identify a TemporalElement tuple
+        if (this.getLong(ID) < aThat.getLong(ID)) return BEFORE;
+        if (this.getLong(ID) > aThat.getLong(ID)) return AFTER;
+
+        if (this.getGraph() == aThat.getGraph()) return EQUAL;
+        
+        if (this.getGraph().hashCode() < aThat.getGraph().hashCode())
+            return BEFORE;
+        else
+            return AFTER;
     }
 
     @Override
