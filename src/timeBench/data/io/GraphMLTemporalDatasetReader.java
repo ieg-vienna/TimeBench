@@ -210,6 +210,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      */
     private void configReader(XMLStreamReader reader) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException
     {
+        System.out.println("consider KEY for column: " + reader.getAttributeValue(null, Tokens.ATTRNAME));
     	//Check if TemporalElement attribute, which can be ignored since they are known
     	if(!reader.getAttributeValue(null, Tokens.ID).startsWith(TEMP_ELEMENT_ATTR_PREFIX)) {
 			@SuppressWarnings("rawtypes")
@@ -220,16 +221,15 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			if(Tokens.STRING.equals(typeString))
 				type = String.class;
 			else if(Tokens.INT.equals(typeString))
-				type = Integer.class;
+				type = int.class;
 			else if(Tokens.LONG.equals(typeString))
-				type = Long.class;
+				type = long.class;
 			else if(Tokens.DOUBLE.equals(typeString))
-				type = Double.class;
+				type = double.class;
 			else if(Tokens.FLOAT.equals(typeString))
-				type = Float.class;
+				type = float.class;
 			else if(Tokens.BOOLEAN.equals(typeString))
-				type = Boolean.class;
-			
+				type = boolean.class;
 			//generate a new data column for the TemporalDataset
 			tds.addDataColumn(reader.getAttributeValue(null, Tokens.ATTRNAME), type, null);
     	}
@@ -278,15 +278,18 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 			//Convert the value to the type defined for the column
 			if(String.class.equals(currentType))
 				node.set(currentCol, value);
-			else if(Integer.class.equals(currentType))
+			else if(int.class.equals(currentType))
 				node.set(currentCol, Integer.parseInt(value));
-			else if(Double.class.equals(currentType))
+			else if(double.class.equals(currentType))
 				node.set(currentCol, Double.parseDouble(value));
-			else if(Long.class.equals(currentType))
-				node.set(currentCol, Long.parseLong(value));
-			else if(Float.class.equals(currentType))
+			else if(long.class.equals(currentType)) {
+				if(value.endsWith("L"))	// TL not sure is this is allowed for GraphML, but "best practice" is being lenient
+					value = value.substring(0, value.length()-1);
+				node.setLong(currentCol, Long.parseLong(value));
+			}
+			else if(float.class.equals(currentType))
 				node.set(currentCol, Float.parseFloat(value));
-			else if(Boolean.class.equals(currentType)) 
+			else if(boolean.class.equals(currentType)) 
 			    node.set(currentCol, Boolean.valueOf(value));
 		}
     }

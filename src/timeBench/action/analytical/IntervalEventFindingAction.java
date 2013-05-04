@@ -15,6 +15,7 @@ import timeBench.data.Instant;
 import timeBench.data.Span;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 import timeBench.data.expression.TemporalElementArrayExpression;
@@ -30,7 +31,7 @@ import timeBench.data.expression.TemporalElementArrayExpression;
  * @author Tim Lammarsch
  * 
  */
-public class IntervalEventFindingAction extends Action {
+public class IntervalEventFindingAction extends Action implements TemporalDatasetProvider {
 
 	TemporalDataset sourceDataset;
 	Predicate[] templates;
@@ -75,6 +76,9 @@ public class IntervalEventFindingAction extends Action {
 					Predicate iTemplate = templates[j];
 					boolean satisfied = false;
 					for (int i = 0; i < openEvents.size(); i++) {
+						// ignore patterns that already contain the event
+						if(openObjectLists.get(i).contains(iSource))
+							continue;
 						// if the next line belongs to event
 						openObjectLists.get(i).add(iSource);		
 						if (satisfies(openObjectLists.get(i),templates[openEvents.get(i)])) {
@@ -183,6 +187,14 @@ public class IntervalEventFindingAction extends Action {
 	 * @return the eventDataset
 	 */
 	public TemporalDataset getEventDataset() {
+		return eventDataset;
+	}
+
+	/* (non-Javadoc)
+	 * @see timeBench.data.TemporalDatasetProvider#getTemporalDataset()
+	 */
+	@Override
+	public TemporalDataset getTemporalDataset() {
 		return eventDataset;
 	}
 }

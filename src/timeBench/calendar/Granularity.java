@@ -1,7 +1,8 @@
 package timeBench.calendar;
 
-import java.text.ParseException;
 import java.util.Date;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import timeBench.data.TemporalDataException;
 
@@ -59,8 +60,8 @@ public class Granularity {
 	}
 	
 	public boolean isInTopContext() {
-	    // TODO bitte Tim implementieren, damit ich nicht immer mit JavaDateCalendarManager vergleichen muss
-	    return true;
+	    // TODO Tim please check if this is correct or there is a better way
+	    return contextIdentifier == calendar.getBottomGranularity().contextIdentifier;
 	}
 	
 	/**
@@ -75,12 +76,12 @@ public class Granularity {
     }
 
 	/**
-	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GANULE mode}.
+	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE mode}.
 	 * Consider using the adequate constructor of
 	 * {@link Granule} instead.
 	 * @param inf the chronon that determines the start of the granule constructed
 	 * @param sup the chronon that determines the end of the granule constructed
-	 * @param mode the {@linkplain Granule#MODE_INF_GANULE mode} used to construct the granule
+	 * @param mode the {@linkplain Granule#MODE_INF_GRANULE mode} used to construct the granule
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
@@ -194,8 +195,26 @@ public class Granularity {
 	public long getMaxGranuleIdentifier() throws TemporalDataException {
 		return calendar.getMaxGranuleIdentifier(this);		
 	}
+	
+	public long getMaxLengthInIdentifiers() throws TemporalDataException {
+		return calendar.getMaxLengthInIdentifiers(this);		
+	}
 
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {		
 		return calendar.contains(granule,chronon);
 	}
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("id", identifier).
+                append("context", contextIdentifier).
+                append("cal", calendar).
+                toString();
+    }
+    
+    public static Granularity CALENDAR = new Granularity(null,JavaDateCalendarManager.Granularities.Calendar.toInt(),
+    		JavaDateCalendarManager.Granularities.Top.toInt());
+    public static Granularity TOP = new Granularity(null,JavaDateCalendarManager.Granularities.Top.toInt(),
+    		JavaDateCalendarManager.Granularities.Top.toInt());
 }

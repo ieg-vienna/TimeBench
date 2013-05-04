@@ -1,9 +1,9 @@
 package timeBench.data;
 
+import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
-
-import prefuse.data.Graph;
 import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;
 import timeBench.calendar.Granule;
 
@@ -20,8 +20,10 @@ import timeBench.calendar.Granule;
  * 
  * @author Rind
  */
-public abstract class TemporalElement extends TableNode {
+public abstract class TemporalElement extends ParentChildNode implements Comparable<TemporalElement> {
 
+	protected static TemporalElementStore temporalDataHeap = new TemporalElementStore();
+	
     // predefined column names for temporal elements (similar to VisualItem)
     /**
      * the identifier data field for temporal elements. Primary key of the
@@ -56,11 +58,6 @@ public abstract class TemporalElement extends TableNode {
 
     
     /**
-     * the backing temporal data set
-     */
-    private TemporalDataset tmpds;
-    
-    /**
      * creates an invalid TemporalElement. Use {@link TemporalDataset} as a
      * factory!
      */
@@ -76,15 +73,46 @@ public abstract class TemporalElement extends TableNode {
      *            the backing table
      * @param graph
      *            the backing graph
-     * @param tmpds
-     *            the backing temporal dataset
      * @param row
      *            the row in the node table to which this temporal element
      *            corresponds
      */
-    protected void init(Table table, Graph graph, TemporalDataset tmpds, int row) {
+    protected void init(Table table, TemporalElementStore graph, int row) {
         super.init(table, graph, row);
-        this.tmpds = tmpds;
+    }
+    
+    
+    /**
+     * Creates a TemporalElement on the temporal data heap. Note that
+     * currently, these TemporalElements have to be cleared manually
+     * from there as there is no full support for weak references
+     * in Java.
+     * 
+     * @param inf
+     *            the lower end of the temporal element
+     * @param sup
+     *            the upper end of the temporal element
+     * @param granularityId
+     *            the granularityID of the temporal element
+     * @param granularityContextId
+     *            the granularityContextID of the temporal element
+     * @param kind
+     *            the kind of the temporal element
+     * @return the created temporal element
+     */
+    public static TemporalElement createOnHeap(long inf, long sup, int granularityId,
+    		int granularityContextId, int kind) {
+    	return temporalDataHeap.addTemporalElement(inf, sup, granularityId, granularityContextId, kind);
+    }
+    
+    /**
+     * Destroys an instance of a (this) TemporalElement on the heap.
+     * If it is not on the heap, nothing is done to prevent this, so prefuse will
+     * throw an IllegalArgumentException. External references to
+     * this TemporalElement should be cleared by the calling code.  
+     */
+    public void destroyFromHeap() {
+    	temporalDataHeap.removeTemporalElement(this);
     }
 
     /**
@@ -113,14 +141,29 @@ public abstract class TemporalElement extends TableNode {
      */
     // TODO does it make sense to have a common method for all temporal elements?
     public abstract long getLength();
+    
+    /**
+     * Sets the length of the temporal element.
+     * 
+     * <p>
+     * This can be either
+     * <li>the number of chronons in the bottom granularity for anchored
+     * temporal elements or
+     * <li>the number of granules in the current granularity for unanchored
+     * temporal elements.
+     * 
+     * @value the length of the temporal element
+     */
+    // TODO does it make sense to have a common method for all temporal elements?
+    public abstract void setLength(long value);
 
     /**
      * Get the temporal dataset of which this element is a member.
      * 
      * @return the backing temporal dataset
      */
-    public TemporalDataset getTemporalDataset() {
-        return tmpds;
+    public TemporalElementStore getTemporalElementStore() {
+        return (TemporalElementStore) this.m_graph;
     }
 
     /**
@@ -221,7 +264,7 @@ public abstract class TemporalElement extends TableNode {
      * @return a generic temporal element of the same underlying data row.
      */
     public GenericTemporalElement asGeneric() {
-        return this.tmpds.getTemporalElementByRow(this.m_row);
+        return ((TemporalElementStore) this.m_graph).getTemporalElementByRow(this.m_row);
     }
 
     /**
@@ -230,7 +273,7 @@ public abstract class TemporalElement extends TableNode {
      * @return a temporal primitive of the same underlying data row.
      */
     public TemporalElement asPrimitive() {
-        return this.tmpds.getTemporalPrimitiveByRow(this.m_row);
+        return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(this.m_row);
     }
     
     /**
@@ -247,7 +290,7 @@ public abstract class TemporalElement extends TableNode {
     	if (thisElement instanceof Instant) {
     		return (Instant)thisElement;
     	} else if (thisElement instanceof Interval) {
-    		((Interval)thisElement).getBegin();	// TODO check if this is implemented yet
+    		return ((Interval)thisElement).getBegin();	// TODO check if this is implemented yet
     	} else if (thisElement.getFirstChild() != null) {
     		return ((TemporalElement)thisElement.getFirstChild()).getFirstInstant();
     	}
@@ -269,7 +312,7 @@ public abstract class TemporalElement extends TableNode {
     	if (thisElement instanceof Instant) {
     		return (Instant)thisElement;
     	} else if (thisElement instanceof Interval) {
-    		((Interval)thisElement).getEnd();	// TODO check if this is implemented yet
+    		return ((Interval)thisElement).getEnd();	// TODO check if this is implemented yet
     	} else if (thisElement.getLastChild() != null) {
     		return ((TemporalElement)thisElement.getLastChild()).getLastInstant();
     	}
@@ -283,8 +326,12 @@ public abstract class TemporalElement extends TableNode {
      * 
      * @return temporal objects occurring with the temporal element
      */
-    public Iterable<TemporalObject> temporalObjects() {
-        return this.tmpds.getTemporalObjectsByElementId(getId());
+    public Iterable<Tuple> temporalObjects() {
+        return ((TemporalElementStore) this.m_graph).getTemporalObjectsByElementId(getId());
+    }
+    
+    public Iterable<TemporalObject> temporalObjects(TemporalDataset tmpds) {
+        return tmpds.getTemporalObjectsByElementId(getId());
     }
     
     /**
@@ -295,16 +342,7 @@ public abstract class TemporalElement extends TableNode {
      */
     @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> parentElements() {
-        return new CustomIterable(super.outNeighbors());
-    }
-
-    /**
-     * Gets the number of parent temporal elements
-     * 
-     * @return the number of parent temporal elements
-     */
-    public int getParentElementCount() {
-        return super.getOutDegree();
+        return new CustomIterable(super.parents());
     }
 
     /**
@@ -315,27 +353,39 @@ public abstract class TemporalElement extends TableNode {
      */
     @SuppressWarnings("unchecked")
     public Iterable<GenericTemporalElement> childElements() {
-        return new CustomIterable(super.inNeighbors());
+        return new CustomIterable(super.children());
     }
 
     /**
-     * Gets the number of child temporal elements
+     * Get the first or only child temporal element as a primitive.
      * 
-     * @return the number of child temporal elements
+     * @return a temporal element that is child of this temporal element or
+     *         <tt>null</tt>.
      */
-    public int getChildElementCount() {
-        return super.getInDegree();
+    public TemporalElement getFirstChildPrimitive() {
+        int child = getGraph().getChildRow(m_row, 0);
+        if (child > -1) {
+            return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(child);
+        } else {
+            return null;
+        }
     }
     
     /**
-     * Links a TemporalElement as child to this TemporalElement.
+     * Get the last or only child temporal element as a primitive.
      * 
-     * @param child The TemporalElement that will be added as child.
+     * @return a temporal element that is child of this temporal element or
+     *         <tt>null</tt>.
      */
-    public void linkWithChild(TemporalElement child) {
-        super.m_graph.addEdge(child, this);
-    } 
-
+    public TemporalElement getLastChildPrimitive() {
+        int child = getGraph().getChildRow(m_row, getChildCount() - 1);
+        if (child > -1) {
+            return ((TemporalElementStore) this.m_graph).getTemporalPrimitiveByRow(child);
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * Gets the first granule of an anchored temporal element. For an
      * {@link Instant}, the granule represents the time of the instant. If it is
@@ -358,7 +408,7 @@ public abstract class TemporalElement extends TableNode {
      * @see timeBench.data.util.GranuleCache
      */
     public Granule[] getGranules() throws TemporalDataException {
-        return tmpds.getGranulesByRow(m_row);
+        return ((TemporalElementStore) this.m_graph).getGranulesByRow(m_row);
     }
 
     /**
@@ -375,5 +425,43 @@ public abstract class TemporalElement extends TableNode {
                 + super.getLong(TemporalElement.SUP) + ", granularityId="
                 + getGranularityId() + ", granularityContextId="
                 + getGranularityContextId() + ", kind=" + getKind() + "]";
+    }
+
+    @Override
+    public int compareTo(TemporalElement aThat) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+
+        // this optimization is usually worthwhile, and can always be added
+        if (this == aThat) return EQUAL;
+
+        // primitive numbers follow this form
+        if (this.getLong(INF) < aThat.getLong(INF)) return BEFORE;
+        if (this.getLong(INF) > aThat.getLong(INF)) return AFTER;
+
+        if (this.getLong(SUP) < aThat.getLong(SUP)) return BEFORE;
+        if (this.getLong(SUP) > aThat.getLong(SUP)) return AFTER;
+
+        // ID and Graph absolutely identify a TemporalElement tuple
+        if (this.getLong(ID) < aThat.getLong(ID)) return BEFORE;
+        if (this.getLong(ID) > aThat.getLong(ID)) return AFTER;
+
+        if (this.getGraph() == aThat.getGraph()) return EQUAL;
+        
+        if (this.getGraph().hashCode() < aThat.getGraph().hashCode())
+            return BEFORE;
+        else
+            return AFTER;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TemporalElement) {
+            TemporalElement el = (TemporalElement) obj;
+            return this.getId() == el.getId() && this.getGraph() == el.getGraph();
+        } else {
+            return false;
+        }
     }
 }

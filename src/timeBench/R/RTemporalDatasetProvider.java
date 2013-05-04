@@ -17,6 +17,7 @@ import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElementStore;
 import timeBench.data.TemporalObject;
 
 public class RTemporalDatasetProvider {
@@ -184,7 +185,7 @@ public class RTemporalDatasetProvider {
                         sup,
                         granularityId,
                         granularityContextId,
-                        TemporalDataset.PRIMITIVE_INTERVAL);
+                        TemporalElementStore.PRIMITIVE_INTERVAL);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 //to.set(name, data[i]);
                 to.setInt("rindex", i+1);
@@ -276,7 +277,7 @@ public class RTemporalDatasetProvider {
                         inf,
                         granularityId,
                         granularityContextId,
-                        TemporalDataset.PRIMITIVE_INSTANT);
+                        TemporalElementStore.PRIMITIVE_INSTANT);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
                 if (Double.isNaN(data[i])) {
@@ -381,7 +382,7 @@ public class RTemporalDatasetProvider {
                         sup,
                         granularityId,
                         granularityContextId,
-                        TemporalDataset.PRIMITIVE_INTERVAL);
+                        TemporalElementStore.PRIMITIVE_INTERVAL);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.setInt("rindex", i+1);
                 to.set(name, (double) (Math.round(data[i]*100.0)/100.0));

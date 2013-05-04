@@ -1,5 +1,7 @@
 package timeBench.data;
 
+import timeBench.calendar.Granularity;
+import timeBench.calendar.Granule;
 
 /**
  * Interval in the relational view. Following the <em>proxy tuple</em> pattern
@@ -25,20 +27,79 @@ public class Interval extends AnchoredTemporalElement {
     // TODO special handling of children e.g. getBegin() : Instant in conjunction with spans
     
     public Instant getBegin() throws TemporalDataException {
-    	if(this.getFirstChild() instanceof Instant)
-    		return (Instant)this.getFirstChild();
-    	else if(this.getChildCount() == 2 && this.getFirstChild() instanceof Span && this.getLastChild() instanceof Instant) {
-        	throw new RuntimeException("Not implemented");
-    	} else
+    	if(this.getFirstChildPrimitive() instanceof Instant)
+    		return (Instant)this.getFirstChildPrimitive();
+    	else if(this.getChildCount() == 2 && this.getFirstChildPrimitive() instanceof Span && this.getLastChild() instanceof Instant) {
+        	throw new RuntimeException("Not implemented yet");
+    	} else {
     		throw new TemporalDataException("Syntax error in temporal element of type interval");
+    	}
     }
     
     public Instant getEnd() throws TemporalDataException {
-    	if(this.getLastChild() instanceof Instant)
-    		return (Instant)this.getLastChild();
-    	else if(this.getChildCount() == 2 && this.getLastChild() instanceof Span && this.getFirstChild() instanceof Instant) {
-        	throw new RuntimeException("Not implemented");
-    	} else
-    		throw new TemporalDataException("Syntax error in temporal element of type interval");
+        TemporalElement last = (TemporalElement) this.getLastChild();
+        if (last != null) {
+            last = last.asPrimitive();
+            
+            if(last instanceof Instant)
+                return (Instant) last;
+            else if(this.getChildCount() == 2 && last instanceof Span && this.getFirstChildPrimitive() instanceof Instant) {
+                throw new RuntimeException("Not implemented yet");
+            } else
+                throw new TemporalDataException("Syntax error in temporal element of type interval");
+            
+        } else
+            throw new TemporalDataException("Syntax error in temporal element of type interval");
+        
     }
+    
+    public Span getSpan() throws TemporalDataException {
+        TemporalElement last = (TemporalElement) this.getLastChild();
+        if (last != null) {
+            last = last.asPrimitive();
+            
+            if(last instanceof Span)
+                return (Span) last;
+            else if(this.getChildCount() == 2 && last instanceof Instant && this.getFirstChildPrimitive() instanceof Instant) {
+                throw new RuntimeException("Not implemented yet");
+            } else
+                throw new TemporalDataException("Syntax error in temporal element of type interval");
+            
+        } else
+            throw new TemporalDataException("Syntax error in temporal element of type interval");
+    }
+    
+    public void setBegin(Granule granule) throws TemporalDataException {
+        TemporalElement first = (TemporalElement) this.getFirstChildPrimitive();
+        TemporalElement last = (TemporalElement) this.getLastChildPrimitive();
+        if (first != null && last != null) {
+            if (first instanceof Instant && last instanceof Span) {
+                ((Instant) first).set(granule);
+                // TODO convert begin to span granularity
+                long endId = granule.getIdentifier() + ((Span) last).getLength() - 1;
+                Granule endGranule = new Granule(endId, granule.getGranularity(),Granule.TOP);
+                this.setLong(INF, granule.getInf());
+                this.setLong(SUP, endGranule.getSup());
+            } else
+                throw new RuntimeException("Not implemented yet");
+        } else
+            throw new TemporalDataException(
+                    "Syntax error in temporal element of type interval");
+    }
+
+	public void setDuration(Granularity g,long value) throws TemporalDataException {
+        TemporalElement first = (TemporalElement) this.getFirstChildPrimitive();
+        TemporalElement last = (TemporalElement) this.getLastChildPrimitive();
+        if (first != null && last != null) {
+            if (first instanceof Instant && last instanceof Span) {            	
+            	((Span)last).setLength(value);           
+            	Granule startGranule = new Granule(((Instant) first).getInf(),((Instant) first).getSup(),g); 
+            	Granule endGranule = new Granule(startGranule.getIdentifier()+value-1, g,Granule.TOP);
+            	this.setLong(SUP, endGranule.getSup());
+            } else
+                throw new RuntimeException("Not implemented yet");
+        } else
+            throw new TemporalDataException(
+                    "Syntax error in temporal element of type interval");		
+	}
 }

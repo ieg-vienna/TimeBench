@@ -11,7 +11,7 @@ import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
-import timeBench.data.TemporalDataset;
+import timeBench.data.TemporalElementStore;
 
 /**
  * Cache for first granules of temporal elements. The cached granules are
@@ -24,15 +24,15 @@ public class GranuleCache {
 
     private ObjectColumn granules = new ObjectColumn(Granule[].class);
 
-    private TemporalDataset tmpds;
+    private TemporalElementStore tmpstr;
 
-    // TODO make configurable; move to TemporalDataset?
+    // TODO make configurable; move to TemporalElementStore?
     private Calendar calendar = CalendarManagerFactory.getSingleton(
             CalendarManagers.JavaDate).getDefaultCalendar();
 
-    public GranuleCache(TemporalDataset tmpds) {
-        this.tmpds = tmpds;
-        tmpds.getTemporalElements().getNodeTable()
+    public GranuleCache(TemporalElementStore tmpstr) {
+        this.tmpstr = tmpstr;
+        tmpstr.getNodeTable()
                 .addTableListener(new GranuleListener());
     }
 
@@ -47,7 +47,7 @@ public class GranuleCache {
     public Granule[] getGranules(int row) throws TemporalDataException {
         ensureRow(row);
         if (granules.get(row) == null) {
-            GenericTemporalElement elem = tmpds.getTemporalElementByRow(row);
+            GenericTemporalElement elem = tmpstr.getTemporalElementByRow(row);
             if (elem.isAnchored()) {
                 // TODO reuse granularity objects --> calendar responsible?
                 Granularity g = new Granularity(calendar,
@@ -62,7 +62,7 @@ public class GranuleCache {
     }
 
     public Granule getGranule(long id) throws TemporalDataException {
-        GenericTemporalElement elem = tmpds.getTemporalElement(id);
+        GenericTemporalElement elem = tmpstr.getTemporalElement(id);
         return (elem != null) ? this.getGranule(elem.getRow()) : null;
     }
 

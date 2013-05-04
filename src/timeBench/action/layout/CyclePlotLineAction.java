@@ -10,6 +10,7 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualTable;
 import timeBench.data.GranularityAggregationTree;
 import ieg.prefuse.action.LinePlotAction;
+import ieg.prefuse.data.ParentChildNode;
 
 /**
  * Creates a group with line segments that connect the nodes at a given level
@@ -36,7 +37,7 @@ public class CyclePlotLineAction extends LinePlotAction {
         @SuppressWarnings("rawtypes")
         Iterator nodeIterator = graph.getNodeTable().tuples(
                 new ComparisonPredicate(ComparisonPredicate.EQ,
-                        new ColumnExpression(GranularityAggregationTree.DEPTH),
+                        new ColumnExpression(ParentChildNode.DEPTH),
                         new NumericLiteral(depth - 1)));
 
         // connect children of these nodes

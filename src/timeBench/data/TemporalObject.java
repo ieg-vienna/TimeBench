@@ -2,11 +2,10 @@ package timeBench.data;
 
 import java.util.Iterator;
 
+import ieg.prefuse.data.ParentChildNode;
 import ieg.util.lang.CustomIterable;
 
 import org.apache.log4j.Logger;
-
-import prefuse.data.tuple.TableNode;
 
 /**
  * Relational view of the temporal object. Following the <em>proxy tuple</em>
@@ -16,7 +15,7 @@ import prefuse.data.tuple.TableNode;
  * @author Rind
  *
  */
-public class TemporalObject extends TableNode {
+public class TemporalObject extends ParentChildNode {
     
     static Logger logger = Logger.getLogger(TemporalObject.class);
     
@@ -32,8 +31,13 @@ public class TemporalObject extends TableNode {
      * the data field containing the identifier of the temporal element. Foreign
      * key to the temporal element table.
      */
-    public static final String TEMPORAL_ELEMENT_ID = "_temporal_id"; 
+    public static final String TEMPORAL_ELEMENT = "_temporal"; 
     
+    /**
+     * the data field containing the identifier of the temporal element. Foreign
+     * key to the temporal element table.
+     */
+    public static final String TEMPORAL_ELEMENT_ID = TemporalTable.idColumnNameFor(TEMPORAL_ELEMENT); 
     
     /**
      * creates an invalid TemporalObject. Use {@link TemporalDataset} as a
@@ -41,6 +45,16 @@ public class TemporalObject extends TableNode {
      */
     // make constructor protected: TemporalObjectManager extends TupleManager
     public TemporalObject() {
+    }
+
+    /**
+     * Get the temporal dataset of which this object is a member.
+     * Actually this is identical with {@link #getGraph()}.
+     * 
+     * @return the backing temporal dataset
+     */
+    public TemporalDataset getTemporalDataset() {
+        return (TemporalDataset) super.getGraph();
     }
 
     /**
@@ -55,10 +69,12 @@ public class TemporalObject extends TableNode {
     /**
      * @return the temporal element
      */
-    public GenericTemporalElement getTemporalElement() {
-        long teId = super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID);
-        // the temporal object graph, is actually the temporal dataset 
-        return ((TemporalDataset) m_graph).getTemporalElement(teId);
+    public TemporalElement getTemporalElement() {
+        // use typed primitive which is cached?
+        return (TemporalElement) get(TEMPORAL_ELEMENT);
+//        long teId = super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID);
+//        // the temporal object graph, is actually the temporal dataset 
+//        return ((TemporalDataset) m_graph).getTemporalElement(teId);
     }
 
     /**
@@ -79,9 +95,7 @@ public class TemporalObject extends TableNode {
      *         <tt>null</tt>.
      */
     public TemporalObject getFirstParentObject() {
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.outNeighbors();
-        return objs.hasNext() ? (TemporalObject) objs.next() : null;
+        return (TemporalObject) super.getFirstParent();
     }
     
     /**
@@ -102,33 +116,9 @@ public class TemporalObject extends TableNode {
      *         <tt>null</tt>.
      */
     public TemporalObject getFirstChildObject() {
-        @SuppressWarnings("rawtypes")
-        Iterator objs = super.inNeighbors();
-        return objs.hasNext() ? (TemporalObject) objs.next() : null;
+        return (TemporalObject) super.getFirstChild();
     }
     
-    /**
-     * Gets the number of child temporal objects.
-     * 
-     * @return the number of child temporal objects.
-     */
-    public int getChildObjectCount() {
-        return super.m_graph.getInDegree(this);
-    }
-    
-    /**
-     * Links a TemporalObject as child to this TemporalObject.
-     * 
-     * @param child The TemporalObject that will be added as child.
-     */
-    public void linkWithChild(TemporalObject child) {
-        super.m_graph.addEdge(child, this);
-        logger.trace("link with child: " + this.getRow() + " <- " + child.getRow() 
-                + " my childs: " + this.getChildObjectCount() 
-                + " total childs: " + super.m_graph.getEdgeCount() 
-                + " total nodes: " + super.m_graph.getNodeCount());
-    } 
-
     /**
      * creates a human-readable string from a {@link TemporalObject}.
      * <p>
@@ -138,7 +128,7 @@ public class TemporalObject extends TableNode {
      */
     @Override
     public String toString() {
-        return "TemporalObject[id=" + super.getRow() + ", temporal id="
+        return "TemporalObject[id=" + super.getLong(ID) + ", temporal id="
                 + super.getLong(TemporalObject.TEMPORAL_ELEMENT_ID)
                 + "]";
     }
@@ -234,7 +224,8 @@ public class TemporalObject extends TableNode {
 		setInt(kindField,value);
 	}
 	
-	private void ensureFieldExistence(String field,Class type) {
+	@SuppressWarnings("rawtypes")
+    private void ensureFieldExistence(String field,Class type) {
 		
 		Class existingType = m_table.getSchema().getColumnType(field);
 		if (existingType == null)

@@ -42,6 +42,17 @@ public class AnchoredTemporalElement extends TemporalElement implements
     public long getLength() {
         return getSup() - getInf() + 1;
     }
+    
+    /**
+     * sets the length of the temporal element. This is the number of chronons
+     * in the bottom granularity.
+     * 
+     * @value the length of the temporal element
+     */
+    @Deprecated
+    public void setLength(long value) {
+        setSup(getInf() + value - 1);
+    }
 
     /*
      * (non-Javadoc)

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<horizon-colorpalettes>
+	<schema name="default">
+		<palette bandsCount="1">
+			<color band="6" alpha="255" red="0" green="128" blue="255" />
+   			<color band="1" alpha="255" red="49" green="130" blue="188" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="-1" alpha="255" red="222" green="45" blue="38" />
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+		</palette>
+		<palette bandsCount="2">
+			<color band="6" alpha="255" red="0" green="128" blue="255" />
+			<color band="2" alpha="255" red="49" green="130" blue="189" />
+			<color band="1" alpha="255" red="158" green="202" blue="225" />			
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="-1" alpha="255" red="252" green="146" blue="114" />
+			<color band="-2" alpha="255" red="222" green="45" blue="38" />
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+   		</palette>
+   		<palette bandsCount="3">
+	  		<color band="6" alpha="255" red="0" green="128" blue="255" />
+			<color band="3" alpha="255" red="33" green="113" blue="181" />
+			<color band="2" alpha="255" red="107" green="174" blue="214" />			
+			<color band="1" alpha="255" red="189" green="215" blue="221" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="-1" alpha="255" red="252" green="174" blue="145" />
+			<color band="-2" alpha="255" red="251" green="106" blue="74" />
+			<color band="-3" alpha="255" red="203" green="24" blue="29" />
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+		</palette>
+		<palette bandsCount="4">
+			<color band="6" alpha="255" red="0" green="128" blue="255" />			
+			<color band="4" alpha="255" red="8" green="81" blue="156" />
+			<color band="3" alpha="255" red="49" green="130" blue="189" />			
+			<color band="2" alpha="255" red="107" green="174" blue="214" />
+			<color band="1" alpha="255" red="189" green="215" blue="221" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="-1" alpha="255" red="252" green="174" blue="145" />
+			<color band="-2" alpha="255" red="251" green="106" blue="74" />
+			<color band="-3" alpha="255" red="222" green="44" blue="38" />
+			<color band="-4" alpha="255" red="165" green="15" blue="21" />
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />			
+		</palette>
+		<palette bandsCount="5">
+			<color band="6" alpha="255" red="0" green="128" blue="255" />
+			<color band="5" alpha="255" red="8" green="81" blue="156" />
+			<color band="4" alpha="255" red="49" green="130" blue="189" />
+			<color band="3" alpha="255" red="107" green="174" blue="214" />			
+			<color band="2" alpha="255" red="158" green="202" blue="225" />
+			<color band="1" alpha="255" red="198" green="219" blue="239" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />		
+			<color band="-1" alpha="255" red="252" green="187" blue="161" />
+			<color band="-2" alpha="255" red="252" green="146" blue="114" />
+			<color band="-3" alpha="255" red="251" green="106" blue="74" />
+			<color band="-4" alpha="255" red="222" green="45" blue="38" />
+			<color band="-5" alpha="255" red="165" green="15" blue="21" />
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+		</palette>
+	</schema>
+	<schema name="weather">
+		<palette bandsCount="1">
+			<color band="-6" alpha="255" red="0" green="128" blue="255" />
+   			<color band="-1" alpha="255" red="49" green="130" blue="188" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="1" alpha="255" red="222" green="45" blue="38" />
+			<color band="6" alpha="255" red="255" green="0" blue="0" />
+		</palette>
+		<palette bandsCount="2">
+			<color band="-6" alpha="255" red="0" green="128" blue="255" />
+			<color band="-2" alpha="255" red="49" green="130" blue="189" />
+			<color band="-1" alpha="255" red="158" green="202" blue="225" />			
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="1" alpha="255" red="252" green="146" blue="114" />
+			<color band="2" alpha="255" red="222" green="45" blue="38" />
+			<color band="6" alpha="255" red="255" green="0" blue="0" />
+   		</palette>
+   		<palette bandsCount="3">
+	  		<color band="-6" alpha="255" red="0" green="128" blue="255" />
+			<color band="-3" alpha="255" red="33" green="113" blue="181" />
+			<color band="-2" alpha="255" red="107" green="174" blue="214" />			
+			<color band="-1" alpha="255" red="189" green="215" blue="221" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="1" alpha="255" red="252" green="174" blue="145" />
+			<color band="2" alpha="255" red="251" green="106" blue="74" />
+			<color band="3" alpha="255" red="203" green="24" blue="29" />
+			<color band="6" alpha="255" red="255" green="0" blue="0" />
+		</palette>
+		<palette bandsCount="4">
+			<color band="-6" alpha="255" red="0" green="128" blue="255" />			
+			<color band="-4" alpha="255" red="8" green="81" blue="156" />
+			<color band="-3" alpha="255" red="49" green="130" blue="189" />			
+			<color band="-2" alpha="255" red="107" green="174" blue="214" />
+			<color band="-1" alpha="255" red="189" green="215" blue="221" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="1" alpha="255" red="252" green="174" blue="145" />
+			<color band="2" alpha="255" red="251" green="106" blue="74" />
+			<color band="3" alpha="255" red="222" green="44" blue="38" />
+			<color band="4" alpha="255" red="165" green="15" blue="21" />
+			<color band="6" alpha="255" red="255" green="0" blue="0" />			
+		</palette>
+		<palette bandsCount="5">
+			<color band="-6" alpha="255" red="0" green="128" blue="255" />
+			<color band="-5" alpha="255" red="8" green="81" blue="156" />
+			<color band="-4" alpha="255" red="49" green="130" blue="189" />
+			<color band="-3" alpha="255" red="107" green="174" blue="214" />			
+			<color band="-2" alpha="255" red="158" green="202" blue="225" />
+			<color band="-1" alpha="255" red="198" green="219" blue="239" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />		
+			<color band="1" alpha="255" red="252" green="187" blue="161" />
+			<color band="2" alpha="255" red="252" green="146" blue="114" />
+			<color band="3" alpha="255" red="251" green="106" blue="74" />
+			<color band="4" alpha="255" red="222" green="45" blue="38" />
+			<color band="5" alpha="255" red="165" green="15" blue="21" />
+			<color band="6" alpha="255" red="255" green="0" blue="0" />
+		</palette>
+	</schema>
+	<schema name="finance">
+		<palette bandsCount="1">
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+			<color band="-1" alpha="255" red="222" green="45" blue="38" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="1" alpha="255" red="94" green="163" blue="84" />	
+			<color band="6" alpha="255" red="0" green="255" blue="76" />
+		</palette>
+		<palette bandsCount="2">			
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+			<color band="-2" alpha="255" red="222" green="45" blue="38" />
+			<color band="-1" alpha="255" red="252" green="146" blue="114" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />
+			<color band="1" alpha="255" red="116" green="196" blue="118" />
+			<color band="2" alpha="255" red="35" green="139" blue="69" />
+			<color band="6" alpha="255" red="0" green="255" blue="76" />			
+   		</palette>
+   		<palette bandsCount="3">
+   			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+   			<color band="-3" alpha="255" red="203" green="24" blue="29" />
+   			<color band="-2" alpha="255" red="251" green="106" blue="74" />
+	  		<color band="-1" alpha="255" red="252" green="174" blue="145" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />			
+			<color band="1" alpha="255" red="116" green="196" blue="118" />
+			<color band="2" alpha="255" red="49" green="163" blue="84" />
+			<color band="3" alpha="255" red="0" green="109" blue="44" />
+			<color band="6" alpha="255" red="0" green="255" blue="76" />
+		</palette>
+		<palette bandsCount="4">
+			<color band="-6" alpha="255" red="255" green="0" blue="0" /> 	
+			<color band="-4" alpha="255" red="165" green="15" blue="21" />
+			<color band="-3" alpha="255" red="222" green="44" blue="38" />
+			<color band="-2" alpha="255" red="251" green="106" blue="74" />
+			<color band="-1" alpha="255" red="252" green="174" blue="145" />			
+			<color band="0" alpha="255" red="135" green="135" blue="135" />					
+			<color band="1" alpha="255" red="161" green="217" blue="155" />
+			<color band="2" alpha="255" red="116" green="196" blue="118" />
+			<color band="3" alpha="255" red="49" green="163" blue="84" />
+			<color band="4" alpha="255" red="0" green="109" blue="44" />  
+			<color band="6" alpha="255" red="0" green="255" blue="76" />		 
+		</palette>
+		<palette bandsCount="5">			
+			<color band="-6" alpha="255" red="255" green="0" blue="0" />
+			<color band="-5" alpha="255" red="165" green="15" blue="21" />	
+			<color band="-4" alpha="255" red="222" green="45" blue="38" />
+			<color band="-3" alpha="255" red="251" green="106" blue="74" />
+			<color band="-2" alpha="255" red="252" green="146" blue="114" />
+			<color band="-1" alpha="255" red="252" green="187" blue="161" />
+			<color band="0" alpha="255" red="135" green="135" blue="135" />				
+			<color band="1" alpha="255" red="161" green="217" blue="155" />
+			<color band="2" alpha="255" red="116" green="196" blue="118" />
+			<color band="3" alpha="255" red="65" green="171" blue="93" />
+			<color band="4" alpha="255" red="35" green="139" blue="69" />
+			<color band="5" alpha="255" red="0" green="90" blue="50" />
+			<color band="6" alpha="255" red="0" green="255" blue="76" />
+		</palette>
+	</schema>
+</horizon-colorpalettes>

@@ -1,120 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<key id="_inf" attr.name="_inf" attr.type="long" for="node"/>
-<key id="_sup" attr.name="_sup" attr.type="long" for="node"/>
-<key id="_granularityID" attr.name="_granularityID" attr.type="int" for="node"/>
-<key id="_granularityContextID" attr.name="_granularityContextID" attr.type="int" for="node"/>
-<key id="_kind" attr.name="_kind" attr.type="int" for="node"/>
-<key id="name" attr.name="name" attr.type="string" for="node"/>
-<key id="value" attr.name="value" attr.type="double" for="node"/>
-<graph id="temporalData" edgedefault="directed">
-<node id="t0">
-<data key="_inf">1304406702000</data>
-<data key="_sup">1304406702999</data>
-<data key="_granularityID">1</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">2</data>
-</node>
-<node id="t1">
-<data key="_inf">1304294400000</data>
-<data key="_sup">1304380799999</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">2</data>
-</node>
-<node id="t2">
-<data key="_inf">1307491200000</data>
-<data key="_sup">1307577599999</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">2</data>
-</node>
-<node id="t3">
-<data key="_inf">1304294400000</data>
-<data key="_sup">1307577599999</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">3</data>
-</node>
-<node id="t4">
-<data key="_inf">23</data>
-<data key="_sup">23</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">-1</data>
-<data key="_kind">0</data>
-</node>
-<node id="t5">
-<data key="_inf">1304294400000</data>
-<data key="_sup">1306281599999</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">3</data>
-</node>
-<node id="t6">
-<data key="_inf">1304406702000</data>
-<data key="_sup">1307577599999</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">1</data>
-</node>
-<node id="t7">
-<data key="_inf">1304294400000</data>
-<data key="_sup">1307577599999</data>
-<data key="_granularityID">4</data>
-<data key="_granularityContextID">32767</data>
-<data key="_kind">1</data>
-</node>
-<node id="o0">
-<data key="name">HbA1c</data>
-<data key="value">8.5</data>
-</node>
-<node id="o1">
-<data key="name">VZI</data>
-<data key="value">12.0</data>
-</node>
-<node id="o2">
-<data key="name">ALT</data>
-<data key="value">1.5</data>
-</node>
-<node id="o3">
-<data key="name">Misch</data>
-<data key="value">1.0</data>
-</node>
-<node id="o4">
-<data key="name">HbA1c</data>
-<data key="value">7.2</data>
-</node>
-<node id="o5">
-<data key="name">HbA1c</data>
-<data key="value">7.75</data>
-</node>
-<node id="o6">
-<data key="name">Insulin</data>
-<data key="value">1.0</data>
-</node>
-<edge source="o0" target="t0"/>
-<edge source="o1" target="t3"/>
-<edge source="o2" target="t5"/>
-<edge source="o3" target="t5"/>
-<edge source="o4" target="t2"/>
-<edge source="o5" target="t6"/>
-<edge source="o6" target="t7"/>
-<edge source="o0" target="o5"/>
-<edge source="o4" target="o5"/>
-<edge source="o1" target="o6"/>
-<edge source="o2" target="o6"/>
-<edge source="o3" target="o6"/>
-<edge source="t1" target="t3"/>
-<edge source="t2" target="t3"/>
-<edge source="t1" target="t5"/>
-<edge source="t4" target="t5"/>
-<edge source="t0" target="t6"/>
-<edge source="t2" target="t6"/>
-<edge source="t3" target="t7"/>
-<edge source="t5" target="t7"/>
-<edge source="t5" target="t7"/>
-<node id="root"/>
-<edge source="o5" target="root"/>
-<edge source="o6" target="root"/>
-</graph>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+	xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<key id="_inf" attr.name="_inf" attr.type="long" for="node" />
+	<key id="_sup" attr.name="_sup" attr.type="long" for="node" />
+	<key id="_granularityID" attr.name="_granularityID" attr.type="int"
+		for="node" />
+	<key id="_granularityContextID" attr.name="_granularityContextID"
+		attr.type="int" for="node" />
+	<key id="_kind" attr.name="_kind" attr.type="int" for="node" />
+	<key id="name" attr.name="name" attr.type="string" for="node" />
+	<key id="value" attr.name="value" attr.type="double" for="node" />
+	<graph id="temporalData" edgedefault="directed">
+		<node id="t0">
+			<data key="_inf">1304406702000</data>
+			<data key="_sup">1304406702999</data>
+			<data key="_granularityID">1</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">2</data>
+		</node>
+		<node id="t1">
+			<data key="_inf">1304294400000</data>
+			<data key="_sup">1304380799999</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">2</data>
+		</node>
+		<node id="t2">
+			<data key="_inf">1307491200000</data>
+			<data key="_sup">1307577599999</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">2</data>
+		</node>
+		<node id="t3">
+			<data key="_inf">1304294400000</data>
+			<data key="_sup">1307577599999</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">3</data>
+		</node>
+		<node id="t4">
+			<data key="_inf">23</data>
+			<data key="_sup">23</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">-1</data>
+			<data key="_kind">0</data>
+		</node>
+		<node id="t5">
+			<data key="_inf">1304294400000</data>
+			<data key="_sup">1306281599999</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">3</data>
+		</node>
+		<node id="t6">
+			<data key="_inf">1304406702000</data>
+			<data key="_sup">1307577599999</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">1</data>
+		</node>
+		<node id="t7">
+			<data key="_inf">1304294400000</data>
+			<data key="_sup">1307577599999</data>
+			<data key="_granularityID">4</data>
+			<data key="_granularityContextID">32767</data>
+			<data key="_kind">1</data>
+		</node>
+		<node id="o0">
+			<data key="name">HbA1c</data>
+			<data key="value">8.5</data>
+		</node>
+		<node id="o1">
+			<data key="name">VZI</data>
+			<data key="value">12.0</data>
+		</node>
+		<node id="o2">
+			<data key="name">ALT</data>
+			<data key="value">1.5</data>
+		</node>
+		<node id="o3">
+			<data key="name">Misch</data>
+			<data key="value">1.0</data>
+		</node>
+		<node id="o4">
+			<data key="name">HbA1c</data>
+			<data key="value">7.2</data>
+		</node>
+		<node id="o5">
+			<data key="name">HbA1c</data>
+			<data key="value">7.75</data>
+		</node>
+		<node id="o6">
+			<data key="name">Insulin</data>
+			<data key="value">1.0</data>
+		</node>
+		<edge source="o0" target="t0" />
+		<edge source="o1" target="t3" />
+		<edge source="o2" target="t5" />
+		<edge source="o3" target="t5" />
+		<edge source="o4" target="t2" />
+		<edge source="o5" target="t6" />
+		<edge source="o6" target="t7" />
+		<edge source="o0" target="o5" />
+		<edge source="o4" target="o5" />
+		<edge source="o1" target="o6" />
+		<edge source="o2" target="o6" />
+		<edge source="o3" target="o6" />
+		<edge source="t1" target="t3" />
+		<edge source="t2" target="t3" />
+		<edge source="t1" target="t5" />
+		<edge source="t4" target="t5" />
+		<edge source="t0" target="t6" />
+		<edge source="t2" target="t6" />
+		<edge source="t3" target="t7" />
+		<edge source="t5" target="t7" />
+		<edge source="t5" target="t7" />
+		<node id="root" />
+		<edge source="o5" target="root" />
+		<edge source="o6" target="root" />
+	</graph>
 </graphml>

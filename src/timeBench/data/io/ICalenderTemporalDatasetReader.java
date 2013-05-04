@@ -30,6 +30,7 @@ import timeBench.calendar.JavaDateCalendarManager.Granularities;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
+import timeBench.data.TemporalElementStore;
 import timeBench.data.TemporalObject;
 
 public class ICalenderTemporalDatasetReader extends
@@ -178,7 +179,7 @@ public class ICalenderTemporalDatasetReader extends
 		// add a new temporalElement to the temporalDataSet
 		tempElement = dataset.addTemporalElement(dStart.getTime(),
 				dEnd.getTime(), granularityId, granularityContextId,
-				TemporalDataset.PRIMITIVE_INTERVAL);
+				TemporalElementStore.PRIMITIVE_INTERVAL);
 
 		// Creating the temporalObject and linking it to a
 		// temporalElement
@@ -231,7 +232,7 @@ public class ICalenderTemporalDatasetReader extends
 
 		tempElement = dataset.addTemporalElement(dStamp.getTime(),
 				dStamp.getTime(), granularityId, granularityContextId,
-				TemporalDataset.PRIMITIVE_INSTANT);
+				TemporalElementStore.PRIMITIVE_INSTANT);
 
 		tempObject = dataset.addTemporalObject(tempElement);
 
@@ -270,7 +271,7 @@ public class ICalenderTemporalDatasetReader extends
 
 		tempElement = dataset.addTemporalElement(dStart.getTime(),
 				dEnd.getTime(), granularityId, granularityContextId,
-				TemporalDataset.PRIMITIVE_INTERVAL);
+				TemporalElementStore.PRIMITIVE_INTERVAL);
 
 		tempObject = dataset.addTemporalObject(tempElement);
 

@@ -1,32 +1,32 @@
 package timeBench.action.layout;
 
-import prefuse.Constants;
-import prefuse.action.GroupAction;
-import prefuse.action.layout.Layout;
-import prefuse.data.query.NumberRangeModel;
-import prefuse.util.PrefuseLib;
-import prefuse.util.ui.ValuedRangeModel;
-import prefuse.visual.NodeItem;
-import prefuse.visual.VisualItem;
-
 import ieg.prefuse.RangeModelTransformationProvider;
-import ieg.prefuse.data.DataHelper;
-import ieg.prefuse.data.query.NestedNumberRangeModel;
+import ieg.prefuse.data.LinkedTree;
+import ieg.prefuse.data.LinkedTree.LinkedNode;
 
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 
+import prefuse.Constants;
+import prefuse.action.layout.Layout;
+import prefuse.data.Schema;
+import prefuse.data.query.NumberRangeModel;
+import prefuse.util.PrefuseLib;
+import prefuse.util.ui.ValuedRangeModel;
+import prefuse.visual.VisualItem;
+import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTree;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalObject;
-import timeBench.test.DebugHelper;
 
 public class GranularityTreeLayout extends Layout implements RangeModelTransformationProvider {
 
 	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
 	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
+	
+	public static final String FIELD_POSITION = "_position";
+	public static final String FIELD_GRANULE = "_granule";
 	
     // XXX assume depth is given via size of settings
     protected int depth;
@@ -46,6 +46,8 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
     HashMap<Integer,double[]> additionalVisualItemInformation; // size x,y before size stretching, half border size
 
     GranularityTreeLayoutSettings[] settings;
+    
+    LinkedTree[] labels = new LinkedTree[Constants.AXIS_COUNT];
 
     public GranularityTreeLayout(String group,
             GranularityTreeLayoutSettings[] settings, double minSize) {
@@ -61,8 +63,15 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
                 .getSourceData(m_group);
         TemporalObject root = tree.getTemporalObject(tree.getRoots()[0]);
 
+        LinkedNode[] labelRoots = new LinkedNode[Constants.AXIS_COUNT];
+
+    	Schema s = new Schema(1);
+    	s.addColumn(FIELD_GRANULE, Granule.class);
+    	s.addColumn(FIELD_POSITION, double.class);
         for(int i=0; i<Constants.AXIS_COUNT; i++) {
         	axisActive[i] = false;
+        	labels[i] = new LinkedTree(s);
+        	labelRoots[i] = labels[i].addRoot();
         }
                 
         try {
@@ -100,7 +109,7 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         				bounds.getY()-((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*xFactor,
         				newWidth,newHeight);
         		rootBounds = (Rectangle2D)bounds.clone();
-        		calculatePositions(root,0,bounds,xFactor);
+        		calculatePositions(root,0,bounds,xFactor,labelRoots);
         	} else {
         		double newWidth = additionalVisualItemInformation.get(visRoot.getRow())[Constants.X_AXIS] * yFactor;
         		double newHeight = additionalVisualItemInformation.get(visRoot.getRow())[Constants.Y_AXIS] * yFactor;
@@ -108,19 +117,38 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
         				bounds.getY()-((Number)rangeModels[Constants.Y_AXIS].getLowValue()).doubleValue()*yFactor,
         				newWidth,newHeight);
         		rootBounds = (Rectangle2D)bounds.clone();
-            	calculatePositions(root,0,bounds,yFactor);
+            	calculatePositions(root,0,bounds,yFactor,labelRoots);
         	}       
         } catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        //_printLabels(labels[Constants.X_AXIS].getRoot());
+    }
+    
+    private void _printLabels(LinkedNode parent) {
+    	Iterator children = parent.children();
+    	while(children.hasNext()) {
+    		LinkedNode child = (LinkedNode)children.next();
+    		for(int i=0; i<child.getDepth(); i++)
+    			System.out.print("  ");
+    		try {
+				System.out.print(((Granule)child.get(FIELD_GRANULE)).getLabel());
+			} catch (TemporalDataException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		System.out.println();
+    		_printLabels(child);
+    	}
     }
 
     /**
 	 * @param root
      * @throws TemporalDataException 
 	 */
-	private void calculatePositions(TemporalObject node,int level,Rectangle2D bounds,double factor) throws TemporalDataException {
+	private void calculatePositions(TemporalObject node,int level,Rectangle2D bounds,double factor,LinkedNode[] currentLabels) throws TemporalDataException {
 		
     	VisualItem visualNode = m_vis.getVisualItem(m_group, node);
     	
@@ -134,10 +162,16 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
     		setY(visualNode,null,bounds.getCenterY());
     		PrefuseLib.setSizeY(visualNode,null,aviivn[Constants.Y_AXIS]*factor);
     	}
+		visualNode.setVisible(true);
+		
+		if (level > 0)
+			currentLabels[settings[level-1].getTargetAxis()].setDouble(FIELD_POSITION,
+				settings[level-1].getTargetAxis() == Constants.X_AXIS ? bounds.getCenterX() : bounds.getCenterY());
 		
     	double xbase = bounds.getX() + (aviivn[Constants.AXIS_COUNT+Constants.X_AXIS])*factor;
     	double ybase = bounds.getY() + (aviivn[Constants.AXIS_COUNT+Constants.Y_AXIS])*factor;
         if (level < depth) {
+            Iterator childIterator = currentLabels[settings[level].getTargetAxis()].children();
             for (TemporalObject o : node.childObjects()) {
             	double x = xbase;
             	double y = ybase;
@@ -147,13 +181,29 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
             		x += (o.getTemporalElement().getGranule().getIdentifier()-minIdentifiers[level]) * aviivo[Constants.X_AXIS]*factor;
             	if(settings[level].getTargetAxis() == Constants.Y_AXIS)
             		y += (o.getTemporalElement().getGranule().getIdentifier()-minIdentifiers[level]) * aviivo[Constants.Y_AXIS]*factor;
+            	LinkedNode[] nextLabels = new LinkedNode[Constants.AXIS_COUNT];
+                for(int i=0; i<Constants.AXIS_COUNT;i++)
+                	nextLabels[i] = currentLabels[i];
+               	if(childIterator.hasNext())
+                   	nextLabels[settings[level].getTargetAxis()] = (LinkedNode)childIterator.next();
+               	else
+               		nextLabels[settings[level].getTargetAxis()] = currentLabels[settings[level].getTargetAxis()].addChild();
+            	nextLabels[settings[level].getTargetAxis()].set(FIELD_GRANULE,o.getTemporalElement().getGranule());
             	calculatePositions(o, level + 1, new Rectangle2D.Double(x,
             			y,
-            			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor),factor);
+            			aviivo[Constants.X_AXIS]*factor,aviivo[Constants.Y_AXIS]*factor),factor,nextLabels);
             }
-        }
-        
-        
+        } else {
+        	setChildsInvisible(node);
+        }        
+	}
+	
+	private void setChildsInvisible(TemporalObject node) {
+    	for (TemporalObject o : node.childObjects()) {
+    		VisualItem visualNode = m_vis.getVisualItem(m_group, o);
+    		visualNode.setVisible(false);
+    		setChildsInvisible(o);
+    	}
 	}
 
 	private void calculateSizes(TemporalObject root)
@@ -259,6 +309,10 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 		
 		return result;
 	}
+	
+	public LinkedTree[] getLabels() {
+		return labels;
+	}
 
 	/* (non-Javadoc)
 	 * @see ieg.prefuse.RangeModelTransformationProvider#getRangeModel(int)
@@ -282,5 +336,17 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 	@Override
 	public Double getMaxPosition(int axis) {
 		return axis == Constants.X_AXIS ? rootBounds.getMaxX() : rootBounds.getMaxY();
+	}
+
+	public GranularityTreeLayoutSettings[] getSettings() {		
+		return settings;
+	}
+
+	public long[] getMinIdentifiers() {		
+		return minIdentifiers;		
+	}
+	
+	public long[] getMaxIdentifiers() {		
+		return maxIdentifiers;		
 	}
 }

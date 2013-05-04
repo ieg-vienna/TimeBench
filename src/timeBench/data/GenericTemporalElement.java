@@ -136,6 +136,26 @@ public class GenericTemporalElement extends TemporalElement {
         else
             return getSup();
     }
+    
+    /**
+     * Sets the length of the temporal element.
+     * 
+     * <p>
+     * This can be either
+     * <li>the number of chronons in the bottom granularity for anchored
+     * temporal elements or
+     * <li>the number of granules in the current granularity for unanchored
+     * temporal elements.
+     * 
+     * @return the length of the temporal element
+     */
+    @Deprecated
+    public void setLength(long value) {
+        if (isAnchored())
+            setSup(value + getInf() - 1);
+        else
+            setSup(value);
+    }
 
     /**
      * Get the value of the inf attribute (begin of lifespan for anchored time

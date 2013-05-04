@@ -1,5 +1,6 @@
 package timeBench.data;
 
+import ieg.prefuse.data.ParentChildNode;
 import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.event.EventConstants;
@@ -19,17 +20,15 @@ import prefuse.data.event.TableListener;
 public class GranularityAggregationTree extends TemporalDataset {
 	double[][] minValues;
 	double[][] maxValues;
-	
-    public static final String DEPTH = "_depth";
-    
+	    
 	public GranularityAggregationTree(Schema dataColumnSchema, int levelCount) throws TemporalDataException {
 	    // TODO handle int columns (canGetDouble but not canSetDouble) -> add as double columns
 	    // TODO handle boolean, Object columns -> exclude?
 
 		super(dataColumnSchema);
 		
-		super.getNodeTable().addColumn(DEPTH, Integer.TYPE);
-		additionalNonDataColums = new String[] {DEPTH};
+		super.getNodeTable().addColumn(ParentChildNode.DEPTH, Integer.TYPE);
+		additionalNonDataColums = new String[] {ParentChildNode.DEPTH};
 		
 		minValues = new double[dataColumnSchema.getColumnCount()][levelCount];
 		maxValues = new double[dataColumnSchema.getColumnCount()][levelCount];
