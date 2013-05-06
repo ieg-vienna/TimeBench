@@ -7,7 +7,7 @@ import org.rosuda.REngine.REngineException;
 import timeBench.action.analytical.GranularityAggregationFunction;
 import timeBench.data.TemporalObject;
 
-public class RAggregationFunction implements GranularityAggregationFunction {
+public class RAggregationFunction extends GranularityAggregationFunction {
 	String rAggregationFunction = "mean";
 	REngine engine;
 	boolean ignoreMissings = false;

@@ -2,7 +2,7 @@ package timeBench.action.analytical;
 
 import timeBench.data.TemporalObject;
 
-public class GranularityAggregationMean implements
+public class GranularityAggregationMean extends
 		GranularityAggregationFunction {
 	private boolean naomit = false;
 	

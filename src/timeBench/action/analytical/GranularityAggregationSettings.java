@@ -34,9 +34,7 @@ public class GranularityAggregationSettings {
      * @param contextIdentifier
      */
     public GranularityAggregationSettings(int identifier, int contextIdentifier) {
-        this.identifier = identifier;
-        this.contextIdentifier = contextIdentifier;
-        aggFct = new GranularityAggregationMean();
+    	this(identifier,contextIdentifier,new GranularityAggregationMean());
     }
     
     /**
