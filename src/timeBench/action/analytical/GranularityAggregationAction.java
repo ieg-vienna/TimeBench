@@ -1,7 +1,6 @@
 package timeBench.action.analytical;
 
 import ieg.prefuse.data.ParentChildNode;
-
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -53,7 +52,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		aggFct = new GranularityAggregationFunction[granularities.length];
 		for(int i=0; i<granularities.length; i++) {
 			this.granularities[i] = new Granularity(this.calendarManager.getDefaultCalendar(),granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
-			aggFct[i] = new GranularityAggregationMean(); // granularities[i].getAggregationFct();
+			aggFct[i] = granularities[i].getAggregationFct();
 		}
 		this.missingValueIdentifier = missingValueIdentifier;
 	}
@@ -156,7 +155,17 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		}
 	}
 
-	
+	public void update() {
+		for (long iRoot : workingDataset.getRoots()) {
+			boolean change = false;
+			for (int i : sourceDataset.getDataColumnIndices()) {
+				if (workingDataset.getTemporalObject(iRoot).getKind(i) > 0.0)
+					change = true;
+			}
+			if (change)
+				aggregate(workingDataset.getTemporalObject(iRoot),0);
+		}
+	}
 	
 
 	private void aggregate(TemporalObject parent,int level) {
@@ -169,14 +178,41 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	}
 	private void aggregate(TemporalObject parent,Iterable<TemporalObject> childs,int level) {
 		int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
+//		Vector<Integer> aggregateColumn = new Vector<Integer>();
+		
+		/*
+		 * Aggregate Only the data Columns, do not aggregate the Metadata
+		 * To have the Metadata in the leafes, we keep the Metadata Columns in th lowest level
+		 */
+//		if (level < (granularities.length - 1)) {
+//			for (int i = 0 ; i < dataColumnIndices.length; i++) {
+//				if (!(parent.getColumnName(dataColumnIndices[i]).endsWith(".kind") ||
+//						parent.getColumnName(dataColumnIndices[i]).endsWith(".minValue") ||
+//						parent.getColumnName(dataColumnIndices[i]).endsWith(".maxValue"))) {
+//					aggregateColumn.add(Integer.valueOf(dataColumnIndices[i]));
+//				}
+//			}
+//			
+//			dataColumnIndices = new int[aggregateColumn.size()];
+//			for (int i =0; i < dataColumnIndices.length; i++) {
+//				dataColumnIndices[i] = aggregateColumn.get(i).intValue();
+//			}
+//		}
 		
         // TODO skip columns where NOT canSetDouble() e.g. boolean, Object
 		// already done: .kind
 		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
 		
 		for(int i=0; i<dataColumnIndices.length; i++) {
-			parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			if (parent.canSetDouble(dataColumnIndices[i])) {
+				parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			} else if (parent.canSetInt(dataColumnIndices[i])) {
+				parent.setInt(dataColumnIndices[i],(int) totalValue[i]);
+			}
 			parent.setInt(ParentChildNode.DEPTH,level);
+			
+//			parent.setDouble(dataColumnIndices[i],totalValue[i]);
+//			parent.setInt(ParentChildNode.DEPTH,level);
 						
 			int kind = 0;
 			for(TemporalObject iO : childs) {

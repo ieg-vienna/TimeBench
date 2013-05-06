@@ -18,7 +18,7 @@ public class GranularityAggregationSettings {
     // private static final long serialVersionUID = 1380115803468529882L;
     private int identifier;
     private int contextIdentifier;
-    //private transient GranularityAggregationFunction aggFct;
+    private transient GranularityAggregationFunction aggFct;
 
     /**
      * The parameterless constructor is only for serialization.
@@ -36,7 +36,7 @@ public class GranularityAggregationSettings {
     public GranularityAggregationSettings(int identifier, int contextIdentifier) {
         this.identifier = identifier;
         this.contextIdentifier = contextIdentifier;
-        //aggFct = new GranularityAggregationMean();
+        aggFct = new GranularityAggregationMean();
     }
     
     /**
@@ -48,7 +48,7 @@ public class GranularityAggregationSettings {
     public GranularityAggregationSettings(int identifier, int contextIdentifier, GranularityAggregationFunction agg) {
         this.identifier = identifier;
         this.contextIdentifier = contextIdentifier;
-        //aggFct = agg;
+        aggFct = agg;
     }
 
     /**
@@ -81,18 +81,18 @@ public class GranularityAggregationSettings {
         this.contextIdentifier = contextIdentifier;
     }
 
-//    /**
-//     * @return the aggregation function object
-//     */
-//	public GranularityAggregationFunction getAggregationFct() {
-//		return aggFct;
-//	}
-//	
-//	/**
-//     * @param aggregationFct
-//     *            Function to use for the granularity aggregation
-//     */
-//	public  void setAggregationFct(GranularityAggregationFunction aggregationFct) {
-//		this.aggFct = aggregationFct;
-//	}
+    /**
+     * @return the aggregation function object
+     */
+	public GranularityAggregationFunction getAggregationFct() {
+		return aggFct;
+	}
+	
+	/**
+     * @param aggregationFct
+     *            Function to use for the granularity aggregation
+     */
+	public  void setAggregationFct(GranularityAggregationFunction aggregationFct) {
+		this.aggFct = aggregationFct;
+	}
 }

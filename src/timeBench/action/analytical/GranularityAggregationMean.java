@@ -7,7 +7,7 @@ public class GranularityAggregationMean implements
 	private boolean naomit = false;
 	
 	public GranularityAggregationMean() {
-		naomit = true;	// TL: without parameter, behave like legacy
+		naomit = true;
 	}
 	
 	public GranularityAggregationMean(boolean missingValuesOmit) {

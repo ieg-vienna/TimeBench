@@ -13,9 +13,9 @@ import java.util.Date;
  * 
  */
 public class AdvancedTimeScale extends BasicTimeScale {
-	private int displayWidth;
-	private boolean adjustDateRangeOnResize = true;
-	private long endDate;
+	protected int displayWidth;
+	protected boolean adjustDateRangeOnResize = true;
+	protected long endDate;
 
 	/**
 	 * Create a {@link AdvancedTimeScale} with the current date as the start
