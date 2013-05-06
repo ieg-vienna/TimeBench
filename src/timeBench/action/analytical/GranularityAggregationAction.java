@@ -204,8 +204,15 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		double[] totalValue = aggFct[(aggFct.length-1)-level].aggregate(childs, dataColumnIndices, missingValueIdentifier);
 		
 		for(int i=0; i<dataColumnIndices.length; i++) {
-			parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			if (parent.canSetDouble(dataColumnIndices[i])) {
+				parent.setDouble(dataColumnIndices[i],totalValue[i]);
+			} else if (parent.canSetInt(dataColumnIndices[i])) {
+				parent.setInt(dataColumnIndices[i],(int) totalValue[i]);
+			}
 			parent.setInt(ParentChildNode.DEPTH,level);
+			
+//			parent.setDouble(dataColumnIndices[i],totalValue[i]);
+//			parent.setInt(ParentChildNode.DEPTH,level);
 						
 			int kind = 0;
 			for(TemporalObject iO : childs) {
