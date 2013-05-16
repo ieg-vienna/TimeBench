@@ -106,15 +106,18 @@ public class DemoEnvironmentFactory {
     }
 
     public void show(TimeAxisDisplay display, RangeAdapter rangeAdapter) {
-        show(display, rangeAdapter, rangeAdapter.getActualScale());
+        show(display, rangeAdapter, rangeAdapter.getActualScale(),true);
+    }
+    public void show(TimeAxisDisplay display, RangeAdapter rangeAdapter,boolean showToolbar) {
+        show(display, rangeAdapter, rangeAdapter.getActualScale(),showToolbar);
     }
 
-    public void show(TimeAxisDisplay display, AdvancedTimeScale timeScale) {
-        show(display, null, timeScale);
+    public void show(TimeAxisDisplay display, AdvancedTimeScale timeScale,boolean showToolbar) {
+        show(display, null, timeScale,showToolbar);
     }
 
     private void show(TimeAxisDisplay display, RangeAdapter rangeAdapter,
-            AdvancedTimeScale timeScale) {
+            AdvancedTimeScale timeScale,boolean showToolbar) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("TimeBench | " + name);
@@ -122,9 +125,11 @@ public class DemoEnvironmentFactory {
         prepareTimeDisplay(display, rangeAdapter, timeScale);
         frame.getContentPane()
                 .add(prepareGui(display, rangeAdapter, timeScale));
-        frame.getContentPane()
-                .add(prepareToolbar(SwingConstants.VERTICAL, rangeAdapter,
-                        timeScale), BorderLayout.EAST);
+        if(showToolbar) {
+        	frame.getContentPane()
+                	.add(prepareToolbar(SwingConstants.VERTICAL, rangeAdapter,
+                			timeScale), BorderLayout.EAST);
+        }
 
         frame.pack();
         frame.setVisible(true);
