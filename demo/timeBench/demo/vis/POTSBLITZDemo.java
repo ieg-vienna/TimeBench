@@ -40,6 +40,10 @@ import visual.sort.SizeItemSorter;
 public class POTSBLITZDemo {
 
     private static final String MAXX_FIELD = VisualItem.X2;
+    private static final String ARCDIAGRAM_PATTERNS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
+    private static final String ARCDIAGRAM_EVENTS = "arcdiagram_events"; // Don't know if . is reserved in prefuse
+    //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
+    //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
 
     private static void createVisualization(TemporalDataset patterns, TemporalDataset events) {
         final Visualization vis = new Visualization();
@@ -51,8 +55,8 @@ public class POTSBLITZDemo {
 
         //DebugHelper.printTemporalDatasetForest(System.out, tmpds, "label",TemporalObject.ID);
         
-        VisualGraph vg = vis.addGraph("patterns", patterns);
-        VisualGraph vge = vis.addGraph("events", events);
+        VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
+        VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
         
         //DataHelper.printForest(System.out, vg.getNodeTable(), tmpds.getRoots(), tmpds.getDepth(), TemporalObject.ID, new TemporalElementInformation(),  "label");
         
@@ -83,7 +87,7 @@ public class POTSBLITZDemo {
         	IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
 
                 public Renderer getRenderer(VisualItem item) {
-                    return item.isInGroup("patterns") ? arcRenderer
+                    return item.isInGroup(ARCDIAGRAM_PATTERNS) ? arcRenderer
                             : intRenderer;
                 }
         };
@@ -96,22 +100,22 @@ public class POTSBLITZDemo {
         // STEP 3: create actions to process the visual data
 
         ActionList layout = new ActionList();
-        AxisLayout y_axis = new AxisLayout("events", VisualItem.VISIBLE, Constants.Y_AXIS);
+        AxisLayout y_axis = new AxisLayout(ARCDIAGRAM_EVENTS, VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis);
-        AxisLayout y_axis2 = new AxisLayout("patterns.nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
+        AxisLayout y_axis2 = new AxisLayout(ARCDIAGRAM_PATTERNS+".nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis2);
         // layout.add(new TimeAxisLayout(DATA, timeScale));
-        TimeAxisLayout time_axis = new IntervalAxisLayout("patterns", MAXX_FIELD,
+        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD,
                 timeScale);
-        TimeAxisLayout time_axis2 = new IntervalAxisLayout("events", MAXX_FIELD,
+        TimeAxisLayout time_axis2 = new IntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD,
                 timeScale);                       
         //axis.setAxis(Constants.Y_AXIS);
         layout.add(time_axis);
         layout.add(time_axis2);
-        layout.add(new DataColorAction("events", "class", prefuse.Constants.NOMINAL,
+        layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
-        layout.add(new DataColorAction("patterns.nodes", "class", prefuse.Constants.NOMINAL,
+        layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         // layout.add(new SizeAction(DATA, 1)); // TODO try granularity -> size
