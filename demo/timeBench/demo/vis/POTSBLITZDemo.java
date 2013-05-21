@@ -23,10 +23,15 @@ import prefuse.render.RendererFactory;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import render.ArcRenderer;
+import timeBench.action.analytical.TreeDebundlingAction;
+import timeBench.action.layout.GreedyDistributionLayout;
 import timeBench.action.layout.IntervalAxisLayout;
+import timeBench.action.layout.PatternOverlayCheckLayout;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
+import timeBench.calendar.CalendarManager;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.controls.BranchHighlightControl;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -42,7 +47,8 @@ public class POTSBLITZDemo {
     private static final String MAXX_FIELD = VisualItem.X2;
     private static final String ARCDIAGRAM_PATTERNS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     private static final String ARCDIAGRAM_EVENTS = "arcdiagram_events"; // Don't know if . is reserved in prefuse
-    //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
+    private static final String PATTERNTIMELINES = "patterntimelines";
+    private static final String PATTERNTHEMERIVER = "patternthemeriver";
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
 
     private static void createVisualization(TemporalDataset patterns, TemporalDataset events) {
@@ -52,13 +58,9 @@ public class POTSBLITZDemo {
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data
-
-        //DebugHelper.printTemporalDatasetForest(System.out, tmpds, "label",TemporalObject.ID);
-        
+       
         VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
-        VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
-        
-        //DataHelper.printForest(System.out, vg.getNodeTable(), tmpds.getRoots(), tmpds.getDepth(), TemporalObject.ID, new TemporalElementInformation(),  "label");
+        VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);        
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
@@ -100,26 +102,32 @@ public class POTSBLITZDemo {
         // STEP 3: create actions to process the visual data
 
         ActionList layout = new ActionList();
+        
         AxisLayout y_axis = new AxisLayout(ARCDIAGRAM_EVENTS, VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis);
         AxisLayout y_axis2 = new AxisLayout(ARCDIAGRAM_PATTERNS+".nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis2);
-        // layout.add(new TimeAxisLayout(DATA, timeScale));
-        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD,
-                timeScale);
-        TimeAxisLayout time_axis2 = new IntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD,
-                timeScale);                       
-        //axis.setAxis(Constants.Y_AXIS);
+        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD, timeScale);
+        TimeAxisLayout time_axis2 = new IntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD, timeScale);                       
         layout.add(time_axis);
         layout.add(time_axis2);
+        
+        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,PATTERNTIMELINES);
+        layout.add(patternOverlapCheckLayout);
+        
+        TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, timeScale);
+        GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 7);
+        layout.add(time_axis3);
+        layout.add(y_axis3);
+        
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
-        // layout.add(new SizeAction(DATA, 1)); // TODO try granularity -> size
         layout.add(new RepaintAction());
+        
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, layout);
         vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, layout);
 
@@ -152,6 +160,7 @@ public class POTSBLITZDemo {
     	Locale.setDefault(Locale.US);
 		TemporalDataset events = null;
 		TemporalDataset patterns = null;
+		TemporalDataset flatPatterns = null;
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
 			events = gmltdr.readData("data/cardiovascular_events.graphml.gz");
@@ -161,14 +170,21 @@ public class POTSBLITZDemo {
 			
 			gmltdr = new GraphMLTemporalDatasetReader();
 			patterns = gmltdr.readData("data/cardiovascular_patterns.graphml.gz");
-			
+						
 			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);
 		} catch (DataIOException e) {
 			e.printStackTrace();
-		}
+		}			
 		
         //DataHelper.printMetadata(System.out, events.getNodeTable());
 		//DataHelper.printMetadata(System.out, patterns.getNodeTable());
+		
+		TreeDebundlingAction action = new TreeDebundlingAction(patterns);
+		action.run(0);
+		flatPatterns = action.getTemporalDataset();
+
+		System.out.println(flatPatterns.getNodeCount());
+		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
 		
         createVisualization(patterns,events);
     }
