@@ -15,12 +15,14 @@ import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.GranularityAggregationTree;
 import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.Instant;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;
+import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
@@ -34,10 +36,10 @@ import timeBench.data.TemporalObject;
  * @author Tim Lammarsch
  *
  */
-public class PatternCountAction extends prefuse.action.Action {
+public class PatternCountAction extends prefuse.action.Action implements TemporalDatasetProvider {
     
 	TemporalDataset sourceDataset;
-	Table workingDataset;
+	TemporalDataset workingDataset;
 
 	public PatternCountAction(TemporalDataset sourceDataset) {
 		this.sourceDataset = sourceDataset;
@@ -49,20 +51,49 @@ public class PatternCountAction extends prefuse.action.Action {
 	 */
 	@Override
 	public void run(double frac) {
-		workingDataset = new Table();
-		workingDataset.addColumn("pattern", String.class);
-		workingDataset.addColumn("changeChronons", ArrayList.class);
-		workingDataset.addColumn("count", ArrayList.class);
+		try {
+			workingDataset = new TemporalDataset();
 			
-		Iterator temporalObjectIterator = sourceDataset.nodes();
-		Hashtable<String,Long> patterns = new Hashtable<String, Long>();
-		while(temporalObjectIterator.hasNext()) {				
-			TemporalObject to = (TemporalObject)temporalObjectIterator.next();				
-		}
-	
+			Hashtable<String,Long> patterns = new Hashtable<String, Long>();
+			Iterator temporalObjectIterator = sourceDataset.nodes();
+			while(temporalObjectIterator.hasNext()) {				
+				TemporalObject to = (TemporalObject)temporalObjectIterator.next();
+				String pattern = to.getString("pattern");			
+				if (workingDataset.getDataColumnSchema().getColumnIndex(pattern) == -1) {
+					workingDataset.addDataColumn(pattern, long.class, 0);
+				}
+				long inf = to.getTemporalElement().asGeneric().getInf();
+				TemporalObject lastTO = getLastTemporalObjectBefore(inf);
+				TemporalElement newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
+						JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
+				TemporalObject newTO = workingDataset.addTemporalObject(newTE);
+				
+				long sup = to.getTemporalElement().asGeneric().getSup();
+			}
+		} catch (TemporalDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 
-	public Table getTemporalDataset() {
+	private TemporalObject getLastTemporalObjectBefore(long inf) {
+		TemporalObject result = null;
+		
+		int lastInf = 0;
+		Iterator temporalObjectIterator = workingDataset.nodes();
+		while(temporalObjectIterator.hasNext()) {
+			TemporalObject to = (TemporalObject)temporalObjectIterator.next();
+			if(to.getTemporalElement().asGeneric().getInf() > lastInf &&
+					to.getTemporalElement().asGeneric().getInf() < inf) {
+				result = to;
+			}
+		}
+		
+		return result;
+	}
+
+
+	public TemporalDataset getTemporalDataset() {
 		return workingDataset;
 	}
 }
