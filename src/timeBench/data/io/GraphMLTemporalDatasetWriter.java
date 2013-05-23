@@ -51,6 +51,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     public static final String OBJECT_PREFIX = "o";
     public static final String ELEMENT_PREFIX = "t";
     public static final String ROOT = "root";
+    public static final String EDGE_DATA_PREFIX = "edge-";
 
     private TransformerHandler hd = null;
 
@@ -73,7 +74,8 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             throws DataIOException {
         try {
             // first, check the schema to ensure GraphML compatibility
-            GraphMLWriter.checkGraphMLSchema(tmpds.getNodeTable().getSchema());
+            GraphMLWriter.checkGraphMLSchema(tmpds.getDataColumnSchema());
+            GraphMLWriter.checkGraphMLSchema(tmpds.getEdgeTable().getSchema());
 
             // setup SAX to identity transform events to a stream; cp.
             // http://www.javazoom.net/services/newsletter/xmlgeneration.html
@@ -130,8 +132,8 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             edgeAtts.addAttribute(GRAPHML_NS, Tokens.TARGET, Tokens.TARGET,
                     "CDATA", "");
             writeBipartiteEdges(tmpds, edgeAtts);
-            writeGraphEdges(tmpds, TemporalObject.ID,
-                    OBJECT_PREFIX, edgeAtts);
+            writeGraphEdgesWithData(tmpds, TemporalObject.ID,
+                    OBJECT_PREFIX, edgeAtts, dataAtts);
             writeGraphEdges(tmpds.getTemporalElements(),
                     TemporalElement.ID, ELEMENT_PREFIX,
                     edgeAtts);
@@ -190,6 +192,17 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
                 writeGraphMLKey(name, dataElements.getColumnType(i), keyAtts);
             }
         }
+        
+        Schema edgeElements = tmpds.getEdgeTable().getSchema(); 
+        keyAtts.setValue(3, "edge");
+        for (int i = 0; i < edgeElements.getColumnCount(); i++) {
+            String name = edgeElements.getColumnName(i);
+            // column names starting with "_" are reserved
+            if (! (name.equals(tmpds.getEdgeSourceField()) || name.equals(tmpds.getEdgeTargetField()))) {
+                writeGraphMLKey(EDGE_DATA_PREFIX+name, name, edgeElements.getColumnType(i), keyAtts);
+            }
+        }
+
     }
 
     /**
@@ -295,6 +308,34 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
         }
     }
 
+    private void writeGraphEdgesWithData(Graph graph, String idField, String prefix,
+            AttributesImpl edgeAtts, AttributesImpl dataAtts) throws SAXException {
+        IntIterator edges = graph.edgeRows();
+        while (edges.hasNext()) {
+            int edgeRow = edges.nextInt();
+            int sRow = graph.getSourceNode(edgeRow);
+            long sId = graph.getNodeTable().getLong(sRow, idField);
+            int tRow = graph.getTargetNode(edgeRow);
+            long tId = graph.getNodeTable().getLong(tRow, idField);
+
+            edgeAtts.setValue(0, prefix + sId);
+            edgeAtts.setValue(1, prefix + tId);
+            hd.startElement(GRAPHML_NS, Tokens.EDGE, Tokens.EDGE, edgeAtts);
+            
+            // data elements for application-specific field values
+            Schema edgeSchema = graph.getEdgeTable().getSchema(); 
+            for (int i = 0; i < edgeSchema.getColumnCount(); i++) {
+                String name = edgeSchema.getColumnName(i);
+                // columns for source and target nodes are excluded 
+                if (! (name.equals(graph.getEdgeSourceField()) || name.equals(graph.getEdgeTargetField()))) {
+                    writeGraphMLData(EDGE_DATA_PREFIX+name, graph.getEdgeTable().getString(edgeRow, name), dataAtts);
+                }
+            }
+            
+            hd.endElement(GRAPHML_NS, Tokens.EDGE, Tokens.EDGE);
+        }
+    }
+    
     /**
      * generate a fake node that has edges from all root objects.
      * 
@@ -330,8 +371,14 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     private void writeGraphMLKey(String id,
             @SuppressWarnings("rawtypes") Class type, AttributesImpl keyAtts)
             throws SAXException {
+        writeGraphMLKey(id, id, type, keyAtts);
+    }
+    
+    private void writeGraphMLKey(String id, String name,
+            @SuppressWarnings("rawtypes") Class type, AttributesImpl keyAtts)
+            throws SAXException {
         keyAtts.setValue(0, id);
-        keyAtts.setValue(1, id);
+        keyAtts.setValue(1, name);
         keyAtts.setValue(2, (String) TYPES.get(type));
         hd.startElement(GRAPHML_NS, Tokens.KEY, Tokens.KEY, keyAtts);
         hd.endElement(GRAPHML_NS, Tokens.KEY, Tokens.KEY);
