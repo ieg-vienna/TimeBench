@@ -23,10 +23,12 @@ import prefuse.render.RendererFactory;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import render.ArcRenderer;
+import timeBench.action.analytical.PatternCountAction;
 import timeBench.action.analytical.TreeDebundlingAction;
 import timeBench.action.layout.GreedyDistributionLayout;
 import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.PatternOverlayCheckLayout;
+import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
@@ -51,6 +53,8 @@ public class POTSBLITZDemo {
     private static final String PATTERNTHEMERIVER = "patternthemeriver";
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
 
+	private static TemporalDataset countedPatterns = null;
+    
     private static void createVisualization(TemporalDataset patterns, TemporalDataset events) {
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
@@ -120,12 +124,16 @@ public class POTSBLITZDemo {
         layout.add(time_axis3);
         layout.add(y_axis3);
         
+        ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,timeScale);
+        layout.add(themeRiver);
+        
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
+        
         layout.add(new RepaintAction());
         
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, layout);
@@ -171,7 +179,7 @@ public class POTSBLITZDemo {
 			gmltdr = new GraphMLTemporalDatasetReader();
 			patterns = gmltdr.readData("data/cardiovascular_patterns.graphml.gz");
 						
-			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);
+			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);						
 		} catch (DataIOException e) {
 			e.printStackTrace();
 		}			
@@ -185,6 +193,10 @@ public class POTSBLITZDemo {
 
 		System.out.println(flatPatterns.getNodeCount());
 		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
+		
+		PatternCountAction action2 = new PatternCountAction(flatPatterns);
+		action2.run(0);
+		countedPatterns = action2.getTemporalDataset();   
 		
         createVisualization(patterns,events);
     }

@@ -60,15 +60,34 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 				TemporalObject to = (TemporalObject)temporalObjectIterator.next();
 				String pattern = to.getString("pattern");			
 				if (workingDataset.getDataColumnSchema().getColumnIndex(pattern) == -1) {
-					workingDataset.addDataColumn(pattern, long.class, 0);
+					workingDataset.addDataColumn(pattern, int.class, 0);
 				}
 				long inf = to.getTemporalElement().asGeneric().getInf();
 				TemporalObject lastTO = getLastTemporalObjectBefore(inf);
-				TemporalElement newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
-						JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
-				TemporalObject newTO = workingDataset.addTemporalObject(newTE);
-				
+				TemporalObject newTO = null;
+				TemporalElement newTE = null;
+				if (lastTO == null) {
+					newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
+							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
+					newTO = workingDataset.addTemporalObject(newTE);					
+				} else {
+					newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
+							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
+					newTO = workingDataset.addTemporalObject(newTE);
+					for(int i : workingDataset.getDataColumnIndices()) {
+						newTO.set(i,lastTO.get(i));
+					}
+				}
+				newTO.setInt(pattern,lastTO.getInt(pattern)+1);
 				long sup = to.getTemporalElement().asGeneric().getSup();
+				lastTO = getLastTemporalObjectBefore(sup);
+				newTE = workingDataset.addTemporalElement(sup, sup, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
+						JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
+				newTO = workingDataset.addTemporalObject(newTE);
+				for(int i : workingDataset.getDataColumnIndices()) {
+					newTO.set(i,lastTO.get(i));
+				}
+				newTO.setInt(pattern,lastTO.getInt(pattern)-1);
 			}
 		} catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
