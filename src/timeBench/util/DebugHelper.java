@@ -263,11 +263,11 @@ public class DebugHelper {
     }
 
     public static void printTemporalDatasetForest(PrintStream out,TemporalDataset table) {
-    	DataHelper.printForest(out, table.getNodeTable(), table.getRoots(), table.getDepth(), TemporalObject.ID, new TemporalElementInformation());
+    	DataHelper.printForest(out, table.getNodeTable(), table.roots(), table.getDepth(), TemporalObject.ID, new TemporalElementInformation());
     }
 
     public static void printTemporalDatasetForest(PrintStream out,TemporalDataset table,  String... cols) {
-      	DataHelper.printForest(out, table.getNodeTable(), table.getRoots(), table.getDepth(), TemporalObject.ID, new TemporalElementInformation(), cols);
+      	DataHelper.printForest(out, table.getNodeTable(), table.roots(), table.getDepth(), TemporalObject.ID, new TemporalElementInformation(), cols);
     }
     
     public static class TemporalElementInformation implements DataHelper.AdditionalNodeInformation {
