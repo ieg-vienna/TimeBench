@@ -108,8 +108,7 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 			} else {
 			
 				// for all patterns of existing length (might be events)
-				for (long iSourceId : sourceDataset.getRoots()) {
-					TemporalObject iSource = sourceDataset.getTemporalObject(iSourceId);
+				for (TemporalObject iSource : sourceDataset.roots()) {
 					// and for all predicates
 					for (int i=0; i<predicates.length; i++) {
 						// as well as all events to be added

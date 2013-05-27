@@ -51,8 +51,7 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 			workingDataset = new TemporalDataset();
 			workingDataset.addDataColumn("label", String.class, "");
 			
-			for(long iRoot : sourceDataset.getRoots()) {
-				TemporalObject root = sourceDataset.getTemporalObject(iRoot);				
+			for(TemporalObject root : sourceDataset.roots()) {
 				ArrayList<TemporalObject> leafList = new ArrayList<TemporalObject>();
 				ArrayList<String> stringsToLeaf = new ArrayList<String>();
 				String currentStringState = root.getString("label");

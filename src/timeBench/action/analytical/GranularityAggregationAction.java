@@ -159,14 +159,14 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	}
 
 	public void update() {
-		for (long iRoot : workingDataset.getRoots()) {
+		for (TemporalObject aRoot : workingDataset.roots()) {
 			boolean change = false;
 			for (int i : sourceDataset.getDataColumnIndices()) {
-				if (workingDataset.getTemporalObject(iRoot).getKind(i) > 0.0)
+				if (aRoot.getKind(i) > 0.0)
 					change = true;
 			}
 			if (change)
-				aggregate(workingDataset.getTemporalObject(iRoot),0);
+				aggregate(aRoot, 0);
 		}
 	}
 	

@@ -61,7 +61,7 @@ public class GranularityTreeLayout extends Layout implements RangeModelTransform
 
         GranularityAggregationTree tree = (GranularityAggregationTree) m_vis
                 .getSourceData(m_group);
-        TemporalObject root = tree.getTemporalObject(tree.getRoots()[0]);
+        TemporalObject root = tree.roots().iterator().next();
 
         LinkedNode[] labelRoots = new LinkedNode[Constants.AXIS_COUNT];
 

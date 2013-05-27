@@ -4,6 +4,7 @@ import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -282,8 +283,14 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         return roots.size();
     }
 
+    /**
+     * Gets the roots if the TemporalObjects form a forest, the root, if they
+     * form a tree, or null for tables
+     * 
+     * @return the roots as an iterable collection
+     */
     public Iterable<TemporalObject> roots() {
-        return this.roots;
+        return Collections.unmodifiableSet(this.roots);
     }
 
     public boolean isRoot(TemporalObject obj) {
@@ -298,12 +305,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         }
     }
 
-    /**
-     * Gets the roots if the TemporalObjects form a wood, the root, if they form
-     * a tree, or null for tables
-     * 
-     * @return the roots
-     */
     @Deprecated
     public long[] getRoots() {
         long[] r = new long[getRootCount()];

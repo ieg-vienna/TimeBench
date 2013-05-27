@@ -106,11 +106,12 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
             ArrayList<Float> relativeSize = new ArrayList<Float>();
             ArrayList<Long> minIdentifiers = new ArrayList<Long>();
             ArrayList<Long> maxIdentifiers = new ArrayList<Long>();
-            buildSizeChart(dataProvider.getGranularityAggregationTree().getTemporalObject(
-            		dataProvider.getGranularityAggregationTree().getRoots()[0]),relativeSize,minIdentifiers,maxIdentifiers,0);
+            buildSizeChart(dataProvider.getGranularityAggregationTree().roots().iterator().next(),
+                    relativeSize,minIdentifiers,maxIdentifiers,0);
             
-			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),(NodeItem)m_vis.getVisualItem(group, dataProvider.getGranularityAggregationTree().getTemporalObject(
-					dataProvider.getGranularityAggregationTree().getRoots()[0])),position,0,minIdentifiers,maxIdentifiers);
+			layoutGranularity(vg,vgl,vgl.getRoot().getChild(0),vgl.getRoot().getChild(1),
+			        (NodeItem)m_vis.getVisualItem(group, dataProvider.getGranularityAggregationTree().roots().iterator().next()),
+					position,0,minIdentifiers,maxIdentifiers);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
