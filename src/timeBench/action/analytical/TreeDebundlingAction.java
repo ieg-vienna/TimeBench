@@ -86,7 +86,7 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 			for(TemporalObject iChild : temporalObject.childObjects()) {
 				Iterator edges = iChild.outEdges();
 				String addedStringState = currentStringState + "p" +
-						((TableTuple)edges.next()).getLong(MultiPredicatePatternDiscovery.predicateColumn) + "e" + 
+						((TableTuple)edges.next()).getLong(MultiPredicatePatternDiscovery.predicateColumn) + 
 						iChild.getString("label");															
 				findLeaves(iChild,leafList,stringsToLeaf,addedStringState);
 			}
