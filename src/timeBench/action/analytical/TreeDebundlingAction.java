@@ -57,7 +57,8 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 				ArrayList<String> stringsToLeaf = new ArrayList<String>();
 				String currentStringState = root.getString("label");
 				findLeaves(root,leafList,stringsToLeaf,currentStringState);
-				for(TemporalObject iLeaf : leafList) {
+				for(int i=0; i<leafList.size(); i++) {
+					TemporalObject iLeaf = leafList.get(i);
 					TemporalObject path = workingDataset.addTemporalObject(
 							workingDataset.addInterval(
 									workingDataset.addInstant(root.getTemporalElement().getFirstInstant().getInf(),
@@ -68,8 +69,7 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 													iLeaf.getTemporalElement().getLastInstant().getSup(),
 													iLeaf.getTemporalElement().getLastInstant().getGranularityId(),
 													iLeaf.getTemporalElement().getLastInstant().getGranularityContextId())));
-					for(int i : workingDataset.getDataColumnIndices())
-						path.set(i, root.get(i));
+					path.set("label", stringsToLeaf.get(i));
 				}
 			}
 		} catch (TemporalDataException e) {
