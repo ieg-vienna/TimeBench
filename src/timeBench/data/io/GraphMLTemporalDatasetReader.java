@@ -20,6 +20,8 @@ import timeBench.data.TemporalObject;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 
 
@@ -44,7 +46,6 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     /**
 	 * TemporalDataset to be filled and accessible via the readData method.
 	 */
-	private TemporalDataset tds 					= new TemporalDataset();
 	
 
 	//Constants for the use in class
@@ -59,10 +60,11 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 	 */
     @Override
     public TemporalDataset readData(InputStream is) throws DataIOException, TemporalDataException {
+        TemporalDataset tds = new TemporalDataset();
 		//Try catch for all the various exception that can occur in the mainReader and it's subcalls.
     	try {
 			//mainReader is called upon the start the reading
-			mainReader(is);
+			mainReader(is, tds);
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 			throw new DataIOException(e);
@@ -96,7 +98,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     * @throws TemporalDataException 
     * @throws DataIOException 
     */
-    private void mainReader(InputStream is) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException, DataIOException
+    private void mainReader(InputStream is, TemporalDataset tds) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException, DataIOException
     {    	
     	//create an instance of the XMLStreamReader via the InputStream
     	XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(is);
@@ -104,12 +106,9 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     	//Objects needed for operation
     	int event;						//Takes the type of the occurring XMLEvent
     	int graphCounter = 0;			//Used to count graph occurrences, only 1 allowed
-    	String nextFieldName = null;	//Used to save the name of the current data element and to add it's value to the hashMap in the CHARACTERS event
-    	String lastID = null;			//Used to block out root elements as TE/TO and to add the current ID of a node to the hashMap
     	String oldElement = null;		//Used to check the key/graph validity
         // TODO check edge directed || edgedefault -- each edge must be directed either by default or separately --> not needed now 
 //    	boolean edgedefault = false;
-    	HashMap<String, String> dataMap = new HashMap<String, String>();	//hashMap that temporarily stores the data of a node, gathers as the necessary values to add it to the TMDS
     	ArrayList<Long> rootList = new ArrayList<Long>();					//Used to save the IDs of the root nodes
     	Table edgeCache = prepareEdgeCache();
     	HashMap<String, String> attributeIdToName = new HashMap<String, String>();
@@ -132,27 +131,18 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				//save the current XML tag name for the key/graph validity check
 				oldElement = reader.getLocalName();
 				
-				//save the current ID of the element as long as it is not null
-				if(reader.getAttributeValue(null, Tokens.ID) != null)
-					lastID = reader.getAttributeValue(null, Tokens.ID);
-				
 				//Check if a node is a root element or if an edge refers to a root element
-				if(ROOT.equals(lastID) || ROOT.equals(reader.getAttributeValue(null, Tokens.TARGET))) {
-					if(Tokens.EDGE.equals(reader.getLocalName())){
-						//Adds the ID of the nodes referenced to root
-						long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1), 10);
-						rootList.add(rootID);
-					}
+				if(Tokens.EDGE.equals(reader.getLocalName()) && ROOT.equals(reader.getAttributeValue(null, Tokens.TARGET))) {
+					//Adds the ID of the nodes referenced to root
+					long rootID = Long.parseLong(reader.getAttributeValue(0).substring(1), 10);
+					rootList.add(rootID);
 				}
 				//Read the data columns from the key elements
 				else if(Tokens.KEY.equals(reader.getLocalName()))
-					configReader(reader, edgeCache, attributeIdToName);
+					configReader(reader, tds, edgeCache, attributeIdToName);
 				//add the ID to the hashMap
 				else if(Tokens.NODE.equals(reader.getLocalName()))
-					dataMap.put(TemporalElement.ID, lastID);
-				//get the key for the value of the next hashMap data
-				else if(Tokens.DATA.equals(reader.getLocalName()) && reader.getAttributeValue(null, Tokens.KEY) != null)
-					nextFieldName = reader.getAttributeValue(null, Tokens.KEY);
+					parseNode(reader, tds, attributeIdToName);
 				//add an Edge to the EdgeList
 				else if(Tokens.EDGE.equals(reader.getLocalName()))
 				    parseEdge(reader, edgeCache, attributeIdToName);
@@ -168,41 +158,17 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 				}
 				break; // START_ELEMENT
 				
-			//Value saved to the HashMap to later add it as a bulk	
-			case XMLEvent.CHARACTERS:
-			    // TODO check the StAX API if it is possible that an element content is more than one character events -> concatenate, no overwrite  
-				// StAX does not see the second set of characters of data split by another tag as a CHARACTERS event. Therefore I see no possibility to achieve this so far.
-				if(nextFieldName != null){	
-					//Removal of the prefix for TemporalElements "_"
-					if(nextFieldName.startsWith(TEMP_ELEMENT_ATTR_PREFIX))
-						dataMap.put(nextFieldName.split(TEMP_ELEMENT_ATTR_PREFIX)[1], reader.getText());
-					else
-						dataMap.put(nextFieldName, reader.getText());
-					nextFieldName = null;
-				}
-				break; // CHARACTERS
-				
 			//When the element ends, call the appropriate method to add it to the TemporalDataset
 			case XMLEvent.END_ELEMENT:
-				if(Tokens.NODE.equals(reader.getLocalName()) && !(ROOT.equals(lastID))){
-					//decides per prefix if TemporalElement or TemporalObject
-				    if (NodeType.ELEMENT == NodeType.byPrefix(lastID)) {
-						createTemporalElement(dataMap);
-						dataMap.clear();
-					}
-					else if (NodeType.OBJECT == NodeType.byPrefix(lastID)) {
-						createTemporalObject(dataMap);
-						dataMap.clear();
-					}
-				}
 				if(Tokens.GRAPH.equals(reader.getLocalName()))
 					oldElement = Tokens.GRAPH;
 				break; // END_ELEMENT
 				
 			//When the file ends, the edges are created and the latest compatibility checks are being made
 			case XMLEvent.END_DOCUMENT:
-				createEdges(edgeCache, rootList);		//add the edges to the TemporalDataset
-				checkTemporalObjects();					//Check if every TemporalObject has a TemporalElement it belongs to
+				createEdges(tds, edgeCache);	//add the edges to the TemporalDataset
+				createRoots(tds, rootList);
+				checkTemporalObjects(tds);		//Check if every TemporalObject has a TemporalElement it belongs to
 				break; // END_DOCUMENT
 
 			default:
@@ -211,18 +177,59 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
 		}
     }
     
+    private void parseNode(XMLStreamReader reader, TemporalDataset tmpds,
+            HashMap<String, String> attributeIdToName)
+            throws XMLStreamException, DataIOException {
+
+        String graphMLId = reader.getAttributeValue(null, Tokens.ID);
+        // hashMap that temporarily stores the data of a node, gathers as the
+        // necessary values to add it to the TMDS
+        HashMap<String, String> dataMap = new HashMap<String, String>();
+
+        while (reader.hasNext()) {
+            switch (reader.next()) {
+            case XMLEvent.START_ELEMENT:
+                if (Tokens.DATA.equals(reader.getLocalName())) {
+                    Pair<String, String> data = parseData(reader,
+                            attributeIdToName);
+                    dataMap.put(data.getKey(), data.getValue());
+                }
+                break;
+            case XMLEvent.END_ELEMENT:
+                if (Tokens.NODE.equals(reader.getLocalName())) {
+                    // node parsing complete
+                    // ignore root node
+                    if (!ROOT.equals(graphMLId)) {
+                        long id = Long.parseLong(graphMLId.substring(1));
+                        if (NodeType.OBJECT == NodeType.byPrefix(graphMLId)) {
+                            createTemporalObject(tmpds, id, dataMap);
+                        } else if (NodeType.ELEMENT == NodeType
+                                .byPrefix(graphMLId)) {
+                            createTemporalElement(tmpds, id, dataMap);
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+        throw new IllegalStateException(
+                "GraphML document ended prematurely in <node>.");
+    }
+
     /**
      * reads XML content until the edge element ends and adds it to the cache.
      * @param reader
      * @param edgeCache
-     * @throws XMLStreamException 
-     * @throws DataIOException 
+     * @param attributeIdToName
+     * @throws XMLStreamException
+     * @throws DataIOException
      */
     private void parseEdge(XMLStreamReader reader, Table edgeCache,
             HashMap<String, String> attributeIdToName)
             throws XMLStreamException, DataIOException {
-        // parse source and target from attributes -> cache
+        // we assume that reader is on a <edge> element
         Tuple edge = edgeCache.getTuple(edgeCache.addRow());
+        // parse source and target from attributes -> cache
         edge.set(EDGE_SOURCE, reader.getAttributeValue(null, Tokens.SOURCE));
         edge.set(EDGE_TARGET, reader.getAttributeValue(null, Tokens.TARGET));
 
@@ -230,7 +237,15 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
             switch (reader.next()) {
             case XMLEvent.START_ELEMENT:
                 if (Tokens.DATA.equals(reader.getLocalName())) {
-                    parseData(reader, edge, attributeIdToName);
+                    Pair<String, String> data = parseData(reader,
+                            attributeIdToName);
+                    if (edge.getColumnIndex(data.getKey()) >= 0) {
+                        edge.setString(data.getKey(), data.getValue());
+                    } else {
+                        throw new DataIOException("Unknown attribute key "
+                                + data.getKey() + " with value "
+                                + data.getValue());
+                    }
                 }
                 break;
             case XMLEvent.END_ELEMENT:
@@ -244,7 +259,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
                 "GraphML document ended prematurely in <edge>.");
     }
 
-    private void parseData(XMLStreamReader reader, Tuple tuple,
+    private Pair<String, String> parseData(XMLStreamReader reader,
             HashMap<String, String> attributeIdToName)
             throws XMLStreamException, DataIOException {
         // we assume that reader is on a <data> element
@@ -272,13 +287,8 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
                 if (depth == 0 && Tokens.DATA.equals(reader.getLocalName())) {
                     // <data> parsing complete
                     String attName = attributeIdToName.get(key);
-                    if (tuple.getColumnIndex(attName) >= 0) {
-                        tuple.setString(attName, value.toString());
-                    } else {
-                        throw new DataIOException("Unknown attribute key "
-                                + key + " with value " + value.toString());
-                    }
-                    return;
+                    return new ImmutablePair<String, String>(attName,
+                            value.toString());
                 } else {
                     depth--;
                 }
@@ -301,7 +311,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      * @throws IOException
      * @throws TemporalDataException 
      */
-    private void configReader(XMLStreamReader reader, Table edgeCache, HashMap<String, String> attributeIdToName) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException
+    private void configReader(XMLStreamReader reader, TemporalDataset tds, Table edgeCache, HashMap<String, String> attributeIdToName) throws XMLStreamException, FactoryConfigurationError, IOException, TemporalDataException
     {
         final String attId = reader.getAttributeValue(null, Tokens.ID);
         final String attName = reader.getAttributeValue(null, Tokens.ATTRNAME);
@@ -312,6 +322,10 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
             Logger.getLogger(this.getClass()).debug(
                     "consider KEY for " + attFor + " column: " + attName);
         }
+        
+        // keep track of attribute ids
+        attributeIdToName.put(attId, attName);
+        
     	// ignore GraphML attributes with a reserved name (e.g. TemporalElement schema) since they are known
     	if(! attId.startsWith(TEMP_ELEMENT_ATTR_PREFIX)) {
 			@SuppressWarnings("rawtypes")
@@ -340,9 +354,6 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
             if (Tokens.NODE.equals(attFor) || Tokens.ALL.equals(attFor)) {
                 tds.addDataColumn(reader.getAttributeValue(null, Tokens.ATTRNAME), type, null);
             }
-            
-            // keep track of attribute ids
-            attributeIdToName.put(attId, attName);
     	}
     }
     
@@ -350,15 +361,13 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      * Creates a TemporalElement with the Data given in the HashMap.
      * @param dataMap
      */
-    private void createTemporalElement(HashMap<String, String> dataMap)
-    {
+    private void createTemporalElement(TemporalDataset tds, long id, HashMap<String, String> dataMap) {
     	//Get all the know attributes of a TemporalElement 
-    	int id = Integer.parseInt(dataMap.get(TemporalElement.ID).split(GraphMLTemporalDatasetWriter.ELEMENT_PREFIX)[1]);
-		long inf = Long.parseLong(dataMap.get(TemporalElement.INF), 10);
-		long sup = Long.parseLong(dataMap.get(TemporalElement.SUP), 10);
-		int granularityID = Integer.parseInt(dataMap.get(TemporalElement.GRANULARITY_ID));
-		int granularityContextID = Integer.parseInt(dataMap.get(TemporalElement.GRANULARITY_CONTEXT_ID));
-		int kind = Integer.parseInt(dataMap.get(TemporalElement.KIND));
+		long inf = Long.parseLong(dataMap.get(GraphMLTemporalDatasetWriter.RESERVED_FIELD_PREFIX + TemporalElement.INF), 10);
+		long sup = Long.parseLong(dataMap.get(GraphMLTemporalDatasetWriter.RESERVED_FIELD_PREFIX + TemporalElement.SUP), 10);
+		int granularityID = Integer.parseInt(dataMap.get(GraphMLTemporalDatasetWriter.RESERVED_FIELD_PREFIX + TemporalElement.GRANULARITY_ID));
+		int granularityContextID = Integer.parseInt(dataMap.get(GraphMLTemporalDatasetWriter.RESERVED_FIELD_PREFIX + TemporalElement.GRANULARITY_CONTEXT_ID));
+		int kind = Integer.parseInt(dataMap.get(GraphMLTemporalDatasetWriter.RESERVED_FIELD_PREFIX + TemporalElement.KIND));
 		
 		//add a new TemporalElement to the TemporalDataset with these values
 		tds.addTemporalElement(id, inf, sup, granularityID, granularityContextID, kind);
@@ -368,40 +377,23 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      * Creates a TemporalObject with the Data given in the HashMap.
      * @param dataMap
      */
-    private void createTemporalObject(HashMap<String, String> dataMap)
-    {
+    private void createTemporalObject(TemporalDataset tds, long id, HashMap<String, String> dataMap) {
     	String currentCol = null;
-		@SuppressWarnings("rawtypes")
-        Class currentType = null;
 
 		//Needs to be added as a node since the TemporalObject constructor needs the TemporalElement ID (information in edges)
     	Node node = tds.addNode();
-		node.set(TemporalObject.ID, Integer.parseInt(dataMap.get(TemporalElement.ID).substring(1)));
+		node.setLong(TemporalObject.ID, id);
 		
 		//for the amount of dataColumns in the TemporalDataset, set all their values
 		for (int j = 0; j < tds.getDataColumnSchema().getColumnCount(); j++) {
 			currentCol = tds.getDataColumnSchema().getColumnName(j);	//gets the current column name via the index
-			currentType = tds.getDataColumnSchema().getColumnType(j);	//gets the current column type via the index
 			
 			String value = dataMap.get(currentCol);						//get the current value from the hashMap via the column name
 			// TODO check if missing -> future work/not necessary now
 			
 			//Convert the value to the type defined for the column
-			if(String.class.equals(currentType))
-				node.set(currentCol, value);
-			else if(int.class.equals(currentType))
-				node.set(currentCol, Integer.parseInt(value));
-			else if(double.class.equals(currentType))
-				node.set(currentCol, Double.parseDouble(value));
-			else if(long.class.equals(currentType)) {
-				if(value.endsWith("L"))	// TL not sure is this is allowed for GraphML, but "best practice" is being lenient
-					value = value.substring(0, value.length()-1);
-				node.setLong(currentCol, Long.parseLong(value));
-			}
-			else if(float.class.equals(currentType))
-				node.set(currentCol, Float.parseFloat(value));
-			else if(boolean.class.equals(currentType)) 
-			    node.set(currentCol, Boolean.valueOf(value));
+            // XXX here we trust the string parsing to prefuse
+			node.set(currentCol, value);
 		}
     }
     
@@ -410,8 +402,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      * @param edgeList
      * @throws DataIOException 
      */
-    private void createEdges(Table edgeCache, ArrayList<Long> rootList) throws DataIOException
-    {
+    private void createEdges(TemporalDataset tds, Table edgeCache) throws DataIOException {
         IntIterator edgeRows = edgeCache.rows();
         while (edgeRows.hasNext()) {
             Tuple edge = edgeCache.getTuple(edgeRows.nextInt());
@@ -457,7 +448,9 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
                         + edge.getString(EDGE_TARGET));
             }
         }
-    	
+    }
+    
+    private void createRoots(TemporalDataset tds, ArrayList<Long> rootList) throws DataIOException {
     	//adds the root elements to the TemporalDataset by first converting it to an array based on the ArrayList's length
     	// TODO consider different data structure in TemporalDataset -> AR
     	long[] roots = new long[rootList.size()];
@@ -472,7 +465,7 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
      * 
      * @throws TemporalDataException
      */
-    private void checkTemporalObjects() throws TemporalDataException {
+    private void checkTemporalObjects(TemporalDataset tds) throws TemporalDataException {
         for (TemporalObject to : tds.temporalObjects()) {
             if (to.getTemporalElement() == null) {
                 throw new TemporalDataException(
@@ -511,69 +504,5 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
         cache.addColumn(EDGE_TARGET, String.class);
         
         return cache;
-    }
-    
-    /**
-     * Edge object for handling Edge-related data from a GraphML file in an easy
-     * way.
-     * 
-     * @author Sascha Plessberger, Alexander Rind
-     * 
-     */
-    class MyEdge {
-        private NodeType sourceType;
-        private NodeType targetType;
-        private long sourceId;
-        private long targetId;
-
-        /**
-         * Constructor
-         * 
-         * @param source
-         * @param target
-         */
-        public MyEdge(String source, String target) {
-            this.sourceType = NodeType.byPrefix(source);
-            this.targetType = NodeType.byPrefix(target);
-
-            sourceId = Long.parseLong(source.substring(1), 10);
-            targetId = Long.parseLong(target.substring(1), 10);
-        }
-
-        /**
-         * Returns the type of the starting point of an edge.
-         * 
-         * @return
-         */
-        public NodeType getSourceType() {
-            return sourceType;
-        }
-
-        /**
-         * Returns the type of the ending point of an edge.
-         * 
-         * @return
-         */
-        public NodeType getTargetType() {
-            return targetType;
-        }
-
-        /**
-         * Returns the Source ID as a long.
-         * 
-         * @return
-         */
-        public long getSourceId() {
-            return sourceId;
-        }
-
-        /**
-         * Returns the Target ID as a long.
-         * 
-         * @return
-         */
-        public long getTargetId() {
-            return targetId;
-        }
     }
 }

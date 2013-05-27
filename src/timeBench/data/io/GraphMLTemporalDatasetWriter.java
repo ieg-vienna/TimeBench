@@ -52,6 +52,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     public static final String ELEMENT_PREFIX = "t";
     public static final String ROOT = "root";
     public static final String EDGE_DATA_PREFIX = "edge-";
+    public static final String RESERVED_FIELD_PREFIX = "_";
 
     private TransformerHandler hd = null;
 
@@ -176,19 +177,23 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
                 "node");
 
         // key elements for predefined field values
-        writeGraphMLKey("_" + TemporalElement.INF, long.class, keyAtts);
-        writeGraphMLKey("_" + TemporalElement.SUP, long.class, keyAtts);
-        writeGraphMLKey("_" + TemporalElement.GRANULARITY_ID, int.class, keyAtts);
-        writeGraphMLKey("_" + TemporalElement.GRANULARITY_CONTEXT_ID, int.class,
-                keyAtts);
-        writeGraphMLKey("_" + TemporalElement.KIND, int.class, keyAtts);
+        writeGraphMLKey(RESERVED_FIELD_PREFIX + TemporalElement.INF,
+                long.class, keyAtts);
+        writeGraphMLKey(RESERVED_FIELD_PREFIX + TemporalElement.SUP,
+                long.class, keyAtts);
+        writeGraphMLKey(RESERVED_FIELD_PREFIX + TemporalElement.GRANULARITY_ID,
+                int.class, keyAtts);
+        writeGraphMLKey(RESERVED_FIELD_PREFIX
+                + TemporalElement.GRANULARITY_CONTEXT_ID, int.class, keyAtts);
+        writeGraphMLKey(RESERVED_FIELD_PREFIX + TemporalElement.KIND,
+                int.class, keyAtts);
 
         // key elements for application-specific field values
         Schema dataElements = tmpds.getDataColumnSchema(); 
         for (int i = 0; i < dataElements.getColumnCount(); i++) {
             String name = dataElements.getColumnName(i);
             // column names starting with "_" are reserved
-            if (! name.startsWith("_")) {
+            if (! name.startsWith(RESERVED_FIELD_PREFIX)) {
                 writeGraphMLKey(name, dataElements.getColumnType(i), keyAtts);
             }
         }
@@ -197,7 +202,6 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
         keyAtts.setValue(3, "edge");
         for (int i = 0; i < edgeElements.getColumnCount(); i++) {
             String name = edgeElements.getColumnName(i);
-            // column names starting with "_" are reserved
             if (! (name.equals(tmpds.getEdgeSourceField()) || name.equals(tmpds.getEdgeTargetField()))) {
                 writeGraphMLKey(EDGE_DATA_PREFIX+name, name, edgeElements.getColumnType(i), keyAtts);
             }
@@ -221,15 +225,17 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             hd.startElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE, nodeAtts);
 
             // data elements for predefined field values
-            writeGraphMLData("_" + TemporalElement.INF, Long.toString(te.getInf()),
-                    dataAtts);
-            writeGraphMLData("_" + TemporalElement.SUP, Long.toString(te.getSup()),
-                    dataAtts);
-            writeGraphMLData("_" + TemporalElement.GRANULARITY_ID,
+            writeGraphMLData(RESERVED_FIELD_PREFIX + TemporalElement.INF,
+                    Long.toString(te.getInf()), dataAtts);
+            writeGraphMLData(RESERVED_FIELD_PREFIX + TemporalElement.SUP,
+                    Long.toString(te.getSup()), dataAtts);
+            writeGraphMLData(RESERVED_FIELD_PREFIX
+                    + TemporalElement.GRANULARITY_ID,
                     Integer.toString(te.getGranularityId()), dataAtts);
-            writeGraphMLData("_" + TemporalElement.GRANULARITY_CONTEXT_ID,
+            writeGraphMLData(RESERVED_FIELD_PREFIX
+                    + TemporalElement.GRANULARITY_CONTEXT_ID,
                     Integer.toString(te.getGranularityContextId()), dataAtts);
-            writeGraphMLData("_" + TemporalElement.KIND,
+            writeGraphMLData(RESERVED_FIELD_PREFIX + TemporalElement.KIND,
                     Integer.toString(te.getKind()), dataAtts);
 
             hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
@@ -255,7 +261,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             for (int i = 0; i < tObj.getColumnCount(); i++) {
                 String name = tObj.getColumnName(i);
                 // predefined columns are handled differently
-                if (! name.startsWith("_")) {
+                if (! name.startsWith(RESERVED_FIELD_PREFIX)) {
                     writeGraphMLData(name, tObj.getString(i), dataAtts);
                 }
             }
