@@ -122,11 +122,9 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 				}
 			}
 			
-			long[] resultRootsForJavaHasNoBoxingOfValueTypes = new long[resultRoots.size()];
-			for(int i=0; i<resultRootsForJavaHasNoBoxingOfValueTypes.length; i++)
-				resultRootsForJavaHasNoBoxingOfValueTypes[i] = resultRoots.get(i);
-			resultDataset.setRoots(resultRootsForJavaHasNoBoxingOfValueTypes);
-		
+			for (Long rootId : resultRoots) {
+			    resultDataset.getTemporalObject(rootId).setRoot(true);
+			}
 		} catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

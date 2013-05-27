@@ -147,7 +147,10 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 					aggregate(workingDataset.getTemporalObject(roots[i]),currentLeaves.get(i),0);
 			}
 			
-			workingDataset.setRoots(roots);
+			// TODO this could be cleaned
+			for (long rootId : roots) {
+			    workingDataset.getTemporalObject(rootId).setRoot(true);
+			}
 			
 		} catch (TemporalDataException e1) {
 			// TODO Auto-generated catch block

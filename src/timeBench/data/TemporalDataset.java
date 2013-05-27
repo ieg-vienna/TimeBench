@@ -314,19 +314,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         return r;
     }
 
-    /**
-     * Sets the roots: If the TemporalObjects form a wood use the roots, if they
-     * form a tree, use the root, for tables set null
-     * 
-     * @param roots
-     *            the roots to set
-     */
-    @Deprecated
-    public void setRoots(long[] roots) {
-        // XXX to be deleted
-//        this.roots = roots;
-    }
-    
     public int getDepth() {
         return depth;
     }
