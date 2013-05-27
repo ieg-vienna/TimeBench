@@ -175,11 +175,11 @@ public class POTSBLITZDemo {
 		TemporalDataset flatPatterns = null;
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
-			events = gmltdr.readData("data/cardiovascular_events.graphml.gz");
+			events = gmltdr.readData("data/Dodgers-events.graphml.gz");
 			
 			//DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
 			
-			patterns = gmltdr.readData("data/cardiovascular_patterns.graphml.gz");
+			patterns = gmltdr.readData("data/Dodgers-patterns.graphml.gz");
 						
 			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);						
 		} catch (DataIOException e) {
