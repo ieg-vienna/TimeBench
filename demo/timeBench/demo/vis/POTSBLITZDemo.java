@@ -20,6 +20,7 @@ import prefuse.action.layout.AxisLayout;
 import prefuse.data.io.DataIOException;
 import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
+import prefuse.util.ColorLib;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import render.ArcRenderer;
@@ -126,13 +127,16 @@ public class POTSBLITZDemo {
         
         ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,timeScale);
         layout.add(themeRiver);
-        
+                      
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
+
+        layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
+        layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         
         layout.add(new RepaintAction());
         
