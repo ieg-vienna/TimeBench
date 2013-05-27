@@ -353,7 +353,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
     private void writeRoots(TemporalDataset tmpds, AttributesImpl nodeAtts,
             AttributesImpl edgeAtts) throws SAXException {
         long[] roots = tmpds.getRoots();
-        if (roots.length > 0) {
+        if (roots != null && roots.length > 0) {
             nodeAtts.setValue(0, ROOT);
             hd.startElement("", Tokens.NODE, Tokens.NODE, nodeAtts);
             hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
