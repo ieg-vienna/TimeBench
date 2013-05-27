@@ -451,12 +451,10 @@ public class GraphMLTemporalDatasetReader extends AbstractTemporalDatasetReader 
     }
     
     private void createRoots(TemporalDataset tds, ArrayList<Long> rootList) throws DataIOException {
-    	//adds the root elements to the TemporalDataset by first converting it to an array based on the ArrayList's length
-    	// TODO consider different data structure in TemporalDataset -> AR
-    	long[] roots = new long[rootList.size()];
-		for(int i = 0; i < rootList.size(); i++)
-			roots[i] = rootList.get(i);
-		tds.setRoots(roots);
+        for (Long rootId : rootList) {
+            TemporalObject obj = tds.getTemporalObject(rootId);
+            obj.setRoot(true);
+        }
     }
     
     /**

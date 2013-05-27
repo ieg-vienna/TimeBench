@@ -352,14 +352,13 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
      */
     private void writeRoots(TemporalDataset tmpds, AttributesImpl nodeAtts,
             AttributesImpl edgeAtts) throws SAXException {
-        long[] roots = tmpds.getRoots();
-        if (roots != null && roots.length > 0) {
+        if (tmpds.getRootCount() > 0) {
             nodeAtts.setValue(0, ROOT);
             hd.startElement("", Tokens.NODE, Tokens.NODE, nodeAtts);
             hd.endElement(GRAPHML_NS, Tokens.NODE, Tokens.NODE);
 
-            for (long objId : roots) {
-                writeGraphMLEdge(OBJECT_PREFIX + objId, ROOT, edgeAtts);
+            for (TemporalObject obj : tmpds.roots()) {
+                writeGraphMLEdge(OBJECT_PREFIX + obj.getId(), ROOT, edgeAtts);
             }
         }
     }

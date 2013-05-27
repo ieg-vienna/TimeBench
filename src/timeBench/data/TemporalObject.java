@@ -148,6 +148,14 @@ public class TemporalObject extends ParentChildNode {
 		}
 	}
 	
+    public boolean isRoot() {
+        return getTemporalDataset().isRoot(this);
+    }
+
+    public void setRoot(boolean root) {
+        getTemporalDataset().setRoot(this, root);
+    }
+
 	public Object getMin(int idx) {
 		return getMin(this.getColumnName(idx));
 	}

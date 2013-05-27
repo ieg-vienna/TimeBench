@@ -4,7 +4,9 @@ import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import prefuse.data.Graph;
 import prefuse.data.Schema;
@@ -43,8 +45,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     private TemporalElementStore temporalElements;
 
     // TODO roots as a linked list?
-    private long[] roots = null; // if we have a forest or tree of temporal
-                                 // objects, null for tables
+    private Set<TemporalObject> roots = new HashSet<TemporalObject>(); 
     private int depth = 1; // 1-> table, otherwise depth of forest
 
     /**
@@ -274,6 +275,28 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     public TemporalDataset clone() {
         throw new UnsupportedOperationException("clone no longer needed");
     }
+    
+    // ----- ROOT ACCESSORS -----
+
+    public int getRootCount() {
+        return roots.size();
+    }
+
+    public Iterable<TemporalObject> roots() {
+        return this.roots;
+    }
+
+    public boolean isRoot(TemporalObject obj) {
+        return obj.getTemporalDataset().roots.contains(obj);
+    }
+
+    public void setRoot(TemporalObject obj, boolean root) {
+        if (root) {
+            obj.getTemporalDataset().roots.add(obj);
+        } else {
+            obj.getTemporalDataset().roots.remove(obj);
+        }
+    }
 
     /**
      * Gets the roots if the TemporalObjects form a wood, the root, if they form
@@ -281,8 +304,14 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * 
      * @return the roots
      */
+    @Deprecated
     public long[] getRoots() {
-        return roots;
+        long[] r = new long[getRootCount()];
+        int i=0;
+        for (TemporalObject obj : roots) {
+            r[i++] = obj.getId();
+        }
+        return r;
     }
 
     /**
@@ -292,8 +321,10 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @param roots
      *            the roots to set
      */
+    @Deprecated
     public void setRoots(long[] roots) {
-        this.roots = roots;
+        // XXX to be deleted
+//        this.roots = roots;
     }
     
     public int getDepth() {

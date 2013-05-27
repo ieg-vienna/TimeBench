@@ -25,13 +25,12 @@ import timeBench.data.TemporalObject;
 public class DebugHelper {
     
     public static void printTemporalObjectHierarchy(PrintStream out, TemporalDataset tmpds) {
-        long[] roots = tmpds.getRoots();
-        if (roots == null)
+        if (tmpds.getRootCount() == 0)
         	out.println("=== TemporalDataset is flat ===");
         else {
         	out.println("=== TemporalObject Hierarchy ===");
-        	for (int i=0; i<roots.length; i++) {
-        		printTemporalObjectHierarchyStep(out, tmpds.getTemporalObject(roots[i]), 0);
+        	for (TemporalObject obj : tmpds.roots()) {
+        		printTemporalObjectHierarchyStep(out, obj, 0);
         	}
         	out.println("================================");
         }
@@ -236,7 +235,7 @@ public class DebugHelper {
     public static void main(String[] args) {
         System.out.println("Start Demo\n");
         TemporalDataset tmpds = generateFakeData(10);
-        tmpds.setRoots(new long[] {1});
+        tmpds.getTemporalObject(1).setRoot(true);
         tmpds.getTemporalObject(1).linkWithChild(tmpds.getTemporalObject(2));
         printTemporalObjectHierarchy(System.out, tmpds);
 
