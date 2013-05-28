@@ -64,16 +64,16 @@ public class ThemeRiverLayout extends Layout {
         }
         
         int medIndex = dataColumnIndices.length/2;
-        float[][] buffer = new float[dataColumnIndices.length][sourceDataset.getNodes().getTupleCount()*2];
+        float[][] buffer = new float[dataColumnIndices.length][sourceDataset.getTemporalObjectCount()*2];
         int i=0;
         float max = 0;
         float medPos = 0;
         for(TemporalObject iTO : sourceDataset.temporalObjects()) {
         	float upper = 0;
         	float lower = 0;
-        	for(int j : dataColumnIndices) {
+        	for(int j=0; j<dataColumnIndices.length; j++) {
             	buffer[j][i*2] = timeScale.getPixelForDate(iTO.getTemporalElement().asGeneric().getInf());
-            	float val = (float)iTO.getInt(j);
+            	float val = (float)iTO.getInt(dataColumnIndices[j]);
             	if(j <= medIndex) {
             		upper += val;
             		buffer[j][i*2+1] = upper;
@@ -87,16 +87,17 @@ public class ThemeRiverLayout extends Layout {
         		max = diff;
         		medPos = -lower;
         	}
-            i+=2;
+            i++;
         }
+
         float height = (float)m_vis.getBounds(m_group).getHeight();
         float yBase = (float)m_vis.getBounds(m_group).getY();
         float factor = height/max;
-        for(int j=0; j<=buffer.length; j++) {
+        for(int j=0; j<buffer.length; j++) {
         	for(int k=0; k<buffer[j].length; k+=2) {
-        		buffer[j][k+1] += medPos;
-        		buffer[j][k+1] *= factor;     		
-        		buffer[j][k+1] += yBase;
+       			buffer[j][k+1] += medPos;
+       			buffer[j][k+1] *= factor;     		
+       			buffer[j][k+1] += yBase;
         	}
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);
         }

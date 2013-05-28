@@ -56,7 +56,7 @@ public class POTSBLITZDemo {
 
 	private static TemporalDataset countedPatterns = null;
     
-    private static void createVisualization(TemporalDataset patterns, TemporalDataset events) {
+    private static void createVisualization(TemporalDataset patterns, TemporalDataset events,TemporalDataset flatPatterns) {
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         display.setSize(1200, 600);
@@ -65,10 +65,12 @@ public class POTSBLITZDemo {
         // STEP 1: setup the visualized data
        
         VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
-        VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);        
+        VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
+        VisualGraph vgf = vis.addGraph(PATTERNTIMELINES,flatPatterns);
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
+        vgf.getNodeTable().addColumn(MAXX_FIELD, int.class);
 
         long border = (events.getSup() - events.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -135,8 +137,8 @@ public class POTSBLITZDemo {
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
 
-        layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
-        layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
+        //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
+        //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         
         layout.add(new RepaintAction());
         
@@ -193,13 +195,16 @@ public class POTSBLITZDemo {
 		action.run(0);
 		flatPatterns = action.getTemporalDataset();
 
-		System.out.println(flatPatterns.getNodeCount());
-		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
+		//System.out.println(flatPatterns.getNodeCount());
+		//DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
 		
 		PatternCountAction action2 = new PatternCountAction(flatPatterns);
 		action2.run(0);
 		countedPatterns = action2.getTemporalDataset();   
+
+		System.out.println(flatPatterns.getNodeCount());
+		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns,"e1p0e2p0e0","e1p0e2p1e1","e1p0e1p0e1","e1p0e1p1e2");
 		
-        createVisualization(patterns,events);
+        createVisualization(patterns,events,flatPatterns);
     }
 }
