@@ -1,5 +1,6 @@
 package timeBench.data;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import ieg.prefuse.data.ParentChildNode;
@@ -152,6 +153,13 @@ public class TemporalObject extends ParentChildNode {
         return getTemporalDataset().isRoot(this);
     }
 
+    /**
+     * Note, that you cannot unset a root object while iterating over roots.
+     * This would lead to a {@link ConcurrentModificationException}. Use
+     * {@link Iterator#remove()} instead.
+     * 
+     * @param root
+     */
     public void setRoot(boolean root) {
         getTemporalDataset().setRoot(this, root);
     }

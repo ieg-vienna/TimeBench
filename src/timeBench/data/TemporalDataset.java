@@ -4,7 +4,6 @@ import ieg.prefuse.data.ParentChildGraph;
 import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -290,7 +289,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @return the roots as an iterable collection
      */
     public Iterable<TemporalObject> roots() {
-        return Collections.unmodifiableSet(this.roots);
+        return this.roots;
     }
 
     public boolean isRoot(TemporalObject obj) {
