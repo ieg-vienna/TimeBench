@@ -189,7 +189,8 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
                 int.class, keyAtts);
 
         // key elements for application-specific field values
-        Schema dataElements = tmpds.getDataColumnSchema(); 
+        // XXX consider getDataColumnSchema() -- Bug with depth & MuTIny
+        Schema dataElements = tmpds.getNodeTable().getSchema(); 
         for (int i = 0; i < dataElements.getColumnCount(); i++) {
             String name = dataElements.getColumnName(i);
             // column names starting with "_" are reserved
@@ -258,6 +259,7 @@ public class GraphMLTemporalDatasetWriter extends AbstractTemporalDatasetWriter 
             hd.startElement("", Tokens.NODE, Tokens.NODE, nodeAtts);
 
             // data elements for application-specific field values
+            // XXX consider getDataColumnSchema() -- Bug with depth & MuTIny
             for (int i = 0; i < tObj.getColumnCount(); i++) {
                 String name = tObj.getColumnName(i);
                 // predefined columns are handled differently
