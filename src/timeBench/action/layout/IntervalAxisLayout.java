@@ -1,8 +1,10 @@
 package timeBench.action.layout;
 
 import prefuse.Constants;
+import prefuse.data.expression.Predicate;
 import prefuse.render.Renderer;
 import prefuse.visual.VisualItem;
+import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.BasicTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
 import timeBench.data.AnchoredTemporalElement;
@@ -57,6 +59,30 @@ public class IntervalAxisLayout extends TimeAxisLayout {
 		super(group, timeScale);
 		this.maxXField = maxXField;
 	}
+	
+    /**
+     * Create a {@link IntervalAxisLayout} with the specified interval and max x
+	 * field.
+     * 
+     * @param group
+     *            the data group to layout
+   	 * @param maxXField
+	 *            the x field, where the pixel representing the date contained
+	 *            in the date field will be set
+     * @param axis
+     *            the axis type, either {@link prefuse.Constants#X_AXIS} or
+     *            {@link prefuse.Constants#Y_AXIS}.
+     * @param timeScale
+     *            the {@link TimeScale} used to layout items
+     * @param filter
+     *            an optional predicate filter for limiting which items to
+     *            layout.
+     */
+    public IntervalAxisLayout(String group, String maxXField, int axis, TimeScale timeScale, Placement placement,
+            Predicate filter) {
+        super(group,axis,timeScale,placement,filter);
+		this.maxXField = maxXField;
+    }
 
 	/*
 	 * (non-Javadoc)

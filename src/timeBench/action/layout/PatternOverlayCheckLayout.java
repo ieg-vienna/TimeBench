@@ -22,6 +22,7 @@ public class PatternOverlayCheckLayout extends Layout {
 
 	protected String replacementGroup;
 	protected int maxOverlap = 0;
+	protected boolean isReplacementGroup = false;
 	
     public PatternOverlayCheckLayout(String checkGroup,String replacementGroup) {
        this(checkGroup,replacementGroup,0);
@@ -51,18 +52,20 @@ public class PatternOverlayCheckLayout extends Layout {
             	 VisualItem child = (VisualItem) childTuples.next();
             	 double start = parent.getX();
             	 double stop = child.getDouble(VisualItem.X2);
-            	 int overlapCounter = 0;
-                 Iterator tuples2 = items.tuples();
-                 while (tuples2.hasNext()) {
-                   	 double start2 = ((VisualItem)tuples2.next()).getX();
-                   	 if (start2 > start && start2 < stop)
-                   		 overlapCounter++;
-                 }
-                 if (overlapCounter > maxOverlap) {
-                	 switchToReplacementGroup();
-                	 leave = true;
-                	 break;
-                 }
+            	 if (start <= m_vis.getBounds(m_group).getMaxX() && stop >= m_vis.getBounds(m_group).getMinX()) {
+            		 int overlapCounter = 0;
+            		 Iterator tuples2 = items.tuples();
+            		 while (tuples2.hasNext()) {
+            			 double start2 = ((VisualItem)tuples2.next()).getX();
+            			 if (start2 > start && start2 < stop)
+            				 overlapCounter++;
+            		 }
+            		 if (overlapCounter > maxOverlap) {
+            			 switchToReplacementGroup();
+            			 leave = true;
+            			 break;
+            		 }
+            	 }
              }
              if (leave)
             	 break;
@@ -72,46 +75,52 @@ public class PatternOverlayCheckLayout extends Layout {
     }
 
 	private void switchToMainGroup() {
-   	 	TupleSet items = m_vis.getGroup(m_group);
-   	 	if (items instanceof VisualGraph) {
-   	 		items = ((VisualGraph) items).getNodes();
-   	 	}
-        Iterator tuples = items.tuples();
-        while (tuples.hasNext()) {
-            VisualItem item = (VisualItem) tuples.next();
-            item.setVisible(true);
-        }
-   	 	
-   	 	items = m_vis.getGroup(replacementGroup);
-   	 	if (items instanceof VisualGraph) {
-   	 		items = ((VisualGraph) items).getNodes();
-   	 	}
-        tuples = items.tuples();
-        while (tuples.hasNext()) {
-            VisualItem item = (VisualItem) tuples.next();
-            item.setVisible(false);
-        }
+		if (isReplacementGroup) {
+			TupleSet items = m_vis.getGroup(m_group);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			Iterator tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(true);
+			}
+
+			items = m_vis.getGroup(replacementGroup);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(false);
+			}
+        isReplacementGroup = false;
+		}
 	}
 
 	private void switchToReplacementGroup() {
-   	 	TupleSet items = m_vis.getGroup(m_group);
-   	 	if (items instanceof VisualGraph) {
-   	 		items = ((VisualGraph) items).getNodes();
-   	 	}
-        Iterator tuples = items.tuples();
-        while (tuples.hasNext()) {
-            VisualItem item = (VisualItem) tuples.next();
-            item.setVisible(false);
-        }
-   	 	
-   	 	items = m_vis.getGroup(replacementGroup);
-   	 	if (items instanceof VisualGraph) {
-   	 		items = ((VisualGraph) items).getNodes();
-   	 	}
-        tuples = items.tuples();
-        while (tuples.hasNext()) {
-            VisualItem item = (VisualItem) tuples.next();
-            item.setVisible(true);
-        }
+		if (!isReplacementGroup) {
+			TupleSet items = m_vis.getGroup(m_group);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			Iterator tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(false);
+			}
+
+			items = m_vis.getGroup(replacementGroup);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(true);
+			}
+			isReplacementGroup = true;
+		}
 	}
 }

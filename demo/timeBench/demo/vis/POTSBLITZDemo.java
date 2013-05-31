@@ -17,6 +17,8 @@ import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLayout;
+import prefuse.data.expression.BooleanLiteral;
+import prefuse.data.expression.Predicate;
 import prefuse.data.io.DataIOException;
 import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
@@ -31,6 +33,7 @@ import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.PatternOverlayCheckLayout;
 import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.TimeAxisLayout;
+import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.calendar.CalendarManager;
@@ -114,7 +117,8 @@ public class POTSBLITZDemo {
         layout.add(y_axis);
         AxisLayout y_axis2 = new AxisLayout(ARCDIAGRAM_PATTERNS+".nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis2);
-        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD, timeScale);
+        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD, Constants.X_AXIS,
+        		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
         TimeAxisLayout time_axis2 = new IntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD, timeScale);                       
         layout.add(time_axis);
         layout.add(time_axis2);
@@ -136,6 +140,8 @@ public class POTSBLITZDemo {
         layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
+        layout.add(new DataColorAction(PATTERNTIMELINES, "label", prefuse.Constants.NOMINAL,
+        		VisualItem.FILLCOLOR));
 
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
@@ -195,8 +201,8 @@ public class POTSBLITZDemo {
 		action.run(0);
 		flatPatterns = action.getTemporalDataset();
 
-		//System.out.println(flatPatterns.getNodeCount());
-		//DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
+		System.out.println(flatPatterns.getNodeCount());
+		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
 		
 		PatternCountAction action2 = new PatternCountAction(flatPatterns);
 		action2.run(0);
