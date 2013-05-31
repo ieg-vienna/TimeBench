@@ -123,7 +123,7 @@ public class POTSBLITZDemo {
         layout.add(time_axis);
         layout.add(time_axis2);
         
-        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,PATTERNTIMELINES);
+        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,PATTERNTIMELINES,1);
         layout.add(patternOverlapCheckLayout);
         
         TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, timeScale);

@@ -51,9 +51,9 @@ public class PatternOverlayCheckLayout extends Layout {
             	 VisualItem parent = (VisualItem)item;
             	 VisualItem child = (VisualItem) childTuples.next();
             	 double start = parent.getX();
-            	 double stop = child.getDouble(VisualItem.X2);
-            	 if (start <= m_vis.getBounds(m_group).getMaxX() && stop >= m_vis.getBounds(m_group).getMinX()) {
-            		 int overlapCounter = 0;
+            	 double stop = child.getDouble(VisualItem.X2);            	 
+            	 if (start <= m_vis.getDisplay(0).getBounds().getMaxX() && stop >= m_vis.getDisplay(0).getBounds().getMinX()) {
+            		 int overlapCounter = -1;	// Every item overlaps with itself
             		 Iterator tuples2 = items.tuples();
             		 while (tuples2.hasNext()) {
             			 double start2 = ((VisualItem)tuples2.next()).getX();
@@ -65,6 +65,9 @@ public class PatternOverlayCheckLayout extends Layout {
             			 leave = true;
             			 break;
             		 }
+            	 } else {
+            		 int x = 0;
+            		 x++;
             	 }
              }
              if (leave)

@@ -165,11 +165,13 @@ public class ArcRenderer implements prefuse.render.Renderer {
 						parent.getDouble(VisualItem.X2),parent.getY());
 				path.closePath();
 				
-				BasicStroke stroke = new BasicStroke();
-				g.fill(path);
-				if (item.isHighlighted()) {
-					g.setColor(Color.white);
-					g.draw(path);
+				if (item.isVisible() && parent.isVisible()) {
+					BasicStroke stroke = new BasicStroke();
+					g.fill(path);
+					if (item.isHighlighted()) {
+						g.setColor(Color.white);
+						g.draw(path);
+					}
 				}
 			}
 		}
