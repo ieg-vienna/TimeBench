@@ -123,7 +123,7 @@ public class POTSBLITZDemo {
         layout.add(time_axis);
         layout.add(time_axis2);
         
-        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,PATTERNTIMELINES,2);
+        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,3);
         layout.add(patternOverlapCheckLayout);
         
         TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, timeScale);
@@ -141,7 +141,7 @@ public class POTSBLITZDemo {
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(PATTERNTIMELINES, "label", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR));
+        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
 
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));

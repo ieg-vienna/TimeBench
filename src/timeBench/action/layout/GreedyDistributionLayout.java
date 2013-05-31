@@ -38,13 +38,14 @@ public class GreedyDistributionLayout extends Layout {
              items = ((VisualGraph) items).getNodes();
          }
          
-         double ybase = m_vis.getBounds(m_group).getCenterY();
+         double ybase = m_vis.getDisplay(0).getBounds().getCenterY();
          
          ArrayList<Double> lastOnLane = new ArrayList<Double>();
          Iterator tuples = items.tuples(m_filter);
          while (tuples.hasNext()) {
              VisualItem item = (VisualItem) tuples.next();
              int takeLane = -1;
+
              for(int i=0; i<lastOnLane.size(); i++) {
             	 if(lastOnLane.get(i) < item.getX()) {
             		 takeLane = i;
@@ -55,13 +56,13 @@ public class GreedyDistributionLayout extends Layout {
             		 switchToReplacementGroup();
             		 break;
             	 }
-            	 if (takeLane == -1) {
-            		 lastOnLane.add(item.getDouble(VisualItem.X2));
-            		 takeLane = lastOnLane.size()-1;
-            	 }
-            	 item.setY(ybase + ((takeLane % 2) == 0 ? -1 : 1) * takeLane * 10);
-            	 item.setSizeY(6);
              }
+           	 if (takeLane == -1) {
+           		 lastOnLane.add(item.getDouble(VisualItem.X2));
+           		 takeLane = lastOnLane.size()-1;
+           	 }
+           	 item.setY(ybase + ((takeLane % 2) == 0 ? -1 : 1) * takeLane * 10);
+           	 item.setSizeY(6);
          }
     }
     

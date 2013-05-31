@@ -21,16 +21,18 @@ import timeBench.data.TemporalObject;
 public class PatternOverlayCheckLayout extends Layout {
 
 	protected String replacementGroup;
+	protected String secondPrimaryGroup;
 	protected int maxOverlap = 0;
 	protected boolean isReplacementGroup = false;
 	
-    public PatternOverlayCheckLayout(String checkGroup,String replacementGroup) {
-       this(checkGroup,replacementGroup,0);
+    public PatternOverlayCheckLayout(String checkGroup,String secondPrimaryGroup,String replacementGroup) {
+       this(checkGroup,secondPrimaryGroup,replacementGroup,0);
     }
     
-    public PatternOverlayCheckLayout(String checkGroup,String replacementGroup,int maxOverlap) {
+    public PatternOverlayCheckLayout(String checkGroup,String secondPrimaryGroup,String replacementGroup,int maxOverlap) {
         super(checkGroup);
         this.replacementGroup = replacementGroup;
+        this.secondPrimaryGroup = secondPrimaryGroup;
         this.maxOverlap = maxOverlap;
     }
 
@@ -115,6 +117,16 @@ public class PatternOverlayCheckLayout extends Layout {
 				VisualItem item = (VisualItem) tuples.next();
 				item.setVisible(true);
 			}
+			
+			items = m_vis.getGroup(secondPrimaryGroup);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(true);
+			}
 
 			items = m_vis.getGroup(replacementGroup);
 			if (items instanceof VisualGraph) {
@@ -140,6 +152,16 @@ public class PatternOverlayCheckLayout extends Layout {
 				VisualItem item = (VisualItem) tuples.next();
 				item.setVisible(false);
 			}
+			
+			items = m_vis.getGroup(secondPrimaryGroup);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(false);
+			}
 
 			items = m_vis.getGroup(replacementGroup);
 			if (items instanceof VisualGraph) {
@@ -150,6 +172,7 @@ public class PatternOverlayCheckLayout extends Layout {
 				VisualItem item = (VisualItem) tuples.next();
 				item.setVisible(true);
 			}
+			
 			isReplacementGroup = true;
 		}
 	}
