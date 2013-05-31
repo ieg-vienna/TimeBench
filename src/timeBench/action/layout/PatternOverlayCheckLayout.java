@@ -37,10 +37,37 @@ public class PatternOverlayCheckLayout extends Layout {
 
     @Override
     public void run(double frac) {
-    	 TupleSet items = m_vis.getGroup(m_group);
-         if (items instanceof VisualGraph) {
-             items = ((VisualGraph) items).getNodes();
+    	 TupleSet items = m_vis.getGroup(m_group);    	     	 
+
+    	 boolean leave = false;
+         Iterator tuples = items.tuples();
+         while (tuples.hasNext()) {
+        	 VisualItem item = (VisualItem)tuples.next();
+        	 if (m_vis.getDisplay(0).getBounds().intersects(item.getBounds().getBounds())) {
+    		 Iterator tuples2 = items.tuples();
+    		 int overlapCounter = 0;
+    		 while (tuples2.hasNext()) {
+    			 VisualItem item2 = (VisualItem)tuples2.next();
+    			 if (item != item2) {
+    				 if (item.getBounds().intersects(item2.getBounds().getBounds()))
+    					 overlapCounter++;
+            		 if (overlapCounter > maxOverlap) {
+            			 switchToReplacementGroup();
+            			 leave = true;
+            			 break;
+            		 }
+    			 }
+    		 }
+             if (leave)
+            	 break;
+        	 }
          }
+         if (leave == false)
+        	 switchToMainGroup();
+    	 
+         /*if (items instanceof VisualGraph) {
+             items = ((VisualGraph) items).getNodes();
+         }                
          
          boolean leave = false;
          Iterator tuples = items.tuples();
@@ -53,7 +80,7 @@ public class PatternOverlayCheckLayout extends Layout {
             	 double start = parent.getX();
             	 double stop = child.getDouble(VisualItem.X2);            	 
             	 if (start <= m_vis.getDisplay(0).getBounds().getMaxX() && stop >= m_vis.getDisplay(0).getBounds().getMinX()) {
-            		 int overlapCounter = -1;	// Every item overlaps with itself
+            		 int overlapCounter = 0;
             		 Iterator tuples2 = items.tuples();
             		 while (tuples2.hasNext()) {
             			 double start2 = ((VisualItem)tuples2.next()).getX();
@@ -74,7 +101,7 @@ public class PatternOverlayCheckLayout extends Layout {
             	 break;
          }
          if (leave == false)
-        	 switchToMainGroup();
+        	 switchToMainGroup();*/
     }
 
 	private void switchToMainGroup() {
