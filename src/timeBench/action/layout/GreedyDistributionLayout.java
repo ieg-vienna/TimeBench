@@ -52,12 +52,12 @@ public class GreedyDistributionLayout extends Layout {
                 	 lastOnLane.set(i, item.getDouble(VisualItem.X2));
             		 break;
             	 }
-            	 if (takeLane >= maxLanes) {
+             }
+           	 if (takeLane == -1) {
+            	 if (lastOnLane.size() >= maxLanes) {
             		 switchToReplacementGroup();
             		 break;
             	 }
-             }
-           	 if (takeLane == -1) {
            		 lastOnLane.add(item.getDouble(VisualItem.X2));
            		 takeLane = lastOnLane.size()-1;
            	 }

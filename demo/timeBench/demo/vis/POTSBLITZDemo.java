@@ -57,9 +57,7 @@ public class POTSBLITZDemo {
     private static final String PATTERNTHEMERIVER = "patternthemeriver";
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
 
-	private static TemporalDataset countedPatterns = null;
-    
-    private static void createVisualization(TemporalDataset patterns, TemporalDataset events,TemporalDataset flatPatterns) {
+    private static void createVisualization(TemporalDataset patterns, TemporalDataset events,TemporalDataset flatPatterns, TemporalDataset countedPatterns) {
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         display.setSize(1200, 600);
@@ -70,10 +68,12 @@ public class POTSBLITZDemo {
         VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
         VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
         VisualGraph vgf = vis.addGraph(PATTERNTIMELINES,flatPatterns);
+        VisualGraph vgt = vis.addGraph(PATTERNTHEMERIVER,countedPatterns);
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vgf.getNodeTable().addColumn(MAXX_FIELD, int.class);
+        vgt.getNodeTable().addColumn(MAXX_FIELD, int.class);
 
         long border = (events.getSup() - events.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -181,6 +181,7 @@ public class POTSBLITZDemo {
 		TemporalDataset events = null;
 		TemporalDataset patterns = null;
 		TemporalDataset flatPatterns = null;
+		TemporalDataset countedPatterns = null;
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
 			events = gmltdr.readData("data/Dodgers-events.graphml.gz");
@@ -211,6 +212,6 @@ public class POTSBLITZDemo {
 		System.out.println(flatPatterns.getNodeCount());
 		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns,"e1p0e2p0e0","e1p0e2p1e1","e1p0e1p0e1","e1p0e1p1e2");
 		
-        createVisualization(patterns,events,flatPatterns);
+        createVisualization(patterns,events,flatPatterns,countedPatterns);
     }
 }
