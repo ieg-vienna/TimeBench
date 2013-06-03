@@ -20,6 +20,7 @@ import prefuse.action.layout.AxisLayout;
 import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.io.DataIOException;
+import prefuse.render.PolygonRenderer;
 import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
 import prefuse.util.ColorLib;
@@ -96,11 +97,12 @@ public class POTSBLITZDemo {
         // intRenderer.setAxis(Constants.Y_AXIS);
         RendererFactory rf = new RendererFactory() {
         	ArcRenderer arcRenderer = new ArcRenderer();
+        	PolygonRenderer polygonRenderer = new PolygonRenderer();
         	IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
 
                 public Renderer getRenderer(VisualItem item) {
-                    return item.isInGroup(ARCDIAGRAM_PATTERNS) ? arcRenderer
-                            : intRenderer;
+                    return item.isInGroup(ARCDIAGRAM_PATTERNS) ? arcRenderer : (item.isInGroup(PATTERNTHEMERIVER) ? polygonRenderer 
+                            : intRenderer);
                 }
         };
  

@@ -90,8 +90,8 @@ public class ThemeRiverLayout extends Layout {
             i++;
         }
 
-        float height = (float)m_vis.getBounds(m_group).getHeight();
-        float yBase = (float)m_vis.getBounds(m_group).getY();
+        float height = (float)m_vis.getDisplay(0).getBounds().getHeight();
+        float yBase = (float)m_vis.getDisplay(0).getBounds().getY();
         float factor = height/max;
         for(int j=0; j<buffer.length; j++) {
         	for(int k=0; k<buffer[j].length; k+=2) {

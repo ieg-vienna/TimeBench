@@ -24,6 +24,7 @@ public class GreedyDistributionLayout extends Layout {
 	protected Predicate m_filter = VisiblePredicate.TRUE;
 	protected String replacementGroup;
 	int maxLanes = 7;
+	protected boolean isReplacementGroup = false;
 
 	public GreedyDistributionLayout(String group,String replacementGroup,int maxLanes) {
        super(group);
@@ -64,27 +65,58 @@ public class GreedyDistributionLayout extends Layout {
            	 item.setY(ybase + ((takeLane % 2) == 0 ? -1 : 1) * takeLane * 10);
            	 item.setSizeY(6);
          }
+         if (lastOnLane.size() < maxLanes)
+        	 switchToMainGroup();
     }
     
+	private void switchToMainGroup() {
+		if (isReplacementGroup) {
+			TupleSet items = m_vis.getGroup(m_group);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			Iterator tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(true);
+			}
+			
+			items = m_vis.getGroup(replacementGroup);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(false);
+			}
+        isReplacementGroup = false;
+		}
+	}
+
 	private void switchToReplacementGroup() {
-   	 	TupleSet items = m_vis.getGroup(m_group);
-   	 	if (items instanceof VisualGraph) {
-   	 		items = ((VisualGraph) items).getNodes();
-   	 	}
-        Iterator tuples = items.tuples();
-        while (tuples.hasNext()) {
-            VisualItem item = (VisualItem) tuples.next();
-            item.setVisible(false);
-        }
-   	 	
-   	 	items = m_vis.getGroup(replacementGroup);
-   	 	if (items instanceof VisualGraph) {
-   	 		items = ((VisualGraph) items).getNodes();
-   	 	}
-        tuples = items.tuples();
-        while (tuples.hasNext()) {
-            VisualItem item = (VisualItem) tuples.next();
-            item.setVisible(true);
-        }
+		if (!isReplacementGroup) {
+			TupleSet items = m_vis.getGroup(m_group);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			Iterator tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(false);
+			}		
+
+			items = m_vis.getGroup(replacementGroup);
+			if (items instanceof VisualGraph) {
+				items = ((VisualGraph) items).getNodes();
+			}
+			tuples = items.tuples();
+			while (tuples.hasNext()) {
+				VisualItem item = (VisualItem) tuples.next();
+				item.setVisible(true);
+			}
+			
+			isReplacementGroup = true;
+		}
 	}
 }
