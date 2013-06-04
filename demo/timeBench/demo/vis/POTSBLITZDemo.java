@@ -5,6 +5,9 @@ package timeBench.demo.vis;
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.IntervalBarRenderer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -212,7 +215,12 @@ public class POTSBLITZDemo {
 		countedPatterns = action2.getTemporalDataset();   
 
 		System.out.println(flatPatterns.getNodeCount());
-		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns,"e2p1e0p0e1","e2p0e2p1e2","e1p1e1p0e1","e1p1e1p1e0");
+		try {
+			DataHelper.printTable(new PrintStream("test.txt"),countedPatterns.getTemporalObjectTable());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
         createVisualization(patterns,events,flatPatterns,countedPatterns);
     }

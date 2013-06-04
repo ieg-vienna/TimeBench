@@ -109,7 +109,7 @@ public class ThemeRiverLayout extends Layout {
        				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = -maxLower*factor+yBase;
        			}
             	if(j==0) {
-            		System.out.println(buffer[j][k]+","+buffer[j][k+1]+" - "+buffer[j][sourceDataset.getTemporalObjectCount()*4-k-2]+","+buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1]);
+            		//System.out.println(buffer[j][k]+","+buffer[j][k+1]+" - "+buffer[j][sourceDataset.getTemporalObjectCount()*4-k-2]+","+buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1]);
             	}
         	}
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);
