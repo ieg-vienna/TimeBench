@@ -107,13 +107,15 @@ public class GreedyDistributionLayout extends Layout {
 			}		
 
 			items = m_vis.getGroup(replacementGroup);
-			if (items instanceof VisualGraph) {
-				items = ((VisualGraph) items).getNodes();
-			}
-			tuples = items.tuples();
-			while (tuples.hasNext()) {
-				VisualItem item = (VisualItem) tuples.next();
-				item.setVisible(true);
+			if (items != null) {
+				if (items instanceof VisualGraph) {
+					items = ((VisualGraph) items).getNodes();
+				}
+				tuples = items.tuples();
+				while (tuples.hasNext()) {
+					VisualItem item = (VisualItem) tuples.next();
+					item.setVisible(true);
+				}
 			}
 			
 			isReplacementGroup = true;

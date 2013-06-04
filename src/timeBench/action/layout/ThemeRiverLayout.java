@@ -45,13 +45,14 @@ public class ThemeRiverLayout extends Layout {
             throw new RuntimeException("cannot layout without timescale");
         }
         
-        TupleSet workingDataset = m_vis.getGroup(m_group);
+        VisualTable workingDataset = (VisualTable)m_vis.getGroup(m_group);
         Table workingBaseDataset = null;
         if (workingDataset == null || !(workingDataset instanceof VisualTable)) {
         	workingBaseDataset = new Table(0,0);
         	workingBaseDataset.addColumn("label", String.class);
         	workingBaseDataset.addColumn(PolygonRenderer.POLYGON, float[].class);
         	workingDataset = new VisualTable(workingBaseDataset, m_vis, m_group);
+        	workingDataset.getColumnNumber(PolygonRenderer.POLYGON);
         } else {
         	workingBaseDataset = (Table) m_vis.getSourceData(m_group);
         }

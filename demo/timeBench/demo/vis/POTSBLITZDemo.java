@@ -69,12 +69,10 @@ public class POTSBLITZDemo {
         VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
         VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
         VisualGraph vgf = vis.addGraph(PATTERNTIMELINES,flatPatterns);
-        VisualGraph vgt = vis.addGraph(PATTERNTHEMERIVER,countedPatterns);
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vgf.getNodeTable().addColumn(MAXX_FIELD, int.class);
-        vgt.getNodeTable().addColumn(MAXX_FIELD, int.class);
 
         long border = (events.getSup() - events.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
