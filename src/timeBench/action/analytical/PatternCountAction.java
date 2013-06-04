@@ -57,21 +57,23 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 			Hashtable<String,Long> patterns = new Hashtable<String, Long>();
 			Iterator temporalObjectIterator = sourceDataset.nodes();
 			while(temporalObjectIterator.hasNext()) {				
+				
 				TemporalObject to = (TemporalObject)temporalObjectIterator.next();
 				String pattern = to.getString("label");			
 				if (workingDataset.getDataColumnSchema().getColumnIndex(pattern) == -1) {
 					workingDataset.addDataColumn(pattern, int.class, 0);
 				}
 				long inf = to.getTemporalElement().asGeneric().getInf();
+				
 				TemporalObject lastTO = getLastTemporalObjectBefore(inf);
 				TemporalObject newTO = null;
 				TemporalElement newTE = null;
-				if (lastTO == null) {
+				if (lastTO == null) {	// only for empty TemporalDataset
 					newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
 							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
 					newTO = workingDataset.addTemporalObject(newTE);
 					newTO.setInt(pattern, 1);
-				} else {
+				} else if(lastTO.getTemporalElement().asGeneric().getInf() < inf) {	// the point in time is not yet in the result
 					newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
 							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
 					newTO = workingDataset.addTemporalObject(newTE);
@@ -79,16 +81,38 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 						newTO.set(i,lastTO.get(i));
 					}
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
-				}				
-				long sup = to.getTemporalElement().asGeneric().getSup();
-				lastTO = getLastTemporalObjectBefore(sup);
-				newTE = workingDataset.addTemporalElement(sup, sup, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
-						JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
-				newTO = workingDataset.addTemporalObject(newTE);
-				for(int i : workingDataset.getDataColumnIndices()) {
-					newTO.set(i,lastTO.get(i));
+				} else {	// the point is there, use this
+					newTE  = lastTO.getTemporalElement();
+					newTO = lastTO;
+					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
 				}
-				newTO.setInt(pattern,lastTO.getInt(pattern)-1);
+				
+				long sup = to.getTemporalElement().asGeneric().getSup();
+				Iterator temporalObjectIterator2 = workingDataset.nodes();
+				boolean foundEnd = false;
+				TemporalObject lastTO2 = null;
+				long lastSup = 0;
+				while(temporalObjectIterator2.hasNext()) {
+					TemporalObject to2 = (TemporalObject)temporalObjectIterator2.next();
+					if (to2.getTemporalElement().asGeneric().getSup() < sup) {
+						to2.setInt(pattern,to2.getInt(pattern)+1);
+						if (sup > lastSup) {
+							lastTO2 = to2;
+							lastSup = sup;
+						}
+					}
+					if (to2.getTemporalElement().asGeneric().getSup() == sup)
+						foundEnd = true;
+				}
+				if (!foundEnd) {
+					newTE = workingDataset.addTemporalElement(sup, sup, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
+							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
+					newTO = workingDataset.addTemporalObject(newTE);
+					for(int i : workingDataset.getDataColumnIndices()) {
+						newTO.set(i,lastTO2.get(i));						
+					}
+					newTO.setInt(pattern,newTO.getInt(pattern)-1);
+				}
 			}
 		} catch (TemporalDataException e) {
 			// TODO Auto-generated catch block
@@ -99,19 +123,19 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 	private TemporalObject getLastTemporalObjectBefore(long inf) {
 		TemporalObject result = null;
 		
-		int lastInf = 0;
+		long lastInf = 0;
 		Iterator temporalObjectIterator = workingDataset.nodes();
 		while(temporalObjectIterator.hasNext()) {
 			TemporalObject to = (TemporalObject)temporalObjectIterator.next();
 			if(to.getTemporalElement().asGeneric().getInf() > lastInf &&
-					to.getTemporalElement().asGeneric().getInf() < inf) {
+					to.getTemporalElement().asGeneric().getInf() <= inf) {
 				result = to;
+				lastInf = to.getTemporalElement().asGeneric().getInf();
 			}
 		}
 		
 		return result;
 	}
-
 
 	public TemporalDataset getTemporalDataset() {
 		return workingDataset;

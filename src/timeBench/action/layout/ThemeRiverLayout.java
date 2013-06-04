@@ -67,10 +67,10 @@ public class ThemeRiverLayout extends Layout {
         }
         
         int medIndex = dataColumnIndices.length/2;
-        float[][] buffer = new float[dataColumnIndices.length][sourceDataset.getTemporalObjectCount()*2];
+        float[][] buffer = new float[dataColumnIndices.length][sourceDataset.getTemporalObjectCount()*4];
         int i=0;
-        float max = 0;
-        float medPos = 0;
+        float maxUpper = 0;
+        float maxLower = 0;
         IntIterator elIterator = sourceDataset.getTemporalElements().getNodeTable().index(TemporalElement.INF).allRows(Index.TYPE_ASCENDING);
         while (elIterator.hasNext()) {
             TemporalElement el = sourceDataset.getTemporalElements().getTemporalPrimitiveByRow(elIterator.nextInt());
@@ -88,25 +88,30 @@ public class ThemeRiverLayout extends Layout {
             		buffer[j][i*2+1] = lower;
             	}            	
         	}
-        	float diff = upper-lower;
-        	if(diff > max) {
-        		max = diff;
-        		medPos = -lower;
-        	}
+        	maxUpper = Math.max(maxUpper,upper);
+        	maxLower = Math.max(maxLower,lower);
             i++;
         }
+    	float max = maxUpper-maxLower;
 
         float height = (float)m_vis.getDisplay(0).getBounds().getHeight();
         float yBase = (float)m_vis.getDisplay(0).getBounds().getY();
         float factor = height/max;
         for(int j=0; j<buffer.length; j++) {
-        	for(int k=0; k<buffer[j].length; k+=2) {
-        		System.out.print(buffer[j][k]+","+buffer[j][k+1]+" - ");
-       			buffer[j][k+1] += medPos;
+        	for(int k=0; k<buffer[j].length/2; k+=2) {
+       			buffer[j][k+1] -= maxLower;
        			buffer[j][k+1] *= factor;     		
-       			buffer[j][k+1] += yBase;
+       			buffer[j][k+1] += yBase;       			
+   				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-2] = buffer[j][k];
+       			if(j>0) {
+       				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = buffer[j-1][k+1];
+       			} else {
+       				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = -maxLower*factor+yBase;
+       			}
+            	if(j==0) {
+            		System.out.println(buffer[j][k]+","+buffer[j][k+1]+" - "+buffer[j][sourceDataset.getTemporalObjectCount()*4-k-2]+","+buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1]);
+            	}
         	}
-        	System.out.println();
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);
         }
     }
