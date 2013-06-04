@@ -7,9 +7,12 @@ import org.apache.log4j.Logger;
 import prefuse.Constants;
 import prefuse.action.layout.Layout;
 import prefuse.data.Table;
+import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.tuple.TupleSet;
+import prefuse.data.util.Index;
 import prefuse.render.PolygonRenderer;
+import prefuse.util.collections.IntIterator;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
@@ -51,8 +54,7 @@ public class ThemeRiverLayout extends Layout {
         	workingBaseDataset = new Table(0,0);
         	workingBaseDataset.addColumn("label", String.class);
         	workingBaseDataset.addColumn(PolygonRenderer.POLYGON, float[].class);
-        	workingDataset = new VisualTable(workingBaseDataset, m_vis, m_group);
-        	workingDataset.getColumnNumber(PolygonRenderer.POLYGON);
+        	m_vis.addTable(m_group,workingBaseDataset);
         } else {
         	workingBaseDataset = (Table) m_vis.getSourceData(m_group);
         }
@@ -69,7 +71,10 @@ public class ThemeRiverLayout extends Layout {
         int i=0;
         float max = 0;
         float medPos = 0;
-        for(TemporalObject iTO : sourceDataset.temporalObjects()) {
+        IntIterator elIterator = sourceDataset.getTemporalElements().getNodeTable().index(TemporalElement.INF).allRows(Index.TYPE_ASCENDING);
+        while (elIterator.hasNext()) {
+            TemporalElement el = sourceDataset.getTemporalElements().getTemporalPrimitiveByRow(elIterator.nextInt());
+            TemporalObject iTO = (TemporalObject)el.temporalObjects().iterator().next();
         	float upper = 0;
         	float lower = 0;
         	for(int j=0; j<dataColumnIndices.length; j++) {
@@ -96,10 +101,12 @@ public class ThemeRiverLayout extends Layout {
         float factor = height/max;
         for(int j=0; j<buffer.length; j++) {
         	for(int k=0; k<buffer[j].length; k+=2) {
+        		System.out.print(buffer[j][k]+","+buffer[j][k+1]+" - ");
        			buffer[j][k+1] += medPos;
        			buffer[j][k+1] *= factor;     		
        			buffer[j][k+1] += yBase;
         	}
+        	System.out.println();
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);
         }
     }

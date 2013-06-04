@@ -79,7 +79,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 						newTO.set(i,lastTO.get(i));
 					}
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
-				}
+				}				
 				long sup = to.getTemporalElement().asGeneric().getSup();
 				lastTO = getLastTemporalObjectBefore(sup);
 				newTE = workingDataset.addTemporalElement(sup, sup, JavaDateCalendarManager.Granularities.Millisecond.toInt(),

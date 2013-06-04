@@ -142,6 +142,8 @@ public class POTSBLITZDemo {
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(PATTERNTIMELINES, "label", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
+        layout.add(new DataColorAction(PATTERNTHEMERIVER, "label", prefuse.Constants.NOMINAL,
+        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
 
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
@@ -210,7 +212,7 @@ public class POTSBLITZDemo {
 		countedPatterns = action2.getTemporalDataset();   
 
 		System.out.println(flatPatterns.getNodeCount());
-		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns,"e1p0e2p0e0","e1p0e2p1e1","e1p0e1p0e1","e1p0e1p1e2");
+		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns,"e2p1e0p0e1","e2p0e2p1e2","e1p1e1p0e1","e1p1e1p1e0");
 		
         createVisualization(patterns,events,flatPatterns,countedPatterns);
     }
