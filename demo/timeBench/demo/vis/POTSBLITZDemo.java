@@ -129,8 +129,9 @@ public class POTSBLITZDemo {
         PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,3);
         layout.add(patternOverlapCheckLayout);
         
-        TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, timeScale);
-        GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 7);
+        TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
+        		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
+        GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 14);
         layout.add(time_axis3);
         layout.add(y_axis3);
         

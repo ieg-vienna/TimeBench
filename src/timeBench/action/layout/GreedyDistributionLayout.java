@@ -21,7 +21,6 @@ import timeBench.data.TemporalObject;
 
 public class GreedyDistributionLayout extends Layout {
 
-	protected Predicate m_filter = VisiblePredicate.TRUE;
 	protected String replacementGroup;
 	int maxLanes = 7;
 	protected boolean isReplacementGroup = false;
@@ -40,30 +39,34 @@ public class GreedyDistributionLayout extends Layout {
          }
          
          double ybase = m_vis.getDisplay(0).getBounds().getCenterY();
+         double minx = m_vis.getDisplay(0).getBounds().getMinX();
+         double maxx = m_vis.getDisplay(0).getBounds().getMaxX();
          
          ArrayList<Double> lastOnLane = new ArrayList<Double>();
-         Iterator tuples = items.tuples(m_filter);
+         Iterator tuples = items.tuples();
          while (tuples.hasNext()) {
              VisualItem item = (VisualItem) tuples.next();
-             int takeLane = -1;
+             if (item.getX() >= minx && item.getDouble(VisualItem.X2) <= maxx) {
+            	 int takeLane = -1;
 
-             for(int i=0; i<lastOnLane.size(); i++) {
-            	 if(lastOnLane.get(i) < item.getX()) {
-            		 takeLane = i;
-                	 lastOnLane.set(i, item.getDouble(VisualItem.X2));
-            		 break;
+            	 for(int i=0; i<lastOnLane.size(); i++) {
+            		 if(lastOnLane.get(i) < item.getX()) {
+            			 takeLane = i;
+            			 lastOnLane.set(i, item.getDouble(VisualItem.X2));
+            			 break;
+            		 }
             	 }
+            	 if (takeLane == -1) {
+            		 if (lastOnLane.size() >= maxLanes) {
+            			 switchToReplacementGroup();
+            			 break;
+            		 }
+            		 lastOnLane.add(item.getDouble(VisualItem.X2));
+            		 takeLane = lastOnLane.size()-1;
+            	 }
+            	 item.setY(ybase + ((takeLane % 2) == 0 ? -1 : 1) * takeLane * 10);
+            	 item.setSizeY(6);
              }
-           	 if (takeLane == -1) {
-            	 if (lastOnLane.size() >= maxLanes) {
-            		 switchToReplacementGroup();
-            		 break;
-            	 }
-           		 lastOnLane.add(item.getDouble(VisualItem.X2));
-           		 takeLane = lastOnLane.size()-1;
-           	 }
-           	 item.setY(ybase + ((takeLane % 2) == 0 ? -1 : 1) * takeLane * 10);
-           	 item.setSizeY(6);
          }
          if (lastOnLane.size() < maxLanes)
         	 switchToMainGroup();
