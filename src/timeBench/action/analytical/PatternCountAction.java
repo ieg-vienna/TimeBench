@@ -68,12 +68,12 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 				TemporalObject lastTO = getLastTemporalObjectBefore(inf);
 				TemporalObject newTO = null;
 				TemporalElement newTE = null;
-				if (lastTO == null) {	// only for empty TemporalDataset
+				if (lastTO == null) {
 					newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
 							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
 					newTO = workingDataset.addTemporalObject(newTE);
 					newTO.setInt(pattern, 1);
-				} else if(lastTO.getTemporalElement().asGeneric().getInf() < inf) {	// the point in time is not yet in the result
+				} else if(lastTO.getTemporalElement().asGeneric().getInf() < inf) {
 					newTE = workingDataset.addTemporalElement(inf, inf, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
 							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
 					newTO = workingDataset.addTemporalObject(newTE);
@@ -81,7 +81,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 						newTO.set(i,lastTO.get(i));
 					}
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
-				} else {	// the point is there, use this
+				} else {
 					newTE  = lastTO.getTemporalElement();
 					newTO = lastTO;
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
@@ -90,11 +90,12 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 				long sup = to.getTemporalElement().asGeneric().getSup();
 				Iterator temporalObjectIterator2 = workingDataset.nodes();
 				boolean foundEnd = false;
-				TemporalObject lastTO2 = null;
+				TemporalObject lastTO2 = newTO;
 				long lastSup = 0;
 				while(temporalObjectIterator2.hasNext()) {
 					TemporalObject to2 = (TemporalObject)temporalObjectIterator2.next();
-					if (to2.getTemporalElement().asGeneric().getSup() < sup) {
+					if (to2.getTemporalElement().asGeneric().getInf() > inf &&
+							to2.getTemporalElement().asGeneric().getSup() < sup) {
 						to2.setInt(pattern,to2.getInt(pattern)+1);
 						if (sup > lastSup) {
 							lastTO2 = to2;

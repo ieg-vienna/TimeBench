@@ -214,13 +214,11 @@ public class POTSBLITZDemo {
 		action2.run(0);
 		countedPatterns = action2.getTemporalDataset();   
 
-		System.out.println(flatPatterns.getNodeCount());
-		try {
-			DataHelper.printTable(new PrintStream("test.txt"),countedPatterns.getTemporalObjectTable());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//System.out.println(flatPatterns.getNodeCount());
+		//DataHelper.printTable(System.out,countedPatterns.getTemporalObjectTable());
+		//try {
+			//DataHelper.printTable(new PrintStream("test.txt"),countedPatterns.getTemporalObjectTable());
+		//} catch (FileNotFoundException e) {e.printStackTrace();}
 		
         createVisualization(patterns,events,flatPatterns,countedPatterns);
     }
