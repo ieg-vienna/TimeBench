@@ -1,5 +1,12 @@
 // Pattern Over Time Semantic Blended Levels Integrated Temporal Zoom
 
+// TODO
+// Labels (how best? multiple renderers per item?)
+// "jump" between initial rendering and updates
+// soft fading (animation)
+// same colors for same patterns
+// sup cheat ok?
+
 package timeBench.demo.vis;
 
 import ieg.prefuse.data.DataHelper;

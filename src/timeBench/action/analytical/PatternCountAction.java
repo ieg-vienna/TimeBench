@@ -87,7 +87,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
 				}
 				
-				long sup = to.getTemporalElement().asGeneric().getSup();
+				long sup = to.getTemporalElement().asGeneric().getSup()+1;
 				Iterator temporalObjectIterator2 = workingDataset.nodes();
 				boolean foundEnd = false;
 				TemporalObject lastTO2 = newTO;

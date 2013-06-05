@@ -83,7 +83,7 @@ public class ThemeRiverLayout extends Layout {
             	buffer[j][i*2] = timeScale.getPixelForDate(iTO.getTemporalElement().asGeneric().getInf());
             	float val = (float)iTO.getInt(dataColumnIndices[j]);
             	//System.out.print(val+"|");
-        		if(j <= medIndex) {
+        		if(j % 2 == 0) {
             		upper += val;
             		buffer[j][i*2+1] = upper;
             	} else {
@@ -107,8 +107,8 @@ public class ThemeRiverLayout extends Layout {
        			buffer[j][k+1] *= factor;     		
        			buffer[j][k+1] += yBase;       			
    				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-2] = buffer[j][k];
-       			if(j>0 && j != medIndex+1) {
-       				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = buffer[j-1][k+1];
+       			if(j>1) {
+       				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = buffer[j-2][k+1];
        			} else {
        				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = -maxLower*factor+yBase;
        			}

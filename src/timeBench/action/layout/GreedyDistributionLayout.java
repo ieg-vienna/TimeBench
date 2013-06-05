@@ -64,7 +64,11 @@ public class GreedyDistributionLayout extends Layout {
             		 lastOnLane.add(item.getDouble(VisualItem.X2));
             		 takeLane = lastOnLane.size()-1;
             	 }
-            	 item.setY(ybase + ((takeLane % 2) == 0 ? -1 : 1) * takeLane * 10);
+            	 if (takeLane % 2 == 0) {
+                	 item.setY(ybase + (takeLane-1) * 10);          		 
+            	 } else {
+                	 item.setY(ybase - takeLane * 10);
+            	 }
             	 item.setSizeY(6);
              }
          }
