@@ -99,18 +99,18 @@ public class ThemeRiverLayout extends Layout {
     	float max = maxUpper-maxLower;
 
         float height = (float)m_vis.getDisplay(0).getBounds().getHeight();
-        float yBase = (float)m_vis.getDisplay(0).getBounds().getY();
+        //float yBase = (float)m_vis.getDisplay(0).getBounds().getY();
         float factor = height/max;
         for(int j=0; j<buffer.length; j++) {
         	for(int k=0; k<buffer[j].length/2; k+=2) {
        			buffer[j][k+1] -= maxLower;
        			buffer[j][k+1] *= factor;     		
-       			buffer[j][k+1] += yBase;       			
+       			//buffer[j][k+1] += yBase;       			
    				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-2] = buffer[j][k];
        			if(j>1) {
        				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = buffer[j-2][k+1];
        			} else {
-       				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = -maxLower*factor+yBase;
+       				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = -maxLower*factor/*+yBase*/;
        			}
         	}
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);

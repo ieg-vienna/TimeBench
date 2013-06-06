@@ -38,7 +38,7 @@ public class GreedyDistributionLayout extends Layout {
              items = ((VisualGraph) items).getNodes();
          }
          
-         double ybase = m_vis.getDisplay(0).getBounds().getCenterY();
+         double ybase = m_vis.getDisplay(0).getBounds().getCenterY()-m_vis.getDisplay(0).getBounds().getY();
          double minx = m_vis.getDisplay(0).getBounds().getMinX();
          double maxx = m_vis.getDisplay(0).getBounds().getMaxX();
          
