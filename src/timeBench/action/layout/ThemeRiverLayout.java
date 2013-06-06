@@ -1,5 +1,6 @@
 package timeBench.action.layout;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.expression.VisiblePredicate;
+import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
@@ -30,15 +32,19 @@ public class ThemeRiverLayout extends Layout {
     protected TemporalDataset sourceDataset = null;
 
     protected Predicate m_filter = VisiblePredicate.TRUE;
+    
+    protected ArrayList<String> classes = null;
 
-    public ThemeRiverLayout(String group,TemporalDataset sourceDataset) {
+    public ThemeRiverLayout(String group,TemporalDataset sourceDataset, ArrayList<String> classes) {
         super(group);
         this.sourceDataset = sourceDataset;
+        this.classes = classes;
     }
 
-    public ThemeRiverLayout(String group,TemporalDataset source, TimeScale timeScale) {
+    public ThemeRiverLayout(String group,TemporalDataset source,  ArrayList<String> classes, TimeScale timeScale) {
         super(group);
         this.sourceDataset = source;
+        this.classes = classes;
         setTimeScale(timeScale);
     }
 
@@ -54,6 +60,7 @@ public class ThemeRiverLayout extends Layout {
         if (workingDataset == null || !(workingDataset instanceof VisualTable)) {
         	workingBaseDataset = new Table(0,0);
         	workingBaseDataset.addColumn("label", String.class);
+        	workingBaseDataset.addColumn("class", int.class);
         	workingBaseDataset.addColumn(PolygonRenderer.POLYGON, float[].class);
         	m_vis.addTable(m_group,workingBaseDataset);
         } else {
@@ -65,6 +72,7 @@ public class ThemeRiverLayout extends Layout {
         for (int i : dataColumnIndices) {
         	int index = workingBaseDataset.addRow();
         	workingBaseDataset.set(index,"label",sourceDataset.getDataColumnSchema().getColumnName(i));
+        	workingBaseDataset.set(index,"class",classes.indexOf(sourceDataset.getDataColumnSchema().getColumnName(i)));
         }
         
         int medIndex = dataColumnIndices.length/2;

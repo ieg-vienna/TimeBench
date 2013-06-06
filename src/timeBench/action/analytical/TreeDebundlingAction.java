@@ -36,6 +36,7 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
     
 	TemporalDataset sourceDataset;
 	TemporalDataset workingDataset;
+	ArrayList<String> classes = null;
 
 	public TreeDebundlingAction(TemporalDataset sourceDataset) {
 		this.sourceDataset = sourceDataset;
@@ -50,6 +51,7 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 		try {
 			workingDataset = new TemporalDataset();
 			workingDataset.addDataColumn("label", String.class, "");
+			workingDataset.addDataColumn("class", int.class, -1);
 			
 			for(TemporalObject root : sourceDataset.roots()) {
 				ArrayList<TemporalObject> leafList = new ArrayList<TemporalObject>();
@@ -71,6 +73,17 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 					path.set("label", stringsToLeaf.get(i));
 				}
 			}
+			
+			classes = new ArrayList<String>();
+			for(TemporalObject iTo : workingDataset.temporalObjects()) {
+				String label = iTo.getString("label");
+				int thisclass = classes.indexOf(label);
+				if (thisclass == -1) {
+					classes.add(label);
+					thisclass = classes.size()-1;
+				}
+				iTo.setInt("class", thisclass);
+			}
 		} catch (TemporalDataException e) {
 			throw new RuntimeException(e.getMessage());
 		}		
@@ -90,6 +103,10 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 				findLeaves(iChild,leafList,stringsToLeaf,addedStringState);
 			}
 		}
+	}
+	
+	public ArrayList<String> getClasses() {
+		return classes;
 	}
 
 

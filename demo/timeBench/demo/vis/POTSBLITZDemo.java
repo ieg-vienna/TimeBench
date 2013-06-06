@@ -2,7 +2,6 @@
 
 // TODO
 // Labels (how best? multiple renderers per item?)
-// "jump" between initial rendering and updates
 // soft fading (animation)
 // same colors for same patterns
 // sup cheat ok?
@@ -15,6 +14,7 @@ import ieg.prefuse.renderer.IntervalBarRenderer;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -67,6 +67,8 @@ public class POTSBLITZDemo {
     private static final String PATTERNTIMELINES = "patterntimelines";
     private static final String PATTERNTHEMERIVER = "patternthemeriver";
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
+    
+    static private ArrayList<String> classes;
 
     private static void createVisualization(TemporalDataset patterns, TemporalDataset events,TemporalDataset flatPatterns, TemporalDataset countedPatterns) {
         final Visualization vis = new Visualization();
@@ -142,7 +144,7 @@ public class POTSBLITZDemo {
         layout.add(time_axis3);
         layout.add(y_axis3);
         
-        ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,timeScale);
+        ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,classes,timeScale);
         layout.add(themeRiver);
                       
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
@@ -151,9 +153,9 @@ public class POTSBLITZDemo {
         layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
-        layout.add(new DataColorAction(PATTERNTIMELINES, "label", prefuse.Constants.NOMINAL,
+        layout.add(new DataColorAction(PATTERNTIMELINES, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
-        layout.add(new DataColorAction(PATTERNTHEMERIVER, "label", prefuse.Constants.NOMINAL,
+        layout.add(new DataColorAction(PATTERNTHEMERIVER, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
 
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
@@ -214,9 +216,10 @@ public class POTSBLITZDemo {
 		TreeDebundlingAction action = new TreeDebundlingAction(patterns);
 		action.run(0);
 		flatPatterns = action.getTemporalDataset();
+		classes = action.getClasses();
 
 		System.out.println(flatPatterns.getNodeCount());
-		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label",TemporalObject.ID);
+		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label","class",TemporalObject.ID);
 		
 		PatternCountAction action2 = new PatternCountAction(flatPatterns);
 		action2.run(0);
