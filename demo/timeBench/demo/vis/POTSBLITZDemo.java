@@ -3,18 +3,23 @@
 // TODO
 // Labels (how best? multiple renderers per item?)
 // soft fading (animation)
-// same colors for same patterns
-// sup cheat ok?
 
 package timeBench.demo.vis;
 
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.IntervalBarRenderer;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -25,15 +30,23 @@ import prefuse.Constants;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
+import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLayout;
+import prefuse.action.layout.Layout;
+import prefuse.data.Schema;
+import prefuse.data.Table;
+import prefuse.data.Tuple;
 import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.io.DataIOException;
+import prefuse.data.tuple.TupleSet;
+import prefuse.render.LabelRenderer;
 import prefuse.render.PolygonRenderer;
 import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
 import prefuse.util.ColorLib;
+import prefuse.visual.DecoratorItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import render.ArcRenderer;
@@ -66,6 +79,9 @@ public class POTSBLITZDemo {
     private static final String ARCDIAGRAM_EVENTS = "arcdiagram_events"; // Don't know if . is reserved in prefuse
     private static final String PATTERNTIMELINES = "patterntimelines";
     private static final String PATTERNTHEMERIVER = "patternthemeriver";
+    
+    private static final String PATTERNTIMELINES_DECORATOR = "patterntimelines_decorator";
+    
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     
     static private ArrayList<String> classes;
@@ -81,6 +97,8 @@ public class POTSBLITZDemo {
         VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
         VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
         VisualGraph vgf = vis.addGraph(PATTERNTIMELINES,flatPatterns);
+        
+        vis.addDecorators(PATTERNTIMELINES_DECORATOR, PATTERNTIMELINES+".nodes");
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
         vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
@@ -107,12 +125,18 @@ public class POTSBLITZDemo {
         // intRenderer.setAxis(Constants.Y_AXIS);
         RendererFactory rf = new RendererFactory() {
         	ArcRenderer arcRenderer = new ArcRenderer();
-        	PolygonRenderer polygonRenderer = new PolygonRenderer();
+        	PolygonRenderer polygonRenderer = new PolygonRenderer(Constants.POLY_TYPE_STACK);
         	IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
+        	LabelRenderer labelRenderer = new LabelRenderer("label");
 
                 public Renderer getRenderer(VisualItem item) {
-                    return item.isInGroup(ARCDIAGRAM_PATTERNS) ? arcRenderer : (item.isInGroup(PATTERNTHEMERIVER) ? polygonRenderer 
-                            : intRenderer);
+                	if(item.isInGroup(ARCDIAGRAM_PATTERNS))
+                		return arcRenderer;
+                	else if(item.isInGroup(PATTERNTHEMERIVER))
+                		return polygonRenderer;
+                	else if(item.isInGroup(PATTERNTIMELINES_DECORATOR))
+                		return labelRenderer;
+                	else return intRenderer;
                 }
         };
  
@@ -155,6 +179,9 @@ public class POTSBLITZDemo {
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(PATTERNTIMELINES, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
+        layout.add(new DecoratorLayout(PATTERNTIMELINES_DECORATOR));
+        layout.add(new ColorAction(PATTERNTIMELINES_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
+                .color(Color.BLACK)));
         layout.add(new DataColorAction(PATTERNTHEMERIVER, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
 
@@ -233,4 +260,33 @@ public class POTSBLITZDemo {
 		
         createVisualization(patterns,events,flatPatterns,countedPatterns);
     }
+    
+    /**
+     * Set positions of {@link DecoratorItem}s. These items decorate their
+     * respective items. The layout simply gets the bounds of the decorated item
+     * and assigns the decorator's coordinates to the right of the center of
+     * those bounds. (adapted from prefuse.demos.TreeMap by jeffrey heer)
+     */
+    static class DecoratorLayout extends Layout {
+        public DecoratorLayout(String group) {
+            super(group);
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public void run(double frac) {
+            //System.out.println("###########");
+            Iterator iter = super.m_vis.items(super.m_group);
+            while (iter.hasNext()) {
+                DecoratorItem item = (DecoratorItem) iter.next();
+                VisualItem node = item.getDecoratedItem();
+                Rectangle2D bounds = node.getBounds();
+                setX(item, null, bounds.getX());
+                setY(item, null, bounds.getCenterY());
+                item.setVisible(item.getDecoratedItem().isVisible());
+                //System.out.println("#" + item.getString("label"));
+            }
+        }
+    } // end of inner class DecoratorLayout
 }
+
