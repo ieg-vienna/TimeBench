@@ -65,11 +65,11 @@ public class GreedyDistributionLayout extends Layout {
             		 takeLane = lastOnLane.size()-1;
             	 }
             	 if (takeLane % 2 == 0) {
-                	 item.setY(ybase + (takeLane-1) * 10);          		 
+                	 item.setY(ybase + (takeLane-1) * 8);          		 
             	 } else {
-                	 item.setY(ybase - takeLane * 10);
+                	 item.setY(ybase - takeLane * 8);
             	 }
-            	 item.setSizeY(6);
+            	 item.setSize(1.2);
              }
          }
          if (lastOnLane.size() < maxLanes)

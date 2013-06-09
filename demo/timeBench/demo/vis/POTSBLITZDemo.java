@@ -34,6 +34,7 @@ import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLayout;
 import prefuse.action.layout.Layout;
+import prefuse.controls.ToolTipControl;
 import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.Tuple;
@@ -81,6 +82,7 @@ public class POTSBLITZDemo {
     private static final String PATTERNTHEMERIVER = "patternthemeriver";
     
     private static final String PATTERNTIMELINES_DECORATOR = "patterntimelines_decorator";
+    private static final String PATTERNTHEMERIVER_DECORATOR = "patternthemeriver_decorator";
     
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     
@@ -134,7 +136,7 @@ public class POTSBLITZDemo {
                 		return arcRenderer;
                 	else if(item.isInGroup(PATTERNTHEMERIVER))
                 		return polygonRenderer;
-                	else if(item.isInGroup(PATTERNTIMELINES_DECORATOR))
+                	else if(item.isInGroup(PATTERNTIMELINES_DECORATOR) || item.isInGroup(PATTERNTHEMERIVER_DECORATOR))
                 		return labelRenderer;
                 	else return intRenderer;
                 }
@@ -159,7 +161,7 @@ public class POTSBLITZDemo {
         layout.add(time_axis);
         layout.add(time_axis2);
         
-        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,3);
+        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,6);
         layout.add(patternOverlapCheckLayout);
         
         TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
@@ -170,7 +172,10 @@ public class POTSBLITZDemo {
         
         ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,classes,timeScale);
         layout.add(themeRiver);
-                      
+
+        layout.add(new DecoratorLayout(PATTERNTIMELINES_DECORATOR));
+        //layout.add(new DecoratorLayout2(PATTERNTHEMERIVER_DECORATOR));
+        
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
@@ -179,11 +184,14 @@ public class POTSBLITZDemo {
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(PATTERNTIMELINES, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
-        layout.add(new DecoratorLayout(PATTERNTIMELINES_DECORATOR));
         layout.add(new ColorAction(PATTERNTIMELINES_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
+        /*layout.add(new ColorAction(PATTERNTHEMERIVER_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
+                .color(Color.BLACK)));*/
         layout.add(new DataColorAction(PATTERNTHEMERIVER, "class", prefuse.Constants.ORDINAL,
-        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
+        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));       
+        layout.add(new ColorAction(PATTERNTHEMERIVER, VisualItem.STROKECOLOR,ColorLib.color(Color.WHITE)));
+
 
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
@@ -202,6 +210,7 @@ public class POTSBLITZDemo {
 
         //display.addControlListener(new ToolTipControl("caption"));
         display.addControlListener(new BranchHighlightControl());
+        display.addControlListener(new ToolTipControl("label"));
               
 //        vis.run("layout");
        
@@ -261,12 +270,6 @@ public class POTSBLITZDemo {
         createVisualization(patterns,events,flatPatterns,countedPatterns);
     }
     
-    /**
-     * Set positions of {@link DecoratorItem}s. These items decorate their
-     * respective items. The layout simply gets the bounds of the decorated item
-     * and assigns the decorator's coordinates to the right of the center of
-     * those bounds. (adapted from prefuse.demos.TreeMap by jeffrey heer)
-     */
     static class DecoratorLayout extends Layout {
         public DecoratorLayout(String group) {
             super(group);
@@ -275,18 +278,41 @@ public class POTSBLITZDemo {
         @SuppressWarnings("rawtypes")
         @Override
         public void run(double frac) {
-            //System.out.println("###########");
             Iterator iter = super.m_vis.items(super.m_group);
             while (iter.hasNext()) {
                 DecoratorItem item = (DecoratorItem) iter.next();
                 VisualItem node = item.getDecoratedItem();
                 Rectangle2D bounds = node.getBounds();
-                setX(item, null, bounds.getX());
+                setX(item, null, bounds.getCenterX());
                 setY(item, null, bounds.getCenterY());
-                item.setVisible(item.getDecoratedItem().isVisible());
-                //System.out.println("#" + item.getString("label"));
+                item.setVisible(node.isVisible());
             }
         }
-    } // end of inner class DecoratorLayout
+    }
+    
+    static class DecoratorLayout2 extends Layout {
+        public DecoratorLayout2(String group) {
+            super(group);
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public void run(double frac) {
+            Iterator iter = super.m_vis.items(super.m_group);
+            while (iter.hasNext()) {
+                DecoratorItem item = (DecoratorItem) iter.next();
+                VisualItem node = item.getDecoratedItem();
+                Rectangle2D bounds = node.getBounds();     
+                double x = node.getDouble("labelX");
+                double y = node.getDouble("labelY");
+                if (x != 0 && y != 0 && m_vis.getDisplay(0).contains((int)x,(int)y)) {
+                	setX(item, null, x);
+                	setY(item, null, y);
+                    item.setVisible(node.isVisible());
+                } else
+                    item.setVisible(false);
+            }
+        }
+    }
 }
 

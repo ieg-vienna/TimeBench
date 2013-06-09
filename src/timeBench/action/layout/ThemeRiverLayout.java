@@ -61,8 +61,11 @@ public class ThemeRiverLayout extends Layout {
         	workingBaseDataset = new Table(0,0);
         	workingBaseDataset.addColumn("label", String.class);
         	workingBaseDataset.addColumn("class", int.class);
+        	workingBaseDataset.addColumn("labelX", double.class);
+        	workingBaseDataset.addColumn("labelY", double.class);
         	workingBaseDataset.addColumn(PolygonRenderer.POLYGON, float[].class);
         	m_vis.addTable(m_group,workingBaseDataset);
+            m_vis.addDecorators(m_group+"_decorator", m_group);
         } else {
         	workingBaseDataset = (Table) m_vis.getSourceData(m_group);
         }
@@ -97,7 +100,7 @@ public class ThemeRiverLayout extends Layout {
             	} else {
             		lower -= val;
             		buffer[j][i*2+1] = lower;
-            	}            	
+            	}
         	}
         	//System.out.println();
         	maxUpper = Math.max(maxUpper,upper);
@@ -110,6 +113,9 @@ public class ThemeRiverLayout extends Layout {
         //float yBase = (float)m_vis.getDisplay(0).getBounds().getY();
         float factor = height/max;
         for(int j=0; j<buffer.length; j++) {
+            float maxDiff = 0;
+            float xAtMaxDiff = 0;
+            float yAtMaxDiff = 0;
         	for(int k=0; k<buffer[j].length/2; k+=2) {
        			buffer[j][k+1] -= maxLower;
        			buffer[j][k+1] *= factor;     		
@@ -120,8 +126,15 @@ public class ThemeRiverLayout extends Layout {
        			} else {
        				buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1] = -maxLower*factor/*+yBase*/;
        			}
+            	if (Math.abs(buffer[j][k+1]-buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1]) > maxDiff) {
+            		maxDiff = Math.abs(buffer[j][k+1]-buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1]);
+            		xAtMaxDiff = buffer[j][k];
+            		yAtMaxDiff = buffer[j][k+1] - (buffer[j][k+1] - buffer[j][sourceDataset.getTemporalObjectCount()*4-k-1])/2f;
+            	}
         	}
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);
+        	workingBaseDataset.set(j, "labelX" , xAtMaxDiff);
+        	workingBaseDataset.set(j, "labelY" , yAtMaxDiff);
         }
     }
     
