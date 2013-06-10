@@ -420,11 +420,12 @@ public abstract class TemporalElement extends ParentChildNode implements Compara
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[id=" + getId() + ", inf="
+        /*return getClass().getSimpleName() + "[id=" + getId() + ", inf="
                 + super.getLong(TemporalElement.INF) + ", sup="
                 + super.getLong(TemporalElement.SUP) + ", granularityId="
                 + getGranularityId() + ", granularityContextId="
-                + getGranularityContextId() + ", kind=" + getKind() + "]";
+                + getGranularityContextId() + ", kind=" + getKind() + "]";*/
+    	return ""+getId();
     }
 
     @Override
