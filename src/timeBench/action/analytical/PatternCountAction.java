@@ -40,6 +40,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
     
 	TemporalDataset sourceDataset;
 	TemporalDataset workingDataset;
+	Hashtable<String,Integer> patterns = new Hashtable<String, Integer>();
 
 	public PatternCountAction(TemporalDataset sourceDataset) {
 		this.sourceDataset = sourceDataset;
@@ -54,7 +55,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 		try {
 			workingDataset = new TemporalDataset();
 			
-			Hashtable<String,Long> patterns = new Hashtable<String, Long>();
+			patterns =  new Hashtable<String, Integer>();
 			Iterator temporalObjectIterator = sourceDataset.nodes();
 			while(temporalObjectIterator.hasNext()) {				
 				
@@ -62,7 +63,9 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 				String pattern = to.getString("label");			
 				if (workingDataset.getDataColumnSchema().getColumnIndex(pattern) == -1) {
 					workingDataset.addDataColumn(pattern, int.class, 0);
-				}
+					patterns.put(pattern, 1);
+				} else
+					patterns.put(pattern,patterns.get(pattern)+1);
 				long inf = to.getTemporalElement().asGeneric().getInf();
 				
 				TemporalObject lastTO = getLastTemporalObjectBefore(inf);
@@ -140,5 +143,9 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 
 	public TemporalDataset getTemporalDataset() {
 		return workingDataset;
+	}
+	
+	public Hashtable<String,Integer> getPatterns() {
+		return patterns;
 	}
 }

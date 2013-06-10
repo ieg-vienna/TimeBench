@@ -7,6 +7,8 @@
 package timeBench.demo.vis;
 
 import ieg.prefuse.data.DataHelper;
+import ieg.prefuse.data.ParentChildGraph;
+import ieg.prefuse.data.ParentChildNode;
 import ieg.prefuse.renderer.IntervalBarRenderer;
 
 import java.awt.BasicStroke;
@@ -37,12 +39,15 @@ import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLayout;
 import prefuse.action.layout.Layout;
 import prefuse.controls.ToolTipControl;
+import prefuse.data.Graph;
+import prefuse.data.Node;
 import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.Predicate;
 import prefuse.data.io.DataIOException;
+import prefuse.data.tuple.TableTuple;
 import prefuse.data.tuple.TupleSet;
 import prefuse.render.LabelRenderer;
 import prefuse.render.PolygonRenderer;
@@ -54,6 +59,7 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import render.ArcRenderer;
 import timeBench.action.analytical.PatternCountAction;
+import timeBench.action.analytical.PatternInstanceCountAction;
 import timeBench.action.analytical.TreeDebundlingAction;
 import timeBench.action.layout.GreedyDistributionLayout;
 import timeBench.action.layout.IntervalAxisLayout;
@@ -75,7 +81,7 @@ import timeBench.util.DebugHelper;
 import timeBench.util.DemoEnvironmentFactory;
 import visual.sort.SizeItemSorter;
 
-public class POTSBLITZDemo {
+public class PatternCountDemo {
 
     private static final String MAXX_FIELD = VisualItem.X2;
     private static final String ARCDIAGRAM_PATTERNS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
@@ -174,9 +180,6 @@ public class POTSBLITZDemo {
         
         ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,classes,timeScale);
         layout.add(themeRiver);
-
-        layout.add(new DecoratorLayout(PATTERNTIMELINES_DECORATOR));
-        //layout.add(new DecoratorLayout2(PATTERNTHEMERIVER_DECORATOR));
         
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
@@ -231,10 +234,11 @@ public class POTSBLITZDemo {
      */
     public static void main(String[] args) throws TemporalDataException {
     	Locale.setDefault(Locale.US);
+
 		TemporalDataset events = null;
 		TemporalDataset patterns = null;
-		TemporalDataset flatPatterns = null;
-		TemporalDataset countedPatterns = null;
+		ParentChildGraph countedPatterns = null;
+		
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
 			events = gmltdr.readData("data/Dodgers-events.graphml.gz");
@@ -243,7 +247,7 @@ public class POTSBLITZDemo {
 			
 			patterns = gmltdr.readData("data/Dodgers-patterns.graphml.gz");
 						
-			//DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);						
+			DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);						
 		} catch (DataIOException e) {
 			e.printStackTrace();
 		}			
@@ -251,78 +255,24 @@ public class POTSBLITZDemo {
         //DataHelper.printMetadata(System.out, events.getNodeTable());
 		//DataHelper.printMetadata(System.out, patterns.getNodeTable());
 		
-		TreeDebundlingAction action = new TreeDebundlingAction(patterns);
+		PatternInstanceCountAction action = new PatternInstanceCountAction(patterns);
 		action.run(0);
-		flatPatterns = action.getTemporalDataset();
-		classes = action.getClasses();
 
-		System.out.println(flatPatterns.getNodeCount());
-		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label","class",TemporalObject.ID);
+		countedPatterns = action.getResult();
 		
-		PatternCountAction action2 = new PatternCountAction(flatPatterns);
-		action2.run(0);
-		countedPatterns = action2.getTemporalDataset();
-		
-		Hashtable<String,Integer> patternCount = action2.getPatterns();
-		System.out.println(patternCount.size());
-		Enumeration<String> e = patternCount.keys();
-		while(e.hasMoreElements()) {
-			String pattern = e.nextElement();
-			System.out.println(pattern+": "+patternCount.get(pattern));
+		Iterator nodes = countedPatterns.nodes();
+		while(nodes.hasNext()) {
+			ParentChildNode node = (ParentChildNode)nodes.next();
+			System.out.println("N: "+node.getRow()+" - P: "+node.getParentCount()+" - C: "+node.getChildCount());
 		}
-
-		//System.out.println(flatPatterns.getNodeCount());
-		//DataHelper.printTable(System.out,countedPatterns.getTemporalObjectTable());
-		//try {
-			//DataHelper.printTable(new PrintStream("test.txt"),countedPatterns.getTemporalObjectTable());
-		//} catch (FileNotFoundException e) {e.printStackTrace();}
 		
-        createVisualization(patterns,events,flatPatterns,countedPatterns);
+        //createVisualization(patterns,events,flatPatterns,countedPatterns);
     }
-    
-    static class DecoratorLayout extends Layout {
-        public DecoratorLayout(String group) {
-            super(group);
-        }
 
-        @SuppressWarnings("rawtypes")
-        @Override
-        public void run(double frac) {
-            Iterator iter = super.m_vis.items(super.m_group);
-            while (iter.hasNext()) {
-                DecoratorItem item = (DecoratorItem) iter.next();
-                VisualItem node = item.getDecoratedItem();
-                Rectangle2D bounds = node.getBounds();
-                setX(item, null, bounds.getCenterX());
-                setY(item, null, bounds.getCenterY());
-                item.setVisible(node.isVisible());
-            }
-        }
-    }
-    
-    static class DecoratorLayout2 extends Layout {
-        public DecoratorLayout2(String group) {
-            super(group);
-        }
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        public void run(double frac) {
-            Iterator iter = super.m_vis.items(super.m_group);
-            while (iter.hasNext()) {
-                DecoratorItem item = (DecoratorItem) iter.next();
-                VisualItem node = item.getDecoratedItem();
-                Rectangle2D bounds = node.getBounds();     
-                double x = node.getDouble("labelX");
-                double y = node.getDouble("labelY");
-                if (x != 0 && y != 0 && m_vis.getDisplay(0).contains((int)x,(int)y)) {
-                	setX(item, null, x);
-                	setY(item, null, y);
-                    item.setVisible(node.isVisible());
-                } else
-                    item.setVisible(false);
-            }
-        }
-    }
+	private static void printNode(Node node) {
+		//System.out.println(node.get("label")+" - "+node.get("count"));
+		//node.inEdges()
+		
+	}    
 }
 
