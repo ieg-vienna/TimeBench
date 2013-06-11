@@ -12,7 +12,6 @@ import prefuse.data.Graph;
 import prefuse.data.Schema;
 import prefuse.data.Table;
 import prefuse.data.expression.Predicate;
-import prefuse.data.tuple.TableEdge;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
 import timeBench.calendar.Granule;
@@ -92,7 +91,8 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      *            data structure to store temporal elements.
      */
     public TemporalDataset(TemporalElementStore temporalElements) {
-        super(new TemporalTable());
+        // nodes of temporal object graph --> TemporalObject
+        super(new TemporalTable(), TemporalObject.class);
 
         // add temporal objects columns (primary and foreign key)
         TemporalTable temporalObjects = (TemporalTable) super.getNodeTable();
@@ -147,7 +147,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
      * @throws TemporalDataException
      */
     public TemporalDataset(Table temporalObjects, Table temporalObjectsEdges, TemporalElementStore temporalElements) throws TemporalDataException {
-        super(temporalObjects, temporalObjectsEdges);
+        super(temporalObjects, temporalObjectsEdges, TemporalObject.class);
         
         // TODO check temporal objects columns (primary and foreign key) -- exception in constructor?
         // WARNING: The methods getDataColumnIndices() assumes that these
@@ -175,10 +175,6 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         this.indexObjects = temporalObjects.index(TemporalObject.ID);
         this.indexObjectsByElements = temporalObjects
                 .index(TemporalObject.TEMPORAL_ELEMENT_ID);
-
-        // assign to temporal object graph
-        // nodes of temporal object graph --> TemporalObject
-        super.initTupleManagers(TemporalObject.class, TableEdge.class);
     }
 
     /**

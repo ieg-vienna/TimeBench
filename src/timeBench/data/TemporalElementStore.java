@@ -74,7 +74,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
      */
     public TemporalElementStore() {
         // temporal objects are by default in an directed graph
-        super();
+        super(new Table(), false);
 
         // define temporal element columns for nodes of the temporal e. graph
         this.getNodeTable().addColumns(this.getTemporalElementSchema());
@@ -94,7 +94,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
      * @throws TemporalDataException
      */
     public TemporalElementStore(Table temporalElements, Table temporalElementEdges) throws TemporalDataException {
-        super(temporalElements, temporalElementEdges);
+        super(temporalElements, temporalElementEdges, false);
         
         // TODO check temporal element schema 
 
@@ -123,14 +123,10 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
 
         // default manager for edges in graphs
         TupleManager tempElementEdgeManager = new TupleManager(
-                this.getEdgeTable(), this,
-                TableEdge.class);
+                this.getEdgeTable(), this, TableEdge.class);
 
         // assign to temporal element graph
-        this.setTupleManagers(temporalGenerics,
-                tempElementEdgeManager);
-        this.getNodeTable().setTupleManager(temporalGenerics);
-        this.getEdgeTable().setTupleManager(tempElementEdgeManager);
+        super.initTupleManagers(temporalGenerics, tempElementEdgeManager);
     }
 
     @Deprecated

@@ -1,7 +1,6 @@
 package timeBench.action.analytical;
 
 import ieg.prefuse.data.ParentChildGraph;
-import ieg.prefuse.data.ParentChildNode;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -12,10 +11,7 @@ import javax.swing.plaf.multi.MultiInternalFrameUI;
 import org.apache.log4j.Logger;
 
 import prefuse.data.Edge;
-import prefuse.data.Graph;
 import prefuse.data.Node;
-import prefuse.data.tuple.TableTuple;
-import prefuse.visual.tuple.TableEdgeItem;
 
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
@@ -57,8 +53,6 @@ public class PatternInstanceCountAction extends prefuse.action.Action {
 	@Override
 	public void run(double frac) {
 		workingDataset = new ParentChildGraph();
-        workingDataset.initTupleManagers(ParentChildNode.class,
-                TableEdgeItem.class);
 		workingDataset.getNodes().addColumn("label", String.class, "");
 		workingDataset.getNodes().addColumn("class", int.class, -1);
 		workingDataset.getNodes().addColumn("count", int.class, 0);		
