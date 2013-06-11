@@ -7,6 +7,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import javax.swing.plaf.multi.MultiInternalFrameUI;
+
 import org.apache.log4j.Logger;
 
 import prefuse.data.Edge;
@@ -60,27 +62,30 @@ public class PatternInstanceCountAction extends prefuse.action.Action {
 		workingDataset.getNodes().addColumn("label", String.class, "");
 		workingDataset.getNodes().addColumn("class", int.class, -1);
 		workingDataset.getNodes().addColumn("count", int.class, 0);		
+		workingDataset.getNodes().addColumn("depth", int.class, 0);		
 		
-		workingDataset.getEdges().addColumn("count", int.class);
+		workingDataset.getEdges().addColumn("label", String.class, "");
+		workingDataset.getEdges().addColumn("class", int.class, -1);
 		
 		Hashtable<Integer,Node> rootCount = new Hashtable<Integer, Node>();
 		for(TemporalObject iO : sourceDataset.roots()) {
 			int rootClass = iO.getInt("class");
-			if (rootCount.contains(rootClass)) {
-				doCount(iO,rootCount.get(rootClass));
+			if (rootCount.containsKey(rootClass)) {
+				doCount(iO,rootCount.get(rootClass),0);
 			} else {
-				Node node = doCount(iO,null);
+				Node node = doCount(iO,null,0);
 				rootCount.put(rootClass,node);
 			}
 		}		
 	}
 
-	private Node doCount(Node sourceNode,Node newNode) {
+	private Node doCount(Node sourceNode,Node newNode,int depth) {
 		
 		if(newNode == null) {
 			newNode = workingDataset.addNode();
 			newNode.set("label", sourceNode.get("label"));
-			newNode.set("class", sourceNode.get("class"));
+			newNode.set("class", sourceNode.get("class"));		
+			newNode.set("depth", depth);		
 		}
 		
 		Hashtable<Integer,Node> count = new Hashtable<Integer,Node>();
@@ -93,15 +98,14 @@ public class PatternInstanceCountAction extends prefuse.action.Action {
 			int combined = sourceClassValue<<16+classValue;
 			Node newSource = null;
 			if(count.containsKey(combined)) {
-				newSource = doCount(sourceNodeChild,count.get(combined));
-				//System.out.println("existing: "+count.get(combined).getRow());
+				newSource = doCount(sourceNodeChild,count.get(combined),depth+1);
 			}
 			else {
-				newSource = doCount(sourceNodeChild,null);
+				newSource = doCount(sourceNodeChild,null,depth+1);
 				count.put(combined, newSource);
-				workingDataset.addEdge(newSource, newNode);
-				//System.out.println("from "+newSource.getRow()+" to "+newNode.getRow());
-				int x=0;x++;
+				Edge newEdge = workingDataset.addEdge(newSource, newNode);
+				newEdge.set("class",edge.get(MultiPredicatePatternDiscovery.predicateColumn));
+				newSource.set("label","p"+newEdge.get("class")+newSource.get("label"));
 			}
 		}
 		

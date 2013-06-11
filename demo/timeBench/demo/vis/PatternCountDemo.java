@@ -6,15 +6,21 @@
 
 package timeBench.demo.vis;
 
+import ieg.prefuse.action.layout.TreeRangeAxisLayout;
 import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.data.ParentChildGraph;
 import ieg.prefuse.data.ParentChildNode;
 import ieg.prefuse.renderer.IntervalBarRenderer;
+import ieg.prefuse.renderer.RectangleRenderer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,6 +33,8 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -39,6 +47,7 @@ import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLayout;
 import prefuse.action.layout.Layout;
 import prefuse.controls.ToolTipControl;
+import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
@@ -53,7 +62,10 @@ import prefuse.render.LabelRenderer;
 import prefuse.render.PolygonRenderer;
 import prefuse.render.Renderer;
 import prefuse.render.RendererFactory;
+import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
+import prefuse.util.DataLib;
+import prefuse.util.PrefuseLib;
 import prefuse.visual.DecoratorItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
@@ -76,6 +88,7 @@ import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.data.io.GraphMLTemporalDatasetReader;
+import timeBench.demo.vis.POTSBLITZDemo.DecoratorLayout;
 import timeBench.ui.TimeAxisDisplay;
 import timeBench.util.DebugHelper;
 import timeBench.util.DemoEnvironmentFactory;
@@ -84,19 +97,13 @@ import visual.sort.SizeItemSorter;
 public class PatternCountDemo {
 
     private static final String MAXX_FIELD = VisualItem.X2;
-    private static final String ARCDIAGRAM_PATTERNS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
-    private static final String ARCDIAGRAM_EVENTS = "arcdiagram_events"; // Don't know if . is reserved in prefuse
-    private static final String PATTERNTIMELINES = "patterntimelines";
-    private static final String PATTERNTHEMERIVER = "patternthemeriver";
-    
-    private static final String PATTERNTIMELINES_DECORATOR = "patterntimelines_decorator";
-    private static final String PATTERNTHEMERIVER_DECORATOR = "patternthemeriver_decorator";
+    private static final String GRAPH = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     
     static private ArrayList<String> classes;
 
-    private static void createVisualization(TemporalDataset patterns, TemporalDataset events,TemporalDataset flatPatterns, TemporalDataset countedPatterns) {
+    private static void createVisualization(ParentChildGraph countedPatterns) {
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         display.setSize(1200, 600);
@@ -104,49 +111,29 @@ public class PatternCountDemo {
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data
        
-        VisualGraph vg = vis.addGraph(ARCDIAGRAM_PATTERNS, patterns);
-        VisualGraph vge = vis.addGraph(ARCDIAGRAM_EVENTS, events);
-        VisualGraph vgf = vis.addGraph(PATTERNTIMELINES,flatPatterns);
-        
-        vis.addDecorators(PATTERNTIMELINES_DECORATOR, PATTERNTIMELINES+".nodes");
+        VisualGraph vg = vis.addGraph(GRAPH, countedPatterns);
         
         vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
-        vge.getNodeTable().addColumn(MAXX_FIELD, int.class);
-        vgf.getNodeTable().addColumn(MAXX_FIELD, int.class);
+        Iterator i = vg.getNodes().tuples();
+        while (i.hasNext())
+        	PrefuseLib.setSizeY(((VisualItem)i.next()),null,
+        			vis.getDisplay(0).getBounds().height/DataLib.max(countedPatterns.getNodes(), "depth").getDouble("depth")-10);
 
-        long border = (events.getSup() - events.getInf()) / 20;
-        final AdvancedTimeScale timeScale = new AdvancedTimeScale(
-                events.getInf() - border, events.getSup() + border,
-                display.getWidth() - 1);
-        final AdvancedTimeScale overviewTimeScale = new AdvancedTimeScale(timeScale);
-        RangeAdapter rangeAdapter = new RangeAdapter(overviewTimeScale,
-                timeScale);
+        vis.addDecorators(GRAPH+"_decorator", GRAPH+".nodes");
 
-        timeScale.setAdjustDateRangeOnResize(true);
-        timeScale.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
-            }
-        });
-
+        
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
                 
         // intRenderer.setAxis(Constants.Y_AXIS);
         RendererFactory rf = new RendererFactory() {
-        	ArcRenderer arcRenderer = new ArcRenderer();
-        	PolygonRenderer polygonRenderer = new PolygonRenderer(Constants.POLY_TYPE_STACK);
-        	IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
+        	ShapeRenderer renderer = new ShapeRenderer(1);
         	LabelRenderer labelRenderer = new LabelRenderer("label");
 
                 public Renderer getRenderer(VisualItem item) {
-                	if(item.isInGroup(ARCDIAGRAM_PATTERNS))
-                		return arcRenderer;
-                	else if(item.isInGroup(PATTERNTHEMERIVER))
-                		return polygonRenderer;
-                	else if(item.isInGroup(PATTERNTIMELINES_DECORATOR) || item.isInGroup(PATTERNTHEMERIVER_DECORATOR))
-                		return labelRenderer;
-                	else return intRenderer;
+                	if(item.isInGroup(GRAPH))
+                		return renderer;
+                	else return labelRenderer;
                 }
         };
  
@@ -159,44 +146,18 @@ public class PatternCountDemo {
 
         ActionList layout = new ActionList();
         
-        AxisLayout y_axis = new AxisLayout(ARCDIAGRAM_EVENTS, VisualItem.VISIBLE, Constants.Y_AXIS);
+        AxisLayout y_axis = new AxisLayout(GRAPH+".nodes", "depth", Constants.Y_AXIS);        
         layout.add(y_axis);
-        AxisLayout y_axis2 = new AxisLayout(ARCDIAGRAM_PATTERNS+".nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
-        layout.add(y_axis2);
-        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD, Constants.X_AXIS,
-        		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
-        TimeAxisLayout time_axis2 = new IntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD, timeScale);                       
-        layout.add(time_axis);
-        layout.add(time_axis2);
+        AxisLayout x_axis = new TreeRangeAxisLayout(GRAPH, "count", Constants.X_AXIS);
+        layout.add(x_axis);
         
-        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,6);
-        layout.add(patternOverlapCheckLayout);
+        layout.add(new DecoratorLayout(GRAPH+"_decorator"));
         
-        TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
-        		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
-        GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 14);
-        layout.add(time_axis3);
-        layout.add(y_axis3);
-        
-        ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,classes,timeScale);
-        layout.add(themeRiver);
-        
-        layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
-        		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
-        layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
-        		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
-        layout.add(new DataColorAction(PATTERNTIMELINES, "class", prefuse.Constants.ORDINAL,
-        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
-        layout.add(new ColorAction(PATTERNTIMELINES_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
+        layout.add(new DataColorAction(GRAPH+".nodes", "label", prefuse.Constants.NOMINAL,
+        		VisualItem.FILLCOLOR, DemoEnvironmentFactory.set3Qualitative));
+        layout.add(new ColorAction(GRAPH+".nodes", VisualItem.STROKECOLOR, ColorLib.color(Color.white)));
+        layout.add(new ColorAction(GRAPH+"_decorator", VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
-        /*layout.add(new ColorAction(PATTERNTHEMERIVER_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
-                .color(Color.BLACK)));*/
-        layout.add(new DataColorAction(PATTERNTHEMERIVER, "class", prefuse.Constants.ORDINAL,
-        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));       
-        layout.add(new ColorAction(PATTERNTHEMERIVER, VisualItem.STROKECOLOR,ColorLib.color(Color.WHITE)));
-
 
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
@@ -212,22 +173,56 @@ public class PatternCountDemo {
         display.setBorder(BorderFactory.createEmptyBorder(7, 0, 7, 0));
         display.setItemSorter(new SizeItemSorter());
 
-
+		// react on window resize
+		display.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
+			}
+		});
+        
         //display.addControlListener(new ToolTipControl("caption"));
-        display.addControlListener(new BranchHighlightControl());
-        display.addControlListener(new ToolTipControl("label"));
+        //display.addControlListener(new BranchHighlightControl());
+        //display.addControlListener(new ToolTipControl("label"));
               
 //        vis.run("layout");
        
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
 
-        DemoEnvironmentFactory env = new DemoEnvironmentFactory("arc diagram");
-        env.setPaintWeekends(false);
-        System.out.println("--------");
-        env.show(display, rangeAdapter,false);
+		vis.run(DemoEnvironmentFactory.ACTION_INIT);
+        
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				createAndShowGUI(display);
+				}
+			});	
     }
 
+	protected static void createAndShowGUI(JComponent display) {
+		JFrame frame = new JFrame();
+
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle("GROOVE");
+
+		frame.getContentPane().add(display);
+		
+		frame.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosed(WindowEvent arg0) {
+                System.out.println("closed -- is never called");
+            }
+
+            @Override
+            public void windowClosing(WindowEvent arg0) {
+                System.out.println("closing");
+            }
+		});
+
+		frame.pack();
+		frame.setVisible(true);
+	}
+    
     /**
      * @param args
      * @throws TemporalDataException
@@ -263,16 +258,44 @@ public class PatternCountDemo {
 		Iterator nodes = countedPatterns.nodes();
 		while(nodes.hasNext()) {
 			ParentChildNode node = (ParentChildNode)nodes.next();
-			System.out.println("N: "+node.getRow()+" - P: "+node.getParentCount()+" - C: "+node.getChildCount());
+			printNode(node);
+			//System.out.println("N: "+node.getRow()+" - P: "+node.getParentCount()+" - C: "+node.getChildCount());
 		}
 		
-        //createVisualization(patterns,events,flatPatterns,countedPatterns);
+        createVisualization(countedPatterns);
     }
 
-	private static void printNode(Node node) {
-		//System.out.println(node.get("label")+" - "+node.get("count"));
+	private static void printNode(ParentChildNode node) {
+		/*Iterator i = node.parentEdges();
+		if(i.hasNext())
+			System.out.print("p"+((Edge)i.next()).get("class"));*/
+		System.out.print(node.get("label")+" - ");
+		System.out.print(node.get("count")+" - ");
+		System.out.print(node.get("depth")+" - ");
+		System.out.println(node.getChildCount());
 		//node.inEdges()
 		
-	}    
+	}
+	
+    static class DecoratorLayout extends Layout {
+        public DecoratorLayout(String group) {
+            super(group);
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public void run(double frac) {
+            Iterator iter = super.m_vis.items(super.m_group);
+            while (iter.hasNext()) {
+                DecoratorItem item = (DecoratorItem) iter.next();
+                VisualItem node = item.getDecoratedItem();
+                Rectangle2D bounds = node.getBounds();
+                setX(item, null, bounds.getCenterX());
+                setY(item, null, bounds.getCenterY());
+                item.setSize(0.8);
+                item.setVisible(node.isVisible());
+            }
+        }
+    }
 }
 
