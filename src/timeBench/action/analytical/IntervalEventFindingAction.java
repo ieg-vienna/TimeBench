@@ -38,6 +38,8 @@ public class IntervalEventFindingAction extends Action implements TemporalDatase
 	TemporalDataset eventDataset;
 	int coherenceSettings;
 	
+	private boolean doMutiny = false;
+	
 	public static int ONLY_COHERENT 		  = 0;
 	public static int SPACING_ALLOWED		  = 1;
 	public static int OVERLAP_ALLOWED 		  = 2;
@@ -100,8 +102,13 @@ public class IntervalEventFindingAction extends Action implements TemporalDatase
 					newList.add(iSource);
 					// if line satisfies an event
 					if (satisfies(newList, iTemplate)) {
+						if (doMutiny) {
+							closedEvents.add(j);
+							closedObjectLists.add(newList);
+						} else {
 						openEvents.add(j);
 						openObjectLists.add(newList);
+						}
 					}
 				}
 			}
@@ -196,5 +203,19 @@ public class IntervalEventFindingAction extends Action implements TemporalDatase
 	@Override
 	public TemporalDataset getTemporalDataset() {
 		return eventDataset;
+	}
+	
+	/**
+	 * @return the doMutiny
+	 */
+	public boolean isDoMutiny() {
+		return doMutiny;
+	}
+
+	/**
+	 * @param doMutiny the doMutiny to set
+	 */
+	public void setDoMutiny(boolean doMutiny) {
+		this.doMutiny = doMutiny;
 	}
 }
