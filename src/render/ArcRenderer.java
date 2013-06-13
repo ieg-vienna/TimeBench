@@ -19,6 +19,10 @@ import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
+/**
+ * TODO convert from VisualItem.X2 to VisualItem.SIZE
+ * @author Lammarsch
+ */
 public class ArcRenderer implements prefuse.render.Renderer {
 	/**
 	 * Draws arcs like for ArcDiagrams

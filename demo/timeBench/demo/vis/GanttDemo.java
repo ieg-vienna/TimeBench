@@ -18,6 +18,7 @@ import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.SizeAction;
 import prefuse.action.layout.AxisLayout;
 import prefuse.action.layout.Layout;
 import prefuse.controls.ToolTipControl;
@@ -33,11 +34,11 @@ import prefuse.util.DataLib;
 import prefuse.util.ui.UILib;
 import prefuse.visual.DecoratorItem;
 import prefuse.visual.EdgeItem;
-import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.TimeAxisLayout;
+import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.calendar.Calendar;
@@ -76,11 +77,6 @@ public class GanttDemo {
     private static final String COL_CAPTION = "caption";
 
     private static final String GROUP_CAPTIONS = "captions";
-
-    /**
-     * additional field to store x coordinate of supremum
-     */
-    private static final String MAXX_FIELD = VisualItem.X2;
 
     private static final String GROUP_DATA = "data";
 
@@ -132,8 +128,7 @@ public class GanttDemo {
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
-        VisualGraph vg = vis.addGraph(GROUP_DATA, tmpds);
-        vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
+        vis.addGraph(GROUP_DATA, tmpds);
         vis.addDecorators(GROUP_CAPTIONS, GROUP_DATA + ".nodes");
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
@@ -153,8 +148,7 @@ public class GanttDemo {
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
-        IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD,
-                12);
+        IntervalBarRenderer intRenderer = new IntervalBarRenderer(12);
         LabelRenderer labRenderer = new LabelRenderer(COL_CAPTION);
         labRenderer.setHorizontalAlignment(Constants.LEFT);
         Renderer edgeRenderer = new RectangularDependencyEdgeRenderer();
@@ -167,8 +161,8 @@ public class GanttDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        TimeAxisLayout time_axis = new IntervalAxisLayout(GROUP_DATA,
-                MAXX_FIELD, timeScale);
+        TimeAxisLayout time_axis = new IntervalAxisLayout(GROUP_DATA, timeScale);
+        time_axis.setPlacement(Placement.INF);
 
         // edges (=dependencies) do not have a caption
         AxisLayout y_axis = new InverseAxisLayout(GROUP_DATA + ".nodes",
@@ -189,6 +183,7 @@ public class GanttDemo {
         // prefuse.util.FontLib.getFont("Verdana", 11)));
         draw.add(new ColorAction(GROUP_CAPTIONS, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
+        draw.add(new SizeAction(GROUP_DATA, 1, Constants.Y_AXIS));
         draw.add(new ColorAction(GROUP_DATA + ".nodes", VisualItem.FILLCOLOR,
                 ColorLib.rgb(77, 175, 74))); // green from ColorBrewer Set 1
 //                ColorLib.rgb(141, 211, 199))); // green from ColorBrewer Set 3

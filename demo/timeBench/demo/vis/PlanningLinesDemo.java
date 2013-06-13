@@ -38,6 +38,7 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.ItemSorter;
+import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.IntervalAxisLayout2;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
@@ -193,9 +194,9 @@ public class PlanningLinesDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        TimeAxisLayout time_axis_left = new IntervalAxisLayout2(GROUP_DATA_LEFT,
+        TimeAxisLayout time_axis_left = new IntervalAxisLayout(GROUP_DATA_LEFT,
                 timeScale, new int[] {0});
-        TimeAxisLayout time_axis_right = new IntervalAxisLayout2(GROUP_DATA_RIGHT,
+        TimeAxisLayout time_axis_right = new IntervalAxisLayout(GROUP_DATA_RIGHT,
                 timeScale,new int[] {1});
         TimeAxisLayout time_axis_max = new MaxIntervalAxisLayout(GROUP_DATA_MAXDURATION,
                 timeScale,false);
@@ -308,7 +309,7 @@ public class PlanningLinesDemo {
         }
     } // end of inner class DecoratorLayout
 
-    static class MaxIntervalAxisLayout extends IntervalAxisLayout2 {
+    static class MaxIntervalAxisLayout extends IntervalAxisLayout {
 
     	private boolean isMin = false;
     	

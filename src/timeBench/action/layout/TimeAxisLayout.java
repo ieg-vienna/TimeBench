@@ -18,8 +18,8 @@ import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
 
 /**
- * Layout {@link prefuse.action.Action} that assigns positions along the x or y
- * Axis according to the {@link TemporalElement} linked to a {@link VisualItem}
+ * Layout {@link prefuse.action.Action} that assigns position along the x or y
+ * axis according to the {@link TemporalElement} linked to a {@link VisualItem}
  * created from a {@link TemporalDataset}.
  * 
  * The item's of the given group are layed out using the given {@link TimeScale}
@@ -41,9 +41,11 @@ public class TimeAxisLayout extends Layout {
 
     private int m_axis = Constants.X_AXIS;
 
-    private Placement placement = Placement.MIDDLE;
+    protected Placement placement = Placement.MIDDLE;
 
     protected Predicate m_filter = VisiblePredicate.TRUE;
+    
+    protected int[] childIndicesOnPathFromRoot = null;
 
     /**
      * Create a new TimeAxisLayout. Defaults to using the x-axis. A
@@ -149,6 +151,15 @@ public class TimeAxisLayout extends Layout {
             }
         }
     }
+    
+    protected TemporalElement getChildOnPath(TemporalElement el) {
+        if (childIndicesOnPathFromRoot != null) {
+            for (int i = 0; i < childIndicesOnPathFromRoot.length; i++)
+                el = (TemporalElement) el
+                        .getChild(childIndicesOnPathFromRoot[i]);
+        }
+        return el;
+    }
 
     // ------------------------------------------------------------------------
 
@@ -208,6 +219,14 @@ public class TimeAxisLayout extends Layout {
      */
     public void setFilter(Predicate filter) {
         m_filter = filter;
+    }
+
+    public int[] getChildIndicesOnPathFromRoot() {
+        return childIndicesOnPathFromRoot;
+    }
+
+    public void setChildIndicesOnPathFromRoot(int[] childIndicesOnPathFromRoot) {
+        this.childIndicesOnPathFromRoot = childIndicesOnPathFromRoot;
     }
 
     /**

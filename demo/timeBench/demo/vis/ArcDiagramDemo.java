@@ -1,7 +1,7 @@
 package timeBench.demo.vis;
 
 import ieg.prefuse.data.DataHelper;
-import ieg.prefuse.renderer.IntervalBarRenderer;
+import ieg.prefuse.renderer.OldIntervalBarRenderer;
 
 import java.util.Locale;
 
@@ -21,7 +21,7 @@ import prefuse.render.RendererFactory;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import render.ArcRenderer;
-import timeBench.action.layout.IntervalAxisLayout;
+import timeBench.action.layout.OldIntervalAxisLayout;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
@@ -78,7 +78,7 @@ public class ArcDiagramDemo {
         // intRenderer.setAxis(Constants.Y_AXIS);
         RendererFactory rf = new RendererFactory() {
         	ArcRenderer arcRenderer = new ArcRenderer();
-        	IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
+        	Renderer intRenderer = new OldIntervalBarRenderer(MAXX_FIELD);
 
                 public Renderer getRenderer(VisualItem item) {
                     return item.isInGroup("patterns") ? arcRenderer
@@ -99,13 +99,14 @@ public class ArcDiagramDemo {
         AxisLayout y_axis2 = new AxisLayout("patterns.nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis2);
         // layout.add(new TimeAxisLayout(DATA, timeScale));
-        TimeAxisLayout time_axis = new IntervalAxisLayout("patterns", MAXX_FIELD,
+        TimeAxisLayout time_axis = new OldIntervalAxisLayout("patterns", MAXX_FIELD,
                 timeScale);
-        TimeAxisLayout time_axis2 = new IntervalAxisLayout("events", MAXX_FIELD,
+        TimeAxisLayout time_axis2 = new OldIntervalAxisLayout("events", MAXX_FIELD,
                 timeScale);                       
         //axis.setAxis(Constants.Y_AXIS);
         layout.add(time_axis);
         layout.add(time_axis2);
+//        layout.add(new prefuse.action.assignment.SizeAction("events", 1, Constants.Y_AXIS));
         layout.add(new DataColorAction("events", "class", prefuse.Constants.NOMINAL,
         		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));

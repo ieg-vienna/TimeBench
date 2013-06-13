@@ -13,15 +13,17 @@ import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.SizeAction;
 import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ToolTipControl;
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.Renderer;
 import prefuse.util.ColorLib;
 import prefuse.util.ui.UILib;
-import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.TimeAxisLayout;
+import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.data.TemporalDataException;
@@ -37,11 +39,6 @@ import timeBench.ui.TimeAxisDisplay;
  * @author Rind
  */
 public class IntervalDemo {
-
-    /**
-     * additional field to store x coordinate of supremum
-     */
-    private static final String MAXX_FIELD = VisualItem.X2;
 
     private static final String GROUP_DATA = "data";
 
@@ -64,8 +61,7 @@ public class IntervalDemo {
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
-        VisualGraph vg = vis.addGraph(GROUP_DATA, tmpds);
-        vg.getNodeTable().addColumn(MAXX_FIELD, int.class);
+        vis.addGraph(GROUP_DATA, tmpds);
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -84,7 +80,8 @@ public class IntervalDemo {
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
-        IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
+//        Renderer intRenderer = new prefuse.render.ShapeRenderer(1);
+        Renderer intRenderer = new IntervalBarRenderer(1);
         // intRenderer.setAxis(Constants.Y_AXIS);
         DefaultRendererFactory rf = new DefaultRendererFactory(intRenderer);
         vis.setRendererFactory(rf);
@@ -92,8 +89,8 @@ public class IntervalDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        TimeAxisLayout time_axis = new IntervalAxisLayout(GROUP_DATA,
-                MAXX_FIELD, timeScale);
+        TimeAxisLayout time_axis = new IntervalAxisLayout(GROUP_DATA, timeScale);
+        time_axis.setPlacement(Placement.INF);
 
         AxisLayout y_axis = new AxisLayout(GROUP_DATA, "caption",
                 Constants.Y_AXIS);
@@ -108,12 +105,18 @@ public class IntervalDemo {
         // runs once (at startup)
         ActionList draw = new ActionList();
         draw.add(update);
+        draw.add(new SizeAction(GROUP_DATA, 10, Constants.Y_AXIS));
+        draw.add(new prefuse.action.assignment.ShapeAction(GROUP_DATA,
+                Constants.SHAPE_RECTANGLE));
         draw.add(new ColorAction(GROUP_DATA, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
         draw.add(new ColorAction(GROUP_DATA, VisualItem.FILLCOLOR, ColorLib
                 .color(Color.ORANGE)));
         draw.add(new ColorAction(GROUP_DATA, VisualItem.STROKECOLOR, ColorLib
                 .color(Color.ORANGE.darker())));
+//        draw.add(new prefuse.action.assignment.StrokeAction(GROUP_DATA,
+//                prefuse.util.StrokeLib.getStroke(2,
+//                        prefuse.util.StrokeLib.DASHES)));
         draw.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, draw);
 

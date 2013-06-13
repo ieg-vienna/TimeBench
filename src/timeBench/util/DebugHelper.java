@@ -203,7 +203,7 @@ public class DebugHelper {
         tmpds.addDataColumn("caption", String.class, "");
     
         for (int i = 0; i < size; i++) {
-            long inf = Math.round(Math.random() * 315360000000.0); // 10 years
+            long inf = Math.round(Math.random() * 31536000000.0); // 1 year
             int gId = (int) Math.floor(Math.random() * 6) + 1;
             Granularity granularity = new Granularity(calendar,gId, 32767);
             Granule granule = new Granule(inf,inf,granularity);

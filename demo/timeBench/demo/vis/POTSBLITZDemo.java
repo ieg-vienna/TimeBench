@@ -7,7 +7,7 @@
 package timeBench.demo.vis;
 
 import ieg.prefuse.data.DataHelper;
-import ieg.prefuse.renderer.IntervalBarRenderer;
+import ieg.prefuse.renderer.OldIntervalBarRenderer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -56,7 +56,7 @@ import render.ArcRenderer;
 import timeBench.action.analytical.PatternCountAction;
 import timeBench.action.analytical.TreeDebundlingAction;
 import timeBench.action.layout.GreedyDistributionLayout;
-import timeBench.action.layout.IntervalAxisLayout;
+import timeBench.action.layout.OldIntervalAxisLayout;
 import timeBench.action.layout.PatternOverlayCheckLayout;
 import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.TimeAxisLayout;
@@ -130,7 +130,7 @@ public class POTSBLITZDemo {
         RendererFactory rf = new RendererFactory() {
         	ArcRenderer arcRenderer = new ArcRenderer();
         	PolygonRenderer polygonRenderer = new PolygonRenderer(Constants.POLY_TYPE_STACK);
-        	IntervalBarRenderer intRenderer = new IntervalBarRenderer(MAXX_FIELD);
+        	Renderer intRenderer = new OldIntervalBarRenderer(MAXX_FIELD);
         	LabelRenderer labelRenderer = new LabelRenderer("label");
 
                 public Renderer getRenderer(VisualItem item) {
@@ -157,16 +157,16 @@ public class POTSBLITZDemo {
         layout.add(y_axis);
         AxisLayout y_axis2 = new AxisLayout(ARCDIAGRAM_PATTERNS+".nodes", VisualItem.VISIBLE, Constants.Y_AXIS);
         layout.add(y_axis2);
-        TimeAxisLayout time_axis = new IntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD, Constants.X_AXIS,
+        TimeAxisLayout time_axis = new OldIntervalAxisLayout(ARCDIAGRAM_PATTERNS, MAXX_FIELD, Constants.X_AXIS,
         		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
-        TimeAxisLayout time_axis2 = new IntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD, timeScale);                       
+        TimeAxisLayout time_axis2 = new OldIntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD, timeScale);                       
         layout.add(time_axis);
         layout.add(time_axis2);
         
         PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,6);
         layout.add(patternOverlapCheckLayout);
         
-        TimeAxisLayout time_axis3 = new IntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
+        TimeAxisLayout time_axis3 = new OldIntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
         		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
         GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 14);
         layout.add(time_axis3);
