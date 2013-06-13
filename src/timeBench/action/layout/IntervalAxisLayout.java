@@ -69,7 +69,7 @@ public class IntervalAxisLayout extends TimeAxisLayout {
 	}
 	
     /**
-     * Create a {@link IntervalAxisLayout2} with the specified interval and max x
+     * Create a {@link IntervalAxisLayout} with the specified interval and max x
      * field.
      * 
      * @param group

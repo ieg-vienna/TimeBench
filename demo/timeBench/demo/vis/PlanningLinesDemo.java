@@ -39,7 +39,6 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.ItemSorter;
 import timeBench.action.layout.IntervalAxisLayout;
-import timeBench.action.layout.IntervalAxisLayout2;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
