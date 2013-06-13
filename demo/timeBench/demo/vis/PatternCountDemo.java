@@ -236,11 +236,8 @@ public class PatternCountDemo {
 		
 		try {
 			GraphMLTemporalDatasetReader gmltdr = new GraphMLTemporalDatasetReader();
-			events = gmltdr.readData("data/Dodgers-events.graphml.gz");
 			
-			//DebugHelper.printTemporalDatasetTable(System.out, events,"label","class",TemporalObject.ID);
-			
-			patterns = gmltdr.readData("data/Dodgers-patterns.graphml.gz");
+			patterns = gmltdr.readData("data/patterns.graphml.gz");
 						
 			DebugHelper.printTemporalDatasetForest(System.out,patterns, "label",TemporalObject.ID);						
 		} catch (DataIOException e) {

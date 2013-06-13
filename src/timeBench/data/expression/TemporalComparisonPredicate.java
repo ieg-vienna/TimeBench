@@ -174,12 +174,13 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 			} else {
 				for(TemporalElement i2 : history) {
 					for(Granule i3 : i2.getGranules()) {
-						if (teTemplate.getFirstInstant().getInf() > i3.getInf() ||
-							teTemplate.getLastInstant().getSup() < i3.getSup()) {
+						if (teTemplate.getFirstInstant().getInf() >= i3.getInf() &&
+							teTemplate.getLastInstant().getSup() <= i3.getSup()) {
 							return true;
 						}
 					}
 				}
+				return false;
 			}
 			break;
 		case ASLONGAS:

@@ -9,6 +9,7 @@ import prefuse.action.Action;
 import prefuse.data.expression.BinaryExpression;
 import prefuse.data.expression.CompositePredicate;
 import prefuse.data.expression.Expression;
+import prefuse.data.expression.NotPredicate;
 import prefuse.data.expression.Predicate;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
@@ -221,7 +222,10 @@ public class MultiPredicatePatternDiscovery extends Action implements TemporalDa
 			ArrayList<TemporalObject> checkedObjects) {
 		if(template instanceof TemporalElementArrayExpression)
 			((TemporalElementArrayExpression)template).updateBuffer(checkedObjects);
-		else if (template instanceof BinaryExpression) {
+		else if (template instanceof NotPredicate) {
+			updateTemporalElementExpressions((Expression)((NotPredicate)template).getPredicate(),
+					checkedObjects);
+		} else if (template instanceof BinaryExpression) {
 			updateTemporalElementExpressions(((BinaryExpression)template).getLeftExpression(), checkedObjects);
 			updateTemporalElementExpressions(((BinaryExpression)template).getRightExpression(), checkedObjects);
 		} else if(template instanceof CompositePredicate) {

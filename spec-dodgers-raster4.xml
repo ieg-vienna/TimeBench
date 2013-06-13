@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<temporal-data-column-specifaction>
+    <calendar>0</calendar>
+    <fail-on-illegal-rows>true</fail-on-illegal-rows>
+    <encodings>
+        <string-instant key="date">
+            <data-element>
+                <column>value</column>
+            </data-element>
+            <granularity-id>4</granularity-id>
+            <granularity-context-id>32767</granularity-context-id>
+            <temporal-column>Inf</temporal-column>
+            <date-time-pattern>yyyy-MM-dd, HH:mm:ss,SSS</date-time-pattern>
+            <language>en</language>
+        </string-instant>
+    </encodings>
+    <text-table>
+        <method>regex-delimited</method>
+        <delimiter-regex>;</delimiter-regex>
+        <has-header>true</has-header>
+        <parse-dates>false</parse-dates>
+    </text-table>
+</temporal-data-column-specifaction>
