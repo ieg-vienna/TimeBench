@@ -173,7 +173,7 @@ public class POTSBLITZDemo {
         
         TimeAxisLayout time_axis3 = new OldIntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
         		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
-        GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 14);
+        GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 28);
         layout.add(time_axis3);
         layout.add(y_axis3);
         
