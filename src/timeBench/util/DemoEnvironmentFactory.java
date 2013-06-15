@@ -68,6 +68,20 @@ public class DemoEnvironmentFactory {
         ColorLib.rgb(179, 222, 105),	//	6	light green
         ColorLib.rgb(252, 205, 229) };	//	7	light pink
 
+    public static int[] set12Qualitative = {
+    	ColorLib.rgb(141, 211, 199),
+    	ColorLib.rgb(255, 255, 179),	//  1	light yellow    
+    	ColorLib.rgb(190, 186, 218),	//  2	light purple
+        ColorLib.rgb(251, 128, 114),	//  3	light red	
+        ColorLib.rgb(128, 177, 211),	//	4	light blue
+        ColorLib.rgb(253, 180, 98),		//	5	light orange
+        ColorLib.rgb(179, 222, 105),	//	6	light green
+        ColorLib.rgb(252, 205, 229),	//	7	light pink
+        ColorLib.rgb(217, 217, 217),
+        ColorLib.rgb(188, 128, 189),
+        ColorLib.rgb(204, 235, 197),
+        ColorLib.rgb(255, 237, 111)};
+    
     public static int[] set1Qualitative = { ColorLib.rgb(228, 26, 28),
             ColorLib.rgb(55, 126, 184), ColorLib.rgb(77, 175, 74),
             ColorLib.rgb(152, 78, 163), ColorLib.rgb(255, 127, 0),

@@ -92,11 +92,11 @@ public class ThemeRiverLayout extends Layout {
             TemporalObject iTO = (TemporalObject)el.temporalObjects().iterator().next();
         	float upper = 0;
         	float lower = 0;
-        	System.out.print(JavaDateCalendarManager.formatDebugString(el.asGeneric().getInf())+"|");
+        	//System.out.print(JavaDateCalendarManager.formatDebugString(el.asGeneric().getInf())+"|");
         	for(int j=0; j<dataColumnIndices.length; j++) {
             	buffer[j][i*2] = timeScale.getPixelForDate(iTO.getTemporalElement().asGeneric().getInf());
-            	float val = (float)iTO.getInt(dataColumnIndices[j]);
-            	System.out.print(val+"|");
+            	float val = iTO.getFloat(dataColumnIndices[j]);
+            	//System.out.print(val+"|");
         		if(j % 2 == 0) {
             		upper += val;
             		buffer[j][i*2+1] = upper;
@@ -105,7 +105,7 @@ public class ThemeRiverLayout extends Layout {
             		buffer[j][i*2+1] = lower;
             	}
         	}
-        	System.out.println();
+        	//System.out.println();
         	maxUpper = Math.max(maxUpper,upper);
         	maxLower = Math.min(maxLower,lower);
             i++;

@@ -193,13 +193,13 @@ public class POTSBLITZDemo {
         		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
         		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
         layout.add(new DataColorAction(PATTERNTIMELINES, "class", prefuse.Constants.ORDINAL,
-        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));
+        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set12Qualitative));
         layout.add(new ColorAction(PATTERNTIMELINES_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
         /*layout.add(new ColorAction(PATTERNTHEMERIVER_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));*/
         layout.add(new DataColorAction(PATTERNTHEMERIVER, "class", prefuse.Constants.ORDINAL,
-        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));       
+        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set12Qualitative));       
         layout.add(new ColorAction(PATTERNTHEMERIVER, VisualItem.STROKECOLOR,ColorLib.color(Color.WHITE)));
 
         layout.add(new EnforceViewAction(enforcedView));

@@ -61,6 +61,12 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 				
 				TemporalObject to = (TemporalObject)temporalObjectIterator.next();
 				String pattern = to.getString("label");
+				
+				if(pattern.contains("e3p2e1p1e1p0e0")) {
+					int x= 0;
+					x++;
+				}
+				
 				if (workingDataset.getDataColumnSchema().getColumnIndex(pattern) == -1) {
 					workingDataset.addDataColumn(pattern, int.class, 0);
 					patterns.put(pattern, 1);
@@ -84,31 +90,43 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 						newTO.set(i,lastTO.get(i));
 					}
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
+//					System.out.print("I: ");
+//					for(int i : workingDataset.getDataColumnIndices()) {
+//						System.out.print(workingDataset.getNodeTable().getSchema().getColumnName(i)+":"+newTO.getInt(i)+", ");
+//					}
+//					System.out.println();
 				} else {
 					newTE  = lastTO.getTemporalElement();
 					newTO = lastTO;
 					newTO.setInt(pattern,lastTO.getInt(pattern)+1);
+//					System.out.print("M: ");
+//					for(int i : workingDataset.getDataColumnIndices()) {
+//						System.out.print(workingDataset.getNodeTable().getSchema().getColumnName(i)+":"+newTO.getInt(i)+", ");
+//					}
+//					System.out.println(JavaDateCalendarManager.formatDebugString(newTE.asGeneric().getInf()));
 				}
 				
 				long sup = to.getTemporalElement().asGeneric().getSup()+1;
 				Iterator temporalObjectIterator2 = workingDataset.nodes();
 				boolean foundEnd = false;
-				TemporalObject lastTO2 = newTO;
-				long lastSup = 0;
 				while(temporalObjectIterator2.hasNext()) {
 					TemporalObject to2 = (TemporalObject)temporalObjectIterator2.next();
 					if (to2.getTemporalElement().asGeneric().getInf() > inf &&
 							to2.getTemporalElement().asGeneric().getSup() < sup) {
 						to2.setInt(pattern,to2.getInt(pattern)+1);
-						if (sup > lastSup) {
-							lastTO2 = to2;
-							lastSup = sup;
-						}
 					}
-					if (to2.getTemporalElement().asGeneric().getSup() == sup)
+					if (to2.getTemporalElement().asGeneric().getSup() == sup) {
 						foundEnd = true;
+//						System.out.print("E: ");
+//						for(int i : workingDataset.getDataColumnIndices()) {
+//							System.out.print(workingDataset.getNodeTable().getSchema().getColumnName(i)+":"+to2.getInt(i)+", ");
+//						}
+//						System.out.println();
+					}
 				}
+				
 				if (!foundEnd) {
+					TemporalObject lastTO2 = getLastTemporalObjectBefore(sup);
 					newTE = workingDataset.addTemporalElement(sup, sup, JavaDateCalendarManager.Granularities.Millisecond.toInt(),
 							JavaDateCalendarManager.Granularities.Millisecond.toInt(),TemporalElement.INSTANT);
 					newTO = workingDataset.addTemporalObject(newTE);
@@ -116,6 +134,11 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 						newTO.set(i,lastTO2.get(i));						
 					}
 					newTO.setInt(pattern,newTO.getInt(pattern)-1);
+//					System.out.print("S: ");
+//					for(int i : workingDataset.getDataColumnIndices()) {
+//						System.out.print(workingDataset.getNodeTable().getSchema().getColumnName(i)+":"+newTO.getInt(i)+", ");
+//					}
+//					System.out.println();
 				}
 			}
 		} catch (TemporalDataException e) {
@@ -131,7 +154,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 		Iterator temporalObjectIterator = workingDataset.nodes();
 		while(temporalObjectIterator.hasNext()) {
 			TemporalObject to = (TemporalObject)temporalObjectIterator.next();
-			if(to.getTemporalElement().asGeneric().getInf() > lastInf &&
+			if(to.getTemporalElement().asGeneric().getInf() >= lastInf &&
 					to.getTemporalElement().asGeneric().getInf() <= inf) {
 				result = to;
 				lastInf = to.getTemporalElement().asGeneric().getInf();
