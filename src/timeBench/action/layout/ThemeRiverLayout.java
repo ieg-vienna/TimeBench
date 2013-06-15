@@ -1,5 +1,7 @@
 package timeBench.action.layout;
 
+import ieg.prefuse.data.DataHelper;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -25,6 +27,7 @@ import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
+import timeBench.util.DebugHelper;
 
 public class ThemeRiverLayout extends Layout {
 
@@ -69,13 +72,13 @@ public class ThemeRiverLayout extends Layout {
         } else {
         	workingBaseDataset = (Table) m_vis.getSourceData(m_group);
         }
-        
-        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();
+                
+        int[] dataColumnIndices = sourceDataset.getDataColumnIndices();              
         
         for (int i : dataColumnIndices) {
         	int index = workingBaseDataset.addRow();
-        	workingBaseDataset.set(index,"label",sourceDataset.getDataColumnSchema().getColumnName(i));
-        	workingBaseDataset.set(index,"class",classes.indexOf(sourceDataset.getDataColumnSchema().getColumnName(i)));
+        	workingBaseDataset.set(index,"label",sourceDataset.getNodeTable().getSchema().getColumnName(i));
+        	workingBaseDataset.set(index,"class",classes.indexOf(sourceDataset.getNodeTable().getSchema().getColumnName(i)));
         }
         
         int medIndex = dataColumnIndices.length/2;
@@ -89,11 +92,11 @@ public class ThemeRiverLayout extends Layout {
             TemporalObject iTO = (TemporalObject)el.temporalObjects().iterator().next();
         	float upper = 0;
         	float lower = 0;
-        	//System.out.print(JavaDateCalendarManager.formatDebugString(el.asGeneric().getInf())+"|");
+        	System.out.print(JavaDateCalendarManager.formatDebugString(el.asGeneric().getInf())+"|");
         	for(int j=0; j<dataColumnIndices.length; j++) {
             	buffer[j][i*2] = timeScale.getPixelForDate(iTO.getTemporalElement().asGeneric().getInf());
             	float val = (float)iTO.getInt(dataColumnIndices[j]);
-            	//System.out.print(val+"|");
+            	System.out.print(val+"|");
         		if(j % 2 == 0) {
             		upper += val;
             		buffer[j][i*2+1] = upper;
@@ -102,13 +105,13 @@ public class ThemeRiverLayout extends Layout {
             		buffer[j][i*2+1] = lower;
             	}
         	}
-        	//System.out.println();
+        	System.out.println();
         	maxUpper = Math.max(maxUpper,upper);
         	maxLower = Math.min(maxLower,lower);
             i++;
         }
     	float max = maxUpper-maxLower;
-
+    	
         float height = (float)m_vis.getDisplay(0).getBounds().getHeight();
         //float yBase = (float)m_vis.getDisplay(0).getBounds().getY();
         float factor = height/max;
@@ -133,9 +136,11 @@ public class ThemeRiverLayout extends Layout {
             	}
         	}
         	workingBaseDataset.set(j, PolygonRenderer.POLYGON, buffer[j]);
-        	workingBaseDataset.set(j, "labelX" , xAtMaxDiff);
-        	workingBaseDataset.set(j, "labelY" , yAtMaxDiff);
+        	//workingBaseDataset.set(j, "labelX" , xAtMaxDiff);
+        	//workingBaseDataset.set(j, "labelY" , yAtMaxDiff);
         }
+        
+        //DataHelper.printTable(System.out, workingBaseDataset);
     }
     
     public TimeScale getTimeScale() {

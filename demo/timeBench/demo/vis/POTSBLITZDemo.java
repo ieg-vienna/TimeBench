@@ -13,6 +13,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,13 +32,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import prefuse.Constants;
+import prefuse.Display;
 import prefuse.Visualization;
+import prefuse.action.Action;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.AxisLayout;
 import prefuse.action.layout.Layout;
+import prefuse.controls.ControlAdapter;
 import prefuse.controls.ToolTipControl;
 import prefuse.data.Schema;
 import prefuse.data.Table;
@@ -89,6 +95,8 @@ public class POTSBLITZDemo {
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     
     static private ArrayList<String> classes;
+    
+    private static int[] enforcedView = new int[] { -1 };
 
     private static void createVisualization(TemporalDataset patterns, TemporalDataset events,TemporalDataset flatPatterns, TemporalDataset countedPatterns) {
         final Visualization vis = new Visualization();
@@ -129,7 +137,7 @@ public class POTSBLITZDemo {
         // intRenderer.setAxis(Constants.Y_AXIS);
         RendererFactory rf = new RendererFactory() {
         	ArcRenderer arcRenderer = new ArcRenderer();
-        	PolygonRenderer polygonRenderer = new PolygonRenderer(Constants.POLY_TYPE_STACK);
+        	PolygonRenderer polygonRenderer = new PolygonRenderer();
         	Renderer intRenderer = new OldIntervalBarRenderer(MAXX_FIELD);
         	LabelRenderer labelRenderer = new LabelRenderer("label");
 
@@ -161,16 +169,16 @@ public class POTSBLITZDemo {
         		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
         TimeAxisLayout time_axis2 = new OldIntervalAxisLayout(ARCDIAGRAM_EVENTS, MAXX_FIELD, timeScale);                       
         layout.add(time_axis);
-        layout.add(time_axis2);
-        
-        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,6);
-        layout.add(patternOverlapCheckLayout);
+        layout.add(time_axis2);       
         
         TimeAxisLayout time_axis3 = new OldIntervalAxisLayout(PATTERNTIMELINES, MAXX_FIELD, Constants.X_AXIS,
         		timeScale,Placement.MIDDLE,new BooleanLiteral(true));
         GreedyDistributionLayout y_axis3 = new GreedyDistributionLayout(PATTERNTIMELINES, PATTERNTHEMERIVER, 14);
         layout.add(time_axis3);
         layout.add(y_axis3);
+        
+        PatternOverlayCheckLayout patternOverlapCheckLayout = new PatternOverlayCheckLayout(ARCDIAGRAM_PATTERNS,ARCDIAGRAM_EVENTS,PATTERNTIMELINES,6);
+        layout.add(patternOverlapCheckLayout);
         
         ThemeRiverLayout themeRiver = new ThemeRiverLayout(PATTERNTHEMERIVER,countedPatterns,classes,timeScale);
         layout.add(themeRiver);
@@ -194,7 +202,8 @@ public class POTSBLITZDemo {
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set3Qualitative));       
         layout.add(new ColorAction(PATTERNTHEMERIVER, VisualItem.STROKECOLOR,ColorLib.color(Color.WHITE)));
 
-
+        layout.add(new EnforceViewAction(enforcedView));
+        
         //layout.add(new DataColorAction(PATTERNTIMELINES, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         //layout.add(new DataColorAction(PATTERNTHEMERIVER, VisualItem.VISIBLE, ColorLib.gray(0),VisualItem.FILLCOLOR));
         
@@ -214,6 +223,8 @@ public class POTSBLITZDemo {
         display.addControlListener(new BranchHighlightControl());
         display.addControlListener(new ToolTipControl("label"));
               
+        display.addControlListener(new ViewSwitchControl(enforcedView));
+        
 //        vis.run("layout");
        
         // --------------------------------------------------------------------
@@ -256,20 +267,22 @@ public class POTSBLITZDemo {
 		flatPatterns = action.getTemporalDataset();
 		classes = action.getClasses();
 
-		System.out.println(flatPatterns.getNodeCount());
-		DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label","class",TemporalObject.ID);
+		//System.out.println(flatPatterns.getNodeCount());
+		//DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label","class",TemporalObject.ID);
 		
 		PatternCountAction action2 = new PatternCountAction(flatPatterns);
 		action2.run(0);
 		countedPatterns = action2.getTemporalDataset();
 		
+		//DebugHelper.printTemporalDatasetTable(System.out, countedPatterns);
+		
 		Hashtable<String,Integer> patternCount = action2.getPatterns();
-		System.out.println(patternCount.size());
-		Enumeration<String> e = patternCount.keys();
-		while(e.hasMoreElements()) {
-			String pattern = e.nextElement();
-			System.out.println(pattern+": "+patternCount.get(pattern));
-		}
+//		System.out.println(patternCount.size());
+//		Enumeration<String> e = patternCount.keys();
+//		while(e.hasMoreElements()) {
+//			String pattern = e.nextElement();
+//			System.out.println(pattern+": "+patternCount.get(pattern));
+//		}
 
 		//System.out.println(flatPatterns.getNodeCount());
 		//DataHelper.printTable(System.out,countedPatterns.getTemporalObjectTable());
@@ -323,6 +336,83 @@ public class POTSBLITZDemo {
                     item.setVisible(false);
             }
         }
+    }
+    
+    static class ViewSwitchControl extends ControlAdapter {
+    	int[] enforcedView;
+    	
+		public ViewSwitchControl(int[] enforcedView) {
+			this.enforcedView = enforcedView;
+		}
+		
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			enforcedView[0]+=e.getWheelRotation();
+			if (enforcedView[0] == 3)
+				enforcedView[0] = -1;
+			
+			((Display)e.getComponent()).getVisualization().run(DemoEnvironmentFactory.ACTION_UPDATE);
+		}
+		
+		@Override
+		public void itemWheelMoved(VisualItem item, MouseWheelEvent e) {
+			this.mouseWheelMoved(e);
+		}	
+    }
+    
+    static class EnforceViewAction extends Action {
+
+    	int[] enforcedView;
+        private static final String ARCDIAGRAM_PATTERNS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
+        private static final String ARCDIAGRAM_EVENTS = "arcdiagram_events"; // Don't know if . is reserved in prefuse
+        private static final String PATTERNTIMELINES = "patterntimelines";
+        private static final String PATTERNTHEMERIVER = "patternthemeriver";
+        
+        private static final String PATTERNTIMELINES_DECORATOR = "patterntimelines_decorator";
+        private static final String PATTERNTHEMERIVER_DECORATOR = "patternthemeriver_decorator";
+    	
+		public EnforceViewAction(int[] enforcedView) {
+			super();
+			this.enforcedView = enforcedView;
+		}
+
+		@Override
+		public void run(double frac) {
+			switch(enforcedView[0]) {
+			case 0:
+				setVisibility(m_vis.getGroup(ARCDIAGRAM_PATTERNS),true);
+				setVisibility(m_vis.getGroup(ARCDIAGRAM_EVENTS),true);
+				setVisibility(m_vis.getGroup(PATTERNTIMELINES),false);
+				setVisibility(m_vis.getGroup(PATTERNTHEMERIVER),false);
+				setVisibility(m_vis.getGroup(PATTERNTIMELINES_DECORATOR),false);
+				setVisibility(m_vis.getGroup(PATTERNTHEMERIVER_DECORATOR),false);
+				break;
+			case 1:
+				setVisibility(m_vis.getGroup(ARCDIAGRAM_PATTERNS),false);
+				setVisibility(m_vis.getGroup(ARCDIAGRAM_EVENTS),false);
+				setVisibility(m_vis.getGroup(PATTERNTIMELINES),true);
+				setVisibility(m_vis.getGroup(PATTERNTHEMERIVER),false);
+				setVisibility(m_vis.getGroup(PATTERNTIMELINES_DECORATOR),true);
+				setVisibility(m_vis.getGroup(PATTERNTHEMERIVER_DECORATOR),false);
+				break;
+			case 2:
+				setVisibility(m_vis.getGroup(ARCDIAGRAM_PATTERNS),false);
+				setVisibility(m_vis.getGroup(ARCDIAGRAM_EVENTS),false);
+				setVisibility(m_vis.getGroup(PATTERNTIMELINES),false);
+				setVisibility(m_vis.getGroup(PATTERNTHEMERIVER),true);
+				setVisibility(m_vis.getGroup(PATTERNTIMELINES_DECORATOR),false);
+				setVisibility(m_vis.getGroup(PATTERNTHEMERIVER_DECORATOR),true);
+				break;
+			}
+		}
+
+		private void setVisibility(TupleSet group, boolean b) {
+			Iterator i = group.tuples();
+			while(i.hasNext()) {
+				((VisualItem)i.next()).setVisible(b);
+			}			
+		}
+    	
     }
 }
 

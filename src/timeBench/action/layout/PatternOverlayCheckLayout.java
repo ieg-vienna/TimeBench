@@ -34,6 +34,8 @@ public class PatternOverlayCheckLayout extends Layout {
         this.replacementGroup = replacementGroup;
         this.secondPrimaryGroup = secondPrimaryGroup;
         this.maxOverlap = maxOverlap;
+        
+        switchToMainGroup();
     }
 
 

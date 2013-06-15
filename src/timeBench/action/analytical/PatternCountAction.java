@@ -60,7 +60,7 @@ public class PatternCountAction extends prefuse.action.Action implements Tempora
 			while(temporalObjectIterator.hasNext()) {				
 				
 				TemporalObject to = (TemporalObject)temporalObjectIterator.next();
-				String pattern = to.getString("label");			
+				String pattern = to.getString("label");
 				if (workingDataset.getDataColumnSchema().getColumnIndex(pattern) == -1) {
 					workingDataset.addDataColumn(pattern, int.class, 0);
 					patterns.put(pattern, 1);
