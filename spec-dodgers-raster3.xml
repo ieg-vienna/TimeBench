@@ -10,7 +10,7 @@
             <granularity-id>3</granularity-id>
             <granularity-context-id>32767</granularity-context-id>
             <temporal-column>Inf</temporal-column>
-            <date-time-pattern>yyyy.MM.dd HH:mm:ss,SSS</date-time-pattern>
+            <date-time-pattern>yyyy-MM-dd, HH:mm:ss,SSS</date-time-pattern>
             <language>en</language>
         </string-instant>
     </encodings>

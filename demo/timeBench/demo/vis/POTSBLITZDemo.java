@@ -187,11 +187,15 @@ public class POTSBLITZDemo {
         //layout.add(new DecoratorLayout2(PATTERNTHEMERIVER_DECORATOR));
         
         layout.add(new DataColorAction(ARCDIAGRAM_EVENTS, "class", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR, new int[] {DemoEnvironmentFactory.set3Qualitative[3],
-        		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
+        		VisualItem.FILLCOLOR, new int[] {ColorLib.rgb(55, 126, 184),                
+        		ColorLib.rgb(77, 175, 74),
+        		ColorLib.rgb(255, 255, 51),
+        		ColorLib.rgb(228, 26, 28)}));
         layout.add(new DataColorAction(ARCDIAGRAM_PATTERNS+".nodes", "class", prefuse.Constants.NOMINAL,
-        		VisualItem.FILLCOLOR, new int[] { DemoEnvironmentFactory.set3Qualitative[3],
-        		DemoEnvironmentFactory.set3Qualitative[4], DemoEnvironmentFactory.set3Qualitative[6]}));
+        		VisualItem.FILLCOLOR, new int[] {ColorLib.rgb(55, 126, 184),                
+        		ColorLib.rgb(77, 175, 74),
+        		ColorLib.rgb(255, 255, 51),
+        		ColorLib.rgb(228, 26, 28)}));
         layout.add(new DataColorAction(PATTERNTIMELINES, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set12Qualitative));
         layout.add(new ColorAction(PATTERNTIMELINES_DECORATOR, VisualItem.TEXTCOLOR, ColorLib
