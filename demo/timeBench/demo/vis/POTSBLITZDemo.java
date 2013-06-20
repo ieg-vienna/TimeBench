@@ -94,7 +94,7 @@ public class POTSBLITZDemo {
     
     //private static final String PATTERNTIMELINES_EVENTS = "arcdiagram_patterns"; // Don't know if . is reserved in prefuse
     
-    static private ArrayList<String> classes;
+    static private Hashtable<String,Integer> classes;
     
     private static int[] enforcedView = new int[] { -1 };
 
@@ -271,7 +271,7 @@ public class POTSBLITZDemo {
 		flatPatterns = action.getTemporalDataset();
 		classes = action.getClasses();
 
-		//System.out.println(flatPatterns.getNodeCount());
+		System.out.println(flatPatterns.getNodeCount());
 		//DebugHelper.printTemporalDatasetTable(System.out, flatPatterns,"label","class",TemporalObject.ID);
 		
 		PatternCountAction action2 = new PatternCountAction(flatPatterns);

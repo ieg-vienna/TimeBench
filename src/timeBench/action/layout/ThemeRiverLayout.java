@@ -3,6 +3,7 @@ package timeBench.action.layout;
 import ieg.prefuse.data.DataHelper;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
@@ -36,18 +37,18 @@ public class ThemeRiverLayout extends Layout {
 
     protected Predicate m_filter = VisiblePredicate.TRUE;
     
-    protected ArrayList<String> classes = null;
+    protected Hashtable<String, Integer> classes = null;
 
-    public ThemeRiverLayout(String group,TemporalDataset sourceDataset, ArrayList<String> classes) {
+    public ThemeRiverLayout(String group,TemporalDataset sourceDataset, Hashtable<String, Integer> classes) {
         super(group);
         this.sourceDataset = sourceDataset;
         this.classes = classes;
     }
 
-    public ThemeRiverLayout(String group,TemporalDataset source,  ArrayList<String> classes, TimeScale timeScale) {
+    public ThemeRiverLayout(String group,TemporalDataset source,  Hashtable<String, Integer> classes2, TimeScale timeScale) {
         super(group);
         this.sourceDataset = source;
-        this.classes = classes;
+        this.classes = classes2;
         setTimeScale(timeScale);
     }
 
@@ -78,7 +79,7 @@ public class ThemeRiverLayout extends Layout {
         for (int i : dataColumnIndices) {
         	int index = workingBaseDataset.addRow();
         	workingBaseDataset.set(index,"label",sourceDataset.getNodeTable().getSchema().getColumnName(i));
-        	workingBaseDataset.set(index,"class",classes.indexOf(sourceDataset.getNodeTable().getSchema().getColumnName(i)));
+        	workingBaseDataset.set(index,"class",classes.get(sourceDataset.getNodeTable().getSchema().getColumnName(i)));
         }
         
         int medIndex = dataColumnIndices.length/2;
@@ -140,6 +141,7 @@ public class ThemeRiverLayout extends Layout {
         	//workingBaseDataset.set(j, "labelY" , yAtMaxDiff);
         }
         
+        System.out.println(workingBaseDataset.getRowCount());
         //DataHelper.printTable(System.out, workingBaseDataset);
     }
     

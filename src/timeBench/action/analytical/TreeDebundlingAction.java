@@ -2,6 +2,8 @@ package timeBench.action.analytical;
 
 import ieg.prefuse.data.ParentChildNode;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
@@ -36,7 +38,8 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
     
 	TemporalDataset sourceDataset;
 	TemporalDataset workingDataset;
-	ArrayList<String> classes = null;
+	Hashtable<String,Integer> classes = null;
+	ArrayList<String> workingClasses = null;
 
 	public TreeDebundlingAction(TemporalDataset sourceDataset) {
 		this.sourceDataset = sourceDataset;
@@ -74,15 +77,25 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 				}
 			}
 			
-			classes = new ArrayList<String>();
+			workingClasses = new ArrayList<String>();
 			for(TemporalObject iTo : workingDataset.temporalObjects()) {
 				String label = iTo.getString("label");
-				int thisclass = classes.indexOf(label);
+				int thisclass = workingClasses.indexOf(label);
 				if (thisclass == -1) {
-					classes.add(label);
-					thisclass = classes.size()-1;
+					workingClasses.add(label);
+					thisclass = workingClasses.size()-1;
 				}
 				iTo.setInt("class", thisclass);
+			}
+			
+			classes = new Hashtable<String, Integer>();
+			String[] sortedClasses = (String[])workingClasses.toArray(new String[workingClasses.size()]);
+			Arrays.sort(sortedClasses);
+			double addPerStep = 12.0/(double)sortedClasses.length;
+			double val=0;
+			for(String iStr : sortedClasses) {
+				classes.put(iStr, (int)Math.round(val));
+				val += addPerStep;
 			}
 		} catch (TemporalDataException e) {
 			throw new RuntimeException(e.getMessage());
@@ -105,7 +118,7 @@ public class TreeDebundlingAction extends prefuse.action.Action implements Tempo
 		}
 	}
 	
-	public ArrayList<String> getClasses() {
+	public Hashtable<String,Integer> getClasses() {
 		return classes;
 	}
 
