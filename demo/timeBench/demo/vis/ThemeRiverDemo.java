@@ -7,6 +7,7 @@ import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.LineRenderer;
 
 import java.awt.BasicStroke;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 
@@ -16,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
 
 import prefuse.Constants;
+import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.Action;
 import prefuse.action.ActionList;
@@ -26,6 +28,7 @@ import prefuse.action.assignment.ShapeAction;
 import prefuse.action.assignment.StrokeAction;
 import prefuse.action.layout.AxisLabelLayout;
 import prefuse.action.layout.AxisLayout;
+import prefuse.controls.ControlAdapter;
 import prefuse.controls.ToolTipControl;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
@@ -42,10 +45,13 @@ import prefuse.visual.VisualTable;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
 import prefuse.visual.sort.ItemSorter;
-import timeBench.action.analytical.PatternCountAction;
+import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
+import timeBench.action.analytical.InterpolationIndexingAction;
+import timeBench.action.analytical.TemporalDataIndexingAction;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
+import timeBench.action.layout.timescale.TimeScale;
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
@@ -66,24 +72,28 @@ import timeBench.util.DemoEnvironmentFactory;
  * respiratory diseases in multiple cities. The data has 2 references (time and
  * city) and one characteristic (mortality count).
  * <p>
- * This extends {@link LinePlotDemo} with the following features:
+ * This extends {@link MultipleLinePlotDemo} with the following features:
  * <ul>
- * <li>Set color depending on a column holding the "city".
- * <li>Add line segments using {@link CategoryLinePlotAction} so that only
- * points of a city are connected.
- * <li>Load data from a file using a specified granularity.
+ * <li>Transforming the abstract data from a pivot table to key value pairs,
+ * retaining references to a shared temporal element 
+ * ({@link ColumnToRowsTemporalDataTransformation}).
+ * <li>Calculating indexed values in a new column of the visual table 
+ * ({@link TemporalDataIndexingAction}).
+ * <li>Updating the indexing point using an interactive control 
+ * ({@link IndexingControl}).
  * </ul>
  * 
  * @author Rind
  */
 public class ThemeRiverDemo {
 
-    private static final String FILE_DATA = "data/nmmaps-resp-5weekly-rows.csv";
-    // private static final String FILE_SPEC = "data/nmmaps-resp-spec.xml";
+    private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
+    private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month.toInt();
 
-    private static final String COL_DATA = "resp";
-    private static final String COL_CITY = "city";
+    private static final String COL_DATA = "value";
+    private static final String COL_CITY = "category";
     private static final String COL_LABEL = "label";
+    private static final String COL_INDEXED = "indexed";
 
     private static final String GROUP_DATA = "data";
     private static final String GROUP_AXIS_LABELS = "ylab";
@@ -102,20 +112,19 @@ public class ThemeRiverDemo {
         Calendar calendar = CalendarManagerFactory.getSingleton(
                 CalendarManagers.JavaDate).getDefaultCalendar();
         TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-                new Granularity(calendar,
-                        JavaDateCalendarManager.Granularities.Week.toInt(),
+                new Granularity(calendar, GRANULARITY_ID,
                         JavaDateCalendarManager.Granularities.Top.toInt()));
-        TemporalDataset tmpds = reader.readData(FILE_DATA);
+        TemporalDataset tmpdsOrig = reader.readData(FILE_DATA);
 
-        DataHelper.printTable(System.out, tmpds.getNodeTable());
-        DataHelper.printTable(System.out, tmpds.getTemporalElements()
+        DataHelper.printMetadata(System.out, tmpdsOrig.getNodeTable());
+        DataHelper.printMetadata(System.out, tmpdsOrig.getTemporalElements()
                 .getNodeTable());
         
-		PatternCountAction action2 = new PatternCountAction(tmpds);
-		action2.run(0);
-		TemporalDataset countedPatterns = action2.getTemporalDataset();
-		
-		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns);
+        ColumnToRowsTemporalDataTransformation transform = new ColumnToRowsTemporalDataTransformation();
+        TemporalDataset tmpds = transform.toRows(tmpdsOrig);
+        
+        DataHelper.printMetadata(System.out, tmpds.getNodeTable());
+        DebugHelper.printTemporalDatasetTable(System.out, tmpds);
 
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
@@ -128,6 +137,8 @@ public class ThemeRiverDemo {
         VisualTable vt = vis.addTable(GROUP_DATA,
                 tmpds.getTemporalObjectTable());
         vt.addColumn(COL_LABEL, new LabelExpression());
+        // add a column that will store indexed values
+        vt.addColumn(COL_INDEXED, double.class);
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -156,12 +167,15 @@ public class ThemeRiverDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
-        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
+        InterpolationIndexingAction indexing = new InterpolationIndexingAction(GROUP_DATA, COL_DATA, COL_INDEXED, COL_CITY);
+        indexing.setIndexTime(tmpds.getInf());
 
-        AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_DATA,
+        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
+        
+        AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_INDEXED,
                 Constants.Y_AXIS, VisiblePredicate.TRUE);
         // set visible value range to 0..100
-        y_axis.setRangeModel(new NumberRangeModel(0.0d, 50d, 0d, 50d));
+        y_axis.setRangeModel(new NumberRangeModel(-1.0d, 4.0d, -1d, 4d));
 
         // add value axis labels and horizontal grid lines
         AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
@@ -190,6 +204,7 @@ public class ThemeRiverDemo {
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
         update.add(time_axis);
+        update.add(indexing);
         update.add(y_axis);
         update.add(y_labels);
         update.add(lineLayout);
@@ -232,6 +247,7 @@ public class ThemeRiverDemo {
         display.addControlListener(new ToolTipControl(COL_LABEL));
         display.addControlListener(new prefuse.controls.HoverActionControl(
                 DemoEnvironmentFactory.ACTION_UPDATE));
+        display.addControlListener(new IndexingControl(indexing, timeScale));
 
         // --------------------------------------------------------------------
         // STEP 5: launching the visualization
@@ -261,8 +277,8 @@ public class ThemeRiverDemo {
         public Object get(Tuple t) {
             double value = t.getDouble(COL_DATA);
 
-            long date = ((AnchoredTemporalElement) t
-                    .get(TemporalObject.TEMPORAL_ELEMENT)).getInf();
+            long date = ((AnchoredTemporalElement)((TemporalObject) ((VisualItem) t).getSourceTuple())
+                    .getTemporalElement()).getInf();
             GregorianCalendar cal = new GregorianCalendar(
                     java.util.TimeZone.getTimeZone("UTC"));
             cal.setTimeInMillis(date);
@@ -270,5 +286,32 @@ public class ThemeRiverDemo {
             return String.format("%tF %s: %3.0f", cal, t.getString(COL_CITY),
                     value);
         }
+    }
+    
+    static class IndexingControl extends ControlAdapter {
+
+        protected InterpolationIndexingAction action;
+        protected TimeScale timeScale;
+
+        public IndexingControl(InterpolationIndexingAction action,
+                TimeScale timeScale) {
+            this.action = action;
+            this.timeScale = timeScale;
+        }
+
+        @Override
+        public void itemClicked(VisualItem item, MouseEvent e) {
+            this.mouseClicked(e);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            long time = timeScale.getDateAtPixel(e.getX());
+            // System.out.println("item " + e.getX() + " " + time);
+            action.setIndexTime(time);
+            ((Display) e.getComponent()).getVisualization().run(
+                    DemoEnvironmentFactory.ACTION_UPDATE);
+        }
+
     }
 }
