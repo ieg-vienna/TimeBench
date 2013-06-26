@@ -42,6 +42,7 @@ import prefuse.visual.VisualTable;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
 import prefuse.visual.sort.ItemSorter;
+import timeBench.action.analytical.PatternCountAction;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
@@ -56,6 +57,7 @@ import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
 import timeBench.data.io.TextTableTemporalDatasetReader;
 import timeBench.ui.TimeAxisDisplay;
+import timeBench.util.DebugHelper;
 import timeBench.util.DemoEnvironmentFactory;
 
 /**
@@ -108,6 +110,12 @@ public class ThemeRiverDemo {
         DataHelper.printTable(System.out, tmpds.getNodeTable());
         DataHelper.printTable(System.out, tmpds.getTemporalElements()
                 .getNodeTable());
+        
+		PatternCountAction action2 = new PatternCountAction(tmpds);
+		action2.run(0);
+		TemporalDataset countedPatterns = action2.getTemporalDataset();
+		
+		DebugHelper.printTemporalDatasetTable(System.out, countedPatterns);
 
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
