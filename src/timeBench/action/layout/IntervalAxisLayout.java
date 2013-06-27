@@ -149,10 +149,10 @@ public class IntervalAxisLayout extends TimeAxisLayout {
         	try {
 				long inf = te.getFirstInstant().getInf();
 	        	long sup = te.getLastInstant().getSup();
-	        	long duration = te2.getLength() *
+	        	long duration = (te2.getLength()+1) *
 	        			(te.getFirstInstant().getGranule().getSup()-te.getFirstInstant().getGranule().getInf()+1L);
 	        	long before = ((sup-inf+1L)-duration)/2;
-	        	int pixelInf = timeScale.getPixelForDate(inf+before);
+	        	int pixelInf = timeScale.getPixelForDate(inf+before)+1;
 	        	int pixelSup = timeScale.getPixelForDate(inf+before+duration-1L);
 	        	System.out.println(te.getId()+": "+te2.getLength());
 	        	
