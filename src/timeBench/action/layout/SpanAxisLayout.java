@@ -24,24 +24,24 @@ public class SpanAxisLayout extends IntervalAxisLayout {
 
     public SpanAxisLayout(String group) {
         super(group);
-        // TODO Auto-generated constructor stub
     }
 
     public SpanAxisLayout(String group, TimeScale timeScale) {
         super(group, timeScale);
-        // TODO Auto-generated constructor stub
     }
 
     public SpanAxisLayout(String group, TimeScale timeScale,
             int[] pathToInterval) {
         super(group, timeScale, pathToInterval);
-        // TODO Auto-generated constructor stub
     }
 
     public SpanAxisLayout(String group, int axis, TimeScale timeScale,
             Placement placement, Predicate filter) {
         super(group, axis, timeScale, placement, filter);
-        // TODO Auto-generated constructor stub
     }
-
+    
+    @Override
+    public void run(double frac) {
+    	super.run(frac);
+    }
 }

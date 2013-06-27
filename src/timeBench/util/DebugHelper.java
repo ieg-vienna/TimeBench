@@ -165,6 +165,7 @@ public class DebugHelper {
             long absMinGranules = Math.max(1, grBeginOfEnd - grEndOfBegin + 1);
             long max = absMaxGranules - (long) Math.floor(Math.random() * (absMaxGranules - absMinGranules));
             long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules + 1));
+            min = (long) Math.floor(Math.random()*max);
 //            System.out.println("Spans: " + absMaxGranules + " " + max + " " + min + " " + absMinGranules + " bb:" + grBeginOfBegin + " eb:" + grEndOfBegin + " be:" + grBeginOfEnd + " ee:" + grEndOfEnd);
             
             Span maxDuration = tmpds.addSpan(max, granularity.getIdentifier());

@@ -43,8 +43,10 @@ public class Interval extends AnchoredTemporalElement {
             
             if(last instanceof Instant)
                 return (Instant) last;
-            else if(this.getChildCount() == 2 && last instanceof Span && this.getFirstChildPrimitive() instanceof Instant) {
-                throw new RuntimeException("Not implemented yet");
+            else if(this.getChildCount() == 2 && last instanceof Span && this.getFirstChildPrimitive() instanceof Instant) {            	
+            	Granule firstG = ((Instant)this.getFirstChildPrimitive()).getGranule();
+            	Granule lastG = new Granule(firstG.getIdentifier()+((Span)last).getLength(),firstG.getGranularity(),Granule.TOP);
+            	return last.getTemporalElementStore().addInstant(lastG);
             } else
                 throw new TemporalDataException("Syntax error in temporal element of type interval");
             

@@ -8,10 +8,14 @@ import prefuse.visual.VisualItem;
 import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.BasicTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
+import timeBench.data.Span;
+import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
+import timeBench.data.UnanchoredTemporalElement;
 
 /**
  * Layout {@link prefuse.action.Action} that assigns position and length
@@ -115,28 +119,60 @@ public class IntervalAxisLayout extends TimeAxisLayout {
     protected void layoutItem(VisualItem vi) {
         TemporalElement te = (TemporalElement) vi
                 .get(TemporalObject.TEMPORAL_ELEMENT);
-        te = super.getChildOnPath(te);
+        TemporalElement te2 = super.getChildOnPath(te);
 
-        if (te.isAnchored()) {
-            AnchoredTemporalElement ate = (AnchoredTemporalElement) te
+        if (te2.isAnchored()) {
+        	try {
+        		AnchoredTemporalElement ate = (AnchoredTemporalElement) te2
                     .asPrimitive();
 
-            int pixelInf = timeScale.getPixelForDate(ate.getInf());
-            int pixelSup = timeScale.getPixelForDate(ate.getSup());
-            double pixelWidth = pixelSup - pixelInf + 1.0;
+            	int pixelInf = timeScale.getPixelForDate(te2.getFirstInstant().getInf());
+            	int pixelSup = timeScale.getPixelForDate(te2.getLastInstant().getSup());
+            	double pixelWidth = pixelSup - pixelInf + 1.0;
 
-            double coord = (placement == Placement.MIDDLE) 
+            	double coord = (placement == Placement.MIDDLE) 
                     ? pixelInf + pixelWidth / 2.0
                     : (placement == Placement.INF) ? pixelInf : pixelSup;
             
-            if (super.getAxis() == Constants.X_AXIS) {
-                vi.setX(coord);
-                vi.setSizeX(pixelWidth);
-            } else {
-                // TODO test y axis layout direction
-                vi.setY(coord);
-                vi.setSizeY(pixelWidth);
-            }
+            	if (super.getAxis() == Constants.X_AXIS) {
+                	vi.setX(coord);
+                	vi.setSizeX(pixelWidth);
+            	} else {
+                	// TODO test y axis layout direction
+                	vi.setY(coord);
+                	vi.setSizeY(pixelWidth);
+            	}
+			} catch (TemporalDataException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+        } else {
+        	try {
+				long inf = te.getFirstInstant().getInf();
+	        	long sup = te.getLastInstant().getSup();
+	        	long duration = te2.getLength() *
+	        			(te.getFirstInstant().getGranule().getSup()-te.getFirstInstant().getGranule().getInf()+1L);
+	        	long before = ((sup-inf+1L)-duration)/2;
+	        	int pixelInf = timeScale.getPixelForDate(inf+before);
+	        	int pixelSup = timeScale.getPixelForDate(inf+before+duration-1L);
+	        	System.out.println(te.getId()+": "+te2.getLength());
+	        	
+	            double pixelWidth = pixelSup - pixelInf + 1.0;
+
+	            double coord = (placement == Placement.MIDDLE) 
+	                    ? pixelInf + pixelWidth / 2.0
+	                    : (placement == Placement.INF) ? pixelInf : pixelSup;
+	            
+	            if (super.getAxis() == Constants.X_AXIS) {
+	                vi.setX(coord);
+	                vi.setSizeX(pixelWidth);
+	            } else {
+	                // TODO test y axis layout direction
+	                vi.setY(coord);
+	                vi.setSizeY(pixelWidth);
+	            }
+			} catch (TemporalDataException e) {
+				throw new RuntimeException(e.getMessage());
+			}
         }
     }
 }

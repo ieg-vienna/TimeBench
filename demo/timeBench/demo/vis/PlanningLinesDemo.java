@@ -195,12 +195,12 @@ public class PlanningLinesDemo {
 
         TimeAxisLayout time_axis_left = new IntervalAxisLayout(GROUP_DATA_LEFT,
                 timeScale, new int[] {0});
-        TimeAxisLayout time_axis_right = new IntervalAxisLayout(GROUP_DATA_RIGHT,
+        TimeAxisLayout time_axis_max = new IntervalAxisLayout(GROUP_DATA_MAXDURATION,
                 timeScale,new int[] {1});
-        TimeAxisLayout time_axis_max = new MaxIntervalAxisLayout(GROUP_DATA_MAXDURATION,
-                timeScale,false);
-        TimeAxisLayout time_axis_min = new MaxIntervalAxisLayout(GROUP_DATA_MINDURATION,
-                timeScale,true);
+        TimeAxisLayout time_axis_min = new IntervalAxisLayout(GROUP_DATA_MINDURATION,
+                timeScale,new int[] {2});
+        TimeAxisLayout time_axis_right = new IntervalAxisLayout(GROUP_DATA_RIGHT,
+                timeScale,new int[] {3});
 
         // edges (=dependencies) do not have a caption
         AxisLayout y_axis_left = new InverseAxisLayout(GROUP_DATA_LEFT + ".nodes",
@@ -277,7 +277,7 @@ public class PlanningLinesDemo {
 
         DemoEnvironmentFactory env = new DemoEnvironmentFactory("Planning Lines");
         env.setPaintWeekends(false);
-        System.out.println("--------");
+//        System.out.println("--------");
         env.show(display, rangeAdapter);
     }
 
@@ -295,7 +295,7 @@ public class PlanningLinesDemo {
         @SuppressWarnings("rawtypes")
         @Override
         public void run(double frac) {
-            System.out.println("###########");
+//            System.out.println("###########");
             Iterator iter = super.m_vis.items(super.m_group);
             while (iter.hasNext()) {
                 DecoratorItem item = (DecoratorItem) iter.next();
@@ -303,7 +303,7 @@ public class PlanningLinesDemo {
                 Rectangle2D bounds = node.getBounds();
                 setX(item, null, bounds.getX());
                 setY(item, null, bounds.getCenterY() + bounds.getHeight() + 0);
-                System.out.println("#" + item.getString(COL_CAPTION));
+//                System.out.println("#" + item.getString(COL_CAPTION));
             }
         }
     } // end of inner class DecoratorLayout
