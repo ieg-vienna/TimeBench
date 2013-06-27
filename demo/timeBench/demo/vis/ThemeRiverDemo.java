@@ -7,9 +7,11 @@ import ieg.prefuse.data.DataHelper;
 import ieg.prefuse.renderer.LineRenderer;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
 import javax.swing.event.ChangeEvent;
@@ -38,6 +40,7 @@ import prefuse.data.io.DataIOException;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.PolygonRenderer;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
@@ -48,6 +51,7 @@ import prefuse.visual.sort.ItemSorter;
 import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
 import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.action.analytical.TemporalDataIndexingAction;
+import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
@@ -114,18 +118,16 @@ public class ThemeRiverDemo {
         TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
                 new Granularity(calendar, GRANULARITY_ID,
                         JavaDateCalendarManager.Granularities.Top.toInt()));
-        TemporalDataset tmpdsOrig = reader.readData(FILE_DATA);
+        TemporalDataset tmpds = reader.readData(FILE_DATA);
 
-        DataHelper.printMetadata(System.out, tmpdsOrig.getNodeTable());
-        DataHelper.printMetadata(System.out, tmpdsOrig.getTemporalElements()
-                .getNodeTable());
-        
-        ColumnToRowsTemporalDataTransformation transform = new ColumnToRowsTemporalDataTransformation();
-        TemporalDataset tmpds = transform.toRows(tmpdsOrig);
-        
-        DataHelper.printMetadata(System.out, tmpds.getNodeTable());
         DebugHelper.printTemporalDatasetTable(System.out, tmpds);
-
+        
+        Hashtable<String,Integer> classes = new Hashtable<String, Integer>();
+        int[] indices = tmpds.getDataColumnIndices(); 
+        for (int i=0; i<indices.length; i++) {
+        	classes.put(tmpds.getNodeTable().getSchema().getColumnName(indices[i]),i);
+        }
+        
         final Visualization vis = new Visualization();
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         // display width must be set before the time scale
@@ -134,11 +136,11 @@ public class ThemeRiverDemo {
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
-        VisualTable vt = vis.addTable(GROUP_DATA,
-                tmpds.getTemporalObjectTable());
-        vt.addColumn(COL_LABEL, new LabelExpression());
-        // add a column that will store indexed values
-        vt.addColumn(COL_INDEXED, double.class);
+//        VisualTable vt = vis.addTable(GROUP_DATA,
+//                tmpds.getTemporalObjectTable());
+//        vt.addColumn(COL_LABEL, new LabelExpression());
+//        // add a column that will store indexed values
+//        vt.addColumn(COL_INDEXED, double.class);
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -157,11 +159,8 @@ public class ThemeRiverDemo {
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
-        ShapeRenderer dotRenderer = new ShapeRenderer(6);
-        DefaultRendererFactory rf = new DefaultRendererFactory(dotRenderer);
-        rf.add(new InGroupPredicate(GROUP_LINES), new LineRenderer());
-        rf.add(new InGroupPredicate(GROUP_AXIS_LABELS), new AxisRenderer(
-                Constants.FAR_LEFT, Constants.CENTER));
+        PolygonRenderer polygonRenderer = new PolygonRenderer();
+        DefaultRendererFactory rf = new DefaultRendererFactory(polygonRenderer);
         vis.setRendererFactory(rf);
 
         // --------------------------------------------------------------------
@@ -170,55 +169,25 @@ public class ThemeRiverDemo {
         InterpolationIndexingAction indexing = new InterpolationIndexingAction(GROUP_DATA, COL_DATA, COL_INDEXED, COL_CITY);
         indexing.setIndexTime(tmpds.getInf());
 
-        TimeAxisLayout time_axis = new TimeAxisLayout(GROUP_DATA, timeScale);
+        ThemeRiverLayout themeRiver = new ThemeRiverLayout(GROUP_DATA, tmpds, classes, timeScale);
         
-        AxisLayout y_axis = new AxisLayout(GROUP_DATA, COL_INDEXED,
-                Constants.Y_AXIS, VisiblePredicate.TRUE);
-        // set visible value range to 0..100
-        y_axis.setRangeModel(new NumberRangeModel(-1.0d, 4.0d, -1d, 4d));
-
-        // add value axis labels and horizontal grid lines
-        AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
-                y_axis, 5);
-
-        // lineCreation add lines between all items in the group
-        Action lineCreation = new CategoryLinePlotAction(GROUP_LINES,
-                GROUP_DATA, COL_CITY);
-        // lineLayout updates x and y coordinates of lines
-        LinePlotLayout lineLayout = new LinePlotLayout(GROUP_LINES);
-
-        // visual attributes of line segments (can be created directly in add())
-        Action lineColor = new DataColorAction(GROUP_LINES, COL_CITY,
-                Constants.NOMINAL, VisualItem.STROKECOLOR, setAlpha(DemoEnvironmentFactory.set3Qualitative,
-                        127));
-        Action lineStroke = new StrokeAction(GROUP_LINES, new BasicStroke(3f));
-
-        // color must be set -> otherwise nothing displayed
-        ColorAction color = new DataColorAction(GROUP_DATA, COL_CITY,
-                Constants.NOMINAL, VisualItem.FILLCOLOR, DemoEnvironmentFactory.set3Qualitative);
-        color.add(new ColumnExpression(VisualItem.HOVER),
-                ColorLib.rgb(255, 100, 255));
+        DataColorAction fill = new DataColorAction(GROUP_DATA, "class", prefuse.Constants.ORDINAL,
+        		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set12Qualitative);       
+        ColorAction stroke = new ColorAction(GROUP_DATA, VisualItem.STROKECOLOR,ColorLib.color(Color.WHITE));
 
         ShapeAction shape = new ShapeAction(GROUP_DATA, Constants.SHAPE_ELLIPSE);
 
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
-        update.add(time_axis);
-        update.add(indexing);
-        update.add(y_axis);
-        update.add(y_labels);
-        update.add(lineLayout);
-        update.add(color);
+        update.add(themeRiver);
         update.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_UPDATE, update);
 
         // runs once (at startup)
         ActionList draw = new ActionList();
-        draw.add(lineCreation);
         draw.add(update);
-        draw.add(shape);
-        draw.add(lineColor);
-        draw.add(lineStroke);
+        draw.add(fill);
+        draw.add(stroke);
         draw.add(new RepaintAction());
         vis.putAction(DemoEnvironmentFactory.ACTION_INIT, draw);
 
