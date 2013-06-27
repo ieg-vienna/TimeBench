@@ -647,7 +647,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         throw new UnsupportedOperationException();
     }
     
-	public GenericTemporalElement addIndeterminateInterval(Interval begin, Interval end) {
+	public AnchoredTemporalElement addIndeterminateInterval(Interval begin, Span maxLength, Span minLength, Interval end) {
         GenericTemporalElement interval = addTemporalElement(begin.getInf(),
                 end.getSup(), begin.getGranularityId(),
                 begin.getGranularityContextId(),
@@ -655,9 +655,11 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
 
         // add edges to temporal element graph
         interval.linkWithChild(begin);
+        interval.linkWithChild(maxLength);
+        interval.linkWithChild(minLength);
         interval.linkWithChild(end);
 
-        return interval;
+        return (AnchoredTemporalElement) interval.asPrimitive();
 	}
     
     public AnchoredTemporalElement addAnchoredSet(TemporalElement... elements) throws TemporalDataException {

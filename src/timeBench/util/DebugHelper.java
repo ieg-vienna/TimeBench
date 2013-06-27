@@ -139,26 +139,38 @@ public class DebugHelper {
         tmpds.addDataColumn("caption", String.class, "");
 
         // cache in arrays for comfortable access
-        GenericTemporalElement[] elems = new GenericTemporalElement[size];
+        TemporalElement[] elems = new TemporalElement[size];
         TemporalObject[] objs = new TemporalObject[size];
 
         // add tasks with random length
         for (int i = 0; i < size; i++) {
         	
-            int days = (int) Math.floor(Math.random() * 4) + 1;
-            Granule granule = new Granule(0l, 0l, granularity);
+            long grBeginOfBegin = 0l;
+            long grEndOfBegin   = grBeginOfBegin + (long) Math.floor(Math.random() * 4);
+            
+            long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 16) + 1;
+            long grEndOfEnd     = grBeginOfEnd   + (long) Math.floor(Math.random() * 4);
+            
+            Granule granule = new Granule(grBeginOfBegin, granularity, Granule.TOP);
             Instant beginBegin = tmpds.addInstant(granule);
-            Span span = tmpds.addSpan(days, granularity.getIdentifier());
+            Span span = tmpds.addSpan(grEndOfBegin - grBeginOfBegin + 1, granularity.getIdentifier());
             Interval begin = tmpds.addInterval(beginBegin, span);
 
-            days += (int) Math.floor(Math.random() * 16) + 1;
-            granule = new Granule(days, granularity,Granule.TOP);
+            granule = new Granule(grBeginOfEnd, granularity, Granule.TOP);
             Instant beginEnd = tmpds.addInstant(granule);
-            days = (int) Math.floor(Math.random() * 4) + 1;
-            span = tmpds.addSpan(days, granularity.getIdentifier());
+            span = tmpds.addSpan(grEndOfEnd - grBeginOfEnd + 1, granularity.getIdentifier());
             Interval end = tmpds.addInterval(beginEnd, span);
             
-            elems[i] = tmpds.addIndeterminateInterval(begin,end);
+            long absMaxGranules = grEndOfEnd - grBeginOfBegin + 1;
+            long absMinGranules = Math.max(1, grBeginOfEnd - grEndOfBegin + 1);
+            long max = absMaxGranules - (long) Math.floor(Math.random() * (absMaxGranules - absMinGranules));
+            long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules + 1));
+//            System.out.println("Spans: " + absMaxGranules + " " + max + " " + min + " " + absMinGranules + " bb:" + grBeginOfBegin + " eb:" + grEndOfBegin + " be:" + grBeginOfEnd + " ee:" + grEndOfEnd);
+            
+            Span maxDuration = tmpds.addSpan(max, granularity.getIdentifier());
+            Span minduration = tmpds.addSpan(min, granularity.getIdentifier());
+            
+            elems[i] = tmpds.addIndeterminateInterval(begin,maxDuration, minduration, end);
             
             objs[i] = tmpds.addTemporalObject(elems[i]);
             objs[i].setString("caption", String.format("Task %2d", i));
