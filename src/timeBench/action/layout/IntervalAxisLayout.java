@@ -122,12 +122,11 @@ public class IntervalAxisLayout extends TimeAxisLayout {
         TemporalElement te2 = super.getChildOnPath(te);
 
         if (te2.isAnchored()) {
-        	try {
         		AnchoredTemporalElement ate = (AnchoredTemporalElement) te2
                     .asPrimitive();
 
-            	int pixelInf = timeScale.getPixelForDate(te2.getFirstInstant().getInf());
-            	int pixelSup = timeScale.getPixelForDate(te2.getLastInstant().getSup());
+            	int pixelInf = timeScale.getPixelForDate(ate.getInf());
+            	int pixelSup = timeScale.getPixelForDate(ate.getSup());
             	double pixelWidth = pixelSup - pixelInf + 1.0;
 
             	double coord = (placement == Placement.MIDDLE) 
@@ -142,19 +141,19 @@ public class IntervalAxisLayout extends TimeAxisLayout {
                 	vi.setY(coord);
                 	vi.setSizeY(pixelWidth);
             	}
-			} catch (TemporalDataException e) {
-				throw new RuntimeException(e.getMessage());
-			}
+
         } else {
         	try {
-				long inf = te.getFirstInstant().getInf();
-	        	long sup = te.getLastInstant().getSup();
-	        	long duration = (te2.getLength()+1) *
+        		AnchoredTemporalElement ate = (AnchoredTemporalElement) te
+                        .asPrimitive();
+        		
+				long inf = ate.getInf();
+	        	long sup = ate.getSup();
+	        	long duration = te2.getLength() *
 	        			(te.getFirstInstant().getGranule().getSup()-te.getFirstInstant().getGranule().getInf()+1L);
 	        	long before = ((sup-inf+1L)-duration)/2;
-	        	int pixelInf = timeScale.getPixelForDate(inf+before)+1;
+	        	int pixelInf = timeScale.getPixelForDate(inf+before);
 	        	int pixelSup = timeScale.getPixelForDate(inf+before+duration-1L);
-	        	System.out.println(te.getId()+": "+te2.getLength());
 	        	
 	            double pixelWidth = pixelSup - pixelInf + 1.0;
 
