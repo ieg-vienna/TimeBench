@@ -146,10 +146,10 @@ public class DebugHelper {
         for (int i = 0; i < size; i++) {
         	
             long grBeginOfBegin = 0l;
-            long grEndOfBegin   = grBeginOfBegin + (long) Math.floor(Math.random() * 4+1);
+            long grEndOfBegin   = grBeginOfBegin + (long) Math.floor(Math.random() * 4) + 1;
             
-            long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 16) + 2;
-            long grEndOfEnd     = grBeginOfEnd   + (long) Math.floor(Math.random() * 4+1);
+            long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 12) + 2;
+            long grEndOfEnd     = grBeginOfEnd   + (long) Math.floor(Math.random() * 4) + 1;
             
             Granule granule = new Granule(grBeginOfBegin, granularity, Granule.TOP);
             Instant beginBegin = tmpds.addInstant(granule);
@@ -164,8 +164,8 @@ public class DebugHelper {
             long absMaxGranules = grEndOfEnd - grBeginOfBegin + 1;
             long absMinGranules = Math.max(1, grBeginOfEnd - grEndOfBegin + 1);
             long max = absMaxGranules - (long) Math.floor(Math.random() * (absMaxGranules - absMinGranules));
-            long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules));
-//            System.out.println("Spans: " + absMaxGranules + " " + max + " " + min + " " + absMinGranules + " bb:" + grBeginOfBegin + " eb:" + grEndOfBegin + " be:" + grBeginOfEnd + " ee:" + grEndOfEnd);
+            long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules) * 0.9);
+            System.out.println("Spans: " + absMaxGranules + " " + max + " " + min + " " + absMinGranules + " bb:" + grBeginOfBegin + " eb:" + grEndOfBegin + " be:" + grBeginOfEnd + " ee:" + grEndOfEnd);
             
             Span maxDuration = tmpds.addSpan(max, granularity.getIdentifier());
             Span minduration = tmpds.addSpan(min, granularity.getIdentifier());

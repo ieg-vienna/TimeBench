@@ -101,7 +101,7 @@ public class PlanningLinesDemo {
                 latestStart = Math.max(latestStart, 
                 		((Interval)(prev.getTemporalElement().getLastChildPrimitive())).getSup());
             }
-            earliestStart++;
+            earliestStart++; earliestStart++;
             latestStart++;
             
             long minLength = ((Interval)obj.getTemporalElement().getLastChildPrimitive()).getInf() -
@@ -143,7 +143,7 @@ public class PlanningLinesDemo {
                         .getTopGranularityIdentifier());
 
         TemporalDataset tmpds = DebugHelper
-                .generateIndeterminateProjectPlan(20, granularity);
+                .generateIndeterminateProjectPlan(15, granularity);
         schedule(tmpds, System.currentTimeMillis(), granularity);
         // DataHelper.printTable(System.out, tmpds.getNodeTable());
         // DataHelper.printTable(System.out, tmpds.getEdgeTable());
@@ -262,6 +262,8 @@ public class PlanningLinesDemo {
         display.setItemSorter(new ItemSorter() {
             public int score(VisualItem item) {
                 int score = super.score(item);
+                if (item.isInGroup(GROUP_DATA_MAXDURATION))
+                    score--;
                 if (item.isInGroup(GROUP_DATA_MINDURATION))
                     score++;
                 if (item.isInGroup(GROUP_DATA_MINDURATION+".edges"))
