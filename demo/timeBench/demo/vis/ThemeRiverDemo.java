@@ -1,12 +1,5 @@
 package timeBench.demo.vis;
 
-import ieg.prefuse.action.layout.CategoryLinePlotAction;
-import ieg.prefuse.action.layout.LinePlotLayout;
-import ieg.prefuse.action.layout.TickAxisLabelLayout;
-import ieg.prefuse.data.DataHelper;
-import ieg.prefuse.renderer.LineRenderer;
-
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -18,41 +11,27 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
 
-import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
-import prefuse.action.Action;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
-import prefuse.action.assignment.ShapeAction;
-import prefuse.action.assignment.StrokeAction;
-import prefuse.action.layout.AxisLabelLayout;
-import prefuse.action.layout.AxisLayout;
 import prefuse.controls.ControlAdapter;
 import prefuse.controls.ToolTipControl;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AbstractExpression;
-import prefuse.data.expression.ColumnExpression;
 import prefuse.data.io.DataIOException;
-import prefuse.data.query.NumberRangeModel;
-import prefuse.render.AxisRenderer;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.PolygonRenderer;
-import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
-import prefuse.visual.VisualTable;
-import prefuse.visual.expression.InGroupPredicate;
-import prefuse.visual.expression.VisiblePredicate;
 import prefuse.visual.sort.ItemSorter;
 import timeBench.action.analytical.ColumnToRowsTemporalDataTransformation;
 import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.action.analytical.TemporalDataIndexingAction;
 import timeBench.action.layout.ThemeRiverLayout;
-import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.action.layout.timescale.TimeScale;
@@ -91,7 +70,7 @@ import timeBench.util.DemoEnvironmentFactory;
  */
 public class ThemeRiverDemo {
 
-    private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
+    private static final String FILE_DATA = "data/nmmaps-resp-3-12monthly-matrix.csv";
     private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month.toInt();
 
     private static final String COL_DATA = "value";
@@ -174,8 +153,6 @@ public class ThemeRiverDemo {
         DataColorAction fill = new DataColorAction(GROUP_DATA, "class", prefuse.Constants.ORDINAL,
         		VisualItem.FILLCOLOR,DemoEnvironmentFactory.set12Qualitative);       
         ColorAction stroke = new ColorAction(GROUP_DATA, VisualItem.STROKECOLOR,ColorLib.color(Color.WHITE));
-
-        ShapeAction shape = new ShapeAction(GROUP_DATA, Constants.SHAPE_ELLIPSE);
 
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
