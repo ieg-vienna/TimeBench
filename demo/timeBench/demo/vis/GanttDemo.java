@@ -184,6 +184,7 @@ public class GanttDemo {
         draw.add(new ColorAction(GROUP_CAPTIONS, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
         draw.add(new SizeAction(GROUP_DATA, 1, Constants.Y_AXIS));
+        draw.add(new DecoratorLayout(GROUP_CAPTIONS));
         draw.add(new ColorAction(GROUP_DATA + ".nodes", VisualItem.FILLCOLOR,
                 ColorLib.rgb(77, 175, 74))); // green from ColorBrewer Set 1
 //                ColorLib.rgb(141, 211, 199))); // green from ColorBrewer Set 3
