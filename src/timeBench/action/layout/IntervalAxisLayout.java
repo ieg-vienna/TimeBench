@@ -4,18 +4,15 @@ import ieg.prefuse.renderer.IntervalBarRenderer;
 import prefuse.Constants;
 import prefuse.data.expression.Predicate;
 import prefuse.render.Renderer;
+import prefuse.render.ShapeRenderer;
 import prefuse.visual.VisualItem;
-import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.BasicTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
-import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
-import timeBench.data.Span;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
-import timeBench.data.UnanchoredTemporalElement;
 
 /**
  * Layout {@link prefuse.action.Action} that assigns position and length

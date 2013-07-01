@@ -20,6 +20,7 @@ import timeBench.data.Span;
  * 
  * @author Rind
  */
+@Deprecated
 public class SpanAxisLayout extends IntervalAxisLayout {
 
     public SpanAxisLayout(String group) {
