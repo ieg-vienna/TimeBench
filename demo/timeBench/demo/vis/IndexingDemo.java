@@ -86,7 +86,7 @@ import timeBench.util.DemoEnvironmentFactory;
  */
 public class IndexingDemo {
 
-    private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
+    private static final String FILE_DATA = "data/nmmaps-resp-3-12monthly-matrix.csv";
     private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month.toInt();
 
     private static final String COL_DATA = "value";
@@ -155,7 +155,7 @@ public class IndexingDemo {
 
         // --------------------------------------------------------------------
         // STEP 2: set up renderers for the visual data
-        ShapeRenderer dotRenderer = new ShapeRenderer(6);
+        ShapeRenderer dotRenderer = new ShapeRenderer(8);
         DefaultRendererFactory rf = new DefaultRendererFactory(dotRenderer);
         rf.add(new InGroupPredicate(GROUP_LINES), new LineRenderer());
         rf.add(new InGroupPredicate(GROUP_AXIS_LABELS), new AxisRenderer(
@@ -174,6 +174,7 @@ public class IndexingDemo {
                 Constants.Y_AXIS, VisiblePredicate.TRUE);
         // set visible value range to 0..100
         y_axis.setRangeModel(new NumberRangeModel(-1.0d, 4.0d, -1d, 4d));
+        // y_axis.setRangeModel(new NumberRangeModel(-1.05d, 1.05d, -1.05d, 1.05d));
 
         // add value axis labels and horizontal grid lines
         AxisLabelLayout y_labels = new TickAxisLabelLayout(GROUP_AXIS_LABELS,
@@ -189,7 +190,7 @@ public class IndexingDemo {
         Action lineColor = new DataColorAction(GROUP_LINES, COL_CITY,
                 Constants.NOMINAL, VisualItem.STROKECOLOR, setAlpha(DemoEnvironmentFactory.set3Qualitative,
                         127));
-        Action lineStroke = new StrokeAction(GROUP_LINES, new BasicStroke(3f));
+        Action lineStroke = new StrokeAction(GROUP_LINES, new BasicStroke(4f));
 
         // color must be set -> otherwise nothing displayed
         ColorAction color = new DataColorAction(GROUP_DATA, COL_CITY,

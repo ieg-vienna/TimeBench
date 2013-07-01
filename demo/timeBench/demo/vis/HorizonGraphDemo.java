@@ -153,7 +153,7 @@ public class HorizonGraphDemo {
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 10;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
-                tmpds.getInf() - border, tmpds.getSup() + border,
+                tmpds.getInf() - border, tmpds.getSup(),
                 display.getWidth() - 1);
         AdvancedTimeScale overviewTimeScale = new AdvancedTimeScale(timeScale);
         RangeAdapter rangeAdapter = new RangeAdapter(overviewTimeScale,
