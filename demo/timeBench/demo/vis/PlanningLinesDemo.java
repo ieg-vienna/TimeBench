@@ -34,7 +34,6 @@ import prefuse.util.DataLib;
 import prefuse.util.ui.UILib;
 import prefuse.visual.DecoratorItem;
 import prefuse.visual.EdgeItem;
-import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.ItemSorter;
@@ -130,7 +129,6 @@ public class PlanningLinesDemo {
      * @param args
      * @throws TemporalDataException
      */
-    @SuppressWarnings("unused")
     public static void main(String[] args) throws TemporalDataException {
         java.util.Locale.setDefault(java.util.Locale.US);
         UILib.setPlatformLookAndFeel();
@@ -143,7 +141,7 @@ public class PlanningLinesDemo {
                         .getTopGranularityIdentifier());
 
         TemporalDataset tmpds = DebugHelper
-                .generateIndeterminateProjectPlan(15, granularity);
+                .generateIndeterminateProjectPlan(20, granularity);
         schedule(tmpds, System.currentTimeMillis(), granularity);
         // DataHelper.printTable(System.out, tmpds.getNodeTable());
         // DataHelper.printTable(System.out, tmpds.getEdgeTable());
@@ -152,15 +150,15 @@ public class PlanningLinesDemo {
         final TimeAxisDisplay display = new TimeAxisDisplay(vis);
         // display width must be set before the time scale
         // otherwise the initial layout does not match the display width
-        display.setSize(900, 650);
+        display.setSize(950, 650);
 
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data & time scale
-        VisualGraph vgLeft = vis.addGraph(GROUP_DATA_LEFT, tmpds);
-        VisualGraph vgRight = vis.addGraph(GROUP_DATA_RIGHT, tmpds);
-        VisualGraph vgMin = vis.addGraph(GROUP_DATA_MINDURATION, tmpds);
-        VisualGraph vgMax = vis.addGraph(GROUP_DATA_MAXDURATION, tmpds);
-        vis.addDecorators(GROUP_CAPTIONS, GROUP_DATA_LEFT + ".nodes");
+        vis.addGraph(GROUP_DATA_MINDURATION, tmpds);
+        vis.addDecorators(GROUP_DATA_MAXDURATION, GROUP_DATA_MINDURATION + ".nodes");
+        vis.addDecorators(GROUP_DATA_LEFT, GROUP_DATA_MINDURATION + ".nodes");
+        vis.addDecorators(GROUP_DATA_RIGHT, GROUP_DATA_MINDURATION + ".nodes");
+        vis.addDecorators(GROUP_CAPTIONS, GROUP_DATA_LEFT);
 
         long border = (tmpds.getSup() - tmpds.getInf()) / 20;
         final AdvancedTimeScale timeScale = new AdvancedTimeScale(
@@ -203,11 +201,11 @@ public class PlanningLinesDemo {
                 timeScale,new int[] {3});
 
         // edges (=dependencies) do not have a caption
-        AxisLayout y_axis_left = new InverseAxisLayout(GROUP_DATA_LEFT + ".nodes",
+        AxisLayout y_axis_left = new InverseAxisLayout(GROUP_DATA_LEFT,
                 COL_CAPTION, Constants.Y_AXIS, 13.0);
-        AxisLayout y_axis_right = new InverseAxisLayout(GROUP_DATA_RIGHT + ".nodes",
+        AxisLayout y_axis_right = new InverseAxisLayout(GROUP_DATA_RIGHT,
                 COL_CAPTION, Constants.Y_AXIS, 13.0);
-        AxisLayout y_axis_max = new InverseAxisLayout(GROUP_DATA_MAXDURATION + ".nodes",
+        AxisLayout y_axis_max = new InverseAxisLayout(GROUP_DATA_MAXDURATION,
                 COL_CAPTION, Constants.Y_AXIS, 10.0);
         AxisLayout y_axis_min = new InverseAxisLayout(GROUP_DATA_MINDURATION + ".nodes",
                 COL_CAPTION, Constants.Y_AXIS, 10.0);
@@ -234,14 +232,14 @@ public class PlanningLinesDemo {
         draw.add(new ShapeAction(GROUP_DATA_LEFT, ExtendedShapeRenderer.SHAPE_LEFT_BRACKET));
         draw.add(new ShapeAction(GROUP_DATA_RIGHT, ExtendedShapeRenderer.SHAPE_RIGHT_BRACKET));
         draw.add(new ShapeAction(GROUP_DATA_MAXDURATION, Constants.SHAPE_RECTANGLE));
-        draw.add(new ShapeAction(GROUP_DATA_MINDURATION, Constants.SHAPE_RECTANGLE));
+        draw.add(new ShapeAction(GROUP_DATA_MINDURATION + ".nodes", Constants.SHAPE_RECTANGLE));
         draw.add(new ColorAction(GROUP_CAPTIONS, VisualItem.TEXTCOLOR, ColorLib
                 .color(Color.BLACK)));
-        draw.add(new ColorAction(GROUP_DATA_LEFT + ".nodes", VisualItem.STROKECOLOR,
+        draw.add(new ColorAction(GROUP_DATA_LEFT, VisualItem.STROKECOLOR,
                 ColorLib.rgb(0, 0, 0)));
-        draw.add(new ColorAction(GROUP_DATA_RIGHT + ".nodes", VisualItem.STROKECOLOR,
+        draw.add(new ColorAction(GROUP_DATA_RIGHT, VisualItem.STROKECOLOR,
                 ColorLib.rgb(0, 0, 0)));
-        draw.add(new ColorAction(GROUP_DATA_MAXDURATION + ".nodes", VisualItem.FILLCOLOR,
+        draw.add(new ColorAction(GROUP_DATA_MAXDURATION, VisualItem.FILLCOLOR,
         		DemoEnvironmentFactory.set3Qualitative[1]));
         draw.add(new ColorAction(GROUP_DATA_MINDURATION + ".nodes", VisualItem.FILLCOLOR,
         		DemoEnvironmentFactory.set3Qualitative[5]));
@@ -257,7 +255,7 @@ public class PlanningLinesDemo {
         display.setHighQuality(true);
 
         // ensure there is space on bottom for caption label
-        display.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        display.setBorder(BorderFactory.createEmptyBorder(12, 0, 22, 0));
 
         display.setItemSorter(new ItemSorter() {
             public int score(VisualItem item) {
@@ -265,7 +263,7 @@ public class PlanningLinesDemo {
                 if (item.isInGroup(GROUP_DATA_MAXDURATION))
                     score--;
                 if (item.isInGroup(GROUP_DATA_MINDURATION))
-                    score++;
+                    score = Integer.MAX_VALUE - 1;
                 if (item.isInGroup(GROUP_DATA_MINDURATION+".edges"))
                     score=Integer.MAX_VALUE;
                 return score;

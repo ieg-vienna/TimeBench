@@ -148,7 +148,7 @@ public class DebugHelper {
             long grBeginOfBegin = 0l;
             long grEndOfBegin   = grBeginOfBegin + (long) Math.floor(Math.random() * 4) + 1;
             
-            long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 12) + 2;
+            long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 10) + 4;
             long grEndOfEnd     = grBeginOfEnd   + (long) Math.floor(Math.random() * 4) + 1;
             
             Granule granule = new Granule(grBeginOfBegin, granularity, Granule.TOP);
@@ -163,8 +163,8 @@ public class DebugHelper {
             
             long absMaxGranules = grEndOfEnd - grBeginOfBegin + 1;
             long absMinGranules = Math.max(1, grBeginOfEnd - grEndOfBegin + 1);
-            long max = absMaxGranules - (long) Math.floor(Math.random() * (absMaxGranules - absMinGranules));
-            long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules) * 0.9);
+            long max = absMaxGranules - (long) Math.floor(Math.random() * (absMaxGranules - absMinGranules) * 0.6);
+            long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules) * 0.6);
             System.out.println("Spans: " + absMaxGranules + " " + max + " " + min + " " + absMinGranules + " bb:" + grBeginOfBegin + " eb:" + grEndOfBegin + " be:" + grBeginOfEnd + " ee:" + grEndOfEnd);
             
             Span maxDuration = tmpds.addSpan(max, granularity.getIdentifier());
