@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Name: timeBench/calendar/
+Specification-Title: TimeBench Manifest
+Specification-Version: 1.0
+Specification-Vendor: Information Engineering Group, Vienna University of Technology
+Implementation-Title: timeBench.calendar
+Implementation-Version: 1.0.0
+Implementation-Vendor: Information Engineering Group, Vienna University of Technology
