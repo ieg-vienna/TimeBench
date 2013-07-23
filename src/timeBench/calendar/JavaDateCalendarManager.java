@@ -25,6 +25,21 @@ public class JavaDateCalendarManager implements CalendarManager {
 	protected java.util.Calendar javaCalendar = null;
 	
 	/**
+	 * Return the identifier of this version of the JavaDataCalendarManager
+	 * Format:
+	 * 		                  MMMMM VVVVVVVV
+	 *              CalendarManager  Version
+	 *      JavaDataCalendarManager    Count
+	 *      
+	 * Do not use three-part package version directly, instead increase by 1 for every new version.
+	 * 
+	 * @return the identifier
+	 */
+	public static int getIdentifier() {
+		return 1;
+	}
+	
+	/**
 	 * Constructs a JavaDateCalendarManager. Consider using the
 	 * {@linkplain JavaDateCalendarManager#getDefaultCalendar() singleton} instead.
 	 */
