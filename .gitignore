@@ -1,0 +1,19 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# MAC OS Files #
+.DS_Store
+
+# Eclipse Files #
+.project
+.classpath
+.metadata
+bin/
+local.properties
+.settings/
+.loadpath
+
