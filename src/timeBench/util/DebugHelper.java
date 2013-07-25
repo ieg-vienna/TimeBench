@@ -8,6 +8,7 @@ import prefuse.data.Tuple;
 import prefuse.data.tuple.TupleSet;
 
 import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
@@ -209,15 +210,16 @@ public class DebugHelper {
     
     public static TemporalDataset generateValidInstants(int size)
             throws TemporalDataException {
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
         TemporalDataset tmpds = new TemporalDataset();
         tmpds.addDataColumn("caption", String.class, "");
     
         for (int i = 0; i < size; i++) {
             long inf = Math.round(Math.random() * 31536000000.0); // 1 year
             int gId = (int) Math.floor(Math.random() * 6) + 1;
-            Granularity granularity = new Granularity(calendar,gId, 32767);
+            gId += CalendarFactory.getSingleton().getGranularityIdentifierSummandFromCalendarIdentifier(
+            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getIdentifier());
+            Granularity granularity = CalendarFactory.getSingleton().getGranularity(gId,
+            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getTopGranularity().getIdentifier());
             Granule granule = new Granule(inf,inf,granularity);
             // Granule granule = granularity.parseDateToGranule(new Date());
             TemporalElement te = tmpds.addInstant(granule);

@@ -26,11 +26,19 @@ public interface CalendarManager {
 	public Calendar calendar();
 	
 	/**
-	 * Provides access to a singleton instance of a calendar, the only one that can currently be provided.
+	 * Provides access to a singleton instance of the default calendar of the calendar manager.
 	 * It does only create one instance and provides that one with every call.
 	 * @return The calendar.
 	 */
-	public Calendar getDefaultCalendar();    
+	public Calendar getDefaultCalendar();
+		
+	/**
+	 * Provides access to a singleton instance of a calendar.
+	 * It does only create one instance and provides that one with every call.
+	 * @param identifier the identifier of the calendar
+	 * @return The calendar.
+	 */
+	public Calendar getCalendar(int identifier);
 	
 	/**
 	 * Returns an {@link Array} of granularity identifiers that are provided by the calendar.
@@ -160,4 +168,5 @@ public interface CalendarManager {
 	public long getStartOfTime();
 	
 	public long getEndOfTime();
+
 }

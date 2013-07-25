@@ -24,14 +24,16 @@ import timeBench.data.TemporalDataException;
  */
 @XmlJavaTypeAdapter(Calendar.CalendarAdapter.class) 
 public class Calendar {
-	private CalendarManager calendarManager = null;	
+	private CalendarManager calendarManager = null;
+	private int identifier;
 	
 	/**
 	 * Constructs a Calendar using a given {@link CalendarManager}.
 	 * @param calendarManager the {@link CalendarManager} the new calendar maps to
 	 */
-	public Calendar(CalendarManager calendarManager) {
+	public Calendar(CalendarManager calendarManager,int identifier) {
 		this.calendarManager = calendarManager;
+		this.identifier = identifier;
 	}	
 	
 	/**
@@ -41,6 +43,17 @@ public class Calendar {
 	 */
 	public Granularity getBottomGranularity() {
 		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
+	}
+	
+	/**
+	 * Returns the top granularity of the this calendar as {@link Granularity}.
+	 * This is the highest possible granularity of the calendar.
+	 * Usually, this is a granularity where one granule is composed of all the time the calendar is defined for.
+	 * Let all calendars that would normally have this be modified so they have one. 
+	 * @return the top granularity identifier
+	 */
+	public Granularity getTopGranularity() {
+		return new Granularity(this,calendarManager.getTopGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
 	}
     
 	/**
@@ -57,13 +70,12 @@ public class Calendar {
 
         @Override
         public Integer marshal(Calendar arg0) throws Exception {
-            // TODO get Integer value of a calendar manager for XML marshaling
-            return 0; // arg0.calendarManager;
+            return arg0.getIdentifier();
         }
 
         @Override
         public Calendar unmarshal(Integer arg0) throws Exception {
-            return CalendarManagerFactory.getSingleton(CalendarManagers.fromInt(arg0)).getDefaultCalendar();
+            return CalendarFactory.getSingleton().getCalendar(arg0);
         }        
     }
 
@@ -77,6 +89,13 @@ public class Calendar {
 	 */ 
     protected Granule createGranule(Date date, Granularity granularity) throws TemporalDataException {
 		return calendarManager.createGranule(date,granularity);
+	}
+
+	/**
+	 * 
+	 */
+	public int getIdentifier() {
+		return identifier;
 	}
 
 	/**
