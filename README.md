@@ -43,7 +43,7 @@ The library depends on the following packages:
 - [Apache Commons Lang 3 classes](http://commons.apache.org/proper/commons-lang/)
 - [Apache log4j 1.2](http://logging.apache.org/log4j/1.2/)
 - [iCal4j 1.0.4](http://sourceforge.net/projects/ical4j/) 
-- Java/R Interface (JRI), which is part of rJava
+- Java/R Interface (JRI), which is part of [rJava](http://www.rforge.net/rJava/)
 - [ieg-util](https://github.com/ieg-vienna/ieg-util), general Java utilities
 - [ieg-prefuse](https://github.com/ieg-vienna/ieg-prefuse), general prefuse extensions
 
