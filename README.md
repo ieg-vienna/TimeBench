@@ -1,12 +1,6 @@
-TimeBench README
-(snapshot for VAST 2013 submission; the source code will be moved to GitHub 
-with the final publication)
-
-THIS SOFTWARE DISTRIBUTION IS PROVIDED FOR SCIENTIFIC PEER-REVIEW ONLY AND IS 
-SUBJECT TO VGTC ETHICS GUIDELINES FOR REVIEWERS, IN PARTICULAR CONFIDENTIALITY.
+TimeBench
+================================
  
---INTRO--
-
 TimeBench, a flexible, easy-to-use, and reusable software library written in 
 Java that provides foundational data structures and algorithms for time-
 oriented data in Visual Analytics. Thus, it eases the development and testing 
@@ -14,34 +8,53 @@ of new visualization, interaction, and analysis methods. It facilitates the
 reuse and combination of such methods and fosters their reproducibility and 
 comparability.
 
-TimeBench will be licensed under the terms of a BSD 2-clause license with the 
-final publication.
+TimeBench is licensed under the terms of a BSD 2-clause license, and can be 
+freely used for both commercial and non-commercial purposes (see LICENSE).
 
---STRUCTURE--
+DEMO
+----
+
+The source of several demo applications showing the library in use is included
+in the `demo/` directory. 
+
+The demos are also available via Java Web Start at
+(http://www.cvast.tuwien.ac.at/TimeBench).
+
+STRUCTURE
+---------
 
 The library distribution uses the following organization:
-
+<pre>
 + TimeBench
 |-- data   Data files used by the demo applications
 |-- demo   Demo applications showing the library in use
-|-- lib    Third-party libraries used by TimeBench and their licenses
 |-- src    The source code for the TimeBench library
+</pre>
 
---REQUIREMENTS--
+REQUIREMENTS
+------------
 
 TimeBench is written in Java 1.6. To compile the TimeBench code, and to build 
 and run Visual Analytics prototypes, you'll need a copy of the Java Development 
 Kit (JDK) for version 1.6 or greater. 
 
-Besides the Java 1.6 core classes and prefuse, TimeBench depends on the 
-libraries Apache Commons Lang 3.0, Apache log4j 1.2, iCal4j 1.0.4, and the 
-Java/R Interface (JRI), which is part of rJava.
+The library depends on the following packages: 
+- [prefuse](https://github.com/ieg-vienna/Prefuse), with some extensions
+- [Apache Commons Lang 3 classes](http://commons.apache.org/proper/commons-lang/)
+- [Apache log4j 1.2](http://logging.apache.org/log4j/1.2/)
+- [iCal4j 1.0.4](http://sourceforge.net/projects/ical4j/) 
+- Java/R Interface (JRI), which is part of rJava
+- [ieg-util](https://github.com/ieg-vienna/ieg-util), general Java utilities
+- [ieg-prefuse](https://github.com/ieg-vienna/ieg-prefuse), general prefuse extensions
 
 We also recommended (though by no means is it required) that you use an
 Integrated Development Environment such as Eclipse (http://eclipse.org).
 Especially if you are a Java novice, it will likely make your life much easier.
 
---MORE--
+Citation
+--------
 
-Additional information and documentation, a help forum, and more will be made
-available on GitHub in the future.
+Rind, A.; Lammarsch, T.; Aigner, W.; Alsallakh, B. & Miksch, S.: 
+TimeBench: A Data Model and Software Library for Visual Analytics of Time-Oriented Data, 
+_IEEE Transactions on Visualization and Computer Graphics, Special Issue "VIS 2013",_ 
+Vol. 19, No. 12, forthcoming, 2013.
