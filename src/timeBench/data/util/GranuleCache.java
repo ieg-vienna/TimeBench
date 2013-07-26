@@ -5,6 +5,7 @@ import prefuse.data.column.ObjectColumn;
 import prefuse.data.event.EventConstants;
 import prefuse.data.event.TableListener;
 import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
@@ -26,10 +27,6 @@ public class GranuleCache {
 
     private TemporalElementStore tmpstr;
 
-    // TODO make configurable; move to TemporalElementStore?
-    private Calendar calendar = CalendarManagerFactory.getSingleton(
-            CalendarManagers.JavaDate).getDefaultCalendar();
-
     public GranuleCache(TemporalElementStore tmpstr) {
         this.tmpstr = tmpstr;
         tmpstr.getNodeTable()
@@ -50,7 +47,7 @@ public class GranuleCache {
             GenericTemporalElement elem = tmpstr.getTemporalElementByRow(row);
             if (elem.isAnchored()) {
                 // TODO reuse granularity objects --> calendar responsible?
-                Granularity g = new Granularity(calendar,
+                Granularity g = CalendarFactory.getSingleton().getGranularity(
                         elem.getGranularityId(), elem.getGranularityContextId());
                 granules.set(g.createGranules(elem.getInf(), elem.getSup()), row);
             } else {

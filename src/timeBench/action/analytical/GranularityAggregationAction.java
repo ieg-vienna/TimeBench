@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
@@ -35,7 +37,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
     
 	TemporalDataset sourceDataset;
 	GranularityAggregationTree workingDataset;
-	CalendarManager calendarManager;
+	Calendar calendar;
 	Granularity[] granularities;	
 	double missingValueIdentifier;
 	GranularityAggregationFunction[] aggFct;
@@ -45,13 +47,16 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	 * @param temporalDataset
 	 * @param columnsUsed 
 	 */
-	public GranularityAggregationAction(TemporalDataset sourceDataset, CalendarManagers calendarManager,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
+	public GranularityAggregationAction(TemporalDataset sourceDataset,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
 		this.sourceDataset = sourceDataset;
-		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		this.granularities = new Granularity[granularities.length];
 		aggFct = new GranularityAggregationFunction[granularities.length];
+		if(granularities.length > 0)
+			this.calendar = CalendarFactory.getSingleton().getCalendar(
+					CalendarFactory.getSingleton().getCalendarIdentifierFromGranularityIdentifier(
+					granularities[0].getIdentifier()));
 		for(int i=0; i<granularities.length; i++) {
-			this.granularities[i] = new Granularity(this.calendarManager.getDefaultCalendar(),granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
+			this.granularities[i] = new Granularity(calendar,granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
 			aggFct[i] = granularities[i].getAggregationFct();
 		}
 		this.missingValueIdentifier = missingValueIdentifier;

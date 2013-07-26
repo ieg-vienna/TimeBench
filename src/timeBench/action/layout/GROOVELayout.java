@@ -26,9 +26,9 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.VisualTree;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManager;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.TemporalDataException;
@@ -47,7 +47,6 @@ import timeBench.data.TemporalObject;
  */
 public class GROOVELayout extends prefuse.action.layout.Layout {
 	
-	CalendarManager calendarManager;
 	int[] hotPalette;
 	String group = "GROOVE";
 	GranularityAggregationTreeProvider dataProvider;
@@ -66,9 +65,8 @@ public class GROOVELayout extends prefuse.action.layout.Layout {
 	public static final int FITTING_FULL_AVAILABLE_SPACE = 0;
 	public static final int FITTING_DEPENDING_ON_POSSIBLE_VALUES = 1;
 	
-	public GROOVELayout(String group,String labelGroup,CalendarManagers calendarManager,GranularityAggregationTreeProvider dataProvider,
+	public GROOVELayout(String group,String labelGroup,GranularityAggregationTreeProvider dataProvider,
 			int columnUsed,GranularityGROOVELayoutSettings[] settings) {		
-		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		hotPalette = prefuse.util.ColorLib.getHotPalette(768);
 		this.group = group;
 		this.labelGroup = labelGroup;

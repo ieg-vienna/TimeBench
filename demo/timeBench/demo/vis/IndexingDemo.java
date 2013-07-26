@@ -53,6 +53,7 @@ import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.action.layout.timescale.TimeScale;
 import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
@@ -108,11 +109,9 @@ public class IndexingDemo {
     public static void main(String[] args) throws TemporalDataException,
             IOException, JAXBException, DataIOException {
         // java.util.Locale.setDefault(java.util.Locale.US);
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
         TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-                new Granularity(calendar, GRANULARITY_ID,
-                        JavaDateCalendarManager.Granularities.Top.toInt()));
+        		CalendarFactory.getSingleton().getGranularity(
+        				GRANULARITY_ID,JavaDateCalendarManager.Granularities.Top.toInt()));
         TemporalDataset tmpdsOrig = reader.readData(FILE_DATA);
 
         DataHelper.printMetadata(System.out, tmpdsOrig.getNodeTable());

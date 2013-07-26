@@ -48,76 +48,58 @@ public class JavaDateCalendarManager implements CalendarManager {
 		javaCalendar.setLenient(true);
 	}	
 	
-	/**
-	 * The granularities enumeration supports a certain number of granularities.
-	 *  
-	 * <p>
-	 * Added:          2011-07-19 / TL<br>
-	 * Modifications: 
-	 * </p>
-	 * 
-	 * @author Tim Lammarsch
-	 *
-	 */
-	public enum Granularities {
-		Millisecond (0),
-		Second (1),
-		Minute (2),
-		Hour (3),
-		Day (4),
-		Week (5),
-		Month (6),
-		Quarter (7),
-		Year (8),
-		Decade(10),
-		Calendar (16383),	// Calendar has one granule from start to end of the calendar
-		Top (32767);	// Top has one granule from start to end of time
-
-		
-		private int intValue;
-		
-		Granularities(int toInt) {
-			intValue = toInt;
-		}
-		
-		
-		/**
-		 * Converts a granularity from the enumeration to an identifier.
-		 * This identifier is not globally unique, it depends on calendarManager and calendar.
-		 * @return The equivalent identifier.
-		 */
-		public int toInt()
-		{
-			return intValue;
-		}
-		
-		
-		/**
-		 * Converts an identifier to a granularity from the enumeration.
-		 * This identifier is not globally unique, it depends on calendarManager and calendar.
-		 * @param intValue The identifier.
-		 * @return The granularity from the enumeration.
-		 * @throws TemporalDataException
-		 */
-		public static Granularities fromInt(int intValue) throws TemporalDataException {
-			switch(intValue) {
-				case 0: return Granularities.Millisecond;
-				case 1: return Granularities.Second;
-				case 2: return Granularities.Minute;
-				case 3: return Granularities.Hour;
-				case 4: return Granularities.Day;
-				case 5: return Granularities.Week;
-				case 6: return Granularities.Month;
-				case 7: return Granularities.Quarter;
-				case 8: return Granularities.Year;
-                case 10: return Granularities.Decade;
-				case 16383: return Granularities.Calendar; 
-				case 32767: return Granularities.Top; 
-				default: throw new TemporalDataException("Unknown Granularity: " + intValue);
-			}
-		}
-	}
 	
+	/**
+	 * The Identifier of Millisecond in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_MILLISECOND = 0;
+	/**
+	 * The Identifier of Second in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_SECOND = 1;
+	/**
+	 * The Identifier of Minute in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_MINUTE = 2;
+	/**
+	 * The Identifier of Hour in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_HOUR = 3;
+	/**
+	 * The Identifier of Day in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_DAY = 4;
+	/**
+	 * The Identifier of Week in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_WEEK = 5;
+	/**
+	 * The Identifier of Month in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_MONTH = 6;
+	/**
+	 * The Identifier of Quarter in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_QUARTER = 7;
+	/**
+	 * The Identifier of Year in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_YEAR = 8;
+	/**
+	 * The Identifier of Decade in the JavaDateCalendarManager Gregorian Calendar
+	 */
+	private static int GRANULARITY_DECADE = 10;
+	/**
+	 * The Identifier of Calendar in the JavaDateCalendarManager Gregorian Calendar
+	 * This is a granule from the start of Gregorian Calendar to its end. 
+	 */
+	private static int GRANULARITY_CALENDAR = 31 << 7 + 0;	// 1111100000
+	/**
+	 * The Identifier of Top in the JavaDateCalendarManager Gregorian Calendar
+	 * This is a granule from the start of time to its end. 
+	 */
+	private static int GRANULARITY_TOP = 31 << 7 + 127;	// 1111111111
+
 	
 	/**
 	 * Provides access to a singleton instance of the class. This is not a generic factory method. It
@@ -199,7 +181,7 @@ public class JavaDateCalendarManager implements CalendarManager {
         				java.util.Calendar.HOUR_OF_DAY, java.util.Calendar.MINUTE,
         				java.util.Calendar.SECOND, java.util.Calendar.MILLISECOND };
         		break;
-        	case Calendar:
+        	case GRANULARITY_CALENDAR:
         	case Top:
         		result = new int[] {  
         				java.util.Calendar.DAY_OF_YEAR,

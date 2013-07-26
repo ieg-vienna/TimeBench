@@ -229,8 +229,6 @@ public class RTemporalDatasetProvider {
 //            logger.debug("ts with start: " + start + ", obs: " + data.length);
 
             // get calendar and granularity
-            CalendarManager calM = CalendarManagerFactory
-                    .getSingleton(CalendarManagers.JavaDate);
             int granularityContextId = calM.getTopGranularityIdentifier();
             int granularityId = calM.getBottomGranularityIdentifier();
 

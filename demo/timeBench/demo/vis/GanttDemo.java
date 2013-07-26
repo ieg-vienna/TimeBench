@@ -42,6 +42,7 @@ import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
@@ -107,9 +108,7 @@ public class GanttDemo {
         java.util.Locale.setDefault(java.util.Locale.US);
         UILib.setPlatformLookAndFeel();
 
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
-        Granularity granularity = new Granularity(calendar,
+        Granularity granularity = CalendarFactory.getSingleton().getGranularity(
                 JavaDateCalendarManager.Granularities.Week.toInt(),
                 JavaDateCalendarManager.getSingleton()
                         .getTopGranularityIdentifier());
