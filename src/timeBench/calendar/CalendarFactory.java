@@ -117,7 +117,7 @@ public class CalendarFactory {
 			return new Granularity(calendar,granularityID,contextGranularityID);
 		}
 	}
-
+	
 	/**
 	 * Calculates the calendar manager, version, and calendar parts of a granularity identifier from
 	 * a calendar identifier.

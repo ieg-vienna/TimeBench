@@ -178,8 +178,8 @@ public class RConnector {
             logger.debug("ts with start: " + start + ", obs: " + data.length);
 
             // get calendar and granularity
-            int granularityContextId = calM.getTopGranularityIdentifier();
-            int granularityId = calM.getBottomGranularityIdentifier();
+//            int granularityContextId = calM.getTopGranularityIdentifier();
+//            int granularityId = calM.getBottomGranularityIdentifier();
 
             // relational
             TemporalDataset tmpds = new timeBench.data.TemporalDataset();

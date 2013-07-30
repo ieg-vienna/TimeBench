@@ -25,6 +25,7 @@ import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
@@ -69,10 +70,8 @@ public class ThemeRiverDemo {
     public static void main(String[] args) throws TemporalDataException,
             IOException, JAXBException, DataIOException {
         // java.util.Locale.setDefault(java.util.Locale.US);
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
         TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-                new Granularity(calendar, GRANULARITY_ID,
+                CalendarFactory.getSingleton().getGranularity(GRANULARITY_ID,
                         JavaDateCalendarManager.Granularities.Top.toInt()));
         TemporalDataset tmpds = reader.readData(FILE_DATA);
 
