@@ -88,6 +88,9 @@ public class MultipleLinePlotDemo {
     private static final String GROUP_AXIS_LABELS = "ylab";
     private static final String GROUP_LINES = "lines";
 
+    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Week","Top");
+    
     /**
      * @param args
      * @throws TemporalDataException
@@ -98,10 +101,7 @@ public class MultipleLinePlotDemo {
     public static void main(String[] args) throws TemporalDataException,
             IOException, JAXBException, DataIOException {
         // java.util.Locale.setDefault(java.util.Locale.US);
-        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-        		CalendarFactory.getSingleton().getGranularity(
-                        JavaDateCalendarManager.Granularities.Week.toInt(),
-                        JavaDateCalendarManager.Granularities.Top.toInt()));
+        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(GRANULARITY);
         TemporalDataset tmpds = reader.readData(FILE_DATA);
 
         DataHelper.printTable(System.out, tmpds.getNodeTable());

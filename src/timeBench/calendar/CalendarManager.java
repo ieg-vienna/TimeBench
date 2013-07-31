@@ -169,4 +169,5 @@ public interface CalendarManager {
 	
 	public long getEndOfTime();
 
+	public Granularity getGranularity(int identifier,String granularityName,String contextGranularityName);
 }

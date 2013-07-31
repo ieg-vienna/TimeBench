@@ -82,8 +82,8 @@ public class HorizonGraphDemo {
 
 //    private static final String FILE_DATA = "data/nmmaps-resp-2short-matrix.csv";
     private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
-    private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month
-            .toInt();
+    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Month","Top");
 
     private static final String COL_DATA = "value";
     private static final String COL_CITY = "category";
@@ -106,9 +106,7 @@ public class HorizonGraphDemo {
             IOException, JAXBException, DataIOException {
          java.util.Locale.setDefault(java.util.Locale.US);
 
-        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-        		CalendarFactory.getSingleton().getGranularity(
-        				GRANULARITY_ID,JavaDateCalendarManager.Granularities.Top.toInt()));
+        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(GRANULARITY);
         TemporalDataset tmpdsOrig = reader.readData(FILE_DATA);
 
         System.out.println();

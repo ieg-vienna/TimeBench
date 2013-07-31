@@ -214,6 +214,10 @@ public class Calendar {
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {
 		return calendarManager.contains(granule,chronon);
 	}
+	
+	public Granularity getGranularity(String granularityName,String contextGranularityName) {
+		return calendarManager.getGranularity(this.identifier,granularityName,contextGranularityName);
+	}
 
     @Override
     public String toString() {

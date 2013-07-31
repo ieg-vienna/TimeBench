@@ -42,12 +42,21 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 	double missingValueIdentifier;
 	GranularityAggregationFunction[] aggFct;
 
+
+	public GranularityAggregationAction(TemporalDataset sourceDataset,Granularity[] granularities,
+			Double missingValueIdentifier) {
+		this(sourceDataset,granularities,null,missingValueIdentifier);
+	}
+
+	
 	/**
 	 * @param data
 	 * @param temporalDataset
 	 * @param columnsUsed 
 	 */
-	public GranularityAggregationAction(TemporalDataset sourceDataset,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
+	public GranularityAggregationAction(TemporalDataset sourceDataset,Granularity[] granularities,
+			GranularityAggregationFunction[] aggFct,
+			Double missingValueIdentifier) {
 		this.sourceDataset = sourceDataset;
 		this.granularities = new Granularity[granularities.length];
 		aggFct = new GranularityAggregationFunction[granularities.length];
@@ -55,9 +64,13 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			this.calendar = CalendarFactory.getSingleton().getCalendar(
 					CalendarFactory.getSingleton().getCalendarIdentifierFromGranularityIdentifier(
 					granularities[0].getIdentifier()));
-		for(int i=0; i<granularities.length; i++) {
-			this.granularities[i] = new Granularity(calendar,granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
-			aggFct[i] = granularities[i].getAggregationFct();
+		this.granularities = granularities;
+		if (aggFct == null) {
+			this.aggFct = new GranularityAggregationFunction[granularities.length];
+			for (int i=0; i<granularities.length; i++)
+				this.aggFct[i] = new GranularityAggregationMean();
+		} else {
+			this.aggFct = aggFct;
 		}
 		this.missingValueIdentifier = missingValueIdentifier;
 	}

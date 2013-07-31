@@ -15,9 +15,12 @@ import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.REngineStdOutput;
 
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -96,18 +99,13 @@ public class RConnector {
                     + ", frequency: " + frequency + ", obs: " + data.length);
 
             // get calendar and granularity
-//            Calendar calendar = CalendarManagerFactory.getSingleton(
-//                    CalendarManagers.JavaDate).getDefaultCalendar();
-            int granularityContextId = JavaDateCalendarManager.Granularities.Top
-                    .toInt();
-            int granularityId = -1;
+            Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
+            Granularity granularity = null;
             if (Math.abs(frequency - 1.0) < 0.005
                     || Math.abs(frequency - 0.1) < 0.005)
-                granularityId = JavaDateCalendarManager.Granularities.Year
-                        .toInt();
+            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Year","Top");
             else if (Math.abs(frequency - 12.0) < 0.005)
-                granularityId = JavaDateCalendarManager.Granularities.Month
-                        .toInt();
+                granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Month","Top");
             else
                 throw new TemporalDataException(
                         "Unknown granularity. frequency: " + frequency);
@@ -159,8 +157,7 @@ public class RConnector {
                         i,
                         inf,
                         sup,
-                        granularityId,
-                        granularityContextId,
+                        granularity,
                         TemporalElementStore.PRIMITIVE_INTERVAL);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
@@ -201,8 +198,7 @@ public class RConnector {
                         i,
                         inf,
                         inf,
-                        granularityId,
-                        granularityContextId,
+                        granularity,
                         TemporalElementStore.PRIMITIVE_INSTANT);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 to.set(name, data[i]);
@@ -270,9 +266,9 @@ public class RConnector {
         if (frequency != 12.0)
             throw new RuntimeException("only months supported");
 
-        int granularityContextId = JavaDateCalendarManager.Granularities.Top
-                .toInt();
-        int granularityId = JavaDateCalendarManager.Granularities.Month.toInt();
+        Granularity granularity = CalendarFactory.getSingleton().getGranularity(
+        		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+        		"Month","Top");
 
         int dataCol = tmpds.getNodeTable().getColumnNumber(dataField);
 
@@ -280,8 +276,8 @@ public class RConnector {
             TemporalElement elem = cur.getTemporalElement();
             if (!elem.isAnchored()) {
                 logger.debug("skip temp.o. with unanchored temp.el. " + elem);
-            } else if (elem.getGranularityId() != granularityId
-                    || elem.getGranularityContextId() != granularityContextId) {
+            } else if (elem.getGranularityId() != granularity.getIdentifier()
+                    || elem.getGranularityContextId() != granularity.getGranularityContextIdentifier()) {
                 logger.debug("skip temp.o. with wrong granularity " + elem);
             } else {
                 long inf = elem.asGeneric().getInf();

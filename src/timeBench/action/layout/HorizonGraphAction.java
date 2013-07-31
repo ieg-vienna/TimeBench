@@ -18,6 +18,8 @@ import prefuse.visual.AggregateItem;
 import prefuse.visual.AggregateTable;
 import prefuse.visual.VisualItem;
 import timeBench.action.analytical.InterpolationIndexingAction;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.GenericTemporalElement;
@@ -95,20 +97,20 @@ public class HorizonGraphAction extends Action {
         initControlPointSchema(tmpds, ctrlPts);
 
         // pre-fill control points with original points
+        Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
         for (GenericTemporalElement el : tmpds
                 .getTemporalElements()
                 .temporalElements(
                         new NotPredicate(
                                 new GranularityPredicate(
-                                        JavaDateCalendarManager.Granularities.Millisecond
-                                                .toInt())))) {
+                                		CalendarFactory.getSingleton().getGranularity(calendar,"Millisecond","Top"))
+                                                ))) {
             // translate time primitives to instant in center
             long midTime = (el.getInf() + el.getSup()) / 2;
             Instant newEl = el.getTemporalElementStore().addInstant(midTime,
                     midTime,
-                    JavaDateCalendarManager.Granularities.Millisecond.toInt(),
-                    JavaDateCalendarManager.Granularities.Top.toInt());
-
+                    CalendarFactory.getSingleton().getGranularity(calendar,"Millisecond","Top"),
+                    calendar.getTopGranularity());
             for (TemporalObject obj : el.temporalObjects(tmpds)) {
                 TemporalObject cp = ctrlPts.addTemporalObject(newEl);
                 // copy raw data
@@ -273,9 +275,9 @@ public class HorizonGraphAction extends Action {
         // }
         // otherwise make a new one
         if (el == null) {
+        	Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
             el = ctrlPts.addInstant(time, time,
-                    JavaDateCalendarManager.Granularities.Millisecond.toInt(),
-                    JavaDateCalendarManager.Granularities.Top.toInt());
+            		CalendarFactory.getSingleton().getGranularity(calendar, "Millisecond", "Top"));
         }
 
         TemporalObject node = ctrlPts.addTemporalObject(el);

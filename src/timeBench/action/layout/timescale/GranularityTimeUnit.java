@@ -35,7 +35,7 @@ public class GranularityTimeUnit extends TimeUnit {
             int factor, DateFormat shortFormat, DateFormat longFormat,
             DateFormat fullFormat) {
         super(name, shortFormat, longFormat, fullFormat);
-        if(granularity.getGranularityContextIdentifier() != JavaDateCalendarManager.Granularities.Top.toInt()) {            
+        if(granularity.isInTopContext()) {            
             throw new RuntimeException("GranularityTimeUnit must have Granularity with context TOP as granularity");
         }
         this.granularity = granularity;

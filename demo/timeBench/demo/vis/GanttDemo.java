@@ -109,9 +109,8 @@ public class GanttDemo {
         UILib.setPlatformLookAndFeel();
 
         Granularity granularity = CalendarFactory.getSingleton().getGranularity(
-                JavaDateCalendarManager.Granularities.Week.toInt(),
-                JavaDateCalendarManager.getSingleton()
-                        .getTopGranularityIdentifier());
+                JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+                "Week","Top");
 
         TemporalDataset tmpds = DebugHelper
                 .generateProjectPlan(20, granularity);

@@ -86,6 +86,9 @@ public class PlanningLinesDemo {
     private static final String GROUP_DATA_RIGHT = "data_right";
     private static final String GROUP_DATA_MINDURATION = "data_minduration";
     private static final String GROUP_DATA_MAXDURATION = "data_maxduration";
+    
+    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Week","Top");
 
     @SuppressWarnings("unused")
     private static void schedule(TemporalDataset tmpds, long startDate,
@@ -132,16 +135,11 @@ public class PlanningLinesDemo {
      */
     public static void main(String[] args) throws TemporalDataException {
         java.util.Locale.setDefault(java.util.Locale.US);
-        UILib.setPlatformLookAndFeel();
-
-        Granularity granularity = CalendarFactory.getSingleton().getGranularity(
-                JavaDateCalendarManager.Granularities.Week.toInt(),
-                JavaDateCalendarManager.getSingleton()
-                        .getTopGranularityIdentifier());
+        UILib.setPlatformLookAndFeel();               
 
         TemporalDataset tmpds = DebugHelper
-                .generateIndeterminateProjectPlan(20, granularity);
-        schedule(tmpds, System.currentTimeMillis(), granularity);
+                .generateIndeterminateProjectPlan(20, GRANULARITY);
+        schedule(tmpds, System.currentTimeMillis(), GRANULARITY);
         // DataHelper.printTable(System.out, tmpds.getNodeTable());
         // DataHelper.printTable(System.out, tmpds.getEdgeTable());
 

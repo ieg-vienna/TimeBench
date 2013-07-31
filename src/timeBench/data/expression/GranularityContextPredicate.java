@@ -5,6 +5,7 @@ import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
 import prefuse.data.expression.Expression;
 import prefuse.data.expression.NumericLiteral;
+import timeBench.calendar.Granularity;
 import timeBench.data.TemporalElement;
 
 /**
@@ -15,20 +16,20 @@ import timeBench.data.TemporalElement;
  */
 public class GranularityContextPredicate extends ComparisonPredicate {
 
-    private int granularityContextId;
+    private Granularity granularity;
 
-    public GranularityContextPredicate(int granularityContextId) {
+    public GranularityContextPredicate(Granularity granularity) {
         super(ComparisonPredicate.EQ, new ColumnExpression(
                 TemporalElement.GRANULARITY_CONTEXT_ID), new NumericLiteral(
-                granularityContextId));
+                granularity.getGranularityContextIdentifier()));
 
-        this.granularityContextId = granularityContextId;
+        this.granularity = granularity;
     }
 
     @Override
     public boolean getBoolean(Tuple t) {
         int tupleGCid = t.getInt(TemporalElement.GRANULARITY_CONTEXT_ID);
-        return (granularityContextId == tupleGCid);
+        return (granularity.getGranularityContextIdentifier() == tupleGCid);
     }
 
     @Override

@@ -118,6 +118,11 @@ public class CalendarFactory {
 		}
 	}
 	
+	public Granularity getGranularity(Calendar calendar, String granularityName,String contextGranularityName) {
+		return calendar.getGranularity(granularityName,contextGranularityName);
+	}
+
+	
 	/**
 	 * Calculates the calendar manager, version, and calendar parts of a granularity identifier from
 	 * a calendar identifier.

@@ -11,9 +11,12 @@ import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.REngineException;
 
 import timeBench.R.data.ACFDataObject;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.CalendarManagerFactory;
 import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -22,7 +25,7 @@ import timeBench.data.TemporalObject;
 
 public class RTemporalDatasetProvider {
 	REngine engine;
-	int userSetGranularityId = -1;
+	Granularity userSetGranularity = null;
 	
 	public RTemporalDatasetProvider(REngine eng) {
 		engine = eng;
@@ -65,9 +68,9 @@ public class RTemporalDatasetProvider {
 	}
 	
 	public TemporalDataset getTemporalDataset(
-            String name, int granularityID, String naHandling) throws REngineException, REXPMismatchException,
+            String name, Granularity granularity, String naHandling) throws REngineException, REXPMismatchException,
             TemporalDataException {
-		userSetGranularityId = granularityID;
+		userSetGranularity = granularity;
 		return getTemporalDataset(name, naHandling);
 	}
 	
@@ -104,25 +107,20 @@ public class RTemporalDatasetProvider {
 //            Calendar calendar = CalendarManagerFactory.getSingleton(
 //                    CalendarManagers.JavaDate).getDefaultCalendar();
             
-            int granularityContextId = JavaDateCalendarManager.Granularities.Top
-                    .toInt();
             //JavaDateCalendarManager.Granularities.Quarter
 //            granularityContextId = JavaDateCalendarManager.Granularities.Month
 //                    .toInt();
-            int granularityId = -1;
+            Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
+            Granularity granularity = null;
             if (Math.abs(frequency - 1.0) < 0.005
                     || Math.abs(frequency - 0.1) < 0.005)
-                granularityId = JavaDateCalendarManager.Granularities.Year
-                        .toInt();
+            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Year","Top");
             else if (Math.abs(frequency - 4.0) < 0.005)
-                granularityId = JavaDateCalendarManager.Granularities.Quarter
-                        .toInt();
+            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Quarter","Top");
             else if (Math.abs(frequency - 12.0) < 0.005)
-                granularityId = JavaDateCalendarManager.Granularities.Month
-                        .toInt();
+            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Month","Top");
             else if (Math.abs(frequency - 52.0) < 0.005)
-                granularityId = JavaDateCalendarManager.Granularities.Week
-                        .toInt();
+            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Week","Top");
             else
                 throw new TemporalDataException(
                         "Unknown granularity. frequency: " + frequency);
@@ -183,8 +181,7 @@ public class RTemporalDatasetProvider {
                         i,
                         inf,
                         sup,
-                        granularityId,
-                        granularityContextId,
+                        granularity,
                         TemporalElementStore.PRIMITIVE_INTERVAL);
                 TemporalObject to = tmpds.addTemporalObject(i, i);
                 //to.set(name, data[i]);
@@ -232,16 +229,15 @@ public class RTemporalDatasetProvider {
 //            int granularityContextId = calM.getTopGranularityIdentifier();
 //            int granularityId = calM.getBottomGranularityIdentifier();
 
-            granularityContextId = JavaDateCalendarManager.Granularities.Top
-                    .toInt();
-            
-            if (userSetGranularityId >= 0) {
-            	granularityId = userSetGranularityId;
+            Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
+            Granularity granularity = null;           
+            if (userSetGranularity != 0) {
+            	granularity = userSetGranularity;
             } else {
 	            if (timeClass.equals("Date")) {
-	            	granularityId = JavaDateCalendarManager.Granularities.Day.toInt();
+	            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Day","Top");
 	            } else {
-	            	granularityId = JavaDateCalendarManager.Granularities.Millisecond.toInt();
+	            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Millisecond","Top");
 	            }
             }
 //            granularityId = JavaDateCalendarManager.Granularities.Quarter.toInt();

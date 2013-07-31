@@ -60,8 +60,7 @@ public class Granularity {
 	}
 	
 	public boolean isInTopContext() {
-	    // TODO Tim please check if this is correct or there is a better way
-	    return contextIdentifier == calendar.getBottomGranularity().contextIdentifier;
+	    return contextIdentifier == calendar.getTopGranularity().getIdentifier();
 	}
 	
 	/**
@@ -211,10 +210,5 @@ public class Granularity {
                 append("context", contextIdentifier).
                 append("cal", calendar).
                 toString();
-    }
-    
-    public static Granularity CALENDAR = new Granularity(null,JavaDateCalendarManager.Granularities.Calendar.toInt(),
-    		JavaDateCalendarManager.Granularities.Top.toInt());
-    public static Granularity TOP = new Granularity(null,JavaDateCalendarManager.Granularities.Top.toInt(),
-    		JavaDateCalendarManager.Granularities.Top.toInt());
+    }    
 }
