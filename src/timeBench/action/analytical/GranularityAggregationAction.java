@@ -56,7 +56,7 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 			Double missingValueIdentifier) {
 		this.sourceDataset = sourceDataset;
 		this.granularities = new Granularity[granularities.length];
-		aggFct = new GranularityAggregationFunction[granularities.length];
+		this.aggFct = aggFct;
 		if(granularities.length > 0)
 			this.calendar = CalendarFactory.getSingleton().getCalendar(
 					CalendarFactory.getSingleton().getCalendarIdentifierFromGranularityIdentifier(
