@@ -528,6 +528,11 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         Instant result = (Instant) this.temporalPrimitives.getTuple(row);
         return result;
     }
+    
+    public Instant addInstant(long inf, long sup, Granularity granularity) {
+    	return addInstant(inf,sup,granularity.getIdentifier(),granularity.getGranularityContextIdentifier());
+    }
+
 
     /**
      * Add a new instant to the dataset. This method returns a proxy tuple of
@@ -551,6 +556,10 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
                 granularityContextId, TemporalElementStore.PRIMITIVE_INSTANT);
         Instant result = (Instant) this.temporalPrimitives.getTuple(row);
         return result;
+    }
+    
+    public Instant addInstant(long id, long inf, long sup, Granularity granularity) {
+    	return addInstant(id,inf,sup,granularity.getIdentifier(),granularity.getGranularityContextIdentifier());
     }
 
     /**

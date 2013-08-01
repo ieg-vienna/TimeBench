@@ -13,7 +13,6 @@ import java.util.TreeSet;
 import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
-import timeBench.calendar.JavaDateCalendarManager.Granularities;
 
 /**
  * <p>
@@ -116,7 +115,7 @@ public class TimeUnitProvider {
     public static TimeUnitProvider createGranularityTimeUnitProvider() {
         TimeUnitProvider tup = new TimeUnitProvider();
         
-        timeBench.calendar.Calendar cal = JavaDateCalendarManager.getSingleton().calendar();
+        timeBench.calendar.Calendar cal = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
         Granularity ms = CalendarFactory.getSingleton().getGranularity(cal, "Millisecond", "Top");
         Granularity sec = CalendarFactory.getSingleton().getGranularity(cal, "Second", "Top");
         Granularity min = CalendarFactory.getSingleton().getGranularity(cal, "Minute", "Top");

@@ -29,7 +29,6 @@ import prefuse.data.io.DataIOException;
 import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
-import timeBench.calendar.JavaDateCalendarManager.Granularities;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;

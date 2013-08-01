@@ -42,7 +42,7 @@ public class Calendar {
 	 * @return the bottom granularity as as {@link Granularity}
 	 */
 	public Granularity getBottomGranularity() {
-		return new Granularity(this,calendarManager.getBottomGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
+		return calendarManager.getBottomGranularity(this);
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class Calendar {
 	 * @return the top granularity identifier
 	 */
 	public Granularity getTopGranularity() {
-		return new Granularity(this,calendarManager.getTopGranularityIdentifier(),calendarManager.getTopGranularityIdentifier());
+		return calendarManager.getTopGranularity(this);
 	}
     
 	/**

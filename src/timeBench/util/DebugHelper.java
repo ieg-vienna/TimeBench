@@ -9,8 +9,6 @@ import prefuse.data.tuple.TupleSet;
 
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarFactory;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager;

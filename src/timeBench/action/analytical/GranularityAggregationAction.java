@@ -7,9 +7,6 @@ import org.apache.log4j.Logger;
 
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarFactory;
-import timeBench.calendar.CalendarManager;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTree;

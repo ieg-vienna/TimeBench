@@ -109,8 +109,7 @@ public class HorizonGraphAction extends Action {
             long midTime = (el.getInf() + el.getSup()) / 2;
             Instant newEl = el.getTemporalElementStore().addInstant(midTime,
                     midTime,
-                    CalendarFactory.getSingleton().getGranularity(calendar,"Millisecond","Top"),
-                    calendar.getTopGranularity());
+                    CalendarFactory.getSingleton().getGranularity(calendar,"Millisecond","Top"));
             for (TemporalObject obj : el.temporalObjects(tmpds)) {
                 TemporalObject cp = ctrlPts.addTemporalObject(newEl);
                 // copy raw data

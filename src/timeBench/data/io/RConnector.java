@@ -17,9 +17,6 @@ import org.rosuda.REngine.REngineStdOutput;
 
 import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarFactory;
-import timeBench.calendar.CalendarManager;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
@@ -41,10 +38,12 @@ public class RConnector {
     private static Logger logger = Logger.getLogger(RConnector.class);
 
     private static RConnector instance;
+    
+    private Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
 
     // could be replaced by REngine.getLastEngine()
-    private REngine engine;
-
+    private REngine engine;  
+    
     private RConnector() {
         try {
             if (logger.isInfoEnabled())
@@ -65,6 +64,11 @@ public class RConnector {
         }
     }
 
+    public static synchronized RConnector getInstance(Calendar calendar) {
+    	RConnector instance = getInstance();
+    	instance.calendar = calendar;
+    }
+    
     public static synchronized RConnector getInstance() {
         if (null == instance)
             instance = new RConnector();
@@ -174,10 +178,9 @@ public class RConnector {
                     "as.numeric(time(" + name + "))", null, true).asDoubles();
             logger.debug("ts with start: " + start + ", obs: " + data.length);
 
-            // get calendar and granularity
-//            int granularityContextId = calM.getTopGranularityIdentifier();
-//            int granularityId = calM.getBottomGranularityIdentifier();
 
+            Granularity granularity = calendar.getBottomGranularity();
+            
             // relational
             TemporalDataset tmpds = new timeBench.data.TemporalDataset();
             tmpds.addDataColumn(name, double.class, null);

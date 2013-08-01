@@ -3,6 +3,7 @@ package timeBench.calendar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -21,8 +22,8 @@ import timeBench.data.TemporalDataException;
  */
 public class JavaDateCalendarManager implements CalendarManager {
 	protected static JavaDateCalendarManager singleton = null;
-	protected Calendar defaultCalendar = null;
 	protected java.util.Calendar javaCalendar = null;
+	protected Hashtable<Integer,Calendar> calendarSingletons = new Hashtable<Integer,Calendar>();  
 	
 	/**
 	 * Return the identifier of this version of the JavaDataCalendarManager
@@ -117,8 +118,13 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * Generates an instance of a calendar, the only one currently provided by this class.
 	 * @return The calendar.
 	 */
-	public Calendar calendar() {
-		return new Calendar(this);
+	public Calendar getCalendar(int identifier) {
+		Calendar calendar = calendarSingletons.get(identifier);
+		if(calendar == null) {
+			calendar = new Calendar(this,identifier);
+			calendarSingletons.put(identifier, calendar);
+		}
+		return calendar;
 	}
 	
 	
@@ -128,9 +134,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 * @return The calendar.
 	 */
 	public Calendar getDefaultCalendar() {
-		if (defaultCalendar == null)
-			defaultCalendar = calendar();
-		return defaultCalendar;
+		return getCalendar(0);
 	}
     
     private int[] buildGranularityListForCreateGranule(Granularity granularity) throws TemporalDataException {
@@ -235,12 +239,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 			calSup.set(field, calSup.getActualMaximum(field));		
 		}
 		
-        if (granularity.getIdentifier() == Granularities.Decade.intValue) {
+        if (granularity.getIdentifier() == GRANULARITY_DECADE) {
             calInf.set(GregorianCalendar.YEAR,
                     (calInf.get(GregorianCalendar.YEAR) - 1) / 10 * 10 + 1);
             calSup.set(GregorianCalendar.YEAR,
                     (calSup.get(GregorianCalendar.YEAR) - 1) / 10 * 10 + 10);
-        } else if (granularity.getIdentifier() == Granularities.Quarter.intValue) {
+        } else if (granularity.getIdentifier() == GRANULARITY_QUARTER) {
 		    // calInf DAY_OF_MONTH is already at 1
             // calSup DAY_OF_MONTH needs to be set to 1 first 
 		    // because last day may change (e.g., 31 March --June--> 1 July) 
@@ -278,17 +282,17 @@ public class JavaDateCalendarManager implements CalendarManager {
 					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
 					break;
 			}
-		} else if(granularity.getIdentifier() == Granularities.Week.intValue) {
+		} else if(granularity.getIdentifier() == GRANULARITY_WEEK) {
 			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 5) % 7;
 			long oldInf = calInf.getTimeInMillis();
 			calInf.setTimeInMillis(oldInf-dow*86400000L);
 			long oldSup = calSup.getTimeInMillis();
 			calSup.setTimeInMillis(oldSup+(6-dow)*86400000L);
-			if((granularity.getGranularityContextIdentifier() == Granularities.Month.intValue &&
+			if((granularity.getGranularityContextIdentifier() == GRANULARITY_MONTH &&
 				calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) ||
-				(granularity.getGranularityContextIdentifier() == Granularities.Quarter.intValue &&
+				(granularity.getGranularityContextIdentifier() == GRANULARITY_QUARTER &&
 				calInf.get(GregorianCalendar.MONTH) / 3 != calSup.get(GregorianCalendar.MONTH) / 3) ||
-				(granularity.getGranularityContextIdentifier() == Granularities.Year.intValue) &&
+				(granularity.getGranularityContextIdentifier() == GRANULARITY_YEAR) &&
 				calInf.get(GregorianCalendar.YEAR) != calSup.get(GregorianCalendar.YEAR)) {
 				GregorianCalendar calBorder = new GregorianCalendar();
 				calBorder.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -647,22 +651,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 		}
 	}
 
-	/**
-	 * Returns the identifier of the bottom granularity
-	 * @return the bottom granularity identifier
-	 */
-	public int getBottomGranularityIdentifier(Calendar calendar) {
-		return 0;
+	public Granularity getBottomGranularity(Calendar calendar) {
+		return new Granularity(calendar,GRANULARITY_MILLISECOND,GRANULARITY_TOP);
 	}
 	
-	/**
-	 * Returns the identifier of the top granularity. This is the highest possible granularity of the calendar.
-	 * Usually, this is a granularity where one granule is composed of all the time the calendar is defined for.
-	 * Let all calendars that would normally have this be modified so they have one. 
-	 * @return the top granularity identifier
-	 */
-	public int getTopGranularityIdentifier(Calendar calendar) {
-		return GRANULARITY_TOP;
+	public Granularity getTopGranularity(Calendar calendar) {
+		return new Granularity(calendar,GRANULARITY_TOP,GRANULARITY_TOP);
 	}
 
 	/**
@@ -1549,8 +1543,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 	@Override
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {
 		if(granule.getGranularity().getGranularityContextIdentifier() ==
-				Granularities.Top.intValue || granule.getGranularity().getGranularityContextIdentifier() ==
-						Granularities.Calendar.intValue) {
+				GRANULARITY_TOP || granule.getGranularity().getGranularityContextIdentifier() ==
+				GRANULARITY_CALENDAR) {
 			return chronon>=granule.getInf() && chronon<=granule.getSup();
 		} else {
 			Granule g2 = new Granule(chronon,chronon,granule.getGranularity());
@@ -1566,5 +1560,53 @@ public class JavaDateCalendarManager implements CalendarManager {
 	@Override
 	public long getEndOfTime() {
 		return Long.MAX_VALUE;
+	}
+
+	/* (non-Javadoc)
+	 * @see timeBench.calendar.CalendarManager#getGranularity(int, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Granularity getGranularity(Calendar calendar, String granularityName,
+			String contextGranularityName) {
+		try {
+		return new Granularity(calendar,parseGranularityIdentifierFromName(granularityName),
+				parseGranularityIdentifierFromName(contextGranularityName));
+		} catch(TemporalDataException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * @param granularityName
+	 * @return
+	 * @throws TemporalDataException 
+	 */
+	private int parseGranularityIdentifierFromName(String granularityName) throws TemporalDataException {
+		if(granularityName == "Millisecond")
+			return GRANULARITY_MILLISECOND;
+		else if(granularityName == "Second")
+			return GRANULARITY_SECOND;
+		else if(granularityName == "Minute")
+			return GRANULARITY_MINUTE;
+		else if(granularityName == "Hour")
+			return GRANULARITY_HOUR;
+		else if(granularityName == "Day")
+			return GRANULARITY_DAY;
+		else if(granularityName == "Week")
+			return GRANULARITY_WEEK;
+		else if(granularityName == "Month")
+			return GRANULARITY_MONTH;
+		else if(granularityName == "Quarter")
+			return GRANULARITY_QUARTER;
+		else if(granularityName == "Year")
+			return GRANULARITY_YEAR;
+		else if(granularityName == "Decade")
+			return GRANULARITY_DECADE;
+		else if(granularityName == "Calendar")
+			return GRANULARITY_CALENDAR;
+		else if(granularityName == "Top")
+			return GRANULARITY_TOP;
+		else
+			throw new TemporalDataException("Granularity not known");
 	}
 }

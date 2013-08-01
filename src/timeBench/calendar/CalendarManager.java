@@ -18,13 +18,7 @@ import timeBench.data.TemporalDataException;
  *
  */
 public interface CalendarManager {
-	
-	/**
-	 * Generates an instance of a calendar, only one can currently be provided.
-	 * @return The calendar.
-	 */
-	public Calendar calendar();
-	
+		
 	/**
 	 * Provides access to a singleton instance of the default calendar of the calendar manager.
 	 * It does only create one instance and provides that one with every call.
@@ -46,20 +40,6 @@ public interface CalendarManager {
 	 */
 	public int[] getGranularityIdentifiers();
 	
-	/**
-	 * Returns the identifier of the bottom granularity
-	 * @return the bottom granularity identifier
-	 */
-	public int getBottomGranularityIdentifier();
-	
-	/**
-	 * Returns the identifier of the top granularity.  This is the highest possible granularity of the calendar.
-	 * Usually, this is a granularity where one granule is composed of all the time the calendar is defined for.
-	 * Let all calendars that would normally have this be modified so they have one.
-	 * @return the top granularity identifier
-	 */
-	public int getTopGranularityIdentifier();
-
 	/**
 	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
 	 * {@link Granule} instead.
@@ -169,5 +149,16 @@ public interface CalendarManager {
 	
 	public long getEndOfTime();
 
-	public Granularity getGranularity(int identifier,String granularityName,String contextGranularityName);
+	public Granularity getBottomGranularity(Calendar calendar);
+
+	public Granularity getTopGranularity(Calendar calendar);
+
+	/**
+	 * @param calendar
+	 * @param granularityName
+	 * @param contextGranularityName
+	 * @return
+	 */
+	Granularity getGranularity(Calendar calendar, String granularityName,
+			String contextGranularityName);
 }
