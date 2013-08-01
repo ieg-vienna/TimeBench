@@ -5,9 +5,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
-import timeBench.calendar.CalendarManager;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTree;
@@ -35,24 +34,40 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
     
 	TemporalDataset sourceDataset;
 	GranularityAggregationTree workingDataset;
-	CalendarManager calendarManager;
+	Calendar calendar;
 	Granularity[] granularities;	
 	double missingValueIdentifier;
 	GranularityAggregationFunction[] aggFct;
 
+
+	public GranularityAggregationAction(TemporalDataset sourceDataset,Granularity[] granularities,
+			Double missingValueIdentifier) {
+		this(sourceDataset,granularities,null,missingValueIdentifier);
+	}
+
+	
 	/**
 	 * @param data
 	 * @param temporalDataset
 	 * @param columnsUsed 
 	 */
-	public GranularityAggregationAction(TemporalDataset sourceDataset, CalendarManagers calendarManager,GranularityAggregationSettings[] granularities, Double missingValueIdentifier) {
+	public GranularityAggregationAction(TemporalDataset sourceDataset,Granularity[] granularities,
+			GranularityAggregationFunction[] aggFct,
+			Double missingValueIdentifier) {
 		this.sourceDataset = sourceDataset;
-		this.calendarManager = CalendarManagerFactory.getSingleton(calendarManager);
 		this.granularities = new Granularity[granularities.length];
-		aggFct = new GranularityAggregationFunction[granularities.length];
-		for(int i=0; i<granularities.length; i++) {
-			this.granularities[i] = new Granularity(this.calendarManager.getDefaultCalendar(),granularities[i].getIdentifier(),granularities[i].getContextIdentifier());
-			aggFct[i] = granularities[i].getAggregationFct();
+		this.aggFct = aggFct;
+		if(granularities.length > 0)
+			this.calendar = CalendarFactory.getSingleton().getCalendar(
+					CalendarFactory.getSingleton().getCalendarIdentifierFromGranularityIdentifier(
+					granularities[0].getIdentifier()));
+		this.granularities = granularities;
+		if (aggFct == null) {
+			this.aggFct = new GranularityAggregationFunction[granularities.length];
+			for (int i=0; i<granularities.length; i++)
+				this.aggFct[i] = new GranularityAggregationMean();
+		} else {
+			this.aggFct = aggFct;
 		}
 		this.missingValueIdentifier = missingValueIdentifier;
 	}

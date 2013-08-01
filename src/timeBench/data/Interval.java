@@ -45,7 +45,7 @@ public class Interval extends AnchoredTemporalElement {
                 return (Instant) last;
             else if(this.getChildCount() == 2 && last instanceof Span && this.getFirstChildPrimitive() instanceof Instant) {            	
             	Granule firstG = ((Instant)this.getFirstChildPrimitive()).getGranule();
-            	Granule lastG = new Granule(firstG.getIdentifier()+((Span)last).getLength(),firstG.getGranularity(),Granule.TOP);
+            	Granule lastG = new Granule(firstG.getIdentifier()+((Span)last).getLength(),firstG.getGranularity(),firstG.getGranularity().getCalendar().getTopGranule());
             	return last.getTemporalElementStore().addInstant(lastG);
             } else
                 throw new TemporalDataException("Syntax error in temporal element of type interval");
@@ -79,7 +79,7 @@ public class Interval extends AnchoredTemporalElement {
                 ((Instant) first).set(granule);
                 // TODO convert begin to span granularity
                 long endId = granule.getIdentifier() + ((Span) last).getLength() - 1;
-                Granule endGranule = new Granule(endId, granule.getGranularity(),Granule.TOP);
+                Granule endGranule = new Granule(endId, granule.getGranularity(),granule.getGranularity().getCalendar().getTopGranule());
                 this.setLong(INF, granule.getInf());
                 this.setLong(SUP, endGranule.getSup());
             } else
@@ -96,7 +96,7 @@ public class Interval extends AnchoredTemporalElement {
             if (first instanceof Instant && last instanceof Span) {            	
             	((Span)last).setLength(value);           
             	Granule startGranule = new Granule(((Instant) first).getInf(),((Instant) first).getSup(),g); 
-            	Granule endGranule = new Granule(startGranule.getIdentifier()+value-1, g,Granule.TOP);
+            	Granule endGranule = new Granule(startGranule.getIdentifier()+value-1, g,startGranule.getGranularity().getCalendar().getTopGranule());
             	this.setLong(SUP, endGranule.getSup());
             } else
                 throw new RuntimeException("Not implemented yet");

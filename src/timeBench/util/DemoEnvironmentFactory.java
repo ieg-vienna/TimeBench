@@ -24,6 +24,7 @@ import prefuse.util.ui.JRangeSlider;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.FisheyeTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
+import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarManager;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.controls.RangePanControl;
@@ -287,14 +288,13 @@ public class DemoEnvironmentFactory {
 
         double value = Math.random() * VALUE_RANGE + MIN_VALUE;
         long time = System.currentTimeMillis();
-        CalendarManager calMan = JavaDateCalendarManager.getSingleton();
+        Calendar cal = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
         TemporalElement elem;
         TemporalObject obj;
 
         for (int i = 0; i < count; i++) {
             elem = tmpds.addInstant(time, time,
-                    calMan.getBottomGranularityIdentifier(),
-                    calMan.getTopGranularityIdentifier());
+                    cal.getBottomGranularity());
             obj = tmpds.addTemporalObject(elem);
             obj.set(dataColumn, value);
             // auto-regressive with order 1

@@ -29,12 +29,13 @@ import prefuse.util.ColorLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import timeBench.action.analytical.GranularityAggregationAction;
-import timeBench.action.analytical.GranularityAggregationSettings;
 import timeBench.action.assignment.OverlayDataColorAction;
 import timeBench.action.layout.GranularityTreeLabelLayout;
 import timeBench.action.layout.GranularityTreeLayout;
 import timeBench.action.layout.GranularityTreeLayoutSettings;
-import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -85,13 +86,13 @@ public class GROOVEDemo {
         // --------------------------------------------------------------------
         // STEP 1: setup the visualized data
         
+		Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
 		GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
-				CalendarManagers.JavaDate,
-				new GranularityAggregationSettings[] {
-				new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Top.toInt(),JavaDateCalendarManager.Granularities.Top.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Year.toInt(),JavaDateCalendarManager.Granularities.Top.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Week.toInt(),JavaDateCalendarManager.Granularities.Year.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Day.toInt(),JavaDateCalendarManager.Granularities.Week.toInt()) },
+				new Granularity[] {
+				    CalendarFactory.getSingleton().getGranularity(calendar,"Top","Top"),
+				    CalendarFactory.getSingleton().getGranularity(calendar,"Year","Top"),
+				    CalendarFactory.getSingleton().getGranularity(calendar,"Week","Year"),
+				    CalendarFactory.getSingleton().getGranularity(calendar,"Day","Week") },
 				-1.0);				
 		/*GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
 				CalendarManagers.JavaDate,

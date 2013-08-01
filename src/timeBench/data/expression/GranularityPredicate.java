@@ -6,6 +6,7 @@ import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
 import prefuse.data.expression.NumericLiteral;
 import prefuse.data.expression.Predicate;
+import timeBench.calendar.Granularity;
 import timeBench.data.TemporalElement;
 
 /**
@@ -16,48 +17,33 @@ import timeBench.data.TemporalElement;
  */
 public class GranularityPredicate extends AndPredicate {
 
-    private int granularityId;
-    private int granularityContextId;
+    private Granularity granularity;
 
     /**
      * if granularity context is not set, we do not check it
      */
     private boolean contextSet;
 
-    /**
-     * create a new GranularityPredicate. Ignores granularity context.
-     * 
-     * @param granularityId
-     *            the granularity id to match by this predicate
-     */
-    public GranularityPredicate(int granularityId) {
-        super();
-        super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
-                new ColumnExpression(TemporalElement.GRANULARITY_ID),
-                new NumericLiteral(granularityId)));
-
-        this.granularityId = granularityId;
-        this.contextSet = false;
+    public GranularityPredicate(Granularity granularity) {
+        this(granularity,true);
     }
 
-    /**
-     * create a new GranularityPredicate with granularity context.
-     * 
-     * @param granularityId
-     *            the granularity id to match by this predicate
-     * @param granularityContextId
-     *            the granularity context id to match by this predicate
-     */
-    public GranularityPredicate(int granularityId, int granularityContextId) {
+    public GranularityPredicate(Granularity granularity,boolean ignoreContext) {
         super();
-        super.add(new GranularityContextPredicate(granularityContextId));
-        super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
-                new ColumnExpression(TemporalElement.GRANULARITY_ID),
-                new NumericLiteral(granularityId)));
 
-        this.granularityId = granularityId;
-        this.granularityContextId = granularityContextId;
-        this.contextSet = true;
+        if(ignoreContext) {       
+        	super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
+        			new ColumnExpression(TemporalElement.GRANULARITY_ID),
+        			new NumericLiteral(granularity.getIdentifier())));
+        } else {               
+        	super.add(new GranularityContextPredicate(granularity));
+        	super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
+                new ColumnExpression(TemporalElement.GRANULARITY_ID),
+                new NumericLiteral(granularity.getIdentifier())));
+        }
+
+        this.granularity = granularity;
+        this.contextSet = !ignoreContext;
     }
 
     @Override
@@ -65,12 +51,12 @@ public class GranularityPredicate extends AndPredicate {
         if (contextSet) {
             int tupleContextId = t
                     .getInt(TemporalElement.GRANULARITY_CONTEXT_ID);
-            if (granularityContextId != tupleContextId) {
+            if (granularity.getGranularityContextIdentifier() != tupleContextId) {
                 return false;
             }
         }
         int tupleGranularityId = t.getInt(TemporalElement.GRANULARITY_ID);
-        return (granularityId == tupleGranularityId);
+        return (granularity.getIdentifier() == tupleGranularityId);
     }
 
     @Override

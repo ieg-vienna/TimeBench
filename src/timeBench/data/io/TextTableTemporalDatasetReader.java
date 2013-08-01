@@ -18,10 +18,8 @@ import prefuse.data.Tuple;
 import prefuse.data.io.DataIOException;
 import prefuse.data.io.TableReader;
 import prefuse.util.collections.IntIterator;
-import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
 import timeBench.calendar.Granularity;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -114,10 +112,6 @@ public class TextTableTemporalDatasetReader extends
     private void scanTableForSpecification(Table table,
             TemporalDataColumnSpecification spec) throws TemporalDataException {
 
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
-        spec.setCalendar(calendar);
-
         String temporalColumn = null;
         LinkedList<String> dataColumns = new LinkedList<String>();
         for (int i = 0; i < table.getColumnCount(); i++) {
@@ -136,7 +130,7 @@ public class TextTableTemporalDatasetReader extends
                 temporalColumn);
         enc.setDataColumns(dataColumns.toArray(new String[0]));
         enc.setGranularity(autoGranularity != null ? autoGranularity : 
-                calendar.getBottomGranularity());
+                JavaDateCalendarManager.getSingleton().getDefaultCalendar().getBottomGranularity());
         spec.addEncoding(enc);
     }
 

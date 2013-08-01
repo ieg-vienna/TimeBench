@@ -26,7 +26,9 @@ import net.fortuna.ical4j.model.property.ExRule;
 import net.fortuna.ical4j.model.property.RDate;
 import net.fortuna.ical4j.model.property.RRule;
 import prefuse.data.io.DataIOException;
-import timeBench.calendar.JavaDateCalendarManager.Granularities;
+import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.Granularity;
+import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
@@ -55,17 +57,26 @@ public class ICalenderTemporalDatasetReader extends
 
 	private final int maxRecurrences = 50;
 
-	// The (final) value of granularityContextId which is used
-	// throughout the fill-methods for all temporalElements
-	private final int granularityContextId = Granularities.Top.toInt();
-	private int granularityId;
-
+	private Granularity granularity = null;
+	
+	private Granularity minuteGranularity = CalendarFactory.getSingleton().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+			"Minute","Top");
+	private Granularity secondGranularity = CalendarFactory.getSingleton().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+			"Second","Top");
+	
 	public ICalenderTemporalDatasetReader() {
 		this(ICalenderTemporalDatasetReader.EVENT);
 	}
 
 	public ICalenderTemporalDatasetReader(String componentType) {
 		m_componentType = componentType;
+		dataset = new TemporalDataset();
+	}
+	
+	public ICalenderTemporalDatasetReader(String componentType,Granularity minuteGranularity,Granularity secondGranularity) {
+		m_componentType = componentType;
+		this.minuteGranularity = minuteGranularity;
+		this.secondGranularity = secondGranularity;
 		dataset = new TemporalDataset();
 	}
 
@@ -173,12 +184,12 @@ public class ICalenderTemporalDatasetReader extends
 			checkRDates(event, dStart, dEnd);
 		}
 
-		// calculate the appropriate granularityId
-		granularityId = determineGranularity(dStart, dEnd);
+		// calculate the appropriate granularity
+		granularity = determineGranularity(dStart, dEnd);
 
 		// add a new temporalElement to the temporalDataSet
 		tempElement = dataset.addTemporalElement(dStart.getTime(),
-				dEnd.getTime(), granularityId, granularityContextId,
+				dEnd.getTime(), granularity,
 				TemporalElementStore.PRIMITIVE_INTERVAL);
 
 		// Creating the temporalObject and linking it to a
@@ -228,10 +239,8 @@ public class ICalenderTemporalDatasetReader extends
 			checkRDates(journal, dStamp, dStamp);
 		}
 
-		granularityId = Granularities.Minute.toInt();
-
 		tempElement = dataset.addTemporalElement(dStamp.getTime(),
-				dStamp.getTime(), granularityId, granularityContextId,
+				dStamp.getTime(), minuteGranularity.getIdentifier(), minuteGranularity.getGranularityContextIdentifier(),
 				TemporalElementStore.PRIMITIVE_INSTANT);
 
 		tempObject = dataset.addTemporalObject(tempElement);
@@ -267,10 +276,10 @@ public class ICalenderTemporalDatasetReader extends
 		Date dEnd = (checkNull(freeBusy.getEndDate())) ? freeBusy.getEndDate()
 				.getDate() : new Date(Long.MAX_VALUE);
 
-		granularityId = determineGranularity(dStart, dEnd);
+		granularity = determineGranularity(dStart, dEnd);
 
 		tempElement = dataset.addTemporalElement(dStart.getTime(),
-				dEnd.getTime(), granularityId, granularityContextId,
+				dEnd.getTime(), granularity,
 				TemporalElementStore.PRIMITIVE_INTERVAL);
 
 		tempObject = dataset.addTemporalObject(tempElement);
@@ -573,9 +582,9 @@ public class ICalenderTemporalDatasetReader extends
 	 * @return granularityID - returns an appropriate granularityID depending on
 	 *         the granularity if the dates. Default is Minutes(2)
 	 */
-	private int determineGranularity(Date dStart, Date dEnd) {
+	private Granularity determineGranularity(Date dStart, Date dEnd) {
 
-		int granularityId = Granularities.Minute.toInt();
+		Granularity granularity = minuteGranularity;
 
 		java.util.Calendar cStart = java.util.Calendar.getInstance();
 		cStart.setTime(dStart);
@@ -589,11 +598,11 @@ public class ICalenderTemporalDatasetReader extends
 		// value-definitions)
 		if (cStart.get(java.util.Calendar.SECOND) != 0
 				|| cEnd.get(java.util.Calendar.SECOND) != 0) {
-			granularityId = Granularities.Second.toInt();
+			granularity = secondGranularity;
 
 		}
 
-		return granularityId;
+		return granularity;
 	}
 
 }

@@ -14,6 +14,7 @@ import prefuse.data.Table;
 import prefuse.data.expression.Predicate;
 import prefuse.data.util.Index;
 import prefuse.util.collections.IntIterator;
+import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.expression.AnchoredPredicate;
 import timeBench.data.util.DefaultIntervalComparator;
@@ -655,6 +656,12 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
         return temporalElements.addTemporalElement(inf, sup, granularityId, 
                 granularityContextId, kind);
     }
+    
+    public GenericTemporalElement addTemporalElement(long inf, long sup,
+    		Granularity granularity,int kind) {
+    	return addTemporalElement(inf, sup, granularity.getIdentifier(), granularity.getGranularityContextIdentifier(), kind);
+    }
+
 
     /**
      * Adds a new temporal element to the dataset
@@ -677,6 +684,12 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
             long sup, int granularityId, int granularityContextId, int kind) {
         return temporalElements.addTemporalElement(id, inf, sup, granularityId, 
                 granularityContextId, kind);
+    }
+    
+    public GenericTemporalElement addTemporalElement(long id, long inf,
+            long sup, Granularity granularity, int kind) {
+        return addTemporalElement(id, inf, sup, granularity.getIdentifier(), 
+                granularity.getGranularityContextIdentifier(), kind);
     }
     
     /**
@@ -733,6 +746,10 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
             int granularityContextId) {
         return temporalElements.addInstant(id, inf, sup, granularityId, 
                 granularityContextId);
+    }
+    
+    public Instant addInstant(long inf,long sup,Granularity granularity) {
+    	return addInstant(inf,sup,granularity.getIdentifier(),granularity.getGranularityContextIdentifier());
     }
 
     /**

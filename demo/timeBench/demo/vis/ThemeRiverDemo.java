@@ -24,9 +24,7 @@ import prefuse.visual.sort.ItemSorter;
 import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
-import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
@@ -51,7 +49,8 @@ import timeBench.util.DemoEnvironmentFactory;
 public class ThemeRiverDemo {
 
     private static final String FILE_DATA = "data/nmmaps-resp-3-12monthly-matrix.csv";
-    private static final int GRANULARITY_ID = JavaDateCalendarManager.Granularities.Month.toInt();
+    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Month","Top");
 
     private static final String COL_LABEL = "label";
 
@@ -69,11 +68,7 @@ public class ThemeRiverDemo {
     public static void main(String[] args) throws TemporalDataException,
             IOException, JAXBException, DataIOException {
         // java.util.Locale.setDefault(java.util.Locale.US);
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
-        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
-                new Granularity(calendar, GRANULARITY_ID,
-                        JavaDateCalendarManager.Granularities.Top.toInt()));
+        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(GRANULARITY);
         TemporalDataset tmpds = reader.readData(FILE_DATA);
 
         DebugHelper.printTemporalDatasetTable(System.out, tmpds);

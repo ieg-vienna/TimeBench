@@ -205,7 +205,4 @@ public class Granule {
 	public boolean contains(long chronon) throws TemporalDataException {
 		return granularity.contains(this,chronon);
 	}
-	
-	public static Granule TOP = new Granule(Long.MIN_VALUE,Long.MAX_VALUE,MODE_FORCE,Granularity.TOP,null,true); 					
-	public static Granule CALENDAR = new Granule(Long.MIN_VALUE,Long.MAX_VALUE,MODE_FORCE,Granularity.CALENDAR,TOP,true); 
 }

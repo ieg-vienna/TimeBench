@@ -1,29 +1,14 @@
 package timeBench.action.analytical;
 
 import ieg.prefuse.data.ParentChildGraph;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import javax.swing.plaf.multi.MultiInternalFrameUI;
-
-import org.apache.log4j.Logger;
-
 import prefuse.data.Edge;
 import prefuse.data.Node;
 
-import timeBench.calendar.CalendarManager;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
-import timeBench.calendar.Granularity;
-import timeBench.calendar.Granule;
-import timeBench.data.GranularityAggregationTree;
-import timeBench.data.GranularityAggregationTreeProvider;
-import timeBench.data.Instant;
-import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
-import timeBench.data.TemporalDatasetProvider;
 import timeBench.data.TemporalObject;
 
 /**

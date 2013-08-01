@@ -8,8 +8,7 @@ import prefuse.data.Tuple;
 import prefuse.data.tuple.TupleSet;
 
 import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarManagerFactory;
-import timeBench.calendar.CalendarManagers;
+import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.calendar.JavaDateCalendarManager;
@@ -151,12 +150,12 @@ public class DebugHelper {
             long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 10) + 4;
             long grEndOfEnd     = grBeginOfEnd   + (long) Math.floor(Math.random() * 4) + 1;
             
-            Granule granule = new Granule(grBeginOfBegin, granularity, Granule.TOP);
+            Granule granule = new Granule(grBeginOfBegin, granularity, granularity.getCalendar().getTopGranule());
             Instant beginBegin = tmpds.addInstant(granule);
             Span span = tmpds.addSpan(grEndOfBegin - grBeginOfBegin + 1, granularity.getIdentifier());
             Interval begin = tmpds.addInterval(beginBegin, span);
 
-            granule = new Granule(grBeginOfEnd, granularity, Granule.TOP);
+            granule = new Granule(grBeginOfEnd, granularity, granularity.getCalendar().getTopGranule());
             Instant beginEnd = tmpds.addInstant(granule);
             span = tmpds.addSpan(grEndOfEnd - grBeginOfEnd + 1, granularity.getIdentifier());
             Interval end = tmpds.addInterval(beginEnd, span);
@@ -209,15 +208,16 @@ public class DebugHelper {
     
     public static TemporalDataset generateValidInstants(int size)
             throws TemporalDataException {
-        Calendar calendar = CalendarManagerFactory.getSingleton(
-                CalendarManagers.JavaDate).getDefaultCalendar();
         TemporalDataset tmpds = new TemporalDataset();
         tmpds.addDataColumn("caption", String.class, "");
     
         for (int i = 0; i < size; i++) {
             long inf = Math.round(Math.random() * 31536000000.0); // 1 year
             int gId = (int) Math.floor(Math.random() * 6) + 1;
-            Granularity granularity = new Granularity(calendar,gId, 32767);
+            gId += CalendarFactory.getSingleton().getGranularityIdentifierSummandFromCalendarIdentifier(
+            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getIdentifier());
+            Granularity granularity = CalendarFactory.getSingleton().getGranularity(gId,
+            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getTopGranularity().getIdentifier());
             Granule granule = new Granule(inf,inf,granularity);
             // Granule granule = granularity.parseDateToGranule(new Date());
             TemporalElement te = tmpds.addInstant(granule);
