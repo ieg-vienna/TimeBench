@@ -67,6 +67,7 @@ public class RConnector {
     public static synchronized RConnector getInstance(Calendar calendar) {
     	RConnector instance = getInstance();
     	instance.calendar = calendar;
+    	return instance;
     }
     
     public static synchronized RConnector getInstance() {

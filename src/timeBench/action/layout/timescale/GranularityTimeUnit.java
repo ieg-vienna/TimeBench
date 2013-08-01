@@ -84,7 +84,7 @@ public class GranularityTimeUnit extends TimeUnit {
             long id = getGranuleId(date);
 
             long infId = (id / factor) * factor;
-            Granule g = new Granule(infId, granularity, Granule.TOP);
+            Granule g = new Granule(infId, granularity, granularity.getCalendar().getTopGranule());
             long prev = g.getInf();
             if (logger.isDebugEnabled())
                 logger.debug("nf date: " + new Date(prev) + " Id: " + infId + " f: " + factor + " g: " + granularity);
@@ -103,7 +103,7 @@ public class GranularityTimeUnit extends TimeUnit {
             long id = getGranuleId(date);
 
             long supId = ((id / factor) + 1) * factor;
-            Granule g = new Granule(supId, granularity, Granule.TOP);
+            Granule g = new Granule(supId, granularity, granularity.getCalendar().getTopGranule());
             long next = g.getInf();
             if (logger.isDebugEnabled())
                 logger.debug("su date: " + new Date(next) + " Id: " + supId + " f: " + factor + " g: " + granularity);

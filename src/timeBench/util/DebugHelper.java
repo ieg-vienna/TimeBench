@@ -150,12 +150,12 @@ public class DebugHelper {
             long grBeginOfEnd   = grEndOfBegin   + (long) Math.floor(Math.random() * 10) + 4;
             long grEndOfEnd     = grBeginOfEnd   + (long) Math.floor(Math.random() * 4) + 1;
             
-            Granule granule = new Granule(grBeginOfBegin, granularity, Granule.TOP);
+            Granule granule = new Granule(grBeginOfBegin, granularity, granularity.getCalendar().getTopGranule());
             Instant beginBegin = tmpds.addInstant(granule);
             Span span = tmpds.addSpan(grEndOfBegin - grBeginOfBegin + 1, granularity.getIdentifier());
             Interval begin = tmpds.addInterval(beginBegin, span);
 
-            granule = new Granule(grBeginOfEnd, granularity, Granule.TOP);
+            granule = new Granule(grBeginOfEnd, granularity, granularity.getCalendar().getTopGranule());
             Instant beginEnd = tmpds.addInstant(granule);
             span = tmpds.addSpan(grEndOfEnd - grBeginOfEnd + 1, granularity.getIdentifier());
             Interval end = tmpds.addInterval(beginEnd, span);

@@ -216,7 +216,7 @@ public class Calendar {
 	}
 	
 	public Granularity getGranularity(String granularityName,String contextGranularityName) {
-		return calendarManager.getGranularity(this.identifier,granularityName,contextGranularityName);
+		return calendarManager.getGranularity(this,granularityName,contextGranularityName);
 	}
 
     @Override
@@ -225,4 +225,8 @@ public class Calendar {
                 append("manager", calendarManager.getClass().getSimpleName()).
                 toString();
     }
+
+	public Granule getTopGranule() throws TemporalDataException {
+		return new Granule(Long.MIN_VALUE,Long.MAX_VALUE,getTopGranularity());
+	}
 }
