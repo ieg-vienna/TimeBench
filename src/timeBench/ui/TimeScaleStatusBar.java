@@ -1,5 +1,7 @@
 package timeBench.ui;
 
+import java.util.Date;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -72,8 +74,8 @@ public class TimeScaleStatusBar extends JPanel implements ChangeListener {
 	}
 
 	public void stateChanged(ChangeEvent e) {
-		lblStartDate.setText(timeScale.getTimeUnit().getFullFormat().format(timeScale.getStartDateAdjusted()));
+		lblStartDate.setText(timeScale.getTimeUnit().formatFull(new Date(timeScale.getStartDateAdjusted())));
 		lblUnitName.setText(timeScale.getTimeUnit().getName());
-		lblEndDate.setText(timeScale.getTimeUnit().getFullFormat().format(timeScale.getEndDateAdjusted()));
+		lblEndDate.setText(timeScale.getTimeUnit().formatFull(new Date(timeScale.getEndDateAdjusted())));
 	}
 }

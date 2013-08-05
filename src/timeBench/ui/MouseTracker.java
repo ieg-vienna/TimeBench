@@ -8,6 +8,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Date;
 
 import javax.swing.JComponent;
 
@@ -78,8 +79,8 @@ public class MouseTracker extends MouseMotionAdapter {
 		}
 
 		Graphics2D g2d = (Graphics2D) g;
-		String dateText = timeScale.getTimeUnit().getFullFormat().format(
-				timeScale.getDateAtPixel(lastX));
+        String dateText = timeScale.getTimeUnit().formatFull(
+                new Date(timeScale.getDateAtPixel(lastX)));
 		// String dateTextRaw =
 		// timeScale.getUnit().getFullFormat().format(timeScale.getDateAtPixel(mouseTracker.lastX,
 		// false));
@@ -138,8 +139,8 @@ public class MouseTracker extends MouseMotionAdapter {
 		if (!containsMouse)
 			return;
 
-		String dateText = timeScale.getTimeUnit().getFullFormat().format(
-				timeScale.getDateAtPixel(lastX));
+        String dateText = timeScale.getTimeUnit().formatFull(
+                new Date(timeScale.getDateAtPixel(lastX)));
 		// String dateTextRaw =
 		// timeScale.getUnit().getFullFormat().format(timeScale.getDateAtPixel(mouseTracker.lastX,
 		// false));

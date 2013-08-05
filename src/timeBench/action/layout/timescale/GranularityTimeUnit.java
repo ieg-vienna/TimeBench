@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 
 public class GranularityTimeUnit extends TimeUnit {
