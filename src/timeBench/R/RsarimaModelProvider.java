@@ -8,6 +8,7 @@ import org.rosuda.REngine.REngine;
 import org.rosuda.REngine.REngineException;
 
 import timeBench.R.data.ACFDataObject;
+import timeBench.R.data.ModelInformationCriteria;
 import timeBench.R.data.ScatterPlotDataObject;
 
 public class RsarimaModelProvider {
@@ -25,7 +26,7 @@ public class RsarimaModelProvider {
 			resultName = resultName + String.valueOf(seasonal_length);
 		}
 		if (seasonal_length <= 0) {
-			seasonal_length = -1;
+			seasonal_length = 12;//-1
 		}
 		
 		String command;
@@ -63,6 +64,10 @@ public class RsarimaModelProvider {
 			if (result.isNull()) {
 				return null;
 			} else {
+				String commandIC = "k = length("+resultName+"$coef); "+resultName+"$BIC = log("+
+						resultName+"$sigma2) + (k * log(n)/n); "+resultName+"$AICc = log("+resultName+
+						"$sigma2) + ((n + k)/(n - k - 2)); "+resultName+"$AIC = log("+resultName+"$sigma2) + ((n + 2 * k)/n)";
+				engine.parseAndEval(commandIC, null, false);
 				return resultName;
 			}
 		} catch (REngineException e) {
@@ -83,11 +88,11 @@ public class RsarimaModelProvider {
 	
 	public String estimateSARIMA(String dataset, Object key, int p, int d, int q, 
 			int seasonal_p, int seasonal_d, int seasonal_q) {
-		return estimateSARIMA(dataset, key, p, d, q, seasonal_p, seasonal_d, seasonal_q, -1, false);
+		return estimateSARIMA(dataset, key, p, d, q, seasonal_p, seasonal_d, seasonal_q, 12, false);
 	}
 	
 	public String estimateSARIMA(String dataset, Object key, int p, int d, int q) {
-		return estimateSARIMA(dataset, key, p, d, q, 0, 0, 0, -1, false);
+		return estimateSARIMA(dataset, key, p, d, q, 0, 0, 0, 12, false);
 	}
 
 	private String standardizeResiduals(String res) {
@@ -207,5 +212,24 @@ public class RsarimaModelProvider {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public ModelInformationCriteria getInformationCriteria(String res) {
+		ModelInformationCriteria mic = new ModelInformationCriteria();
+		try {
+
+			double aic = engine.parseAndEval(res+"$AIC", null, true).asDouble();
+			mic.setAic(aic);
+			
+			mic.setAicc(engine.parseAndEval(res+"$AICc", null, true).asDouble());
+			mic.setBic(engine.parseAndEval(res+"$BIC", null, true).asDouble());
+			mic.setLoglik(engine.parseAndEval(res+"$loglik", null, true).asDouble());
+			mic.setSigma2(engine.parseAndEval(res+"$sigma2", null, true).asDouble());
+		} catch (REXPMismatchException e) {
+			e.printStackTrace();
+		} catch (REngineException e) {
+			e.printStackTrace();
+		}
+		return mic;
 	}
 }
