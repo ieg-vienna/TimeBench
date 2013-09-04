@@ -1,4 +1,4 @@
-TimeBench
+![TimeBench](timebench-logo-title-tagline-transp_668.png)
 ================================
  
 TimeBench, a flexible, easy-to-use, and reusable software library written in 
@@ -55,6 +55,6 @@ Citation
 --------
 
 Rind, A.; Lammarsch, T.; Aigner, W.; Alsallakh, B. & Miksch, S.: 
-TimeBench: A Data Model and Software Library for Visual Analytics of Time-Oriented Data, 
+[TimeBench: A Data Model and Software Library for Visual Analytics of Time-Oriented Data](http://www.ifs.tuwien.ac.at/~rind/preprint/rind_2013_vast_timebench.pdf), 
 _IEEE Transactions on Visualization and Computer Graphics, Special Issue "VIS 2013",_ 
 Vol. 19, No. 12, forthcoming, 2013.
