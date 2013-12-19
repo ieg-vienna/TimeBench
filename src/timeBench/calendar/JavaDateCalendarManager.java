@@ -23,7 +23,7 @@ import timeBench.data.TemporalDataException;
 public class JavaDateCalendarManager implements CalendarManager {
 	protected static JavaDateCalendarManager singleton = null;
 	protected java.util.Calendar javaCalendar = null;
-	protected Hashtable<Integer,Calendar> calendarSingletons = new Hashtable<Integer,Calendar>();  
+	protected Hashtable<Integer,Calendar> calendarSingletons = new Hashtable<Integer,Calendar>();
 	
 	/**
 	 * Return the identifier of this version of the JavaDataCalendarManager
