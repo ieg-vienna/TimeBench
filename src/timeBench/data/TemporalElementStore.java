@@ -530,7 +530,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
     }
     
     public Instant addInstant(long inf, long sup, Granularity granularity) {
-    	return addInstant(inf,sup,granularity.getIdentifier(),granularity.getGranularityContextIdentifier());
+    	return addInstant(inf,sup,granularity.getGlobalGranularityIdentifier(),granularity.getGranularityContextIdentifier());
     }
 
 
@@ -559,7 +559,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
     }
     
     public Instant addInstant(long id, long inf, long sup, Granularity granularity) {
-    	return addInstant(id,inf,sup,granularity.getIdentifier(),granularity.getGranularityContextIdentifier());
+    	return addInstant(id,inf,sup,granularity.getGlobalGranularityIdentifier(),granularity.getGranularityContextIdentifier());
     }
 
     /**
@@ -576,7 +576,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
             granuleCache = new GranuleCache(this);
         }
         Instant instant = addInstant(granule.getInf(), granule.getSup(),
-                granule.getGranularity().getIdentifier(), granule
+                granule.getGranularity().getGlobalGranularityIdentifier(), granule
                         .getGranularity().getGranularityContextIdentifier());
         granuleCache.addGranule(instant.getRow(), granule);
         return instant;
@@ -587,7 +587,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         GenericTemporalElement el = instant.asGeneric();
         el.setInf(granule.getInf());
         el.setSup(granule.getSup());
-        el.setGranularityId(granule.getGranularity().getIdentifier());
+        el.setGranularityId(granule.getGranularity().getGlobalGranularityIdentifier());
         el.setGranularityId(granule.getGranularity()
                 .getGranularityContextIdentifier());
         granuleCache.addGranule(instant.getRow(), granule);

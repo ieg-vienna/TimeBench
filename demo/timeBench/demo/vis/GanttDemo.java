@@ -50,7 +50,6 @@ import timeBench.data.Interval;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalObject;
-import timeBench.demo.vis.IntervalDemo;
 import timeBench.util.DebugHelper;
 import timeBench.util.DemoEnvironmentFactory;
 import timeBench.ui.TimeAxisDisplay;
@@ -105,7 +104,7 @@ public class GanttDemo {
         java.util.Locale.setDefault(java.util.Locale.US);
         UILib.setPlatformLookAndFeel();
 
-        Granularity granularity = CalendarFactory.getSingleton().getGranularity(
+        Granularity granularity = CalendarFactory.getInstance().getGranularity(
                 JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
                 "Week","Top");
 

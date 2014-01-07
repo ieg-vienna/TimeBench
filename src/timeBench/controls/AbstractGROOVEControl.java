@@ -172,13 +172,13 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 	 * @param patternRoot
 	 */
 	private void searchPattern(Visualization v,TemporalObject dataNode,TemporalObject patternNode) {
-//		Granularity granularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+//		Granularity granularity = new Granularity(JavaDateCalendarManager.getInstance().getDefaultCalendar(),
 //				dataNode.getTemporalElement().asGeneric().getGranularityId(),
 //				dataNode.getTemporalElement().asGeneric().getGranularityContextId());
-//		Granularity patternGranularity = new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+//		Granularity patternGranularity = new Granularity(JavaDateCalendarManager.getInstance().getDefaultCalendar(),
 //				patternNode.getTemporalElement().asGeneric().getGranularityId(),
 //				patternNode.getTemporalElement().asGeneric().getGranularityContextId());
-//		if (granularity.getIdentifier() == patternGranularity.getIdentifier() &&
+//		if (granularity.getGlobalGranularityIdentifier() == patternGranularity.getGlobalGranularityIdentifier() &&
 //				granularity.getGranularityContextIdentifier() == patternGranularity.getGranularityContextIdentifier()) {
 //		}
 //	} else {

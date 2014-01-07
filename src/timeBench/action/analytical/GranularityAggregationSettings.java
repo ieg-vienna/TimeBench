@@ -52,7 +52,7 @@
 //    /**
 //     * @return the identifier
 //     */
-//    public int getIdentifier() {
+//    public int getGlobalGranularityIdentifier() {
 //        return identifier;
 //    }
 //

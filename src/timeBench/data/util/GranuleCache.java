@@ -44,7 +44,7 @@ public class GranuleCache {
             GenericTemporalElement elem = tmpstr.getTemporalElementByRow(row);
             if (elem.isAnchored()) {
                 // TODO reuse granularity objects --> calendar responsible?
-                Granularity g = CalendarFactory.getSingleton().getGranularity(
+                Granularity g = CalendarFactory.getInstance().getGranularity(
                         elem.getGranularityId(), elem.getGranularityContextId());
                 granules.set(g.createGranules(elem.getInf(), elem.getSup()), row);
             } else {

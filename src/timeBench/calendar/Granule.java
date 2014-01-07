@@ -57,10 +57,10 @@ public class Granule {
 	}
 
 	/**
-	 * Constructs a Granule from inf to sup using a given {@linkplain Granule#MODE_INF_GANULE mode} in a given {@link Granularity}.
+	 * Constructs a Granule from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE mode} in a given {@link Granularity}.
 	 * @param inf the chronon that determines the start of the granule constructed
 	 * @param sup the chronon that determines the end of the granule constructed
-	 * @param mode the {@linkplain Granule#MODE_INF_GANULE mode} used to construct the granule
+	 * @param mode the {@linkplain Granule#MODE_INF_GRANULE mode} used to construct the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
@@ -192,13 +192,13 @@ public class Granule {
 	
 	private void setContextGranule(Granule contextGranule) throws TemporalDataException {
 		if (contextGranule != null)
-			if(granularity.getGranularityContextIdentifier() != contextGranule.getGranularity().getIdentifier())
+			if(granularity.getGranularityContextIdentifier() != contextGranule.getGranularity().getGlobalGranularityIdentifier())
 				throw new TemporalDataException("Context Granule must have context granularity as granularity.");
 		this.contextGranule = contextGranule;
 	}
 
 	/**
-	 * @param inf2
+	 * @param chronon
 	 * @return
 	 * @throws TemporalDataException 
 	 */

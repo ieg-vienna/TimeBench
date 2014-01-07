@@ -659,7 +659,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     
     public GenericTemporalElement addTemporalElement(long inf, long sup,
     		Granularity granularity,int kind) {
-    	return addTemporalElement(inf, sup, granularity.getIdentifier(), granularity.getGranularityContextIdentifier(), kind);
+    	return addTemporalElement(inf, sup, granularity.getGlobalGranularityIdentifier(), granularity.getGranularityContextIdentifier(), kind);
     }
 
 
@@ -688,7 +688,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     
     public GenericTemporalElement addTemporalElement(long id, long inf,
             long sup, Granularity granularity, int kind) {
-        return addTemporalElement(id, inf, sup, granularity.getIdentifier(), 
+        return addTemporalElement(id, inf, sup, granularity.getGlobalGranularityIdentifier(),
                 granularity.getGranularityContextIdentifier(), kind);
     }
     
@@ -749,7 +749,7 @@ public class TemporalDataset extends ParentChildGraph implements Lifespan, Clone
     }
     
     public Instant addInstant(long inf,long sup,Granularity granularity) {
-    	return addInstant(inf,sup,granularity.getIdentifier(),granularity.getGranularityContextIdentifier());
+    	return addInstant(inf,sup,granularity.getGlobalGranularityIdentifier(),granularity.getGranularityContextIdentifier());
     }
 
     /**

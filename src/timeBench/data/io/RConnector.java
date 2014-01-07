@@ -108,9 +108,9 @@ public class RConnector {
             Granularity granularity = null;
             if (Math.abs(frequency - 1.0) < 0.005
                     || Math.abs(frequency - 0.1) < 0.005)
-            	granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Year","Top");
+            	granularity = CalendarFactory.getInstance().getGranularity(calendar,"Year","Top");
             else if (Math.abs(frequency - 12.0) < 0.005)
-                granularity = CalendarFactory.getSingleton().getGranularity(calendar,"Month","Top");
+                granularity = CalendarFactory.getInstance().getGranularity(calendar,"Month","Top");
             else
                 throw new TemporalDataException(
                         "Unknown granularity. frequency: " + frequency);
@@ -270,7 +270,7 @@ public class RConnector {
         if (frequency != 12.0)
             throw new RuntimeException("only months supported");
 
-        Granularity granularity = CalendarFactory.getSingleton().getGranularity(
+        Granularity granularity = CalendarFactory.getInstance().getGranularity(
         		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
         		"Month","Top");
 
@@ -280,7 +280,7 @@ public class RConnector {
             TemporalElement elem = cur.getTemporalElement();
             if (!elem.isAnchored()) {
                 logger.debug("skip temp.o. with unanchored temp.el. " + elem);
-            } else if (elem.getGranularityId() != granularity.getIdentifier()
+            } else if (elem.getGranularityId() != granularity.getGlobalGranularityIdentifier()
                     || elem.getGranularityContextId() != granularity.getGranularityContextIdentifier()) {
                 logger.debug("skip temp.o. with wrong granularity " + elem);
             } else {

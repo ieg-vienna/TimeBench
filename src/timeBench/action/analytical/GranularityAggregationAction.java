@@ -58,9 +58,9 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		this.granularities = new Granularity[granularities.length];
 		aggFct = new GranularityAggregationFunction[granularities.length];
 		if(granularities.length > 0)
-			this.calendar = CalendarFactory.getSingleton().getCalendar(
-					CalendarFactory.getSingleton().getCalendarIdentifierFromGranularityIdentifier(
-					granularities[0].getIdentifier()));
+			this.calendar = CalendarFactory.getInstance().getCalendar(
+					CalendarFactory.getInstance().getCalendarIdentifierFromGranularityIdentifier(
+					granularities[0].getGlobalGranularityIdentifier()));
 		this.granularities = granularities;
 		if (aggFct == null) {
 			this.aggFct = new GranularityAggregationFunction[granularities.length];

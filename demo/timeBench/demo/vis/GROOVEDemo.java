@@ -89,10 +89,10 @@ public class GROOVEDemo {
 		Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
 		GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
 				new Granularity[] {
-				    CalendarFactory.getSingleton().getGranularity(calendar,"Top","Top"),
-				    CalendarFactory.getSingleton().getGranularity(calendar,"Year","Top"),
-				    CalendarFactory.getSingleton().getGranularity(calendar,"Week","Year"),
-				    CalendarFactory.getSingleton().getGranularity(calendar,"Day","Week") },
+				    CalendarFactory.getInstance().getGranularity(calendar,"Top","Top"),
+				    CalendarFactory.getInstance().getGranularity(calendar,"Year","Top"),
+				    CalendarFactory.getInstance().getGranularity(calendar,"Week","Year"),
+				    CalendarFactory.getInstance().getGranularity(calendar,"Day","Week") },
 				-1.0);				
 		/*GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
 				CalendarManagers.JavaDate,

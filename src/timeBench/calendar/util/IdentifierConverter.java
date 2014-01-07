@@ -54,17 +54,17 @@ public class IdentifierConverter {
 	}
 
 	/**
-	 * Assembles a composite identifier.
+	 * Assembles a global identifier capable of identifying all fields: manager, managerVersion, calendar, granularityType, granularity.
 	 *
-	 * @param managerIdentifier         The calendar manager identifier. Permitted values: {@link #MANAGER_MIN} to {@link #MANAGER_MAX}
-	 * @param versionIdentifier         The calendar manager version identifier. Permitted values: {@link #VERSION_MIN} to {@link #VERSION_MAX}
-	 * @param calendarIdentifier        The calendar identifier. Permitted values: {@link #CALENDAR_MIN} to {@link #CALENDAR_MAX}
+	 * @param managerIdentifier The calendar manager identifier. Permitted values: {@link #MANAGER_MIN} to {@link #MANAGER_MAX}
+	 * @param versionIdentifier The calendar manager version identifier. Permitted values: {@link #VERSION_MIN} to {@link #VERSION_MAX}
+	 * @param calendarIdentifier The calendar identifier. Permitted values: {@link #CALENDAR_MIN} to {@link #CALENDAR_MAX}
 	 * @param granularityTypeIdentifier The granularity type identifier. Permitted values: {@link #TYPE_GRANULARITY_MIN} to {@link #TYPE_GRANULARITY_MAX}
-	 * @param granularityIdentifier     The granularity identifier. Permitted values: {@link #GRANULARITY_MIN} to {@link #GRANULARITY_MAX}
-	 * @return The assembled composite identifier.
+	 * @param granularityIdentifier The granularity identifier. Permitted values: {@link #GRANULARITY_MIN} to {@link #GRANULARITY_MAX}
+	 * @return The assembled global identifier.
 	 * @throws TemporalDataException Thrown if any of the fields exceeds the values allowed by their respective bit length allocation.
 	 */
-	public int buildCompositeIdentifier(int managerIdentifier, int versionIdentifier, int calendarIdentifier, int granularityTypeIdentifier, int granularityIdentifier) throws TemporalDataException {
+	public int buildGlobalIdentifier(int managerIdentifier, int versionIdentifier, int calendarIdentifier, int granularityTypeIdentifier, int granularityIdentifier) throws TemporalDataException {
 		if (!(
 				(managerIdentifier >= MANAGER_MIN && managerIdentifier <= MANAGER_MAX) &&
 						(versionIdentifier >= VERSION_MIN && versionIdentifier <= VERSION_MAX) &&
@@ -84,6 +84,18 @@ public class IdentifierConverter {
 					"G=" + GRANULARITY_MIN + "-" + GRANULARITY_MAX + ")");
 		}
 		return (((((((managerIdentifier << VERSION_BITS) | versionIdentifier) << CALENDAR_BITS) | calendarIdentifier) << TYPE_GRANULARITY_BITS) | granularityTypeIdentifier) << GRANULARITY_BITS) | granularityIdentifier;
+	}
+
+	/**
+	 * Builds a global identifier capable of identifying: manager, managerVersion. All remaining fields are 0.
+	 *
+	 * @param managerIdentifier The calendar manager identifier. Permitted values: {@link #MANAGER_MIN} to {@link #MANAGER_MAX}
+	 * @param versionIdentifier The calendar manager version identifier. Permitted values: {@link #VERSION_MIN} to {@link #VERSION_MAX}
+	 * @return The assembled global identifier with manager and manager version set, all other bits 0.
+	 * @throws TemporalDataException
+	 */
+	public int buildCalendarManagerVersionIdentifier(int managerIdentifier, int versionIdentifier) throws TemporalDataException{
+		return buildGlobalIdentifier(managerIdentifier, versionIdentifier, 0, 0, 0);
 	}
 
 	/**

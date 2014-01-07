@@ -4,33 +4,66 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
+import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
+
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.*;
 
 /**
  * A granularity of a {@link Calendar}. Contains factories for multiple {@link Granule} instances.  
  * <p>
  * Added:         2011-07-19 / TL<br>
- * Modifications: 2012-04-11 / TL / inf, sup absolute, identifier in context
+ * Modifications: 2012-04-11 / TL / inf, sup absolute, globalGranularityIdentifier in context
  * </p>
  * 
  * @author Tim Lammarsch
  *
  */
+@XmlRootElement(name = "granularity")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Granularity {
-	private Calendar calendar = null;
-	private int identifier;
-	private int contextIdentifier;
+	@XmlInverseReference(mappedBy = "granularities")
+	private Calendar calendar;
+
+	@XmlTransient
+	private int globalGranularityIdentifier;
+
+	@XmlElement(required = true)
+	private Integer contextIdentifier;
+
+	@XmlElement(required = true)
+	private Integer localGranularityIdentifier;
+
+	@XmlElement(required = true)
+	private Integer localGranularityTypeIdentifier;
+
+	@XmlElement(required = true)
+	private String granularityLabel;
+
+	@XmlAttribute
+	private Boolean isTopGranularity;
+
+	@XmlAttribute
+	private Boolean isBottomGranularity;
+
+	/**
+	 * Empty constructor for JAXB
+	 */
+	public Granularity(){
+	}
 		
 	/**
 	 * Constructs a Granularity using a given {@link Calendar}, with identifiers for granularity
 	 * and context given as integers from the {@link CalendarManager}.
 	 * @param calendar The {@link Calendar} the granularity belongs to.
-	 * @param identifier The identifier of the granularity whose meaning depends on the {@link CalendarManager}.
-	 * @param contextIdentifier The context identifier of the granularity whose meaning depends on the {@link CalendarManager}.
+	 * @param globalGranularityIdentifier The globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
+	 * @param contextIdentifier The context globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
 	 */
-	public Granularity(Calendar calendar, int identifier, int contextIdentifier){
+	public Granularity(Calendar calendar, int globalGranularityIdentifier, int contextIdentifier){
 		this.calendar = calendar;
-		this.identifier = identifier;
+		this.globalGranularityIdentifier = globalGranularityIdentifier;
 		this.contextIdentifier = contextIdentifier;
 	}
      
@@ -44,23 +77,23 @@ public class Granularity {
      }
 
 	/**
-	 * Returns identifier of this granularity whose meaning depends on the {@link CalendarManager}.
-	 * @return identifier of this granularity whose meaning depends on the {@link CalendarManager}
+	 * Returns globalGranularityIdentifier of this granularity whose meaning depends on the {@link CalendarManager}.
+	 * @return globalGranularityIdentifier of this granularity whose meaning depends on the {@link CalendarManager}
 	 */
-	public int getIdentifier() {
-		return identifier;
+	public int getGlobalGranularityIdentifier() {
+		return globalGranularityIdentifier;
 	}
 
 	/**
-	 * Returns context identifier of this granularity whose meaning depends on the {@link CalendarManager}.
-	 * @return context identifier of this granularity whose meaning depends on the {@link CalendarManager}
+	 * Returns context globalGranularityIdentifier of this granularity whose meaning depends on the {@link CalendarManager}.
+	 * @return context globalGranularityIdentifier of this granularity whose meaning depends on the {@link CalendarManager}
 	 */
 	public int getGranularityContextIdentifier() {
 		return contextIdentifier;
 	}
 	
 	public boolean isInTopContext() {
-	    return contextIdentifier == calendar.getTopGranularity().getIdentifier();
+	    return contextIdentifier == calendar.getTopGranularity().getGlobalGranularityIdentifier();
 	}
 	
 	/**
@@ -92,7 +125,7 @@ public class Granularity {
 	 * Constructs several {@link Granule} objects from inf to sup that are at least partly in the given interval.
 	 * @param inf the chronon that determines the start of the {@link Granule} range constructed
 	 * @param sup the chronon that determines the end of the {@link Granule} range constructed
-	 * @return the constructed {@link Array} of {@link Granule}
+	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
     public Granule[] createGranules(long inf,long sup) throws TemporalDataException {
@@ -105,19 +138,19 @@ public class Granularity {
 	 * @param inf the chronon that determines the start of the {@link Granule} range constructed
 	 * @param sup the chronon that determines the end of the {@link Granule} range constructed
 	 * @param cover the coverage fraction of a granule needed to be included in the result
-	 * @return the constructed {@link Array} of {@link Granule}
+	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
     public Granule[] createGranules(long inf,long sup,double cover) throws TemporalDataException {
 		return calendar.createGranules(inf,sup,cover,this);
 	}
-	
+
 	/**
 	 * Constructs several {@link Granule} objects from other {@link Granule} objects that can (and most likely
 	 * will) be in a different granularity. All {@link Granule} that are at least partly covered are
 	 * returned.
-	 * @param Granule[] the {@link Array} of {@link Granule} used as source
-	 * @return the constructed {@link Array} of {@link Granule}
+	 * @param granules the array of {@link Granule} used as source
+	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
     public Granule[] createGranules(Granule[] granules) throws TemporalDataException {
@@ -128,20 +161,20 @@ public class Granularity {
 	 * Constructs several {@link Granule} objects from other {@link Granule} objects that can (and most likely
 	 * will) be in a different granularity. All {@link Granule} with
 	 * a coverage of a least a given fraction are returned.
-	 * @param Granule[] the {@link Array} of {@link Granule} used as source
+	 * @param granules the array of {@link Granule} used as source
 	 * @param cover the coverage fraction of a granule needed to be included in the result
-	 * @return the constructed {@link Array} of {@link Granule}
+	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-    public Granule[] createGranules(Granule[] granules,double cover) throws TemporalDataException {
+    public Granule[] createGranules(Granule[] granules, double cover) throws TemporalDataException {
 		return calendar.createGranules(granules,cover,this);
 	}
 	
 	/**
-	 * Calculate and return the identifier of a {@link Granule}. An identifier is a numeric label given in the context
+	 * Calculate and return the globalGranularityIdentifier of a {@link Granule}. An globalGranularityIdentifier is a numeric granularityLabel given in the context
 	 * of the granularity. Consider using the adequate method of
 	 * {@link Granule} instead.
-	 * @return the identifier
+	 * @return the globalGranularityIdentifier
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
     protected long createGranuleIdentifier(Granule granule) throws TemporalDataException {
@@ -149,10 +182,10 @@ public class Granularity {
 	}
 	
 	/**
-	 * Calculate and return the human readable label of a {@link Granule}.
+	 * Calculate and return the human readable granularityLabel of a {@link Granule}.
 	 * Consider using the adequate method of
 	 * {@link Granule} instead.
-	 * @return the label
+	 * @return the granularityLabel
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
     protected String createGranuleLabel(Granule granule) throws TemporalDataException {
@@ -178,8 +211,8 @@ public class Granularity {
 	}
 
 	/**
-	 * Provide the minimum identifier value that granules of this granularity can assume.
-	 * @return the minimum granule identifier value
+	 * Provide the minimum globalGranularityIdentifier value that granules of this granularity can assume.
+	 * @return the minimum granule globalGranularityIdentifier value
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
 	public long getMinGranuleIdentifier() throws TemporalDataException {
@@ -187,8 +220,8 @@ public class Granularity {
 	}
 
 	/**
-	 * Provide the maximum identifier value that granules of this granularity can assume.
-	 * @return the maximum granule identifier value
+	 * Provide the maximum globalGranularityIdentifier value that granules of this granularity can assume.
+	 * @return the maximum granule globalGranularityIdentifier value
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
 	public long getMaxGranuleIdentifier() throws TemporalDataException {
@@ -203,10 +236,83 @@ public class Granularity {
 		return calendar.contains(granule,chronon);
 	}
 
-    @Override
+//	void afterUnmarshal(Unmarshaller unmarshaller, Object parent){
+//		try {
+//			setGlobalGranularityIdentifier(IdentifierConverter.getInstance().buildGlobalIdentifier(
+//					calendar.getCalendarManager().getLocalCalendarManagerIdentifier(),
+//					calendar.getCalendarManager().getLocalCalendarManagerVersionIdentifier(),
+//					calendar.getLocalCalendarIdentifier(),
+//					localGranularityTypeIdentifier,
+//					localGranularityIdentifier
+//			));
+//		}
+//		catch (TemporalDataException e) {
+//			throw new RuntimeException(
+//					"Failed to initialize granularity: " + granularityLabel + " with local identifier: "
+//					+ localGranularityIdentifier + " and local type identifier: " + localGranularityTypeIdentifier, e);
+//		}
+//	}
+
+	public void setGlobalGranularityIdentifier(int globalGranularityIdentifier) {
+		this.globalGranularityIdentifier = globalGranularityIdentifier;
+	}
+
+	public int getLocalGranularityIdentifier() {
+		return localGranularityIdentifier;
+	}
+
+	public void setLocalGranularityIdentifier(int localGranularityIdentifier) {
+		this.localGranularityIdentifier = localGranularityIdentifier;
+	}
+
+	public String getGranularityLabel() {
+		return granularityLabel;
+	}
+
+	public void setGranularityLabel(String granularityLabel) {
+		this.granularityLabel = granularityLabel;
+	}
+
+	public void setCalendar(Calendar calendar) {
+		this.calendar = calendar;
+	}
+
+	public int getLocalGranularityTypeIdentifier() {
+		return localGranularityTypeIdentifier;
+	}
+
+	public void setLocalGranularityTypeIdentifier(int localGranularityTypeIdentifier) {
+		this.localGranularityTypeIdentifier = localGranularityTypeIdentifier;
+	}
+
+	public int getContextIdentifier() {
+		return contextIdentifier;
+	}
+
+	public void setContextIdentifier(int contextIdentifier) {
+		this.contextIdentifier = contextIdentifier;
+	}
+
+	public boolean isTopGranularity() {
+		return isTopGranularity;
+	}
+
+	public void setTopGranularity(boolean topGranularity) {
+		isTopGranularity = topGranularity;
+	}
+
+	public boolean isBottomGranularity() {
+		return isBottomGranularity;
+	}
+
+	public void setBottomGranularity(boolean bottomGranularity) {
+		isBottomGranularity = bottomGranularity;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this).
-                append("id", identifier).
+                append("id", globalGranularityIdentifier).
                 append("context", contextIdentifier).
                 append("cal", calendar).
                 toString();

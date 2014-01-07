@@ -12,12 +12,12 @@
 // *
 // */
 //public class CalendarManagerFactory {
-//	public static CalendarManager getSingleton(CalendarManagers type) {
+//	public static CalendarManager getInstance(CalendarManagers type) {
 //		CalendarManager result = null;
 //		
 //		switch(type) {
 //			case JavaDate:
-//				result = JavaDateCalendarManager.getSingleton();
+//				result = JavaDateCalendarManager.getInstance();
 //				break;
 //		}
 //		

@@ -85,7 +85,7 @@ public class MultipleLinePlotDemo {
     private static final String GROUP_AXIS_LABELS = "ylab";
     private static final String GROUP_LINES = "lines";
 
-    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Week","Top");
     
     /**

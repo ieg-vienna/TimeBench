@@ -79,7 +79,7 @@ public class HorizonGraphDemo {
 
 //    private static final String FILE_DATA = "data/nmmaps-resp-2short-matrix.csv";
     private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
-    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Month","Top");
 
     private static final String COL_DATA = "value";

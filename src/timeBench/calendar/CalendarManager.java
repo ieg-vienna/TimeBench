@@ -29,21 +29,21 @@ public interface CalendarManager {
 	/**
 	 * Provides access to a singleton instance of a calendar.
 	 * It does only create one instance and provides that one with every call.
-	 * @param identifier the identifier of the calendar
+	 * @param localIdentifier the localIdentifier of the calendar
 	 * @return The calendar.
 	 */
-	public Calendar getCalendar(int identifier);
+	public Calendar getCalendar(int localIdentifier);
 	
 	/**
-	 * Returns an {@link Array} of granularity identifiers that are provided by the calendar.
-	 * @return {@link Array} of granularity identifiers
+	 * Returns an array of global granularity identifiers that are provided by the calendar.
+	 * @return array of global granularity identifiers
 	 */
-	public int[] getGranularityIdentifiers();
+	public int[] getGlobalGranularityIdentifiers();
 	
 	/**
 	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
 	 * {@link Granule} instead.
-	 * @param date the {@link Date} used to generate the granule
+	 * @param input the {@link Date} used to generate the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
@@ -51,12 +51,12 @@ public interface CalendarManager {
 	public Granule createGranule(Date input, Granularity granularity) throws TemporalDataException;
 	
 	/**
-	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GANULE mode} and
+	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE mode} and
 	 * for a given {@link Granularity}.
 	 * Consider using the adequate constructor of {@link Granule} instead.
 	 * @param inf the chronon that determines the start of the granule constructed
 	 * @param sup the chronon that determines the end of the granule constructed
-	 * @param mode the {@linkplain Granule#MODE_INF_GANULE mode} used to construct the granule
+	 * @param mode the {@linkplain Granule#MODE_INF_GRANULE mode} used to construct the granule
 	 * @param granularity the {@link Granularity} to use
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
@@ -72,7 +72,7 @@ public interface CalendarManager {
 	 * @param sup the chronon that determines the end of the {@link Granule} range constructed
 	 * @param cover the coverage fraction of a granule needed to be included in the result
 	 * @param granularity the {@link Granularity} to use
-	 * @return the constructed {@link Array} of {@link Granule}
+	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
 	public Granule[] createGranules(long inf, long sup, double cover,
@@ -84,10 +84,10 @@ public interface CalendarManager {
 	 * will) be in a different {@link Granularity}. All {@link Granule} with
 	 * a coverage of a least a given fraction are returned.
 	 * Consider using the adequate factory of {@link Granularity} instead.
-	 * @param Granule[] the {@link Array} of {@link Granule} used as source
+	 * @param granules the array of {@link Granule} used as source
 	 * @param cover the coverage fraction of a granule needed to be included in the result
 	 * @param granularity the {@link Granularity} to use
-	 * @return the constructed {@link Array} of {@link Granule}
+	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
 	public Granule[] createGranules(Granule[] granules, double cover,
@@ -153,12 +153,21 @@ public interface CalendarManager {
 
 	public Granularity getTopGranularity(Calendar calendar);
 
+	public int getGlobalCalendarManagerVersionIdentifier();
+
+	public int getLocalCalendarManagerIdentifier();
+
+	public int getLocalCalendarManagerVersionIdentifier();
+
 	/**
 	 * @param calendar
 	 * @param granularityName
 	 * @param contextGranularityName
 	 * @return
 	 */
-	Granularity getGranularity(Calendar calendar, String granularityName,
+	public Granularity getGranularity(Calendar calendar, String granularityName,
 			String contextGranularityName);
+
+	public void registerCalendar(int localIdentifier, Calendar calendar) throws TemporalDataException;
+
 }

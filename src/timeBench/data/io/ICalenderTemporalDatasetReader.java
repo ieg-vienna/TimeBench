@@ -59,9 +59,9 @@ public class ICalenderTemporalDatasetReader extends
 
 	private Granularity granularity = null;
 	
-	private Granularity minuteGranularity = CalendarFactory.getSingleton().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+	private Granularity minuteGranularity = CalendarFactory.getInstance().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
 			"Minute","Top");
-	private Granularity secondGranularity = CalendarFactory.getSingleton().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+	private Granularity secondGranularity = CalendarFactory.getInstance().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
 			"Second","Top");
 	
 	public ICalenderTemporalDatasetReader() {
@@ -240,7 +240,7 @@ public class ICalenderTemporalDatasetReader extends
 		}
 
 		tempElement = dataset.addTemporalElement(dStamp.getTime(),
-				dStamp.getTime(), minuteGranularity.getIdentifier(), minuteGranularity.getGranularityContextIdentifier(),
+				dStamp.getTime(), minuteGranularity.getGlobalGranularityIdentifier(), minuteGranularity.getGranularityContextIdentifier(),
 				TemporalElementStore.PRIMITIVE_INSTANT);
 
 		tempObject = dataset.addTemporalObject(tempElement);

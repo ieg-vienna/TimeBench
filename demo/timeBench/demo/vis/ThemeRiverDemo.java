@@ -49,7 +49,7 @@ import timeBench.util.DemoEnvironmentFactory;
 public class ThemeRiverDemo {
 
     private static final String FILE_DATA = "data/nmmaps-resp-3-12monthly-matrix.csv";
-    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Month","Top");
 
     private static final String COL_LABEL = "label";

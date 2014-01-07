@@ -1,5 +1,10 @@
 package timeBench.calendar;
 
+import timeBench.calendar.util.IdentifierConverter;
+import timeBench.data.TemporalDataException;
+
+import java.util.TreeMap;
+
 /**
  * A factory class for all classes in the calendar package.
  * <p/>
@@ -12,6 +17,7 @@ package timeBench.calendar;
  * C: Calendar
  * T: Type Granularity (e.g., western modern (week), metric (kilosecond), ...)
  * G: Granularity (e.g., week, kilosecond, ...)
+ * MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG
  * <p/>
  * <p>
  * Added:         2013-07-23 / TL<br>
@@ -22,22 +28,27 @@ package timeBench.calendar;
  */
 
 public class CalendarFactory {
-	private static CalendarFactory singleton = new CalendarFactory();
+	private static CalendarFactory instance = null;
+
+	private TreeMap<Integer, TreeMap<Integer, CalendarManager>> calendarManagerMap = new TreeMap<>();
 
 	/**
-	 * Static method to get a singleton of this class that always exists.
+	 * Static method to get a instance of this class that always exists.
 	 *
-	 * @return the singleton
+	 * @return the instance
 	 */
-	public static CalendarFactory getSingleton() {
-		return singleton;
+	public static CalendarFactory getInstance() {
+		if (instance == null){
+			instance = new CalendarFactory();
+		}
+		return instance;
 	}
 
 	/**
 	 * Creates if necessary and returns an instance of the calendar manager described by the identifier
 	 * (ignoring the version).
 	 *
-	 * @param identifier the identifier to get the calendar manager for
+	 * @param identifier the identifier to get the calendar manager for (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
 	 * @return the calendar manager if possible, null otherwise
 	 */
 	public CalendarManager getCalendarManager(int identifier) {
@@ -45,47 +56,72 @@ public class CalendarFactory {
 	}
 
 	/**
-	 * Creates if necessary and returns an instance of the calendar manager described by the identifier.
+	 * Creates if necessary and returns an instance of the calendar manager described by the globalIdentifier.
 	 *
-	 * @param identifier     the identifier to get the calendar manager for
+	 * @param globalIdentifier the globalIdentifier to get the calendar manager for (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
 	 * @param enforceVersion true means that a special version of a calendar manager is needed, otherwise that does not matter
 	 * @return the calendar manager if possible, null otherwise
 	 */
-	public CalendarManager getCalendarManager(int identifier, boolean enforceVersion) {
-		if ((enforceVersion && identifier == JavaDateCalendarManager.getIdentifier()) ||
-				(identifier & 0x00) == (JavaDateCalendarManager.getIdentifier() & 0x00))
+	public CalendarManager getCalendarManager(int globalIdentifier, boolean enforceVersion) {
+		TreeMap<Integer, CalendarManager> calendarManagerVersions = calendarManagerMap.get(IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier));
+
+		if (calendarManagerVersions == null || calendarManagerVersions.size() == 0){
+			return null;
+		}
+
+		if (enforceVersion){
+			return calendarManagerVersions.get(IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier));
+		}
+		else {
+			int firstVersionIdentifier = calendarManagerVersions.firstKey();
+			return calendarManagerVersions.get(firstVersionIdentifier);
+		}
+		/*
+		if (!enforceVersion){
+			switch (IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier)){
+				case JavaDateCalendarManager.():
+					break;
+				case 2:
+					break;
+			}
+		}
+		else{
+
+		}
+		if ((enforceVersion && globalIdentifier == JavaDateCalendarManager.getLocalIdentifier()) ||
+				(globalIdentifier & 0x00) == (JavaDateCalendarManager.getLocalIdentifier() & 0x00))
 			return JavaDateCalendarManager.getSingleton();
 		else
 			return null;
+		*/
 	}
 
 	/**
-	 * Creates if necessary and returns an instance of the calendar described by the identifier
+	 * Creates if necessary and returns an instance of the calendar described by the globalIdentifier
 	 * (ignoring the version).
 	 * Can create a calendar manager on demand.
 	 *
-	 * @param identifier the identifier to get the calendar for
+	 * @param globalIdentifier the globalIdentifier to get the calendar for (MMMMM VVVVVVVV CCCCCCC xxxxx xxxxxxx)
 	 * @return the calendar manager if possible, null otherwise
 	 */
-	public Calendar getCalendar(int identifier) {
-		return getCalendar(identifier, false);
+	public Calendar getCalendar(int globalIdentifier) {
+		return getCalendar(globalIdentifier, false);
 	}
 
 	/**
-	 * Creates if necessary and returns an instance of the calendar described by the identifier.
+	 * Creates if necessary and returns an instance of the calendar described by the globalIdentifier.
 	 * Can create a calendar manager on demand.
 	 *
-	 * @param identifier     the identifier to get the calendar for
+	 * @param globalIdentifier the globalIdentifier to get the calendar for (MMMMM VVVVVVVV CCCCCCC xxxxx xxxxxxx)
 	 * @param enforceVersion true means that a special version of a calendar manager is needed, otherwise that does not matter
 	 * @return the calendar manager if possible, null otherwise
 	 */
-	public Calendar getCalendar(int identifier, boolean enforceVersion) {
-		CalendarManager calendarManager = getCalendarManager(
-				getCalendarManagerIdentifierFromCalendarIdentifier(identifier), enforceVersion);
+	public Calendar getCalendar(int globalIdentifier, boolean enforceVersion) {
+		CalendarManager calendarManager = getCalendarManager(IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier), enforceVersion);
 		if (calendarManager == null)
 			return null;
 		else {
-			return calendarManager.getCalendar(identifier);
+			return calendarManager.getCalendar(globalIdentifier);
 		}
 	}
 
@@ -94,70 +130,110 @@ public class CalendarFactory {
 	 * (ignoring the version).
 	 * Can create a calendar manager and calendar on demand.
 	 *
-	 * @param granularityID        the identifier of the granularity
-	 * @param contextGranularityID the identifier of the granularity's context granularity
+	 * @param globalGranularityIdentifier the identifier of the granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
+	 * @param globalContextGranularityIdentifier the identifier of the granularity's context granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
 	 * @return the granularity if possible, null otherwise
 	 */
-	public Granularity getGranularity(int granularityID, int contextGranularityID) {
-		return getGranularity(granularityID, contextGranularityID, false);
+	public Granularity getGranularity(int globalGranularityIdentifier, int globalContextGranularityIdentifier) {
+		return getGranularity(globalGranularityIdentifier, globalContextGranularityIdentifier, false);
 	}
 
 	/**
 	 * Creates and returns an instance of a granularity described by the identifier and context identifier.
 	 * Can create a calendar manager and calendar on demand.
 	 *
-	 * @param granularityID        the identifier of the granularity
-	 * @param contextGranularityID the identifier of the granularity's context granularity
+	 * @param globalGranularityIdentifier the identifier of the granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
+	 * @param globalContextGranularityIdentifier the identifier of the granularity's context granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
 	 * @param enforceVersion       true means that a special version of a calendar manager is needed, otherwise that does not matter
-	 * @return the granularity if possible, null otherwise
+	 * @return the granularity if possible, null otherwise. The globalGranularityIdentifier and globalContextGranularityIdentifier must be of
+	 * the same calendarManager and calendar
 	 */
-	public Granularity getGranularity(int granularityID, int contextGranularityID, boolean enforceVersion) {
-		int calendarIdentifier = getCalendarIdentifierFromGranularityIdentifier(granularityID);
-		if (calendarIdentifier != getCalendarIdentifierFromGranularityIdentifier(contextGranularityID))
+	public Granularity getGranularity(int globalGranularityIdentifier, int globalContextGranularityIdentifier, boolean enforceVersion) {
+		if (IdentifierConverter.getInstance().getManagerIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getManagerIdentifier(globalContextGranularityIdentifier) ||
+			IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)){
 			return null;
-		Calendar calendar = getCalendar(calendarIdentifier, enforceVersion);
+		}
+
+		Calendar calendar = getCalendar(IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier), enforceVersion);
 		if (calendar == null)
 			return null;
 		else {
-			return new Granularity(calendar, granularityID, contextGranularityID);
+			return new Granularity(calendar, globalGranularityIdentifier, globalContextGranularityIdentifier);
 		}
 	}
 
 	public Granularity getGranularity(Calendar calendar, String granularityName, String contextGranularityName) {
 		return calendar.getGranularity(granularityName, contextGranularityName);
-	}/**
-		 * Calculates the calendar manager, version, and calendar parts of a granularity identifier from
-		 * a calendar identifier.
-		 *
-		 * @param identifier
-		 * @return the resulting identifier
-		 */
-		public int getGranularityIdentifierSummandFromCalendarIdentifier(
-				int identifier) {
-			return identifier << 12;
+	}
+
+	/**
+	 * This method registers an instance of a calendar manager with this factory.
+	 * @param globalIdentifier The identifier for the calendar manager, and its version (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
+	 * @param manager The manager to be registered
+	 * @throws TemporalDataException Thrown if a specific manager identifier - version identifier combination has already been registered.
+	 */
+	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException{
+		//TODO: change method signature to local identifier fields
+		int calendarManagerIdentifier = IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier);
+		int calendarManagerVersionIdentifier = IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier);
+
+		TreeMap<Integer, CalendarManager> existingManagerVersions = calendarManagerMap.get(calendarManagerIdentifier);
+		if (existingManagerVersions == null){
+			TreeMap<Integer, CalendarManager> newCalendarManagerMap = new TreeMap<>();
+			newCalendarManagerMap.put(calendarManagerVersionIdentifier, manager);
+			calendarManagerMap.put(calendarManagerIdentifier,newCalendarManagerMap);
+			return;
 		}
 
-		/**
-		 * Calculates the calendar manager identifier from
-		 * a calendar identifier.
-		 *
-		 * @param identifier
-		 * @return the resulting identifier
-		 */
-		public int getCalendarManagerIdentifierFromCalendarIdentifier(
-				int identifier) {
-			return identifier >> 7;
+		if (existingManagerVersions.get(calendarManagerVersionIdentifier) != null){
+			throw new TemporalDataException("Attempting to register new calendarManager: " + manager.getClass().getSimpleName() + " with already registered version: " + calendarManagerVersionIdentifier);
 		}
 
-		/**
-		 * Calculates the calendar identifier from
-		 * a granularity identifier.
-		 *
-		 * @param identifier
-		 * @return the resulting identifier
-		 */
-		public int getCalendarIdentifierFromGranularityIdentifier(
-				int identifier) {
-			return identifier >> 12;
-		}
+		existingManagerVersions.put(calendarManagerVersionIdentifier, manager);
+	}
+
+	/**
+	 * Calculates the calendar manager, version, and calendar parts of a granularity identifier from
+	 * a calendar identifier.
+	 *
+	 * @deprecated port this method to {@link timeBench.calendar.util.IdentifierConverter}
+	 *
+	 * @param identifier
+	 * @return the resulting identifier
+	 */
+	@Deprecated
+	public int getGranularityIdentifierSummandFromCalendarIdentifier(
+			int identifier) {
+		return identifier << 12;
+	}
+
+	/**
+	 * Calculates the calendar manager identifier from
+	 * a calendar identifier.
+	 *
+	 * @deprecated use {@link timeBench.calendar.util.IdentifierConverter#getManagerIdentifier(int)}
+	 *
+	 * @param identifier
+	 * @return the resulting identifier
+	 */
+	@Deprecated
+	public int getCalendarManagerIdentifierFromCalendarIdentifier(
+			int identifier) {
+		return identifier >> 7;
+	}
+
+	/**
+	 * Calculates the calendar identifier from
+	 * a granularity identifier.
+	 *
+	 * @deprecated use {@link timeBench.calendar.util.IdentifierConverter#getCalendarIdentifier(int)}
+	 *
+	 * @param identifier
+	 * @return the resulting identifier
+	 */
+	@Deprecated
+	public int getCalendarIdentifierFromGranularityIdentifier(
+			int identifier) {
+		return identifier >> 12;
+	}
 }

@@ -94,7 +94,7 @@ public abstract class TemporalObjectEncoding {
 
     public void setGranularity(Granularity granularity) {
         this.granularity = granularity;
-        this.granularityId = granularity.getIdentifier();
+        this.granularityId = granularity.getGlobalGranularityIdentifier();
     }
 
     public boolean isTemporalObjectIdIncluded() {

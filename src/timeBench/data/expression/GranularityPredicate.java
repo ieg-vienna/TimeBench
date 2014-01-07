@@ -34,12 +34,12 @@ public class GranularityPredicate extends AndPredicate {
         if(ignoreContext) {       
         	super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
         			new ColumnExpression(TemporalElement.GRANULARITY_ID),
-        			new NumericLiteral(granularity.getIdentifier())));
+        			new NumericLiteral(granularity.getGlobalGranularityIdentifier())));
         } else {               
         	super.add(new GranularityContextPredicate(granularity));
         	super.add(new ComparisonPredicate(ComparisonPredicate.EQ,
                 new ColumnExpression(TemporalElement.GRANULARITY_ID),
-                new NumericLiteral(granularity.getIdentifier())));
+                new NumericLiteral(granularity.getGlobalGranularityIdentifier())));
         }
 
         this.granularity = granularity;
@@ -56,7 +56,7 @@ public class GranularityPredicate extends AndPredicate {
             }
         }
         int tupleGranularityId = t.getInt(TemporalElement.GRANULARITY_ID);
-        return (granularity.getIdentifier() == tupleGranularityId);
+        return (granularity.getGlobalGranularityIdentifier() == tupleGranularityId);
     }
 
     @Override

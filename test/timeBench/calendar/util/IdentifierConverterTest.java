@@ -36,8 +36,8 @@ public class IdentifierConverterTest extends TestCase{
 		assertEquals(TEST_GRANULARITY_IDENTIFIER, granularityIdentifier);
 	}
 	public void testBuildCompositeIdentifier() throws TemporalDataException {
-//		int compositeIdentifier = IdentifierFactory.getInstance().buildCompositeIdentifier(0b10001, 0b10000000, 0b1000000, 0b10000, 0b1000000);
-		int compositeIdentifier = IdentifierConverter.getInstance().buildCompositeIdentifier(
+//		int compositeIdentifier = IdentifierFactory.getInstance().buildGlobalIdentifier(0b10001, 0b10000000, 0b1000000, 0b10000, 0b1000000);
+		int compositeIdentifier = IdentifierConverter.getInstance().buildGlobalIdentifier(
 				TEST_MANAGER_IDENTIFIER,
 				TEST_VERSION_IDENTIFIER,
 				TEST_CALENDAR_IDENTIFIER,

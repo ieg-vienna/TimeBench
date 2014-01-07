@@ -116,16 +116,16 @@ public class TimeUnitProvider {
         TimeUnitProvider tup = new TimeUnitProvider();
         
         timeBench.calendar.Calendar cal = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
-        Granularity ms = CalendarFactory.getSingleton().getGranularity(cal, "Millisecond", "Top");
-        Granularity sec = CalendarFactory.getSingleton().getGranularity(cal, "Second", "Top");
-        Granularity min = CalendarFactory.getSingleton().getGranularity(cal, "Minute", "Top");
-        Granularity hour = CalendarFactory.getSingleton().getGranularity(cal, "Hour", "Top");
-        Granularity day = CalendarFactory.getSingleton().getGranularity(cal, "Day", "Top");
-        Granularity week = CalendarFactory.getSingleton().getGranularity(cal, "Week", "Top");
-        Granularity month = CalendarFactory.getSingleton().getGranularity(cal, "Month", "Top");
-        Granularity quarter = CalendarFactory.getSingleton().getGranularity(cal, "Quarter", "Top");
-        Granularity year = CalendarFactory.getSingleton().getGranularity(cal, "Year", "Top");
-        Granularity decade = CalendarFactory.getSingleton().getGranularity(cal, "Decade", "Top");
+        Granularity ms = CalendarFactory.getInstance().getGranularity(cal, "Millisecond", "Top");
+        Granularity sec = CalendarFactory.getInstance().getGranularity(cal, "Second", "Top");
+        Granularity min = CalendarFactory.getInstance().getGranularity(cal, "Minute", "Top");
+        Granularity hour = CalendarFactory.getInstance().getGranularity(cal, "Hour", "Top");
+        Granularity day = CalendarFactory.getInstance().getGranularity(cal, "Day", "Top");
+        Granularity week = CalendarFactory.getInstance().getGranularity(cal, "Week", "Top");
+        Granularity month = CalendarFactory.getInstance().getGranularity(cal, "Month", "Top");
+        Granularity quarter = CalendarFactory.getInstance().getGranularity(cal, "Quarter", "Top");
+        Granularity year = CalendarFactory.getInstance().getGranularity(cal, "Year", "Top");
+        Granularity decade = CalendarFactory.getInstance().getGranularity(cal, "Decade", "Top");
         
         // handle two languages (e.g., for MouseTracker)
         String dataformat = (Locale.getDefault().getLanguage() == "de") ? "dd.MM yyyy" : "MMM d, yyyy";

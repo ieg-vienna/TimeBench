@@ -84,7 +84,7 @@ public class PlanningLinesDemo {
     private static final String GROUP_DATA_MINDURATION = "data_minduration";
     private static final String GROUP_DATA_MAXDURATION = "data_maxduration";
     
-    private static final Granularity GRANULARITY = CalendarFactory.getSingleton().getGranularity(
+    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Week","Top");
 
     @SuppressWarnings("unused")

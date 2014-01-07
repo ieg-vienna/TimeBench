@@ -219,7 +219,7 @@ public class ClimateDemo extends TimeAxisDisplay {
             TemporalDataException, IOException, JAXBException {
         // TemporalDataColumnSpecification spec = new
         // TemporalDataColumnSpecification();
-        // spec.setCalendar(CalendarManagerFactory.getSingleton(
+        // spec.setCalendar(CalendarManagerFactory.getInstance(
         // CalendarManagers.JavaDate).getDefaultCalendar());
         // spec.setTableFormat(new TextTableFormat(Method.REGEX, true, true,
         // "\t"));

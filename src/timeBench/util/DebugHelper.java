@@ -7,7 +7,6 @@ import java.io.PrintStream;
 import prefuse.data.Tuple;
 import prefuse.data.tuple.TupleSet;
 
-import timeBench.calendar.Calendar;
 import timeBench.calendar.CalendarFactory;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
@@ -83,7 +82,7 @@ public class DebugHelper {
 
             Granule granule = new Granule(0l, 0l, granularity);
             Instant begin = tmpds.addInstant(granule);
-            Span span = tmpds.addSpan(days, granularity.getIdentifier());
+            Span span = tmpds.addSpan(days, granularity.getGlobalGranularityIdentifier());
             elems[i] = tmpds.addInterval(begin, span);
             objs[i] = tmpds.addTemporalObject(elems[i]);
             objs[i].setString("caption", String.format("Task %2d", i));
@@ -152,12 +151,12 @@ public class DebugHelper {
             
             Granule granule = new Granule(grBeginOfBegin, granularity, granularity.getCalendar().getTopGranule());
             Instant beginBegin = tmpds.addInstant(granule);
-            Span span = tmpds.addSpan(grEndOfBegin - grBeginOfBegin + 1, granularity.getIdentifier());
+            Span span = tmpds.addSpan(grEndOfBegin - grBeginOfBegin + 1, granularity.getGlobalGranularityIdentifier());
             Interval begin = tmpds.addInterval(beginBegin, span);
 
             granule = new Granule(grBeginOfEnd, granularity, granularity.getCalendar().getTopGranule());
             Instant beginEnd = tmpds.addInstant(granule);
-            span = tmpds.addSpan(grEndOfEnd - grBeginOfEnd + 1, granularity.getIdentifier());
+            span = tmpds.addSpan(grEndOfEnd - grBeginOfEnd + 1, granularity.getGlobalGranularityIdentifier());
             Interval end = tmpds.addInterval(beginEnd, span);
             
             long absMaxGranules = grEndOfEnd - grBeginOfBegin + 1;
@@ -166,8 +165,8 @@ public class DebugHelper {
             long min = absMinGranules + (long) Math.floor(Math.random() * (max - absMinGranules) * 0.6);
             System.out.println("Spans: " + absMaxGranules + " " + max + " " + min + " " + absMinGranules + " bb:" + grBeginOfBegin + " eb:" + grEndOfBegin + " be:" + grBeginOfEnd + " ee:" + grEndOfEnd);
             
-            Span maxDuration = tmpds.addSpan(max, granularity.getIdentifier());
-            Span minduration = tmpds.addSpan(min, granularity.getIdentifier());
+            Span maxDuration = tmpds.addSpan(max, granularity.getGlobalGranularityIdentifier());
+            Span minduration = tmpds.addSpan(min, granularity.getGlobalGranularityIdentifier());
             
             elems[i] = tmpds.addIndeterminateInterval(begin,maxDuration, minduration, end);
             
@@ -214,10 +213,10 @@ public class DebugHelper {
         for (int i = 0; i < size; i++) {
             long inf = Math.round(Math.random() * 31536000000.0); // 1 year
             int gId = (int) Math.floor(Math.random() * 6) + 1;
-            gId += CalendarFactory.getSingleton().getGranularityIdentifierSummandFromCalendarIdentifier(
-            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getIdentifier());
-            Granularity granularity = CalendarFactory.getSingleton().getGranularity(gId,
-            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getTopGranularity().getIdentifier());
+            gId += CalendarFactory.getInstance().getGranularityIdentifierSummandFromCalendarIdentifier(
+            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getGlobalCalendarIdentifier());
+            Granularity granularity = CalendarFactory.getInstance().getGranularity(gId,
+            		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getTopGranularity().getGlobalGranularityIdentifier());
             Granule granule = new Granule(inf,inf,granularity);
             // Granule granule = granularity.parseDateToGranule(new Date());
             TemporalElement te = tmpds.addInstant(granule);
