@@ -22,11 +22,11 @@ public class IdentifierConverter {
 	private static final int VERSION_BITS = 8;
 	private static final int MANAGER_BITS = 5;
 
-	private static final int GRANULARITY_MAX = getMaxSize(GRANULARITY_BITS);
-	private static final int TYPE_GRANULARITY_MAX = getMaxSize(TYPE_GRANULARITY_BITS);
-	private static final int CALENDAR_MAX = getMaxSize(CALENDAR_BITS);
-	private static final int VERSION_MAX = getMaxSize(VERSION_BITS);
-	private static final int MANAGER_MAX = getMaxSize(MANAGER_BITS);
+	private static final int GRANULARITY_MAX = getMax(GRANULARITY_BITS);
+	private static final int TYPE_GRANULARITY_MAX = getMax(TYPE_GRANULARITY_BITS);
+	private static final int CALENDAR_MAX = getMax(CALENDAR_BITS);
+	private static final int VERSION_MAX = getMax(VERSION_BITS);
+	private static final int MANAGER_MAX = getMax(MANAGER_BITS);
 
 	private static final int GRANULARITY_MIN = 0;
 	private static final int TYPE_GRANULARITY_MIN = 0;
@@ -35,11 +35,11 @@ public class IdentifierConverter {
 	private static final int MANAGER_MIN = 0;
 
 	//TODO: convert bitmask to dynamic masks based off of the BIT fields
-	private static final int GRANULARITY_BITMASK = 		0b00000000000000000000000001111111;
+	private static final int GRANULARITY_BITMASK = 0b00000000000000000000000001111111;
 	private static final int TYPE_GRANULARITY_BITMASK = 0b00000000000000000000111110000000;
-	private static final int CALENDAR_BITMASK = 		0b00000000000001111111000000000000;
-	private static final int VERSION_BITMASK = 			0b00000111111110000000000000000000;
-	private static final int MANAGER_BITMASK = 			0b11111000000000000000000000000000;
+	private static final int CALENDAR_BITMASK = 0b00000000000001111111000000000000;
+	private static final int VERSION_BITMASK = 0b00000111111110000000000000000000;
+	private static final int MANAGER_BITMASK = 0b11111000000000000000000000000000;
 
 	private static IdentifierConverter instance = null;
 
@@ -56,11 +56,11 @@ public class IdentifierConverter {
 	/**
 	 * Assembles a global identifier capable of identifying all fields: manager, managerVersion, calendar, granularityType, granularity.
 	 *
-	 * @param managerIdentifier The calendar manager identifier. Permitted values: {@link #MANAGER_MIN} to {@link #MANAGER_MAX}
-	 * @param versionIdentifier The calendar manager version identifier. Permitted values: {@link #VERSION_MIN} to {@link #VERSION_MAX}
-	 * @param calendarIdentifier The calendar identifier. Permitted values: {@link #CALENDAR_MIN} to {@link #CALENDAR_MAX}
+	 * @param managerIdentifier         The calendar manager identifier. Permitted values: {@link #MANAGER_MIN} to {@link #MANAGER_MAX}
+	 * @param versionIdentifier         The calendar manager version identifier. Permitted values: {@link #VERSION_MIN} to {@link #VERSION_MAX}
+	 * @param calendarIdentifier        The calendar identifier. Permitted values: {@link #CALENDAR_MIN} to {@link #CALENDAR_MAX}
 	 * @param granularityTypeIdentifier The granularity type identifier. Permitted values: {@link #TYPE_GRANULARITY_MIN} to {@link #TYPE_GRANULARITY_MAX}
-	 * @param granularityIdentifier The granularity identifier. Permitted values: {@link #GRANULARITY_MIN} to {@link #GRANULARITY_MAX}
+	 * @param granularityIdentifier     The granularity identifier. Permitted values: {@link #GRANULARITY_MIN} to {@link #GRANULARITY_MAX}
 	 * @return The assembled global identifier.
 	 * @throws TemporalDataException Thrown if any of the fields exceeds the values allowed by their respective bit length allocation.
 	 */
@@ -77,11 +77,11 @@ public class IdentifierConverter {
 					"C=" + calendarIdentifier + ", " +
 					"T=" + granularityTypeIdentifier + ", " +
 					"G=" + granularityIdentifier + ") not within acceptable range " +
-					"M=" + MANAGER_MIN + "-" + MANAGER_MAX + ", " +
-					"V=" + VERSION_MIN + "-" + VERSION_MAX + ", " +
-					"C=" + CALENDAR_MIN + "-" + CALENDAR_MAX + ", " +
-					"T=" + TYPE_GRANULARITY_MIN + "-" + TYPE_GRANULARITY_MAX + ", " +
-					"G=" + GRANULARITY_MIN + "-" + GRANULARITY_MAX + ")");
+					"M=" + MANAGER_MIN + " - " + MANAGER_MAX + ", " +
+					"V=" + VERSION_MIN + " - " + VERSION_MAX + ", " +
+					"C=" + CALENDAR_MIN + " - " + CALENDAR_MAX + ", " +
+					"T=" + TYPE_GRANULARITY_MIN + " - " + TYPE_GRANULARITY_MAX + ", " +
+					"G=" + GRANULARITY_MIN + " - " + GRANULARITY_MAX + ")");
 		}
 		return (((((((managerIdentifier << VERSION_BITS) | versionIdentifier) << CALENDAR_BITS) | calendarIdentifier) << TYPE_GRANULARITY_BITS) | granularityTypeIdentifier) << GRANULARITY_BITS) | granularityIdentifier;
 	}
@@ -94,7 +94,7 @@ public class IdentifierConverter {
 	 * @return The assembled global identifier with manager and manager version set, all other bits 0.
 	 * @throws TemporalDataException
 	 */
-	public int buildCalendarManagerVersionIdentifier(int managerIdentifier, int versionIdentifier) throws TemporalDataException{
+	public int buildCalendarManagerVersionIdentifier(int managerIdentifier, int versionIdentifier) throws TemporalDataException {
 		return buildGlobalIdentifier(managerIdentifier, versionIdentifier, 0, 0, 0);
 	}
 
@@ -148,7 +148,7 @@ public class IdentifierConverter {
 		return (identifier & MANAGER_BITMASK) >> (GRANULARITY_BITS + TYPE_GRANULARITY_BITS + CALENDAR_BITS + VERSION_BITS);
 	}
 
-	private static int getMaxSize(int bitLength){
-		return (int)Math.pow(2, bitLength) - 1;
+	private static int getMax(int bitLength) {
+		return (int) Math.pow(2, bitLength) - 1;
 	}
 }

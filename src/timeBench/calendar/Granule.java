@@ -1,19 +1,18 @@
 package timeBench.calendar;
 
-import java.util.Date;
-
 import timeBench.data.TemporalDataException;
+
+import java.util.Date;
 
 /**
  * A granule of a {@link Granularity}. Use this for all methods on granules if possible.
- * For creation of multiple instances, factories are given in {@link Granularity}. 
+ * For creation of multiple instances, factories are given in {@link Granularity}.
  * <p>
  * Added:         2011-07-19 / TL<br>
  * Modifications: 2012-04-11 / TL / inf, sup absolute, identifier in context
  * </p>
- * 
- * @author Tim Lammarsch
  *
+ * @author Tim Lammarsch
  */
 public class Granule {
 	private Long inf = null;
@@ -44,45 +43,49 @@ public class Granule {
 
 	/**
 	 * Constructs a Granule containing inf in a given {@link Granularity}.
-	 * @param inf the chronon that determines which granule is constructed
-	 * @param sup currently ignored
+	 *
+	 * @param inf         the chronon that determines which granule is constructed
+	 * @param sup         currently ignored
 	 * @param granularity the {@link Granularity} to which the granule belongs
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule(long inf,long sup,Granularity granularity) throws TemporalDataException {
-		this(inf,sup,MODE_INF_GRANULE,granularity,null);
+	public Granule(long inf, long sup, Granularity granularity) throws TemporalDataException {
+		this(inf, sup, MODE_INF_GRANULE, granularity, null);
 	}
-	public Granule(long inf,long sup,Granularity granularity,Granule contextGranule) throws TemporalDataException {
-		this(inf,sup,MODE_INF_GRANULE,granularity,contextGranule);
+
+	public Granule(long inf, long sup, Granularity granularity, Granule contextGranule) throws TemporalDataException {
+		this(inf, sup, MODE_INF_GRANULE, granularity, contextGranule);
 	}
 
 	/**
-	 * Constructs a Granule from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE mode} in a given {@link Granularity}.
-	 * @param inf the chronon that determines the start of the granule constructed
-	 * @param sup the chronon that determines the end of the granule constructed
-	 * @param mode the {@linkplain Granule#MODE_INF_GRANULE mode} used to construct the granule
+	 * Constructs a Granule from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE modeInt} in a given {@link Granularity}.
+	 *
+	 * @param inf         the chronon that determines the start of the granule constructed
+	 * @param sup         the chronon that determines the end of the granule constructed
+	 * @param mode        the {@linkplain Granule#MODE_INF_GRANULE modeInt} used to construct the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule(long inf,long sup,int mode,Granularity granularity) throws TemporalDataException {
-		this(inf,sup,mode,granularity,null);
+	public Granule(long inf, long sup, int mode, Granularity granularity) throws TemporalDataException {
+		this(inf, sup, mode, granularity, null);
 	}
-	public Granule(long inf,long sup,int mode,Granularity granularity,Granule contextGranule) throws TemporalDataException {			
-		if(mode == MODE_FORCE) {
+
+	public Granule(long inf, long sup, int mode, Granularity granularity, Granule contextGranule) throws TemporalDataException {
+		if (mode == MODE_FORCE) {
 			this.inf = inf;
 			this.sup = sup;
 			this.granularity = granularity;
 			setContextGranule(contextGranule);
 		} else {
-			Granule g2 = granularity.createGranule(inf,sup,mode);
+			Granule g2 = granularity.createGranule(inf, sup, mode);
 			this.inf = g2.getInf();
 			this.sup = g2.getSup();
 			this.granularity = granularity;
 			setContextGranule(contextGranule);
 		}
 	}
-	
-	private Granule(long inf,long sup,int mode,Granularity granularity,Granule contextGranule,boolean doubleForce) {
+
+	private Granule(long inf, long sup, int mode, Granularity granularity, Granule contextGranule, boolean doubleForce) {
 		this.inf = inf;
 		this.sup = sup;
 		this.granularity = granularity;
@@ -94,38 +97,43 @@ public class Granule {
 	 * Constructs a Granule with a given identifier. Only when the context of the granularity is the size of the whole {@link Calendar},
 	 * the result is a unique granule. Otherwise, the context of the granule at the {@link Calendar} origin, e.g. the birth of Christ or
 	 * of Unix, is taken.
-	 * @param identifier the identifier used to generate the granule
+	 *
+	 * @param identifier  the identifier used to generate the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
-	 * @throws TemporalDataException 
+	 * @throws TemporalDataException
 	 */
-	public Granule(long identifier,Granularity granularity) throws TemporalDataException {
-		this(identifier,granularity,null);
+	public Granule(long identifier, Granularity granularity) throws TemporalDataException {
+		this(identifier, granularity, null);
 	}
-	public Granule(long identifier,Granularity granularity,Granule contextGranule) throws TemporalDataException {
+
+	public Granule(long identifier, Granularity granularity, Granule contextGranule) throws TemporalDataException {
 		this.identifier = identifier;
 		this.granularity = granularity;
 		setContextGranule(contextGranule);
 	}
-	
+
 
 	/**
 	 * Constructs a Granule from a given {@link Date} in a given {@link Granularity}
-	 * @param date the {@link Date} used to generate the granule
+	 *
+	 * @param date        the {@link Date} used to generate the granule
 	 * @param granularity granularity the {@link Granularity} to which the granule belongs
 	 */
 	public Granule(Date date, Granularity granularity) throws TemporalDataException {
-		this(date,granularity,null);
+		this(date, granularity, null);
 	}
-	public Granule(Date date, Granularity granularity,Granule contextGranule) throws TemporalDataException {
+
+	public Granule(Date date, Granularity granularity, Granule contextGranule) throws TemporalDataException {
 		Granule g2 = granularity.createGranule(date);
 		this.inf = g2.getInf();
 		this.sup = g2.getSup();
 		this.granularity = granularity;
 		setContextGranule(contextGranule);
 	}
-	
+
 	/**
 	 * Return the inf of the granule.
+	 *
 	 * @return the inf
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
@@ -134,9 +142,10 @@ public class Granule {
 			inf = granularity.createInf(this);
 		return inf;
 	}
-	
+
 	/**
 	 * Return the sup of the granule.
+	 *
 	 * @return the sup
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
@@ -148,6 +157,7 @@ public class Granule {
 
 	/**
 	 * Return the {@link Granularity to which the granule belongs}.
+	 *
 	 * @return the {@link Granularity}
 	 */
 	public Granularity getGranularity() {
@@ -157,6 +167,7 @@ public class Granule {
 	/**
 	 * Return the identifier of the granule. An identifier is a numeric label given in the context
 	 * of the {@link Granularity}.
+	 *
 	 * @return the identifier
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
@@ -169,6 +180,7 @@ public class Granule {
 	/**
 	 * Return the human readable label of the granule, given in the context
 	 * of the {@link Granularity}.
+	 *
 	 * @return the label
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
@@ -177,7 +189,7 @@ public class Granule {
 			label = granularity.createGranuleLabel(this);
 		return label;
 	}
-	
+
 	public Granule getContextGranule() {
 		return contextGranule;
 	}
@@ -185,14 +197,14 @@ public class Granule {
 	public boolean isRecurring() {
 		return contextGranule == null;
 	}
-	
+
 	public boolean isSpecifc() {
 		return contextGranule != null;
 	}
-	
+
 	private void setContextGranule(Granule contextGranule) throws TemporalDataException {
 		if (contextGranule != null)
-			if(granularity.getGranularityContextIdentifier() != contextGranule.getGranularity().getGlobalGranularityIdentifier())
+			if (granularity.getGranularityContextIdentifier() != contextGranule.getGranularity().getGlobalGranularityIdentifier())
 				throw new TemporalDataException("Context Granule must have context granularity as granularity.");
 		this.contextGranule = contextGranule;
 	}
@@ -200,9 +212,9 @@ public class Granule {
 	/**
 	 * @param chronon
 	 * @return
-	 * @throws TemporalDataException 
+	 * @throws TemporalDataException
 	 */
 	public boolean contains(long chronon) throws TemporalDataException {
-		return granularity.contains(this,chronon);
+		return granularity.contains(this, chronon);
 	}
 }

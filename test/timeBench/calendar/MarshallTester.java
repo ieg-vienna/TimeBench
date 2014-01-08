@@ -77,11 +77,14 @@ public class MarshallTester extends TestCase {
 	}
 
 	public void testUnmarshall() throws JAXBException {
-		Object unmarshalledObject = unmarshaller.unmarshal(new File("out.xml"));
+		Object unmarshalledObject = unmarshaller.unmarshal(new File("GregorianCalendar.xml"));
 		Calendar calendar = null;
 
-		if (unmarshalledObject instanceof Calendar) {
+		if (unmarshalledObject != null && unmarshalledObject instanceof Calendar) {
 			calendar = (Calendar) unmarshalledObject;
+		}
+		else{
+			fail();
 		}
 
 		for (Granularity currentGranularity : calendar.getGranularities()) {

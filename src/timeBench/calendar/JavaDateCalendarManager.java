@@ -1,14 +1,9 @@
 package timeBench.calendar;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
+
+import java.util.*;
 
 /**
  * The calendarManager which maps calendar functionality to the Java Calendar class.

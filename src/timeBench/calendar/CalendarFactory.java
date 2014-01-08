@@ -38,7 +38,7 @@ public class CalendarFactory {
 	 * @return the instance
 	 */
 	public static CalendarFactory getInstance() {
-		if (instance == null){
+		if (instance == null) {
 			instance = new CalendarFactory();
 		}
 		return instance;
@@ -59,20 +59,19 @@ public class CalendarFactory {
 	 * Creates if necessary and returns an instance of the calendar manager described by the globalIdentifier.
 	 *
 	 * @param globalIdentifier the globalIdentifier to get the calendar manager for (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
-	 * @param enforceVersion true means that a special version of a calendar manager is needed, otherwise that does not matter
+	 * @param enforceVersion   true means that a special version of a calendar manager is needed, otherwise that does not matter
 	 * @return the calendar manager if possible, null otherwise
 	 */
 	public CalendarManager getCalendarManager(int globalIdentifier, boolean enforceVersion) {
 		TreeMap<Integer, CalendarManager> calendarManagerVersions = calendarManagerMap.get(IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier));
 
-		if (calendarManagerVersions == null || calendarManagerVersions.size() == 0){
+		if (calendarManagerVersions == null || calendarManagerVersions.size() == 0) {
 			return null;
 		}
 
-		if (enforceVersion){
+		if (enforceVersion) {
 			return calendarManagerVersions.get(IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier));
-		}
-		else {
+		} else {
 			int firstVersionIdentifier = calendarManagerVersions.firstKey();
 			return calendarManagerVersions.get(firstVersionIdentifier);
 		}
@@ -113,7 +112,7 @@ public class CalendarFactory {
 	 * Can create a calendar manager on demand.
 	 *
 	 * @param globalIdentifier the globalIdentifier to get the calendar for (MMMMM VVVVVVVV CCCCCCC xxxxx xxxxxxx)
-	 * @param enforceVersion true means that a special version of a calendar manager is needed, otherwise that does not matter
+	 * @param enforceVersion   true means that a special version of a calendar manager is needed, otherwise that does not matter
 	 * @return the calendar manager if possible, null otherwise
 	 */
 	public Calendar getCalendar(int globalIdentifier, boolean enforceVersion) {
@@ -131,7 +130,8 @@ public class CalendarFactory {
 	 * Can create a calendar manager and calendar on demand.
 	 *
 	 * @param globalGranularityIdentifier the identifier of the granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
-	 * @param globalContextGranularityIdentifier the identifier of the granularity's context granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
+	 * @param globalContextGranularityIdentifier
+	 *                                    the identifier of the granularity's context granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
 	 * @return the granularity if possible, null otherwise
 	 */
 	public Granularity getGranularity(int globalGranularityIdentifier, int globalContextGranularityIdentifier) {
@@ -143,14 +143,15 @@ public class CalendarFactory {
 	 * Can create a calendar manager and calendar on demand.
 	 *
 	 * @param globalGranularityIdentifier the identifier of the granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
-	 * @param globalContextGranularityIdentifier the identifier of the granularity's context granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
-	 * @param enforceVersion       true means that a special version of a calendar manager is needed, otherwise that does not matter
+	 * @param globalContextGranularityIdentifier
+	 *                                    the identifier of the granularity's context granularity (MMMMM VVVVVVVV CCCCCCC TTTTT GGGGGGG)
+	 * @param enforceVersion              true means that a special version of a calendar manager is needed, otherwise that does not matter
 	 * @return the granularity if possible, null otherwise. The globalGranularityIdentifier and globalContextGranularityIdentifier must be of
-	 * the same calendarManager and calendar
+	 *         the same calendarManager and calendar
 	 */
 	public Granularity getGranularity(int globalGranularityIdentifier, int globalContextGranularityIdentifier, boolean enforceVersion) {
 		if (IdentifierConverter.getInstance().getManagerIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getManagerIdentifier(globalContextGranularityIdentifier) ||
-			IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)){
+				IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)) {
 			return null;
 		}
 
@@ -168,24 +169,25 @@ public class CalendarFactory {
 
 	/**
 	 * This method registers an instance of a calendar manager with this factory.
+	 *
 	 * @param globalIdentifier The identifier for the calendar manager, and its version (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
-	 * @param manager The manager to be registered
+	 * @param manager          The manager to be registered
 	 * @throws TemporalDataException Thrown if a specific manager identifier - version identifier combination has already been registered.
 	 */
-	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException{
+	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException {
 		//TODO: change method signature to local identifier fields
 		int calendarManagerIdentifier = IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier);
 		int calendarManagerVersionIdentifier = IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier);
 
 		TreeMap<Integer, CalendarManager> existingManagerVersions = calendarManagerMap.get(calendarManagerIdentifier);
-		if (existingManagerVersions == null){
+		if (existingManagerVersions == null) {
 			TreeMap<Integer, CalendarManager> newCalendarManagerMap = new TreeMap<>();
 			newCalendarManagerMap.put(calendarManagerVersionIdentifier, manager);
-			calendarManagerMap.put(calendarManagerIdentifier,newCalendarManagerMap);
+			calendarManagerMap.put(calendarManagerIdentifier, newCalendarManagerMap);
 			return;
 		}
 
-		if (existingManagerVersions.get(calendarManagerVersionIdentifier) != null){
+		if (existingManagerVersions.get(calendarManagerVersionIdentifier) != null) {
 			throw new TemporalDataException("Attempting to register new calendarManager: " + manager.getClass().getSimpleName() + " with already registered version: " + calendarManagerVersionIdentifier);
 		}
 
@@ -196,10 +198,9 @@ public class CalendarFactory {
 	 * Calculates the calendar manager, version, and calendar parts of a granularity identifier from
 	 * a calendar identifier.
 	 *
-	 * @deprecated port this method to {@link timeBench.calendar.util.IdentifierConverter}
-	 *
 	 * @param identifier
 	 * @return the resulting identifier
+	 * @deprecated port this method to {@link timeBench.calendar.util.IdentifierConverter}
 	 */
 	@Deprecated
 	public int getGranularityIdentifierSummandFromCalendarIdentifier(
@@ -211,10 +212,9 @@ public class CalendarFactory {
 	 * Calculates the calendar manager identifier from
 	 * a calendar identifier.
 	 *
-	 * @deprecated use {@link timeBench.calendar.util.IdentifierConverter#getManagerIdentifier(int)}
-	 *
 	 * @param identifier
 	 * @return the resulting identifier
+	 * @deprecated use {@link timeBench.calendar.util.IdentifierConverter#getManagerIdentifier(int)}
 	 */
 	@Deprecated
 	public int getCalendarManagerIdentifierFromCalendarIdentifier(
@@ -226,10 +226,9 @@ public class CalendarFactory {
 	 * Calculates the calendar identifier from
 	 * a granularity identifier.
 	 *
-	 * @deprecated use {@link timeBench.calendar.util.IdentifierConverter#getCalendarIdentifier(int)}
-	 *
 	 * @param identifier
 	 * @return the resulting identifier
+	 * @deprecated use {@link timeBench.calendar.util.IdentifierConverter#getCalendarIdentifier(int)}
 	 */
 	@Deprecated
 	public int getCalendarIdentifierFromGranularityIdentifier(

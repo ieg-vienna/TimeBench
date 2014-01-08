@@ -1,14 +1,15 @@
 package timeBench.calendar;
 
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import timeBench.calendar.util.GranularityAssociation;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Currently maps calendar functionality to CalendarManager.
@@ -31,6 +32,9 @@ public class Calendar {
 
 	@XmlTransient
 	private int globalCalendarIdentifier;
+
+	@XmlTransient
+	private GranularityAssociation<Enum> association = new GranularityAssociation<>();
 
 	@XmlElement
 	private int localCalendarIdentifier;
@@ -222,57 +226,91 @@ public class Calendar {
 		return calendarManager.getMaxGranuleIdentifier(granularity);
 	}
 
-	//TODO: beforeMarshall: set localCalendarManagerIdentifier and localcalendarmanagerversionIdentifier
-
+	/**
+	 * This method is automatically invoked by the JAXB unmarshaller after unmarshalling.
+	 */
 	void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
-		//TODO: REFACTOR ME!!!
-		//TODO: make sure that granularity local identifiers are unique
 		try {
-			CalendarManager manager = CalendarFactory.getInstance().getCalendarManager(
-					IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(
-							localCalendarManagerIdentifier,
-							localCalendarManagerVersionIdentifier == null ? 0 : localCalendarManagerVersionIdentifier),
-					localCalendarManagerVersionIdentifier != null);
-
-			if (manager == null) {
-				throw new TemporalDataException(
-						"Failed to initialize calendar with local identifier: " + localCalendarIdentifier +
-								" , could not find CalendarManager with identifier: " + localCalendarManagerIdentifier);
-			}
-			setCalendarManager(manager);
-			manager.registerCalendar(localCalendarIdentifier, this);
-
-			int bottomGranularityCount = 0;
-			int topGranularityCount = 0;
-			for (Granularity currentGranularity : granularities) {
-				currentGranularity.setGlobalGranularityIdentifier(IdentifierConverter.getInstance().buildGlobalIdentifier(
-					manager.getLocalCalendarManagerIdentifier(),
-					manager.getLocalCalendarManagerVersionIdentifier(),
-					localCalendarIdentifier,
-					currentGranularity.getLocalGranularityTypeIdentifier(),
-					currentGranularity.getLocalGranularityIdentifier()));
-
-				if (currentGranularity.isBottomGranularity()) {
-					if (currentGranularity.isTopGranularity()) {
-						throw new TemporalDataException(
-						"Failed to initialize calendar with local identifier: " + localCalendarIdentifier +
-						" ,top granularity is the same as bottom granularity.");
-					}
-					bottomGranularityCount++;
-				}
-				else if (currentGranularity.isTopGranularity()){
-					topGranularityCount++;
-				}
-			}
-			if (bottomGranularityCount != 1 && topGranularityCount != 1){
-				throw new TemporalDataException(
-						"Failed to initialize calendar with local identifier: " + localCalendarIdentifier +
-						" , it contains too few or too many bottom/top granularities.");
-			}
+			registerWithCalendarManager();
+			verifyGranularities();
 		}
 		catch (TemporalDataException e) {
 			throw new RuntimeException("Failed to initialize calendar with local identifier: " + localCalendarIdentifier, e);
 		}
+	}
+
+	/**
+	 * Initializes unmarshalled granularities by setting their fully qualified global granularity identifier. Furthermore,
+	 * it checks whether this calendar has granularities with the same identifier, and if there is exactly one bottom and
+	 * top granularity.
+	 *
+	 * @throws TemporalDataException Thrown if a duplicate granularity identifier is found, if the defined bottom granularity
+	 *                               is the same granularity as the top granularity, if the top or bottom granularity is not defined, or defined more than once.
+	 *                               Also thrown if a field used to assemble the global granularity identifier is invalid.
+	 */
+	private void verifyGranularities() throws TemporalDataException {
+		int bottomGranularityCount = 0;
+		int topGranularityCount = 0;
+		ArrayList<Integer> localGranularityIdentifiers = new ArrayList<>();
+
+		for (Granularity currentGranularity : granularities) {
+			setGlobalGranularityIdentifier(currentGranularity);
+
+			if (!localGranularityIdentifiers.contains(currentGranularity.getLocalGranularityIdentifier())) {
+				localGranularityIdentifiers.add(currentGranularity.getLocalGranularityIdentifier());
+			} else {
+				throw new TemporalDataException("Duplicate granularity identifier found: " + currentGranularity.getLocalGranularityIdentifier());
+			}
+
+			if (currentGranularity.isBottomGranularity()) {
+				if (currentGranularity.isTopGranularity() && granularities.size() > 1) {
+					throw new TemporalDataException(
+							"Top granularity with identifier: " + currentGranularity.getLocalGranularityIdentifier() + " is the same as bottom granularity.");
+				}
+				bottomGranularityCount++;
+			} else if (currentGranularity.isTopGranularity()) {
+				topGranularityCount++;
+			}
+		}
+		if (bottomGranularityCount != 1 && topGranularityCount != 1) {
+			throw new TemporalDataException(
+					"Top and/or bottom granularity not set.");
+		}
+	}
+
+	/**
+	 * Attempts to register this calendar with its defined CalendarManager instance.
+	 *
+	 * @throws TemporalDataException Thrown if the CalendarManager with the defined identifier could not be retrieved.
+	 */
+	private void registerWithCalendarManager() throws TemporalDataException {
+		CalendarManager manager = CalendarFactory.getInstance().getCalendarManager(
+				IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(
+						localCalendarManagerIdentifier,
+						localCalendarManagerVersionIdentifier == null ? 0 : localCalendarManagerVersionIdentifier),
+				localCalendarManagerVersionIdentifier != null);
+
+		if (manager == null) {
+			throw new TemporalDataException(
+					"Could not find CalendarManager with identifier: " + localCalendarManagerIdentifier);
+		}
+		setCalendarManager(manager);
+		manager.registerCalendar(localCalendarIdentifier, this);
+	}
+
+	/**
+	 * Sets the fully qualified global granularity identifier.
+	 *
+	 * @param currentGranularity The granularity to initialize the global identifier for.
+	 * @throws TemporalDataException Thrown if the fields to assemble the global granularity identifier are invalid.
+	 */
+	private void setGlobalGranularityIdentifier(Granularity currentGranularity) throws TemporalDataException {
+		currentGranularity.setGlobalGranularityIdentifier(IdentifierConverter.getInstance().buildGlobalIdentifier(
+				calendarManager.getLocalCalendarManagerIdentifier(),
+				calendarManager.getLocalCalendarManagerVersionIdentifier(),
+				localCalendarIdentifier,
+				currentGranularity.getLocalGranularityTypeIdentifier(),
+				currentGranularity.getLocalGranularityIdentifier()));
 	}
 
 	public long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException {
@@ -344,5 +382,9 @@ public class Calendar {
 
 	public void setLocalCalendarManagerVersionIdentifier(Integer localCalendarManagerVersionIdentifier) {
 		this.localCalendarManagerVersionIdentifier = localCalendarManagerVersionIdentifier;
+	}
+
+	public GranularityAssociation<Enum> getAssociation() {
+		return association;
 	}
 }
