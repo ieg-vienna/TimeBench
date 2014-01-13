@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<calendar localCalendarIdentifier="1" localCalendarManagerIdentifier="2" localCalendarManagerVersionIdentifier="1">
+    <granularity isBottomGranularity="true">
+        <identifier identifier="1" typeIdentifier="1"/>
+        <granularityLabel>Millisecond</granularityLabel>
+        <permittedContextIdentifier identifier="2" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="3" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="4" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="5" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="6" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="7" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="2" typeIdentifier="1"/>
+        <granularityLabel>Second</granularityLabel>
+        <permittedContextIdentifier identifier="3" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="4" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="5" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="6" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="7" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="3" typeIdentifier="1"/>
+        <granularityLabel>Minute</granularityLabel>
+        <permittedContextIdentifier identifier="4" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="5" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="6" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="7" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="4" typeIdentifier="1"/>
+        <granularityLabel>Hour</granularityLabel>
+        <permittedContextIdentifier identifier="5" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="6" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="7" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="5" typeIdentifier="1"/>
+        <granularityLabel>Day</granularityLabel>
+        <permittedContextIdentifier identifier="6" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="7" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="6" typeIdentifier="1"/>
+        <granularityLabel>Week</granularityLabel>
+        <permittedContextIdentifier identifier="7" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="7" typeIdentifier="1"/>
+        <granularityLabel>Month</granularityLabel>
+        <permittedContextIdentifier identifier="8" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="8" typeIdentifier="1"/>
+        <granularityLabel>Quarter</granularityLabel>
+        <permittedContextIdentifier identifier="9" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="9" typeIdentifier="1"/>
+        <granularityLabel>Year</granularityLabel>
+        <permittedContextIdentifier identifier="10" typeIdentifier="1"/>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity>
+        <identifier identifier="10" typeIdentifier="1"/>
+        <granularityLabel>Decade</granularityLabel>
+        <permittedContextIdentifier identifier="11" typeIdentifier="1"/>
+    </granularity>
+    <granularity isTopGranularity="true">
+        <identifier identifier="11" typeIdentifier="1"/>
+        <granularityLabel>Top</granularityLabel>
+    </granularity>
+</calendar>

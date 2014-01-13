@@ -67,7 +67,7 @@
 //    /**
 //     * @return the context identifier
 //     */
-//    public int getContextIdentifier() {
+//    public int getContextLocalIdentifier() {
 //        return contextIdentifier;
 //    }
 //
@@ -75,7 +75,7 @@
 //     * @param context
 //     *            identifier the context identifier to set
 //     */
-//    public void setContextIdentifier(int contextIdentifier) {
+//    public void setLocalContextIdentifier(int contextIdentifier) {
 //        this.contextIdentifier = contextIdentifier;
 //    }
 //

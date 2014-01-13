@@ -281,7 +281,7 @@ public class RConnector {
             if (!elem.isAnchored()) {
                 logger.debug("skip temp.o. with unanchored temp.el. " + elem);
             } else if (elem.getGranularityId() != granularity.getGlobalGranularityIdentifier()
-                    || elem.getGranularityContextId() != granularity.getGranularityContextIdentifier()) {
+                    || elem.getGranularityContextId() != granularity.getContextGranularity().getGlobalGranularityIdentifier()) {
                 logger.debug("skip temp.o. with wrong granularity " + elem);
             } else {
                 long inf = elem.asGeneric().getInf();

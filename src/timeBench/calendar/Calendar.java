@@ -1,15 +1,13 @@
 package timeBench.calendar;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import timeBench.calendar.util.GranularityAssociation;
+import timeBench.calendar.util.GranularityIdentifier;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Currently maps calendar functionality to CalendarManager.
@@ -34,9 +32,9 @@ public class Calendar {
 	private int globalCalendarIdentifier;
 
 	@XmlTransient
-	private GranularityAssociation<Enum> association = new GranularityAssociation<>();
+	private Hashtable<GranularityIdentifier, Granularity> granularityMap = new Hashtable<>();
 
-	@XmlElement
+	@XmlAttribute
 	private int localCalendarIdentifier;
 
 	@XmlElement(name = "granularity")
@@ -232,10 +230,28 @@ public class Calendar {
 	void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		try {
 			registerWithCalendarManager();
-			verifyGranularities();
+			buildGranularityMap();
+			verifyAndInitializeGranularities();
 		}
 		catch (TemporalDataException e) {
 			throw new RuntimeException("Failed to initialize calendar with local identifier: " + localCalendarIdentifier, e);
+		}
+	}
+
+	/**
+	 * Initializes the hashed map of granularities. The key of the map is the combination of localTypeIdentifier and
+	 * localGranularityIdentifier.
+	 * @throws TemporalDataException Thrown if the granularity type or granularity identifiers passed are not within acceptable range,
+	 * or if two granularities have the same identifiers.
+	 */
+	private void buildGranularityMap() throws TemporalDataException{
+		for (Granularity currentGranularity : granularities) {
+			if (granularityMap.get(currentGranularity.getIdentifier()) != null){
+				throw new TemporalDataException("Duplicate granularity identifier found: " + currentGranularity.getIdentifier());
+			}
+			granularityMap.put(
+					currentGranularity.getIdentifier(),
+					currentGranularity);
 		}
 	}
 
@@ -248,27 +264,21 @@ public class Calendar {
 	 *                               is the same granularity as the top granularity, if the top or bottom granularity is not defined, or defined more than once.
 	 *                               Also thrown if a field used to assemble the global granularity identifier is invalid.
 	 */
-	private void verifyGranularities() throws TemporalDataException {
+	private void verifyAndInitializeGranularities() throws TemporalDataException {
 		int bottomGranularityCount = 0;
 		int topGranularityCount = 0;
-		ArrayList<Integer> localGranularityIdentifiers = new ArrayList<>();
 
-		for (Granularity currentGranularity : granularities) {
-			setGlobalGranularityIdentifier(currentGranularity);
+		for (Granularity currentGranularity : granularityMap.values()) {
+			initializeGlobalGranularityIdentifier(currentGranularity);
+			initializePermissibleContextGranularities(currentGranularity);
 
-			if (!localGranularityIdentifiers.contains(currentGranularity.getLocalGranularityIdentifier())) {
-				localGranularityIdentifiers.add(currentGranularity.getLocalGranularityIdentifier());
-			} else {
-				throw new TemporalDataException("Duplicate granularity identifier found: " + currentGranularity.getLocalGranularityIdentifier());
-			}
-
-			if (currentGranularity.isBottomGranularity()) {
-				if (currentGranularity.isTopGranularity() && granularities.size() > 1) {
+			if (currentGranularity.getBottomGranularity()) {
+				if (currentGranularity.getTopGranularity() && granularityMap.size() > 1) {
 					throw new TemporalDataException(
-							"Top granularity with identifier: " + currentGranularity.getLocalGranularityIdentifier() + " is the same as bottom granularity.");
+							"Top and bottom granularity are the same: " + currentGranularity.getIdentifier());
 				}
 				bottomGranularityCount++;
-			} else if (currentGranularity.isTopGranularity()) {
+			} else if (currentGranularity.getTopGranularity()) {
 				topGranularityCount++;
 			}
 		}
@@ -304,13 +314,28 @@ public class Calendar {
 	 * @param currentGranularity The granularity to initialize the global identifier for.
 	 * @throws TemporalDataException Thrown if the fields to assemble the global granularity identifier are invalid.
 	 */
-	private void setGlobalGranularityIdentifier(Granularity currentGranularity) throws TemporalDataException {
+	private void initializeGlobalGranularityIdentifier(Granularity currentGranularity) throws TemporalDataException {
 		currentGranularity.setGlobalGranularityIdentifier(IdentifierConverter.getInstance().buildGlobalIdentifier(
 				calendarManager.getLocalCalendarManagerIdentifier(),
 				calendarManager.getLocalCalendarManagerVersionIdentifier(),
 				localCalendarIdentifier,
-				currentGranularity.getLocalGranularityTypeIdentifier(),
-				currentGranularity.getLocalGranularityIdentifier()));
+				currentGranularity.getIdentifier().getTypeIdentifier(),
+				currentGranularity.getIdentifier().getIdentifier()));
+	}
+
+	private void initializePermissibleContextGranularities(Granularity granularity) throws TemporalDataException{
+		Hashtable<GranularityIdentifier, Granularity> permittedContextGranularities = granularity.getPermittedContextGranularities();
+		for (GranularityIdentifier currentWrapper : granularity.getPermittedContextIdentifiers()){
+			if (granularityMap.get(currentWrapper) == null){
+				throw new TemporalDataException("Failed to initialize permissible context granularities: could not find granularity reference: " + currentWrapper);
+			}
+
+			if (permittedContextGranularities.get(currentWrapper) != null){
+				throw new TemporalDataException("Failed to initialize permissible context granularities: duplicate context granularity reference: " + currentWrapper);
+			}
+
+			permittedContextGranularities.put(currentWrapper, granularityMap.get(currentWrapper));
+		}
 	}
 
 	public long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException {
@@ -344,16 +369,8 @@ public class Calendar {
 		return localCalendarIdentifier;
 	}
 
-	public void setLocalCalendarIdentifier(int localCalendarIdentifier) {
-		this.localCalendarIdentifier = localCalendarIdentifier;
-	}
-
 	public List<Granularity> getGranularities() {
 		return granularities;
-	}
-
-	public void setGranularities(List<Granularity> granularities) {
-		this.granularities = granularities;
 	}
 
 	public CalendarManager getCalendarManager() {
@@ -372,19 +389,27 @@ public class Calendar {
 		return localCalendarManagerIdentifier;
 	}
 
-	public void setLocalCalendarManagerIdentifier(int localCalendarManagerIdentifier) {
-		this.localCalendarManagerIdentifier = localCalendarManagerIdentifier;
-	}
-
 	public Integer getLocalCalendarManagerVersionIdentifier() {
 		return localCalendarManagerVersionIdentifier;
+	}
+
+	public void setGranularities(List<Granularity> granularities) {
+		this.granularities = granularities;
+	}
+
+	public void setLocalCalendarIdentifier(int localCalendarIdentifier) {
+		this.localCalendarIdentifier = localCalendarIdentifier;
+	}
+
+	public void setLocalCalendarManagerIdentifier(int localCalendarManagerIdentifier) {
+		this.localCalendarManagerIdentifier = localCalendarManagerIdentifier;
 	}
 
 	public void setLocalCalendarManagerVersionIdentifier(Integer localCalendarManagerVersionIdentifier) {
 		this.localCalendarManagerVersionIdentifier = localCalendarManagerVersionIdentifier;
 	}
 
-	public GranularityAssociation<Enum> getAssociation() {
-		return association;
+	public boolean containsGranularity(Granularity granularity){
+		return granularityMap.containsValue(granularity);
 	}
 }

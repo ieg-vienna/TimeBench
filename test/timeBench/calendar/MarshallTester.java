@@ -1,6 +1,7 @@
 package timeBench.calendar;
 
 import junit.framework.TestCase;
+import timeBench.calendar.util.GranularityIdentifier;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
@@ -45,19 +46,24 @@ public class MarshallTester extends TestCase {
 
 		DAY.setCalendar(CALENDAR);
 		DAY.setGranularityLabel("Day");
-		DAY.setLocalGranularityIdentifier(1);
-		DAY.setLocalGranularityTypeIdentifier(1);
+		DAY.setIdentifier(new GranularityIdentifier(1, 1));
 		DAY.setBottomGranularity(true);
+		ArrayList<GranularityIdentifier> dayAllowedContextGranularities = new ArrayList<>();
+		dayAllowedContextGranularities.add(new GranularityIdentifier(2, 1));
+		dayAllowedContextGranularities.add(new GranularityIdentifier(3, 1));
+		DAY.setPermittedContextIdentifiers(dayAllowedContextGranularities);
+
 
 		MONTH.setCalendar(CALENDAR);
 		MONTH.setGranularityLabel("Month");
-		MONTH.setLocalGranularityIdentifier(2);
-		MONTH.setLocalGranularityTypeIdentifier(1);
+		MONTH.setIdentifier(new GranularityIdentifier(2, 1));
+		ArrayList<GranularityIdentifier> monthAllowedContextGranularities = new ArrayList<>();
+		monthAllowedContextGranularities.add(new GranularityIdentifier(3, 1));
+		MONTH.setPermittedContextIdentifiers(monthAllowedContextGranularities);
 
 		YEAR.setCalendar(CALENDAR);
 		YEAR.setGranularityLabel("Year");
-		YEAR.setLocalGranularityIdentifier(3);
-		YEAR.setLocalGranularityTypeIdentifier(1);
+		YEAR.setIdentifier(new GranularityIdentifier(3, 1));
 		YEAR.setTopGranularity(true);
 
 		ArrayList<Granularity> granularities = new ArrayList<>();
@@ -77,7 +83,7 @@ public class MarshallTester extends TestCase {
 	}
 
 	public void testUnmarshall() throws JAXBException {
-		Object unmarshalledObject = unmarshaller.unmarshal(new File("GregorianCalendar.xml"));
+		Object unmarshalledObject = unmarshaller.unmarshal(new File("resources/calendars/GregorianCalendar.xml"));
 		Calendar calendar = null;
 
 		if (unmarshalledObject != null && unmarshalledObject instanceof Calendar) {

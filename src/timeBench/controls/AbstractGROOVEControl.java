@@ -179,7 +179,7 @@ public class AbstractGROOVEControl extends AbstractBrushControl {
 //				patternNode.getTemporalElement().asGeneric().getGranularityId(),
 //				patternNode.getTemporalElement().asGeneric().getGranularityContextId());
 //		if (granularity.getGlobalGranularityIdentifier() == patternGranularity.getGlobalGranularityIdentifier() &&
-//				granularity.getGranularityContextIdentifier() == patternGranularity.getGranularityContextIdentifier()) {
+//				granularity.getContextLocalIdentifier() == patternGranularity.getContextLocalIdentifier()) {
 //		}
 //	} else {
 //		for(TemporalObject ipo : patternNode.childObjects())

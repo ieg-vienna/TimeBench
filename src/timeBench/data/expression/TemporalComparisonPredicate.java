@@ -120,7 +120,7 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 				Granularity g = teTemplate.getGranule().getGranularity();
 				for(TemporalElement iTe : history) {
 					if (g.getGlobalGranularityIdentifier() != iTe.getGranule().getGranularity().getGlobalGranularityIdentifier() ||
-							g.getGranularityContextIdentifier() != iTe.getGranule().getGranularity().getGranularityContextIdentifier())
+							g.getContextGranularity().getGlobalGranularityIdentifier() != iTe.getGranule().getGranularity().getContextGranularity().getGlobalGranularityIdentifier())
 						return false;
 				}
 				long inf = history[0].getFirstInstant().getInf();
@@ -150,7 +150,7 @@ public class TemporalComparisonPredicate extends BinaryExpression implements Pre
 				Granularity gy = g.getGranularity();
 				for(TemporalElement iTe : history) {
 					if (gy.getGlobalGranularityIdentifier() != iTe.getGranule().getGranularity().getGlobalGranularityIdentifier() ||
-							gy.getGranularityContextIdentifier() != iTe.getGranule().getGranularity().getGranularityContextIdentifier() ||
+							gy.getContextGranularity().getGlobalGranularityIdentifier() != iTe.getGranule().getGranularity().getContextGranularity().getGlobalGranularityIdentifier() ||
 						g.getIdentifier() == iTe.getGranule().getIdentifier())
 						return false;					
 				}

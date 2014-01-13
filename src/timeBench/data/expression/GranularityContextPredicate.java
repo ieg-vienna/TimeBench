@@ -21,7 +21,7 @@ public class GranularityContextPredicate extends ComparisonPredicate {
     public GranularityContextPredicate(Granularity granularity) {
         super(ComparisonPredicate.EQ, new ColumnExpression(
                 TemporalElement.GRANULARITY_CONTEXT_ID), new NumericLiteral(
-                granularity.getGranularityContextIdentifier()));
+                granularity.getContextGranularity().getGlobalGranularityIdentifier()));
 
         this.granularity = granularity;
     }
@@ -29,7 +29,7 @@ public class GranularityContextPredicate extends ComparisonPredicate {
     @Override
     public boolean getBoolean(Tuple t) {
         int tupleGCid = t.getInt(TemporalElement.GRANULARITY_CONTEXT_ID);
-        return (granularity.getGranularityContextIdentifier() == tupleGCid);
+        return (granularity.getContextGranularity().getGlobalGranularityIdentifier() == tupleGCid);
     }
 
     @Override

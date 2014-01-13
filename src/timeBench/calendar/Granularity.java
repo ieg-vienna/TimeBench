@@ -1,11 +1,14 @@
 package timeBench.calendar;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
+import timeBench.calendar.util.GranularityIdentifier;
 import timeBench.data.TemporalDataException;
 
 import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * A granularity of a {@link Calendar}. Contains factories for multiple {@link Granule} instances.
@@ -25,14 +28,14 @@ public class Granularity {
 	@XmlTransient
 	private int globalGranularityIdentifier;
 
-	@XmlElement(required = true)
-	private Integer contextIdentifier;
+	@XmlTransient
+	private Granularity contextGranularity;
+
+	@XmlTransient
+	private Hashtable<GranularityIdentifier, Granularity> permittedContextGranularities = new Hashtable<>();
 
 	@XmlElement(required = true)
-	private Integer localGranularityIdentifier;
-
-	@XmlElement(required = true)
-	private Integer localGranularityTypeIdentifier;
+	private GranularityIdentifier identifier;
 
 	@XmlElement(required = true)
 	private String granularityLabel;
@@ -43,6 +46,8 @@ public class Granularity {
 	@XmlAttribute
 	private Boolean isBottomGranularity = false;
 
+	@XmlElement(required = true, name = "permittedContextIdentifier")
+	private List<GranularityIdentifier> permittedContextIdentifiers = new ArrayList<>();
 	/**
 	 * Empty constructor for JAXB
 	 */
@@ -55,12 +60,13 @@ public class Granularity {
 	 *
 	 * @param calendar                    The {@link Calendar} the granularity belongs to.
 	 * @param globalGranularityIdentifier The globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
-	 * @param contextIdentifier           The context globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
+	 * @param localGranularityContextIdentifier           The context globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
 	 */
-	public Granularity(Calendar calendar, int globalGranularityIdentifier, int contextIdentifier) {
+	public Granularity(Calendar calendar, int globalGranularityIdentifier, int localGranularityContextIdentifier) {
 		this.calendar = calendar;
 		this.globalGranularityIdentifier = globalGranularityIdentifier;
-		this.contextIdentifier = contextIdentifier;
+//		this.contextLocalIdentifier = localGranularityContextIdentifier;
+		//TODO
 	}
 
 	/**
@@ -81,17 +87,9 @@ public class Granularity {
 		return globalGranularityIdentifier;
 	}
 
-	/**
-	 * Returns context globalGranularityIdentifier of this granularity whose meaning depends on the {@link CalendarManager}.
-	 *
-	 * @return context globalGranularityIdentifier of this granularity whose meaning depends on the {@link CalendarManager}
-	 */
-	public int getGranularityContextIdentifier() {
-		return contextIdentifier;
-	}
-
 	public boolean isInTopContext() {
-		return contextIdentifier == calendar.getTopGranularity().getGlobalGranularityIdentifier();
+		return this.equals(calendar.getTopGranularity());
+//		return contextLocalIdentifier == calendar.getTopGranularity().getGlobalGranularityIdentifier();
 	}
 
 	/**
@@ -250,64 +248,117 @@ public class Granularity {
 		this.globalGranularityIdentifier = globalGranularityIdentifier;
 	}
 
-	public int getLocalGranularityIdentifier() {
-		return localGranularityIdentifier;
-	}
-
-	public void setLocalGranularityIdentifier(int localGranularityIdentifier) {
-		this.localGranularityIdentifier = localGranularityIdentifier;
-	}
-
 	public String getGranularityLabel() {
 		return granularityLabel;
-	}
-
-	public void setGranularityLabel(String granularityLabel) {
-		this.granularityLabel = granularityLabel;
 	}
 
 	public void setCalendar(Calendar calendar) {
 		this.calendar = calendar;
 	}
 
-	public int getLocalGranularityTypeIdentifier() {
-		return localGranularityTypeIdentifier;
+	public Granularity getContextGranularity() {
+		return contextGranularity;
 	}
 
-	public void setLocalGranularityTypeIdentifier(int localGranularityTypeIdentifier) {
-		this.localGranularityTypeIdentifier = localGranularityTypeIdentifier;
+	public List<GranularityIdentifier> getPermittedContextIdentifiers() {
+		return permittedContextIdentifiers;
 	}
 
-	public int getContextIdentifier() {
-		return contextIdentifier;
-	}
-
-	public void setContextIdentifier(int contextIdentifier) {
-		this.contextIdentifier = contextIdentifier;
-	}
-
-	public boolean isTopGranularity() {
+	public Boolean getTopGranularity() {
 		return isTopGranularity;
 	}
 
-	public void setTopGranularity(boolean topGranularity) {
-		isTopGranularity = topGranularity;
-	}
-
-	public boolean isBottomGranularity() {
+	public Boolean getBottomGranularity() {
 		return isBottomGranularity;
 	}
 
-	public void setBottomGranularity(boolean bottomGranularity) {
+	public GranularityIdentifier getIdentifier() {
+		return identifier;
+	}
+
+	public Hashtable<GranularityIdentifier, Granularity> getPermittedContextGranularities(){
+		return permittedContextGranularities;
+	}
+
+	public void setPermittedContextGranularities(Hashtable<GranularityIdentifier, Granularity> permittedContextGranularities) {
+		this.permittedContextGranularities = permittedContextGranularities;
+	}
+
+	public void setGranularityLabel(String granularityLabel) {
+		this.granularityLabel = granularityLabel;
+	}
+
+	public void setIdentifier(GranularityIdentifier identifier) {
+		this.identifier = identifier;
+	}
+
+	public void setTopGranularity(Boolean topGranularity) {
+		isTopGranularity = topGranularity;
+	}
+
+	public void setBottomGranularity(Boolean bottomGranularity) {
 		isBottomGranularity = bottomGranularity;
+	}
+
+	public void setPermittedContextIdentifiers(List<GranularityIdentifier> permittedContextIdentifiers) {
+		this.permittedContextIdentifiers = permittedContextIdentifiers;
+	}
+
+	public Granularity setIntoContext(Granularity granularity) throws TemporalDataException{
+		if (!calendar.containsGranularity(granularity)){
+			throw new TemporalDataException("Failed to set granularity: " + this + " into context of: " + granularity +
+					" , granularities are not of the same calendar.");
+		}
+
+		if (!permittedContextGranularities.containsValue(granularity)){
+			throw new TemporalDataException("Failed to set granularity: " + this + " into context of: " + granularity +
+					" , context granularity is not permitted.");
+		}
+
+		Granularity newGranularity = new Granularity();
+		newGranularity.granularityLabel = this.granularityLabel;
+		newGranularity.calendar = this.calendar;
+		newGranularity.globalGranularityIdentifier = this.globalGranularityIdentifier;
+		newGranularity.identifier = this.identifier;
+		newGranularity.isBottomGranularity = this.isBottomGranularity;
+		newGranularity.isTopGranularity = this.isTopGranularity;
+		newGranularity.permittedContextIdentifiers = this.permittedContextIdentifiers;
+		newGranularity.permittedContextGranularities = this.permittedContextGranularities;
+		newGranularity.contextGranularity = granularity;
+
+		return newGranularity;
 	}
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).
-				append("id", globalGranularityIdentifier).
-				append("context", contextIdentifier).
-				append("cal", calendar).
-				toString();
+		return "Granularity{" +
+				"calendar=" + calendar +
+				", globalGranularityIdentifier=" + globalGranularityIdentifier +
+				", identifier=" + identifier +
+				", granularityLabel='" + granularityLabel + '\'' +
+				", isTopGranularity=" + isTopGranularity +
+				", isBottomGranularity=" + isBottomGranularity +
+				", permittedContextIdentifiers=" + permittedContextIdentifiers +
+				'}';
+	}
+
+	@Override
+	public int hashCode() {
+		int result = globalGranularityIdentifier;
+		result = 31 * result + (identifier != null ? identifier.hashCode() : 0);
+		result = 31 * result + (granularityLabel != null ? granularityLabel.hashCode() : 0);
+		result = 31 * result + (isTopGranularity != null ? isTopGranularity.hashCode() : 0);
+		result = 31 * result + (isBottomGranularity != null ? isBottomGranularity.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Granularity that = (Granularity) o;
+
+		return globalGranularityIdentifier == that.globalGranularityIdentifier;
 	}
 }

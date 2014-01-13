@@ -92,10 +92,21 @@ public class IdentifierConverter {
 	 * @param managerIdentifier The calendar manager identifier. Permitted values: {@link #MANAGER_MIN} to {@link #MANAGER_MAX}
 	 * @param versionIdentifier The calendar manager version identifier. Permitted values: {@link #VERSION_MIN} to {@link #VERSION_MAX}
 	 * @return The assembled global identifier with manager and manager version set, all other bits 0.
-	 * @throws TemporalDataException
+	 * @throws TemporalDataException Thrown if passed identifiers are not within acceptable range.
 	 */
 	public int buildCalendarManagerVersionIdentifier(int managerIdentifier, int versionIdentifier) throws TemporalDataException {
 		return buildGlobalIdentifier(managerIdentifier, versionIdentifier, 0, 0, 0);
+	}
+
+	/**
+	 * Builds a global identifier capable of identifying: granularityType, granularity. All remaining fields are 0.
+	 * @param granularityTypeIdentifier The granularity type identifier. Permitted values: {@link #TYPE_GRANULARITY_MIN} to {@link #TYPE_GRANULARITY_MAX}
+	 * @param granularityIdentifier The granularity identifier. Permitted values: {@link #GRANULARITY_MIN} to {@link #GRANULARITY_MAX}
+	 * @return The assembled global identifier with granularity type and granularity set, all other bits 0.
+	 * @throws TemporalDataException Thrown if passed identifiers are not within acceptable range.
+	 */
+	public int buildGranularityTypeIdentifier(int granularityTypeIdentifier, int granularityIdentifier) throws TemporalDataException {
+		return buildGlobalIdentifier(0, 0, 0, granularityTypeIdentifier, granularityIdentifier);
 	}
 
 	/**

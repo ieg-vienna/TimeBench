@@ -240,7 +240,7 @@ public class ICalenderTemporalDatasetReader extends
 		}
 
 		tempElement = dataset.addTemporalElement(dStamp.getTime(),
-				dStamp.getTime(), minuteGranularity.getGlobalGranularityIdentifier(), minuteGranularity.getGranularityContextIdentifier(),
+				dStamp.getTime(), minuteGranularity.getGlobalGranularityIdentifier(), minuteGranularity.getContextGranularity().getGlobalGranularityIdentifier(),
 				TemporalElementStore.PRIMITIVE_INSTANT);
 
 		tempObject = dataset.addTemporalObject(tempElement);

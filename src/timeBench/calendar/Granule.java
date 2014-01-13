@@ -204,7 +204,7 @@ public class Granule {
 
 	private void setContextGranule(Granule contextGranule) throws TemporalDataException {
 		if (contextGranule != null)
-			if (granularity.getGranularityContextIdentifier() != contextGranule.getGranularity().getGlobalGranularityIdentifier())
+			if (granularity.getContextGranularity().getGlobalGranularityIdentifier() != contextGranule.getGranularity().getGlobalGranularityIdentifier())
 				throw new TemporalDataException("Context Granule must have context granularity as granularity.");
 		this.contextGranule = contextGranule;
 	}

@@ -51,7 +51,7 @@ public class GranularityPredicate extends AndPredicate {
         if (contextSet) {
             int tupleContextId = t
                     .getInt(TemporalElement.GRANULARITY_CONTEXT_ID);
-            if (granularity.getGranularityContextIdentifier() != tupleContextId) {
+            if (granularity.getContextGranularity().getGlobalGranularityIdentifier() != tupleContextId) {
                 return false;
             }
         }

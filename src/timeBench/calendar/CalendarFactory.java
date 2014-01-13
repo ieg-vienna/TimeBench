@@ -75,24 +75,6 @@ public class CalendarFactory {
 			int firstVersionIdentifier = calendarManagerVersions.firstKey();
 			return calendarManagerVersions.get(firstVersionIdentifier);
 		}
-		/*
-		if (!enforceVersion){
-			switch (IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier)){
-				case JavaDateCalendarManager.():
-					break;
-				case 2:
-					break;
-			}
-		}
-		else{
-
-		}
-		if ((enforceVersion && globalIdentifier == JavaDateCalendarManager.getLocalIdentifier()) ||
-				(globalIdentifier & 0x00) == (JavaDateCalendarManager.getLocalIdentifier() & 0x00))
-			return JavaDateCalendarManager.getSingleton();
-		else
-			return null;
-		*/
 	}
 
 	/**
@@ -175,9 +157,12 @@ public class CalendarFactory {
 	 * @throws TemporalDataException Thrown if a specific manager identifier - version identifier combination has already been registered.
 	 */
 	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException {
+		System.out.println("factory registering calendarManager to global identifier: " + globalIdentifier);
 		//TODO: change method signature to local identifier fields
 		int calendarManagerIdentifier = IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier);
+		System.out.println("factory manageridentifier: " + calendarManagerIdentifier);
 		int calendarManagerVersionIdentifier = IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier);
+		System.out.println("factory managerversion: " + calendarManagerVersionIdentifier);
 
 		TreeMap<Integer, CalendarManager> existingManagerVersions = calendarManagerMap.get(calendarManagerIdentifier);
 		if (existingManagerVersions == null) {

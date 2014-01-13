@@ -288,11 +288,11 @@ public class JavaDateCalendarManager implements CalendarManager {
 			calInf.setTimeInMillis(oldInf - dow * 86400000L);
 			long oldSup = calSup.getTimeInMillis();
 			calSup.setTimeInMillis(oldSup + (6 - dow) * 86400000L);
-			if ((granularity.getGranularityContextIdentifier() == GRANULARITY_MONTH &&
+			if ((granularity.getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_MONTH &&
 					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) ||
-					(granularity.getGranularityContextIdentifier() == GRANULARITY_QUARTER &&
+					(granularity.getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_QUARTER &&
 							calInf.get(GregorianCalendar.MONTH) / 3 != calSup.get(GregorianCalendar.MONTH) / 3) ||
-					(granularity.getGranularityContextIdentifier() == GRANULARITY_YEAR) &&
+					(granularity.getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_YEAR) &&
 							calInf.get(GregorianCalendar.YEAR) != calSup.get(GregorianCalendar.YEAR)) {
 				GregorianCalendar calBorder = new GregorianCalendar();
 				calBorder.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -343,7 +343,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 
 		switch (granule.getGranularity().getGlobalGranularityIdentifier()) {
 			case GRANULARITY_MILLISECOND:
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_SECOND:
 						result = granule.getInf() % 1000L;
 						break;
@@ -388,7 +388,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				break;
 			case GRANULARITY_SECOND:
 				result = granule.getInf() / 1000L;
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MINUTE:
 						result %= 60L;
 						break;
@@ -428,7 +428,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				break;
 			case GRANULARITY_MINUTE:
 				result = granule.getInf() / 60000L;
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_HOUR:
 						result %= 60;
 						break;
@@ -465,7 +465,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				break;
 			case GRANULARITY_HOUR:
 				result = granule.getInf() / 3600000L;
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_DAY:
 						result %= 24;
 						break;
@@ -498,7 +498,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				}
 				break;
 			case GRANULARITY_DAY:
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_WEEK: {
 						GregorianCalendar cal = new GregorianCalendar();
 						cal.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -531,7 +531,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				break;
 			case GRANULARITY_WEEK:
 				// TODO add context granule to make this "clean"
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MONTH: {
 						GregorianCalendar cal = new GregorianCalendar();
 						cal.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -584,7 +584,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(granule.getInf());
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_QUARTER:
 						result = cal.get(GregorianCalendar.MONTH) % 3;
 						break;
@@ -606,7 +606,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(granule.getInf());
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_YEAR:
 						result = cal.get(GregorianCalendar.MONTH) / 3;
 						break;
@@ -625,7 +625,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 				cal.setTimeInMillis(granule.getInf());
-				switch (granule.getGranularity().getGranularityContextIdentifier()) {
+				switch (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_DECADE:
 						result = (cal.get(GregorianCalendar.YEAR) - 1) % 10;
 						break;
@@ -802,7 +802,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 
 		switch (granule.getGranularity().getGlobalGranularityIdentifier()) {
 			case GRANULARITY_DAY:
-				if (granule.getGranularity().getGranularityContextIdentifier() == GRANULARITY_WEEK) {
+				if (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_WEEK) {
 					GregorianCalendar cal = new GregorianCalendar();
 					cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 					cal.setTimeInMillis(granule.getInf());
@@ -812,14 +812,14 @@ public class JavaDateCalendarManager implements CalendarManager {
 					result = String.format("%d", granule.getIdentifier() + 1);
 				break;
 			case GRANULARITY_WEEK:
-				if (granule.getGranularity().getGranularityContextIdentifier() == GRANULARITY_MONTH ||
-						granule.getGranularity().getGranularityContextIdentifier() == GRANULARITY_QUARTER) {
+				if (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_MONTH ||
+						granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_QUARTER) {
 					result = String.format("%d", granule.getIdentifier());
 				} else
 					result = String.format("%d", granule.getIdentifier() + 1);
 				break;
 			case GRANULARITY_MONTH:
-				if (granule.getGranularity().getGranularityContextIdentifier() == GRANULARITY_YEAR) {
+				if (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier() == GRANULARITY_YEAR) {
 					GregorianCalendar cal = new GregorianCalendar();
 					cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 					cal.setTimeInMillis(granule.getInf());
@@ -831,7 +831,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				result = String.format("Q%d", granule.getIdentifier() + 1);
 				break;
 			case GRANULARITY_YEAR:
-				if (GRANULARITY_DECADE == granule.getGranularity().getGranularityContextIdentifier()) {
+				if (GRANULARITY_DECADE == granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier()) {
 					result = String.format("%d", granule.getIdentifier() + 1);
 				} else {
 					result = String.format("%d", granule.getIdentifier() + 1970);
@@ -980,7 +980,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						} else {
 							cal.set(GregorianCalendar.YEAR, year + 1970);
 						}
-//					System.out.println(cal.get(GregorianCalendar.YEAR) + " " + year + " " + granule.getGranularity().getGranularityContextIdentifier());
+//					System.out.println(cal.get(GregorianCalendar.YEAR) + " " + year + " " + granule.getGranularity().getContextLocalIdentifier());
 						cal.set(GregorianCalendar.MONTH, (int) (granule.getIdentifier() % 4 * 3));
 						result = cal.getTimeInMillis();
 				}
@@ -1154,7 +1154,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	public long getMinGranuleIdentifier(Granularity granularity) throws TemporalDataException {
 		switch (granularity.getGlobalGranularityIdentifier()) {
 			case GRANULARITY_MILLISECOND:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1162,7 +1162,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_SECOND:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1170,7 +1170,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_MINUTE:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1178,7 +1178,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_HOUR:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1186,7 +1186,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_DAY:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1194,7 +1194,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_WEEK:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1202,7 +1202,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_MONTH:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1210,7 +1210,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						return 0;
 				}
 			case GRANULARITY_QUARTER:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1219,7 +1219,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 				}
 			case GRANULARITY_YEAR:
 			case GRANULARITY_DECADE:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MIN_VALUE;
@@ -1242,7 +1242,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException {
 		switch (granularity.getGlobalGranularityIdentifier()) {
 			case GRANULARITY_MILLISECOND:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MILLISECOND:
 						return 0L;
 					case GRANULARITY_SECOND:
@@ -1271,7 +1271,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 //						return 1000L;						
 				}
 			case GRANULARITY_SECOND:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MINUTE:
 						return 59L;
 					case GRANULARITY_HOUR:
@@ -1295,7 +1295,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_MINUTE:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_HOUR:
 						return 59L;
 					case GRANULARITY_DAY:
@@ -1317,7 +1317,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_HOUR:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_DAY:
 						return 23L;
 					case GRANULARITY_WEEK:
@@ -1337,7 +1337,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_DAY:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_WEEK:
 						return 6L;
 					case GRANULARITY_MONTH:
@@ -1355,7 +1355,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_WEEK:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MONTH:
 						return 5L;
 					case GRANULARITY_QUARTER:
@@ -1371,7 +1371,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_MONTH:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_QUARTER:
 						return 2L;
 					case GRANULARITY_YEAR:
@@ -1385,7 +1385,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_QUARTER:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_YEAR:
 						return 3L;
 					case GRANULARITY_DECADE:
@@ -1397,7 +1397,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_YEAR:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_DECADE:
 						return 9;
 					case GRANULARITY_CALENDAR:
@@ -1407,7 +1407,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_DECADE:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MAX_VALUE;
@@ -1423,7 +1423,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	public long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException {
 		switch (granularity.getGlobalGranularityIdentifier()) {
 			case GRANULARITY_MILLISECOND:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MILLISECOND:
 						return 1L;
 					case GRANULARITY_SECOND:
@@ -1452,7 +1452,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 //						return 1000L;						
 				}
 			case GRANULARITY_SECOND:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MINUTE:
 						return 60L;
 					case GRANULARITY_HOUR:
@@ -1476,7 +1476,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_MINUTE:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_HOUR:
 						return 60L;
 					case GRANULARITY_DAY:
@@ -1498,7 +1498,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_HOUR:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_DAY:
 						return 24L;
 					case GRANULARITY_WEEK:
@@ -1518,7 +1518,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_DAY:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_WEEK:
 						return 7L;
 					case GRANULARITY_MONTH:
@@ -1536,7 +1536,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_WEEK:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_MONTH:
 						return 6L;
 					case GRANULARITY_QUARTER:
@@ -1552,7 +1552,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_MONTH:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_QUARTER:
 						return 3L;
 					case GRANULARITY_YEAR:
@@ -1566,7 +1566,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_QUARTER:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_YEAR:
 						return 4L;
 					case GRANULARITY_DECADE:
@@ -1578,7 +1578,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_YEAR:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_DECADE:
 						return 10L;
 					case GRANULARITY_CALENDAR:
@@ -1588,7 +1588,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 						throw new UnsupportedOperationException();
 				}
 			case GRANULARITY_DECADE:
-				switch (granularity.getGranularityContextIdentifier()) {
+				switch (granularity.getContextGranularity().getIdentifier().getIdentifier()) {
 					case GRANULARITY_CALENDAR:
 					case GRANULARITY_TOP:
 						return Long.MAX_VALUE;
@@ -1602,8 +1602,8 @@ public class JavaDateCalendarManager implements CalendarManager {
 
 	@Override
 	public boolean contains(Granule granule, long chronon) throws TemporalDataException {
-		if (granule.getGranularity().getGranularityContextIdentifier() ==
-				GRANULARITY_TOP || granule.getGranularity().getGranularityContextIdentifier() ==
+		if (granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier() ==
+				GRANULARITY_TOP || granule.getGranularity().getContextGranularity().getIdentifier().getIdentifier() ==
 				GRANULARITY_CALENDAR) {
 			return chronon >= granule.getInf() && chronon <= granule.getSup();
 		} else {

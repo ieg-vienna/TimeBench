@@ -4,10 +4,10 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import timeBench.calendar.Granularity;
 import timeBench.data.TemporalDataException;
 
-public class GranularityAssociation<Enum> {
-	DualHashBidiMap<Enum, Granularity> associationMap = new DualHashBidiMap<>();
+public class GranularityAssociation<T extends Enum<T>> {
+	DualHashBidiMap<T , Granularity> associationMap = new DualHashBidiMap<>();
 
-	public void associateGranularities(Enum enumGranularity, Granularity granularity) throws TemporalDataException {
+	public void associateGranularities(T enumGranularity, Granularity granularity) throws TemporalDataException {
 		if (!associationMap.containsKey(enumGranularity) && !associationMap.containsValue(granularity)){
 			associationMap.put(enumGranularity, granularity);
 		}
@@ -16,7 +16,7 @@ public class GranularityAssociation<Enum> {
 		}
 	}
 
-	public Enum getAssociation(Granularity granularity){
+	public T getAssociation(Granularity granularity){
 		return associationMap.getKey(granularity);
 	}
 
