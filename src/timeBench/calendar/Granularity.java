@@ -48,6 +48,8 @@ public class Granularity {
 
 	@XmlElement(required = true, name = "permittedContextIdentifier")
 	private List<GranularityIdentifier> permittedContextIdentifiers = new ArrayList<>();
+
+
 	/**
 	 * Empty constructor for JAXB
 	 */

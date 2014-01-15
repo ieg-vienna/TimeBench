@@ -15,26 +15,26 @@ public class GregorianCalendarManager implements CalendarManager {
 	private TreeMap<Integer, GranularityAssociation<GregorianGranularity>> calendarAssociationMap = new TreeMap<>();
 
 	private enum GregorianGranularity {
-		Millisecond(GregorianCalendar.MILLISECOND),
-		Second(GregorianCalendar.SECOND),
-		Minute(GregorianCalendar.MINUTE),
-		Hour(GregorianCalendar.HOUR),
-		Day(GregorianCalendar.DAY_OF_MONTH),
-		Week(GregorianCalendar.WEEK_OF_YEAR),
-		Month(GregorianCalendar.MONTH),
-		Quarter(GregorianCalendar.MONTH),
-		Year(GregorianCalendar.YEAR),
-		Decade(GregorianCalendar.YEAR),
-		Top(0);
+		Millisecond(),
+		Second(GregorianCalendar.MILLISECOND),
+		Minute(GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
+		Hour(GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
+		Day(GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
+		Week(Day.getGregorianCalendarFieldIdentifiers()), //only works manually
+		Month(GregorianCalendar.DAY_OF_MONTH, GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
+		Quarter(Month.getGregorianCalendarFieldIdentifiers()),
+		Year(GregorianCalendar.DAY_OF_YEAR, GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
+		Decade(Year.getGregorianCalendarFieldIdentifiers()),
+		Top(GregorianCalendar.DAY_OF_YEAR, GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND, GregorianCalendar.YEAR);
 
-		private int gregorianCalendarFieldIdentifier;
+		private int[] gregorianCalendarFieldIdentifiers;
 
-		private GregorianGranularity(int gregorianCalendarFieldIdentifier){
-			this.gregorianCalendarFieldIdentifier = gregorianCalendarFieldIdentifier;
+		private GregorianGranularity(int... gregorianCalendarFieldIdentifier){
+			this.gregorianCalendarFieldIdentifiers = gregorianCalendarFieldIdentifier;
 		}
 
-		public int getGregorianCalendarFieldIdentifier(){
-			return gregorianCalendarFieldIdentifier;
+		public int[] getGregorianCalendarFieldIdentifiers(){
+			return gregorianCalendarFieldIdentifiers;
 		}
 	}
 
@@ -97,7 +97,7 @@ public class GregorianCalendarManager implements CalendarManager {
 		}
 	}
 
-	private Granule createGranuleFromChronon(long chronon, Granularity granularity) {
+	private Granule createGranuleFromChronon(long chronon, Granularity granularity) throws TemporalDataException {
 		GregorianCalendar calInf = new GregorianCalendar();
 		GregorianCalendar calSup = new GregorianCalendar();
 		calInf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -105,7 +105,7 @@ public class GregorianCalendarManager implements CalendarManager {
 		calInf.setTimeInMillis(chronon);
 		calSup.setTimeInMillis(chronon);
 
-		return createGranuleFromGregorianCalendar(calInf, calSup, granularity);
+		return createGranule(calInf, calSup, granularity);
 	}
 
 	@Override
@@ -539,10 +539,27 @@ public class GregorianCalendarManager implements CalendarManager {
 
 	@Override
 	public Granularity getGranularity(Calendar calendar, String granularityName, String contextGranularityName) {
+		Granularity granularity = null;
+		Granularity contextGranularity = null;
 		for (Granularity currentGranularity : calendar.getGranularities()) {
-			if (currentGranularity.getGranularityLabel().equalsIgnoreCase(granularityName) &&
-					currentGranularity.getContextGranularity().getGranularityLabel().equalsIgnoreCase(contextGranularityName)) {
-				return currentGranularity;
+			if (granularity != null && contextGranularity != null){
+				break;
+			}
+			if (currentGranularity.getGranularityLabel().equalsIgnoreCase(granularityName)){
+				granularity = currentGranularity;
+				continue;
+			}
+			if (currentGranularity.getGranularityLabel().equalsIgnoreCase(contextGranularityName)){
+				contextGranularity = currentGranularity;
+			}
+		}
+
+		if (granularity != null && contextGranularity != null){
+			try {
+				return granularity.setIntoContext(contextGranularity);
+			}
+			catch (TemporalDataException e) {
+				return null;
 			}
 		}
 		return null;
@@ -573,11 +590,6 @@ public class GregorianCalendarManager implements CalendarManager {
 		if (association.getAssociationCount() != GregorianGranularity.values().length) {
 			throw new TemporalDataException("Failed to map all internal granularities defined in " + GregorianGranularity.class.getSimpleName());
 		}
-	}
-
-	private Granule createGranuleFromGregorianCalendar(GregorianCalendar inf, GregorianCalendar sup, Granularity granularity) {
-		//TODO
-		return null;
 	}
 
 	@Override
@@ -1185,7 +1197,6 @@ public class GregorianCalendarManager implements CalendarManager {
 	public long createSupLocal(Granule granule, Granule contextGranule) throws TemporalDataException {
 		GranularityAssociation<GregorianGranularity> association = calendarAssociationMap.get(granule.getGranularity().getCalendar().getLocalCalendarIdentifier());
 		GregorianGranularity granularityEnum = association.getAssociation(granule.getGranularity());
-		GregorianGranularity granularityContextEnum = association.getAssociation(contextGranule.getGranularity());
 
 		GregorianCalendar timeStamp = new GregorianCalendar();
 		timeStamp.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -1286,88 +1297,98 @@ public class GregorianCalendarManager implements CalendarManager {
 	}
 
 	private Granule createGranule(GregorianCalendar calInf, GregorianCalendar calSup, Granularity granularity) throws TemporalDataException {
-//		GranularityAssociation<GregorianGranularity> association = calendarAssociationMap.get(granularity.getCalendar().getLocalCalendarIdentifier());
-//
-//		for (int field : buildGranularityListForCreateGranule(granularity)) {
-//			calInf.set(field, calInf.getActualMinimum(field));
-//			calSup.set(field, calSup.getActualMaximum(field));
-//		}
-//
-//		if (granularity.getGlobalGranularityIdentifier() == GRANULARITY_DECADE) {
-//			calInf.set(GregorianCalendar.YEAR,
-//					(calInf.get(GregorianCalendar.YEAR) - 1) / 10 * 10 + 1);
-//			calSup.set(GregorianCalendar.YEAR,
-//					(calSup.get(GregorianCalendar.YEAR) - 1) / 10 * 10 + 10);
-//		} else if (granularity.getGlobalGranularityIdentifier() == GRANULARITY_QUARTER) {
-//			// calInf DAY_OF_MONTH is already at 1
-//			// calSup DAY_OF_MONTH needs to be set to 1 first
-//			// because last day may change (e.g., 31 March --June--> 1 July)
-//			switch (calInf.get(GregorianCalendar.MONTH)) {
-//				case GregorianCalendar.JANUARY:
-//				case GregorianCalendar.FEBRUARY:
-//				case GregorianCalendar.MARCH:
-//					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.MARCH);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
-//					break;
-//				case GregorianCalendar.APRIL:
-//				case GregorianCalendar.MAY:
-//				case GregorianCalendar.JUNE:
-//					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.APRIL);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.JUNE);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 30);
-//					break;
-//				case GregorianCalendar.JULY:
-//				case GregorianCalendar.AUGUST:
-//				case GregorianCalendar.SEPTEMBER:
-//					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.JULY);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.SEPTEMBER);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 30);
-//					break;
-//				case GregorianCalendar.OCTOBER:
-//				case GregorianCalendar.NOVEMBER:
-//				case GregorianCalendar.DECEMBER:
-//					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.OCTOBER);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.DECEMBER);
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
-//					break;
-//			}
-//		} else if (granularity.getGlobalGranularityIdentifier() == GRANULARITY_WEEK) {
-//			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 5) % 7;
-//			long oldInf = calInf.getTimeInMillis();
-//			calInf.setTimeInMillis(oldInf - dow * 86400000L);
-//			long oldSup = calSup.getTimeInMillis();
-//			calSup.setTimeInMillis(oldSup + (6 - dow) * 86400000L);
-//			if ((granularity.getContextLocalIdentifier() == GRANULARITY_MONTH &&
-//					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) ||
-//					(granularity.getContextLocalIdentifier() == GRANULARITY_QUARTER &&
-//							calInf.get(GregorianCalendar.MONTH) / 3 != calSup.get(GregorianCalendar.MONTH) / 3) ||
-//					(granularity.getContextLocalIdentifier() == GRANULARITY_YEAR) &&
-//							calInf.get(GregorianCalendar.YEAR) != calSup.get(GregorianCalendar.YEAR)) {
-//				GregorianCalendar calBorder = new GregorianCalendar();
-//				calBorder.setTimeZone(TimeZone.getTimeZone("UTC"));
-//				calBorder.setTimeInMillis(calInf.getTimeInMillis());
-//				calBorder.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//				calBorder.add(GregorianCalendar.MONTH, 1);
-//				boolean front = oldSup < calBorder.getTimeInMillis();
-//				if (!front)
-//					front = calBorder.getTimeInMillis() - oldInf > oldSup - calBorder.getTimeInMillis();
-//				if (front) {
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//					calSup.set(GregorianCalendar.MONTH, calInf.get(GregorianCalendar.MONTH));
-//					calSup.set(GregorianCalendar.YEAR, calInf.get(GregorianCalendar.YEAR));
-//					calSup.set(GregorianCalendar.DAY_OF_MONTH, calSup.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
-//				} else {
-//					calInf.set(GregorianCalendar.DAY_OF_MONTH, 1);
-//					calInf.set(GregorianCalendar.MONTH, calSup.get(GregorianCalendar.MONTH));
-//					calInf.set(GregorianCalendar.YEAR, calSup.get(GregorianCalendar.YEAR));
-//				}
-//			}
-//		}
+		GranularityAssociation<GregorianGranularity> association = calendarAssociationMap.get(granularity.getCalendar().getLocalCalendarIdentifier());
+		GregorianGranularity granularityEnum = association.getAssociation(granularity);
+		GregorianGranularity contextGranularityEnum;
+
+		for (int i = 0; i < granularityEnum.getGregorianCalendarFieldIdentifiers().length; i++) {
+			int field = granularityEnum.getGregorianCalendarFieldIdentifiers()[i];
+			calInf.set(field, calInf.getActualMinimum(field));
+			calSup.set(field, calSup.getActualMaximum(field));
+		}
+
+		try {
+			contextGranularityEnum = association.getAssociation(granularity.getContextGranularity());
+		}
+		catch (NullPointerException e) {
+			throw new TemporalDataException("Failed to create granule: Context granularity is null.", e);
+		}
+
+		if (granularityEnum == GregorianGranularity.Decade) {
+			calInf.set(GregorianCalendar.YEAR,
+					(calInf.get(GregorianCalendar.YEAR) - 1) / 10 * 10 + 1);
+			calSup.set(GregorianCalendar.YEAR,
+					(calSup.get(GregorianCalendar.YEAR) - 1) / 10 * 10 + 10);
+		} else if (granularityEnum == GregorianGranularity.Quarter) {
+			// calInf DAY_OF_MONTH is already at 1
+			// calSup DAY_OF_MONTH needs to be set to 1 first
+			// because last day may change (e.g., 31 March --June--> 1 July)
+			switch (calInf.get(GregorianCalendar.MONTH)) {
+				case GregorianCalendar.JANUARY:
+				case GregorianCalendar.FEBRUARY:
+				case GregorianCalendar.MARCH:
+					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
+					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.MARCH);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
+					break;
+				case GregorianCalendar.APRIL:
+				case GregorianCalendar.MAY:
+				case GregorianCalendar.JUNE:
+					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.APRIL);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
+					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.JUNE);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 30);
+					break;
+				case GregorianCalendar.JULY:
+				case GregorianCalendar.AUGUST:
+				case GregorianCalendar.SEPTEMBER:
+					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.JULY);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
+					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.SEPTEMBER);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 30);
+					break;
+				case GregorianCalendar.OCTOBER:
+				case GregorianCalendar.NOVEMBER:
+				case GregorianCalendar.DECEMBER:
+					calInf.set(GregorianCalendar.MONTH, GregorianCalendar.OCTOBER);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
+					calSup.set(GregorianCalendar.MONTH, GregorianCalendar.DECEMBER);
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 31);
+					break;
+			}
+		} else if (granularityEnum == GregorianGranularity.Week) {
+			long dow = (calInf.get(GregorianCalendar.DAY_OF_WEEK) + 5) % 7;
+			long oldInf = calInf.getTimeInMillis();
+			calInf.setTimeInMillis(oldInf - dow * 86400000L);
+			long oldSup = calSup.getTimeInMillis();
+			calSup.setTimeInMillis(oldSup + (6 - dow) * 86400000L);
+			if ((contextGranularityEnum == GregorianGranularity.Month &&
+					calInf.get(GregorianCalendar.MONTH) != calSup.get(GregorianCalendar.MONTH)) ||
+					(contextGranularityEnum == GregorianGranularity.Quarter &&
+							calInf.get(GregorianCalendar.MONTH) / 3 != calSup.get(GregorianCalendar.MONTH) / 3) ||
+					(contextGranularityEnum == GregorianGranularity.Year) &&
+							calInf.get(GregorianCalendar.YEAR) != calSup.get(GregorianCalendar.YEAR)) {
+				GregorianCalendar calBorder = new GregorianCalendar();
+				calBorder.setTimeZone(TimeZone.getTimeZone("UTC"));
+				calBorder.setTimeInMillis(calInf.getTimeInMillis());
+				calBorder.set(GregorianCalendar.DAY_OF_MONTH, 1);
+				calBorder.add(GregorianCalendar.MONTH, 1);
+				boolean front = oldSup < calBorder.getTimeInMillis();
+				if (!front)
+					front = calBorder.getTimeInMillis() - oldInf > oldSup - calBorder.getTimeInMillis();
+				if (front) {
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, 1);
+					calSup.set(GregorianCalendar.MONTH, calInf.get(GregorianCalendar.MONTH));
+					calSup.set(GregorianCalendar.YEAR, calInf.get(GregorianCalendar.YEAR));
+					calSup.set(GregorianCalendar.DAY_OF_MONTH, calSup.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
+				} else {
+					calInf.set(GregorianCalendar.DAY_OF_MONTH, 1);
+					calInf.set(GregorianCalendar.MONTH, calSup.get(GregorianCalendar.MONTH));
+					calInf.set(GregorianCalendar.YEAR, calSup.get(GregorianCalendar.YEAR));
+				}
+			}
+		}
 
 		return new Granule(calInf.getTimeInMillis(), calSup.getTimeInMillis(), Granule.MODE_FORCE, granularity);
 	}

@@ -203,10 +203,10 @@ public class Calendar {
 	}
 
 	/**
-	 * Provide the minimum globalCalendarIdentifier value that granules of a granularity can assume.
+	 * Provide the minimum identifier value that granules of a granularity can assume.
 	 *
 	 * @param granularity the granularity
-	 * @return the minimum granule globalCalendarIdentifier value
+	 * @return the minimum granule identifier value
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
 	public long getMinGranuleIdentifier(Granularity granularity) throws TemporalDataException {
@@ -214,10 +214,10 @@ public class Calendar {
 	}
 
 	/**
-	 * Provide the maximum globalCalendarIdentifier value that granules of a granularity can assume.
+	 * Provide the maximum identifier value that granules of a granularity can assume.
 	 *
 	 * @param granularity the granularity
-	 * @return the maximum granule globalCalendarIdentifier value
+	 * @return the maximum granule identifier value
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
 	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException {
@@ -229,9 +229,10 @@ public class Calendar {
 	 */
 	void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		try {
-			registerWithCalendarManager();
 			buildGranularityMap();
+			initializeCalendarManager();
 			verifyAndInitializeGranularities();
+			calendarManager.registerCalendar(localCalendarIdentifier, this);
 		}
 		catch (TemporalDataException e) {
 			throw new RuntimeException("Failed to initialize calendar with local identifier: " + localCalendarIdentifier, e);
@@ -293,7 +294,7 @@ public class Calendar {
 	 *
 	 * @throws TemporalDataException Thrown if the CalendarManager with the defined identifier could not be retrieved.
 	 */
-	private void registerWithCalendarManager() throws TemporalDataException {
+	private void initializeCalendarManager() throws TemporalDataException {
 		CalendarManager manager = CalendarFactory.getInstance().getCalendarManager(
 				IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(
 						localCalendarManagerIdentifier,
@@ -305,7 +306,6 @@ public class Calendar {
 					"Could not find CalendarManager with identifier: " + localCalendarManagerIdentifier);
 		}
 		setCalendarManager(manager);
-		manager.registerCalendar(localCalendarIdentifier, this);
 	}
 
 	/**
