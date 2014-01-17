@@ -32,7 +32,7 @@ public class Calendar {
 	private int globalCalendarIdentifier;
 
 	@XmlTransient
-	private Hashtable<GranularityIdentifier, Granularity> granularityMap = new Hashtable<>();
+	private Hashtable<GranularityIdentifier, Granularity> granularityMap;
 
 	@XmlAttribute
 	private int localCalendarIdentifier;
@@ -225,27 +225,16 @@ public class Calendar {
 	}
 
 	/**
-	 * This method is automatically invoked by the JAXB unmarshaller after unmarshalling.
-	 */
-	void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
-		try {
-			buildGranularityMap();
-			initializeCalendarManager();
-			verifyAndInitializeGranularities();
-			calendarManager.registerCalendar(localCalendarIdentifier, this);
-		}
-		catch (TemporalDataException e) {
-			throw new RuntimeException("Failed to initialize calendar with local identifier: " + localCalendarIdentifier, e);
-		}
-	}
-
-	/**
 	 * Initializes the hashed map of granularities. The key of the map is the combination of localTypeIdentifier and
 	 * localGranularityIdentifier.
 	 * @throws TemporalDataException Thrown if the granularity type or granularity identifiers passed are not within acceptable range,
 	 * or if two granularities have the same identifiers.
 	 */
 	private void buildGranularityMap() throws TemporalDataException{
+		if (granularityMap != null){
+			return;
+		}
+		granularityMap = new Hashtable<>();
 		for (Granularity currentGranularity : granularities) {
 			if (granularityMap.get(currentGranularity.getIdentifier()) != null){
 				throw new TemporalDataException("Duplicate granularity identifier found: " + currentGranularity.getIdentifier());
@@ -294,7 +283,16 @@ public class Calendar {
 	 *
 	 * @throws TemporalDataException Thrown if the CalendarManager with the defined identifier could not be retrieved.
 	 */
-	private void initializeCalendarManager() throws TemporalDataException {
+	public void initializeCalendar() throws TemporalDataException {
+		buildGranularityMap();
+		fetchCalendarManager();
+		verifyAndInitializeGranularities();
+	}
+
+	private void fetchCalendarManager() throws TemporalDataException {
+		if (calendarManager != null){
+			return;
+		}
 		CalendarManager manager = CalendarFactory.getInstance().getCalendarManager(
 				IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(
 						localCalendarManagerIdentifier,

@@ -3,6 +3,10 @@ package timeBench.calendar;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.util.TreeMap;
 
 /**
@@ -30,7 +34,9 @@ import java.util.TreeMap;
 public class CalendarFactory {
 	private static CalendarFactory instance = null;
 
-	private TreeMap<Integer, TreeMap<Integer, CalendarManager>> calendarManagerMap = new TreeMap<>();
+	private TreeMap<Integer, TreeMap<Integer, CalendarManager>> calendarManagerMap;
+	private JAXBContext jaxbContext = null;
+	private Unmarshaller unmarshaller = null;
 
 	/**
 	 * Static method to get a instance of this class that always exists.
@@ -40,6 +46,7 @@ public class CalendarFactory {
 	public static CalendarFactory getInstance() {
 		if (instance == null) {
 			instance = new CalendarFactory();
+			instance.initialize();
 		}
 		return instance;
 	}
@@ -149,34 +156,79 @@ public class CalendarFactory {
 		return calendar.getGranularity(granularityName, contextGranularityName);
 	}
 
-	/**
-	 * This method registers an instance of a calendar manager with this factory.
-	 *
-	 * @param globalIdentifier The identifier for the calendar manager, and its version (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
-	 * @param manager          The manager to be registered
-	 * @throws TemporalDataException Thrown if a specific manager identifier - version identifier combination has already been registered.
-	 */
-	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException {
-		System.out.println("factory registering calendarManager to global identifier: " + globalIdentifier);
-		//TODO: change method signature to local identifier fields
-		int calendarManagerIdentifier = IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier);
-		System.out.println("factory manageridentifier: " + calendarManagerIdentifier);
-		int calendarManagerVersionIdentifier = IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier);
-		System.out.println("factory managerversion: " + calendarManagerVersionIdentifier);
+//	/**
+//	 * This method registers an instance of a calendar manager with this factory.
+//	 *
+//	 * @param globalIdentifier The identifier for the calendar manager, and its version (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
+//	 * @param manager          The manager to be registered
+//	 * @throws TemporalDataException Thrown if a specific manager identifier - version identifier combination has already been registered.
+//	 */
+//	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException {
+//		int calendarManagerIdentifier = IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier);
+//		int calendarManagerVersionIdentifier = IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier);
+//
+//		TreeMap<Integer, CalendarManager> existingManagerVersions = calendarManagerMap.get(calendarManagerIdentifier);
+//		if (existingManagerVersions == null) {
+//			TreeMap<Integer, CalendarManager> newCalendarManagerMap = new TreeMap<>();
+//			newCalendarManagerMap.put(calendarManagerVersionIdentifier, manager);
+//			calendarManagerMap.put(calendarManagerIdentifier, newCalendarManagerMap);
+//			return;
+//		}
+//
+//		if (existingManagerVersions.get(calendarManagerVersionIdentifier) != null) {
+//			throw new TemporalDataException("Attempting to register new calendarManager: " + manager.getClass().getSimpleName() + " with already registered version: " + calendarManagerVersionIdentifier);
+//		}
+//
+//		existingManagerVersions.put(calendarManagerVersionIdentifier, manager);
+//	}
 
-		TreeMap<Integer, CalendarManager> existingManagerVersions = calendarManagerMap.get(calendarManagerIdentifier);
-		if (existingManagerVersions == null) {
-			TreeMap<Integer, CalendarManager> newCalendarManagerMap = new TreeMap<>();
-			newCalendarManagerMap.put(calendarManagerVersionIdentifier, manager);
-			calendarManagerMap.put(calendarManagerIdentifier, newCalendarManagerMap);
-			return;
+	private void initialize(){
+		calendarManagerMap = new TreeMap<>();
+
+		//register versions of JavaDateCalendarManager
+		TreeMap<Integer, CalendarManager> javaDateCalendarManagerVersions = new TreeMap<>();
+		javaDateCalendarManagerVersions.put(
+				JavaDateCalendarManager.getSingleton().getLocalCalendarManagerVersionIdentifier(),
+				JavaDateCalendarManager.getSingleton());
+		calendarManagerMap.put(
+				JavaDateCalendarManager.getSingleton().getLocalCalendarManagerIdentifier(),
+				javaDateCalendarManagerVersions);
+
+
+		//register versions of GregorianCalendarManager
+		TreeMap<Integer, CalendarManager> gregorianCalendarManagerVersions = new TreeMap<>();
+		gregorianCalendarManagerVersions.put(
+				GregorianCalendarManager.getInstance().getLocalCalendarManagerVersionIdentifier(),
+				GregorianCalendarManager.getInstance());
+		calendarManagerMap.put(GregorianCalendarManager.getInstance().getLocalCalendarManagerIdentifier(),
+				gregorianCalendarManagerVersions);
+	}
+
+	public void loadCalendar(File file) throws TemporalDataException {
+		Calendar calendar = null;
+		try {
+			if (jaxbContext == null){
+				jaxbContext = JAXBContext.newInstance(Calendar.class);
+			}
+			if (unmarshaller == null){
+				unmarshaller = jaxbContext.createUnmarshaller();
+			}
+
+			Object unmarshalledObject = unmarshaller.unmarshal(file);
+
+			if (unmarshalledObject != null && unmarshalledObject instanceof Calendar) {
+				calendar = (Calendar) unmarshalledObject;
+			}
+			else{
+				throw new TemporalDataException("Failed to unmarshal XML file from: " + file);
+			}
+		}
+		catch (JAXBException e) {
+			throw new TemporalDataException("Failed to initialize JAXB unmarshaller.", e);
 		}
 
-		if (existingManagerVersions.get(calendarManagerVersionIdentifier) != null) {
-			throw new TemporalDataException("Attempting to register new calendarManager: " + manager.getClass().getSimpleName() + " with already registered version: " + calendarManagerVersionIdentifier);
-		}
-
-		existingManagerVersions.put(calendarManagerVersionIdentifier, manager);
+		calendar.initializeCalendar();
+		calendar.getCalendarManager().registerCalendar(calendar.getLocalCalendarIdentifier(), calendar);
 	}
 
 	/**

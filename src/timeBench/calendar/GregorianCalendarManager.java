@@ -6,12 +6,11 @@ import timeBench.data.TemporalDataException;
 
 import java.util.*;
 
-public class GregorianCalendarManager implements CalendarManager {
+public class GregorianCalendarManager extends CalendarManager {
 	protected static final int LOCAL_CALENDAR_MANAGER = 2;
 	private static final int LOCAL_CALENDAR_MANAGER_VERSION = 1;
-	private static final int GLOBAL_CALENDAR_MANAGER_VERSION;
+	private static GregorianCalendarManager instance = null;
 
-	private TreeMap<Integer, Calendar> calendarMap = new TreeMap<>();
 	private TreeMap<Integer, GranularityAssociation<GregorianGranularity>> calendarAssociationMap = new TreeMap<>();
 
 	private enum GregorianGranularity {
@@ -38,42 +37,14 @@ public class GregorianCalendarManager implements CalendarManager {
 		}
 	}
 
-	static {
-		try {
-			GLOBAL_CALENDAR_MANAGER_VERSION = IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(LOCAL_CALENDAR_MANAGER, LOCAL_CALENDAR_MANAGER_VERSION);
-			System.out.println("manager " + GLOBAL_CALENDAR_MANAGER_VERSION);
-			CalendarFactory.getInstance().registerCalendarManager(GLOBAL_CALENDAR_MANAGER_VERSION, new GregorianCalendarManager());
-		}
-		catch (TemporalDataException e) {
-			throw new RuntimeException("Failed to initialize GregorianCalendarManager", e);
-		}
+	private GregorianCalendarManager(){
 	}
 
-	@Override
-	public Calendar getDefaultCalendar() {
-		return calendarMap.get(calendarMap.firstKey());
-	}
-
-	@Override
-	public Calendar getCalendar(int localIdentifier) {
-		return calendarMap.get(localIdentifier);
-	}
-
-	@Override
-	public int[] getGlobalGranularityIdentifiers() {
-		ArrayList<Integer> identifierList = new ArrayList<>();
-		for (Calendar currentCalendar : calendarMap.values()) {
-			for (Granularity currentGranularity : currentCalendar.getGranularities()) {
-				identifierList.add(currentGranularity.getGlobalGranularityIdentifier());
-			}
+	public static GregorianCalendarManager getInstance(){
+		if (instance == null){
+			instance = new GregorianCalendarManager();
 		}
-
-		int[] identifiers = new int[identifierList.size()];
-		for (int i = 0; i < identifierList.size(); i++) {
-			identifiers[i] = identifierList.get(i);
-		}
-
-		return identifiers;
+		return instance;
 	}
 
 	@Override
@@ -503,31 +474,6 @@ public class GregorianCalendarManager implements CalendarManager {
 	}
 
 	@Override
-	public Granularity getBottomGranularity(Calendar calendar) {
-		for (Granularity currentGranularity : calendar.getGranularities()) {
-			if (currentGranularity.getBottomGranularity()) {
-				return currentGranularity;
-			}
-		}
-		throw new RuntimeException("Calendar: " + calendar.getLocalCalendarIdentifier() + " has no bottom granularity.");
-	}
-
-	@Override
-	public Granularity getTopGranularity(Calendar calendar) {
-		for (Granularity currentGranularity : calendar.getGranularities()) {
-			if (currentGranularity.getTopGranularity()) {
-				return currentGranularity;
-			}
-		}
-		throw new RuntimeException("Calendar: " + calendar.getLocalCalendarIdentifier() + " has no top granularity.");
-	}
-
-	@Override
-	public int getGlobalCalendarManagerVersionIdentifier() {
-		return GLOBAL_CALENDAR_MANAGER_VERSION;
-	}
-
-	@Override
 	public int getLocalCalendarManagerIdentifier() {
 		return LOCAL_CALENDAR_MANAGER;
 	}
@@ -582,7 +528,7 @@ public class GregorianCalendarManager implements CalendarManager {
 		for (GregorianGranularity currentEnumGranularity : GregorianGranularity.values()) {
 			for (Granularity currentGranularity : calendar.getGranularities()) {
 				if (currentEnumGranularity.toString().equalsIgnoreCase(currentGranularity.getGranularityLabel())) {
-					association.associateGranularities(currentEnumGranularity, currentGranularity);
+					association.associateGranularity(currentEnumGranularity, currentGranularity);
 					continue enumLoop;
 				}
 			}

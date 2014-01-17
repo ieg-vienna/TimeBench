@@ -16,25 +16,13 @@ import java.util.*;
  * @author Tim Lammarsch
  */
 @Deprecated
-public class JavaDateCalendarManager implements CalendarManager {
+public class JavaDateCalendarManager extends CalendarManager {
 	protected static JavaDateCalendarManager singleton = null;
 	protected java.util.Calendar javaCalendar = null;
 	protected Hashtable<Integer, Calendar> calendarSingletons = new Hashtable<Integer, Calendar>();
 
 	protected static final int LOCAL_CALENDAR_MANAGER = 1;
 	private static final int LOCAL_CALENDAR_MANAGER_VERSION = 1;
-	private static final int GLOBAL_CALENDAR_MANAGER_VERSION;
-
-	static {
-		try {
-			GLOBAL_CALENDAR_MANAGER_VERSION = IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(LOCAL_CALENDAR_MANAGER, LOCAL_CALENDAR_MANAGER_VERSION);
-			CalendarFactory.getInstance().registerCalendarManager(GLOBAL_CALENDAR_MANAGER_VERSION, new JavaDateCalendarManager());
-
-		}
-		catch (TemporalDataException e) {
-			throw new RuntimeException("Failed to initialize JavaDateCalendarManager", e);
-		}
-	}
 
 	/**
 	 * Constructs a JavaDateCalendarManager. Consider using the
@@ -116,6 +104,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 *
 	 * @return The calendar.
 	 */
+	@Override
 	public Calendar getCalendar(int localIdentifier) {
 		Calendar calendar = calendarSingletons.get(localIdentifier);
 		if (calendar == null) {
@@ -132,6 +121,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 *
 	 * @return The calendar.
 	 */
+	@Override
 	public Calendar getDefaultCalendar() {
 		return getCalendar(0);
 	}
@@ -681,10 +671,12 @@ public class JavaDateCalendarManager implements CalendarManager {
 		}
 	}
 
+	@Override
 	public Granularity getBottomGranularity(Calendar calendar) {
 		return new Granularity(calendar, GRANULARITY_MILLISECOND, GRANULARITY_TOP);
 	}
 
+	@Override
 	public Granularity getTopGranularity(Calendar calendar) {
 		return new Granularity(calendar, GRANULARITY_TOP, GRANULARITY_TOP);
 	}
@@ -1643,10 +1635,6 @@ public class JavaDateCalendarManager implements CalendarManager {
 			throw new TemporalDataException("Calendar: " + getClass().getSimpleName() + " already contains a calendar with identifier: " + localIdentifier);
 		}
 		calendarSingletons.put(localIdentifier, calendar);
-	}
-
-	public int getGlobalCalendarManagerVersionIdentifier() {
-		return GLOBAL_CALENDAR_MANAGER_VERSION;
 	}
 
 	@Override

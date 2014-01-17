@@ -16,7 +16,7 @@ public class GranularityAssociation<T extends Enum<T>> {
 	private Hashtable<T, Granularity> enumGranularityMap = new Hashtable<>();
 	private Hashtable<Granularity, T> granularityEnumMap = new Hashtable<>();
 
-	public void associateGranularities(T enumGranularity, Granularity granularity) throws TemporalDataException {
+	public void associateGranularity(T enumGranularity, Granularity granularity) throws TemporalDataException {
 		if (enumGranularityMap.containsKey(enumGranularity) || enumGranularityMap.containsValue(granularity) ||
 			granularityEnumMap.containsKey(granularity) || granularityEnumMap.containsValue(enumGranularity)){
 
@@ -29,14 +29,20 @@ public class GranularityAssociation<T extends Enum<T>> {
 	}
 
 	public T getAssociation(Granularity granularity){
+		if (granularityEnumMap == null)
+			return null;
 		return granularityEnumMap.get(granularity);
 	}
 
 	public Granularity getAssociation(T granularity){
+		if (enumGranularityMap == null)
+			return null;
 		return enumGranularityMap.get(granularity);
 	}
 
 	public int getAssociationCount(){
+		if (enumGranularityMap == null)
+			return 0;
 		return enumGranularityMap.size();
 	}
 }

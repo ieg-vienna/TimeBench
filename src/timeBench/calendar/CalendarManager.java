@@ -2,7 +2,9 @@ package timeBench.calendar;
 
 import timeBench.data.TemporalDataException;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.TreeMap;
 
 /**
  * The interface used to access any CalendarManager that may exist.
@@ -14,7 +16,8 @@ import java.util.Date;
  *
  * @author Tim Lammarsch
  */
-public interface CalendarManager {
+public abstract class CalendarManager {
+	protected TreeMap<Integer, Calendar> calendarMap = new TreeMap<>();
 
 	/**
 	 * Provides access to a singleton instance of the default calendar of the calendar manager.
@@ -22,7 +25,10 @@ public interface CalendarManager {
 	 *
 	 * @return The calendar.
 	 */
-	public Calendar getDefaultCalendar();
+
+	public Calendar getDefaultCalendar() {
+		return calendarMap.get(calendarMap.firstKey());
+	}
 
 	/**
 	 * Provides access to a singleton instance of a calendar.
@@ -31,14 +37,48 @@ public interface CalendarManager {
 	 * @param localIdentifier the localIdentifier of the calendar
 	 * @return The calendar.
 	 */
-	public Calendar getCalendar(int localIdentifier);
+	public Calendar getCalendar(int localIdentifier) {
+		return calendarMap.get(localIdentifier);
+	}
 
 	/**
 	 * Returns an array of global granularity identifiers that are provided by the calendar.
 	 *
 	 * @return array of global granularity identifiers
 	 */
-	public int[] getGlobalGranularityIdentifiers();
+	public int[] getGlobalGranularityIdentifiers() {
+		ArrayList<Integer> identifierList = new ArrayList<>();
+		for (Calendar currentCalendar : calendarMap.values()) {
+			for (Granularity currentGranularity : currentCalendar.getGranularities()) {
+				identifierList.add(currentGranularity.getGlobalGranularityIdentifier());
+			}
+		}
+
+		int[] identifiers = new int[identifierList.size()];
+		for (int i = 0; i < identifierList.size(); i++) {
+			identifiers[i] = identifierList.get(i);
+		}
+
+		return identifiers;
+	}
+
+	public Granularity getBottomGranularity(Calendar calendar) {
+		for (Granularity currentGranularity : calendar.getGranularities()) {
+			if (currentGranularity.getBottomGranularity()) {
+				return currentGranularity;
+			}
+		}
+		throw new RuntimeException("Calendar: " + calendar.getLocalCalendarIdentifier() + " has no bottom granularity.");
+	}
+
+	public Granularity getTopGranularity(Calendar calendar) {
+		for (Granularity currentGranularity : calendar.getGranularities()) {
+			if (currentGranularity.getTopGranularity()) {
+				return currentGranularity;
+			}
+		}
+		throw new RuntimeException("Calendar: " + calendar.getLocalCalendarIdentifier() + " has no top granularity.");
+	}
 
 	/**
 	 * Constructs a {@link Granule} from a given {@link Date}. Consider using the adequate constructor of
@@ -49,7 +89,7 @@ public interface CalendarManager {
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule createGranule(Date input, Granularity granularity) throws TemporalDataException;
+	public abstract Granule createGranule(Date input, Granularity granularity) throws TemporalDataException;
 
 	/**
 	 * Constructs a {@link Granule} from inf to sup using a given {@linkplain Granule#MODE_INF_GRANULE mode} and
@@ -63,8 +103,8 @@ public interface CalendarManager {
 	 * @return the constructed {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule createGranule(long inf, long sup, int mode,
-								 Granularity granularity) throws TemporalDataException;
+	public abstract Granule createGranule(long inf, long sup, int mode,
+										  Granularity granularity) throws TemporalDataException;
 
 	/**
 	 * Constructs several {@link Granule} objects from inf to sup that are at least partly in the given interval with
@@ -78,8 +118,8 @@ public interface CalendarManager {
 	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule[] createGranules(long inf, long sup, double cover,
-									Granularity granularity) throws TemporalDataException;
+	public abstract Granule[] createGranules(long inf, long sup, double cover,
+											 Granularity granularity) throws TemporalDataException;
 
 	/**
 	 * Constructs several {@link Granule} objects from other {@link Granule} objects for a given {@link Granularity}
@@ -94,8 +134,8 @@ public interface CalendarManager {
 	 * @return the constructed array of {@link Granule}
 	 * @throws TemporalDataException TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public Granule[] createGranules(Granule[] granules, double cover,
-									Granularity granularity) throws TemporalDataException;
+	public abstract Granule[] createGranules(Granule[] granules, double cover,
+											 Granularity granularity) throws TemporalDataException;
 
 	/**
 	 * Calculate and return the identifier of a {@link Granule}. An identifier is a numeric label given in the context
@@ -105,7 +145,7 @@ public interface CalendarManager {
 	 * @return the identifier
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public long createGranuleIdentifier(Granule granule) throws TemporalDataException;
+	public abstract long createGranuleIdentifier(Granule granule) throws TemporalDataException;
 
 	/**
 	 * Calculate and return the human readable label of a {@link Granule}.
@@ -115,7 +155,7 @@ public interface CalendarManager {
 	 * @return the label
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public String createGranuleLabel(Granule granule) throws TemporalDataException;
+	public abstract String createGranuleLabel(Granule granule) throws TemporalDataException;
 
 	/**
 	 * Calculate and return the inf of a {@link Granule}.
@@ -123,7 +163,7 @@ public interface CalendarManager {
 	 * @return the inf
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public long createInf(Granule granule) throws TemporalDataException;
+	public abstract long createInf(Granule granule) throws TemporalDataException;
 
 	/**
 	 * Calculate and return the sup of a {@link Granule}.
@@ -131,7 +171,7 @@ public interface CalendarManager {
 	 * @return the sup
 	 * @throws TemporalDataException thrown when granularities are not fully implemented
 	 */
-	public long createSup(Granule granule) throws TemporalDataException;
+	public abstract long createSup(Granule granule) throws TemporalDataException;
 
 	/**
 	 * Provide the minimum identifier value that granules of a granularity can assume.
@@ -140,7 +180,7 @@ public interface CalendarManager {
 	 * @return the minimum granule identifier value
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
-	public long getMinGranuleIdentifier(Granularity granularity) throws TemporalDataException;
+	public abstract long getMinGranuleIdentifier(Granularity granularity) throws TemporalDataException;
 
 	/**
 	 * Provide the maximum identifier value that granules of a granularity can assume.
@@ -149,29 +189,22 @@ public interface CalendarManager {
 	 * @return the maximum granule identifier value
 	 * @throws TemporalDataException thrown when granularity has illegal identifiers
 	 */
-	public long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException;
+	public abstract long getMaxGranuleIdentifier(Granularity granularity) throws TemporalDataException;
 
-	public long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException;
+	public abstract long getMaxLengthInIdentifiers(Granularity granularity) throws TemporalDataException;
 
-	public boolean contains(Granule granule, long chronon) throws TemporalDataException;
+	public abstract boolean contains(Granule granule, long chronon) throws TemporalDataException;
 
-	public long getStartOfTime();
+	public abstract long getStartOfTime();
 
-	public long getEndOfTime();
+	public abstract long getEndOfTime();
 
-	public Granularity getBottomGranularity(Calendar calendar);
+	public abstract int getLocalCalendarManagerIdentifier();
 
-	public Granularity getTopGranularity(Calendar calendar);
+	public abstract int getLocalCalendarManagerVersionIdentifier();
 
-	public int getGlobalCalendarManagerVersionIdentifier();
-
-	public int getLocalCalendarManagerIdentifier();
-
-	public int getLocalCalendarManagerVersionIdentifier();
-
-	public Granularity getGranularity(Calendar calendar, String granularityName,
+	public abstract Granularity getGranularity(Calendar calendar, String granularityName,
 									  String contextGranularityName);
 
-	public void registerCalendar(int localIdentifier, Calendar calendar) throws TemporalDataException;
-
+	public abstract void registerCalendar(int localIdentifier, Calendar calendar) throws TemporalDataException;
 }
