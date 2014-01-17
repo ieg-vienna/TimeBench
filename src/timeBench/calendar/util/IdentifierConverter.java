@@ -19,7 +19,7 @@ public class IdentifierConverter {
 	private static final int GRANULARITY_BITS = 7;
 	private static final int TYPE_GRANULARITY_BITS = 5;
 	private static final int CALENDAR_BITS = 7;
-	private static final int VERSION_BITS = 7;
+	private static final int VERSION_BITS = 8;
 	private static final int MANAGER_BITS = 5;
 
 	private static final int GRANULARITY_MAX = getMax(GRANULARITY_BITS);
@@ -34,12 +34,11 @@ public class IdentifierConverter {
 	private static final int VERSION_MIN = 0;
 	private static final int MANAGER_MIN = 0;
 
-	//TODO: convert bitmask to dynamic masks based off of the BIT fields
-	private static final int GRANULARITY_BITMASK = 0b0000000000000000000000001111111;
-	private static final int TYPE_GRANULARITY_BITMASK = 0b0000000000000000000111110000000;
-	private static final int CALENDAR_BITMASK = 0b0000000000001111111000000000000;
-	private static final int VERSION_BITMASK = 0b0000011111110000000000000000000;
-	private static final int MANAGER_BITMASK = 0b1111100000000000000000000000000;
+	private static final int GRANULARITY_BITMASK = 0b00000000000000000000000001111111;
+	private static final int TYPE_GRANULARITY_BITMASK = 0b00000000000000000000111110000000;
+	private static final int CALENDAR_BITMASK = 0b00000000000001111111000000000000;
+	private static final int VERSION_BITMASK = 0b00000111111110000000000000000000;
+	private static final int MANAGER_BITMASK = 0b11111000000000000000000000000000;
 
 	private static IdentifierConverter instance = null;
 
