@@ -348,6 +348,14 @@ public class Calendar {
 		return calendarManager.getGranularity(this, granularityName, contextGranularityName);
 	}
 
+	public Granularity getGranularity(int globalCalendarIdentifier){
+		GranularityIdentifier identifier = new GranularityIdentifier(
+				IdentifierConverter.getInstance().getGranularityIdentifier(globalCalendarIdentifier),
+				IdentifierConverter.getInstance().getTypeIdentifier(globalCalendarIdentifier));
+
+		return granularityMap.get(identifier);
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).

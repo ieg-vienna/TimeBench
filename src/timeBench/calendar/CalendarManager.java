@@ -1,5 +1,6 @@
 package timeBench.calendar;
 
+import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
 import java.util.ArrayList;
@@ -39,6 +40,15 @@ public abstract class CalendarManager {
 	 */
 	public Calendar getCalendar(int localIdentifier) {
 		return calendarMap.get(localIdentifier);
+	}
+
+	public Granularity getGranularity(int globalGranularityIdentifier){
+		Calendar calendar = getCalendar(IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier));
+		if (calendar == null){
+			return null;
+		}
+
+		return calendar.getGranularity(globalGranularityIdentifier);
 	}
 
 	/**

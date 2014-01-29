@@ -1,18 +1,11 @@
 package timeBench.calendar.util;
 
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import timeBench.calendar.Granularity;
 import timeBench.data.TemporalDataException;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 public class GranularityAssociation<T extends Enum<T>> {
-//	DualHashBidiMap<T , Granularity> associationMap = new DualHashBidiMap<>();
-
 	private Hashtable<T, Granularity> enumGranularityMap = new Hashtable<>();
 	private Hashtable<Granularity, T> granularityEnumMap = new Hashtable<>();
 

@@ -21,9 +21,9 @@ public class GregorianCalendarManager extends CalendarManager {
 		Day(GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
 		Week(Day.getGregorianCalendarFieldIdentifiers()), //only works manually
 		Month(GregorianCalendar.DAY_OF_MONTH, GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
-		Quarter(Month.getGregorianCalendarFieldIdentifiers()),
+		Quarter(Month.getGregorianCalendarFieldIdentifiers()), //only works manually
 		Year(GregorianCalendar.DAY_OF_YEAR, GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND),
-		Decade(Year.getGregorianCalendarFieldIdentifiers()),
+		Decade(Year.getGregorianCalendarFieldIdentifiers()), //only works manually
 		Top(GregorianCalendar.DAY_OF_YEAR, GregorianCalendar.AM_PM, GregorianCalendar.HOUR, GregorianCalendar.HOUR_OF_DAY, GregorianCalendar.MINUTE, GregorianCalendar.SECOND, GregorianCalendar.MILLISECOND, GregorianCalendar.YEAR);
 
 		private int[] gregorianCalendarFieldIdentifiers;

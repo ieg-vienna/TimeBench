@@ -300,8 +300,8 @@ public class DebugHelper {
 				TemporalObject to = (TemporalObject)node;
 				GenericTemporalElement te = to.getTemporalElement().asGeneric();
 				try {
-					Granule granule = new Granule(te.getInf(),te.getSup(),
-						new Granularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),te.getGranularityId(),te.getGranularityContextId()));
+					Granularity granularity = CalendarFactory.getInstance().getGranularity(te.getGranularityId(),te.getGranularityContextId());
+					Granule granule = new Granule(te.getInf(),te.getSup(), granularity);
 					return String.format(" %2d %2d %5d %s/%s",te.getGranularityId(),te.getGranularityContextId(),granule.getIdentifier(),
 							JavaDateCalendarManager.formatDebugString(te.asGeneric().getInf()),JavaDateCalendarManager.formatDebugString(te.asGeneric().getSup()));
 				} catch (TemporalDataException e) {

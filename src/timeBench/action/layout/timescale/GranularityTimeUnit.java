@@ -6,6 +6,7 @@ import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
+import timeBench.calendar.Calendar;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.TemporalDataException;
@@ -47,9 +48,10 @@ public class GranularityTimeUnit extends TimeUnit {
             int factor) {
 
         try {
-        	Granularity msWithContext = new Granularity(granularity.getCalendar(),
-                granularity.getCalendar().getBottomGranularity()
-                        .getGlobalGranularityIdentifier(), granularity.getGlobalGranularityIdentifier());
+			Calendar calendar = granularity.getCalendar();
+			Granularity contextGranularity = calendar.getGranularity(granularity.getGlobalGranularityIdentifier());
+			Granularity msWithContext = calendar.getBottomGranularity().setIntoContext(contextGranularity);
+//        	Granularity msWithContext = new Granularity(granularity.getCalendar(), granularity.getCalendar().getBottomGranularity().getGlobalGranularityIdentifier(), granularity.getGlobalGranularityIdentifier());
             long length = msWithContext.getMaxLengthInIdentifiers();
             if (logger.isDebugEnabled())
                 logger.debug("length: " + length + " granularity: "

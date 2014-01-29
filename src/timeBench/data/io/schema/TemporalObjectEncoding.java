@@ -62,7 +62,8 @@ public abstract class TemporalObjectEncoding {
 
     void init(Calendar calendar) throws TemporalDataException {
         if (granularity == null)
-            this.granularity = new Granularity(calendar, granularityId, granularityContextId);
+//			this.granularity = new Granularity(calendar, granularityId, granularityContextId);
+            this.granularity = calendar.getGranularity(granularityId).setIntoContext(calendar.getGranularity(granularityContextId));
         
         this.temporalObjectIdIncluded = ArrayUtils.contains(this.dataColumns, 
                 TemporalObject.ID);

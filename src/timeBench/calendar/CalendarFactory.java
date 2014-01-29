@@ -140,7 +140,7 @@ public class CalendarFactory {
 	 */
 	public Granularity getGranularity(int globalGranularityIdentifier, int globalContextGranularityIdentifier, boolean enforceVersion) {
 		if (IdentifierConverter.getInstance().getManagerIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getManagerIdentifier(globalContextGranularityIdentifier) ||
-				IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)) {
+			IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)) {
 			return null;
 		}
 
@@ -148,7 +148,12 @@ public class CalendarFactory {
 		if (calendar == null)
 			return null;
 		else {
-			return new Granularity(calendar, globalGranularityIdentifier, globalContextGranularityIdentifier);
+			try {
+				return calendar.getGranularity(globalGranularityIdentifier).setIntoContext(calendar.getGranularity(globalContextGranularityIdentifier));
+			}
+			catch (TemporalDataException e) {
+				return null;
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package timeBench.calendar;
 
+import timeBench.calendar.util.GranularityIdentifier;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
@@ -673,12 +674,12 @@ public class JavaDateCalendarManager extends CalendarManager {
 
 	@Override
 	public Granularity getBottomGranularity(Calendar calendar) {
-		return new Granularity(calendar, GRANULARITY_MILLISECOND, GRANULARITY_TOP);
+		return calendar.getBottomGranularity();
 	}
 
 	@Override
 	public Granularity getTopGranularity(Calendar calendar) {
-		return new Granularity(calendar, GRANULARITY_TOP, GRANULARITY_TOP);
+		return calendar.getTopGranularity();
 	}
 
 	/**
@@ -1620,9 +1621,10 @@ public class JavaDateCalendarManager extends CalendarManager {
 	@Override
 	public Granularity getGranularity(Calendar calendar, String granularityName,
 									  String contextGranularityName) {
+
 		try {
-			return new Granularity(calendar, parseGranularityIdentifierFromName(granularityName),
-					parseGranularityIdentifierFromName(contextGranularityName));
+			return getGranularityFromName(calendar, granularityName).setIntoContext(getGranularityFromName(calendar, contextGranularityName));
+
 		}
 		catch (TemporalDataException e) {
 			return null;
@@ -1652,32 +1654,55 @@ public class JavaDateCalendarManager extends CalendarManager {
 	 * @return
 	 * @throws TemporalDataException
 	 */
-	private int parseGranularityIdentifierFromName(String granularityName) throws TemporalDataException {
-		if (granularityName == "Millisecond")
-			return GRANULARITY_MILLISECOND;
-		else if (granularityName == "Second")
-			return GRANULARITY_SECOND;
-		else if (granularityName == "Minute")
-			return GRANULARITY_MINUTE;
-		else if (granularityName == "Hour")
-			return GRANULARITY_HOUR;
-		else if (granularityName == "Day")
-			return GRANULARITY_DAY;
-		else if (granularityName == "Week")
-			return GRANULARITY_WEEK;
-		else if (granularityName == "Month")
-			return GRANULARITY_MONTH;
-		else if (granularityName == "Quarter")
-			return GRANULARITY_QUARTER;
-		else if (granularityName == "Year")
-			return GRANULARITY_YEAR;
-		else if (granularityName == "Decade")
-			return GRANULARITY_DECADE;
-		else if (granularityName == "Calendar")
-			return GRANULARITY_CALENDAR;
-		else if (granularityName == "Top")
-			return GRANULARITY_TOP;
+	private Granularity getGranularityFromName(Calendar calendar, String granularityName) throws TemporalDataException {
+		Granularity granularity = new Granularity();
+		granularity.setGranularityLabel(granularityName);
+		granularity.setCalendar(calendar);
+
+		if (granularityName.equalsIgnoreCase("Millisecond")){
+			granularity.setBottomGranularity(true);
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_MILLISECOND, 1));
+		}
+		else if (granularityName.equalsIgnoreCase("Second"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_SECOND, 1));
+		else if (granularityName.equalsIgnoreCase("Minute"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_MINUTE, 1));
+		else if (granularityName.equalsIgnoreCase("Hour"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_HOUR, 1));
+		else if (granularityName.equalsIgnoreCase("Day"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_DAY, 1));
+		else if (granularityName.equalsIgnoreCase("Week"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_WEEK, 1));
+		else if (granularityName.equalsIgnoreCase("Month"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_MONTH, 1));
+		else if (granularityName.equalsIgnoreCase("Quarter"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_QUARTER, 1));
+		else if (granularityName.equalsIgnoreCase("Year"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_YEAR, 1));
+		else if (granularityName.equalsIgnoreCase("Decade"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_DECADE, 1));
+		else if (granularityName.equalsIgnoreCase("Calendar"))
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_CALENDAR, 1));
+		else if (granularityName.equalsIgnoreCase("Top")){
+			granularity.setTopGranularity(true);
+			granularity.setIdentifier(new GranularityIdentifier(GRANULARITY_TOP, 1));
+		}
 		else
 			throw new TemporalDataException("Granularity not known");
+
+		granularity.setGlobalGranularityIdentifier(IdentifierConverter.getInstance().buildGlobalIdentifier(
+				calendar.getLocalCalendarManagerIdentifier(),
+				calendar.getLocalCalendarManagerVersionIdentifier(),
+				calendar.getLocalCalendarIdentifier(),
+				granularity.getIdentifier().getTypeIdentifier(),
+				granularity.getIdentifier().getIdentifier()));
+
+		int [] permittedContextGranularities = buildGranularityListForCreateGranule(granularity);
+		Hashtable<GranularityIdentifier, Granularity> permittedContextGranularitiesMap = new Hashtable<>();
+		for (int i = 0; i < permittedContextGranularities.length; i++){
+			//TODO not implemented
+		}
+		granularity.setPermittedContextGranularities(permittedContextGranularitiesMap);
+		return granularity;
 	}
 }

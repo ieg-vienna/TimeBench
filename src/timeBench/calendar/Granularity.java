@@ -64,12 +64,12 @@ public class Granularity {
 	 * @param globalGranularityIdentifier The globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
 	 * @param localGranularityContextIdentifier           The context globalGranularityIdentifier of the granularity whose meaning depends on the {@link CalendarManager}.
 	 */
-	public Granularity(Calendar calendar, int globalGranularityIdentifier, int localGranularityContextIdentifier) {
-		this.calendar = calendar;
-		this.globalGranularityIdentifier = globalGranularityIdentifier;
-//		this.contextLocalIdentifier = localGranularityContextIdentifier;
-		//TODO
-	}
+//	public Granularity(Calendar calendar, int globalGranularityIdentifier, int localGranularityContextIdentifier) {
+//		this.calendar = calendar;
+//		this.globalGranularityIdentifier = globalGranularityIdentifier;
+////		this.contextLocalIdentifier = localGranularityContextIdentifier;
+//		//TODO
+//	}
 
 	/**
 	 * Return {@link Calendar} this granularity belongs to.
