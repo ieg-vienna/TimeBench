@@ -16,9 +16,9 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.REngineStdOutput;
 
 import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
@@ -108,9 +108,9 @@ public class RConnector {
             Granularity granularity = null;
             if (Math.abs(frequency - 1.0) < 0.005
                     || Math.abs(frequency - 0.1) < 0.005)
-            	granularity = CalendarFactory.getInstance().getGranularity(calendar,"Year","Top");
+            	granularity = CalendarRegistry.getInstance().getGranularity(calendar,"Year","Top");
             else if (Math.abs(frequency - 12.0) < 0.005)
-                granularity = CalendarFactory.getInstance().getGranularity(calendar,"Month","Top");
+                granularity = CalendarRegistry.getInstance().getGranularity(calendar,"Month","Top");
             else
                 throw new TemporalDataException(
                         "Unknown granularity. frequency: " + frequency);
@@ -270,7 +270,7 @@ public class RConnector {
         if (frequency != 12.0)
             throw new RuntimeException("only months supported");
 
-        Granularity granularity = CalendarFactory.getInstance().getGranularity(
+        Granularity granularity = CalendarRegistry.getInstance().getGranularity(
         		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
         		"Month","Top");
 

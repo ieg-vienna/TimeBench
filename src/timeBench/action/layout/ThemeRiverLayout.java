@@ -1,34 +1,19 @@
 package timeBench.action.layout;
 
-import ieg.prefuse.data.DataHelper;
-
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 
-import org.apache.log4j.Logger;
-
-import prefuse.Constants;
 import prefuse.action.layout.Layout;
 import prefuse.data.Table;
-import prefuse.data.expression.BooleanLiteral;
 import prefuse.data.expression.Predicate;
-import prefuse.data.tuple.TupleSet;
 import prefuse.data.util.Index;
 import prefuse.render.PolygonRenderer;
 import prefuse.util.collections.IntIterator;
-import prefuse.visual.VisualGraph;
-import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTable;
 import prefuse.visual.expression.VisiblePredicate;
-import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.TimeScale;
-import timeBench.calendar.JavaDateCalendarManager;
-import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
 import timeBench.data.TemporalObject;
-import timeBench.util.DebugHelper;
 
 public class ThemeRiverLayout extends Layout {
 

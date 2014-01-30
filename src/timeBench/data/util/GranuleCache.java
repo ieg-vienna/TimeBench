@@ -4,7 +4,7 @@ import prefuse.data.Table;
 import prefuse.data.column.ObjectColumn;
 import prefuse.data.event.EventConstants;
 import prefuse.data.event.TableListener;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.GenericTemporalElement;
@@ -44,7 +44,7 @@ public class GranuleCache {
             GenericTemporalElement elem = tmpstr.getTemporalElementByRow(row);
             if (elem.isAnchored()) {
                 // TODO reuse granularity objects --> calendar responsible?
-                Granularity g = CalendarFactory.getInstance().getGranularity(
+                Granularity g = CalendarRegistry.getInstance().getGranularity(
                         elem.getGranularityId(), elem.getGranularityContextId());
                 granules.set(g.createGranules(elem.getInf(), elem.getSup()), row);
             } else {

@@ -1,5 +1,6 @@
-package timeBench.calendar;
+package timeBench.calendar.manager;
 
+import timeBench.calendar.*;
 import timeBench.calendar.util.GranularityAssociation;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
@@ -127,7 +128,7 @@ public class GregorianCalendarManager extends CalendarManager {
 		String result = null;
 
 		int calendarIdentifier = IdentifierConverter.getInstance().getCalendarIdentifier(granule.getGranularity().getGlobalGranularityIdentifier());
-		Calendar calendar = calendarMap.get(calendarIdentifier);
+		timeBench.calendar.Calendar calendar = calendarMap.get(calendarIdentifier);
 		if (calendar == null) {
 			throw new TemporalDataException("Failed to create granule label: Failed to fetch calendar: " + calendarIdentifier);
 		}
@@ -484,7 +485,7 @@ public class GregorianCalendarManager extends CalendarManager {
 	}
 
 	@Override
-	public Granularity getGranularity(Calendar calendar, String granularityName, String contextGranularityName) {
+	public Granularity getGranularity(timeBench.calendar.Calendar calendar, String granularityName, String contextGranularityName) {
 		Granularity granularity = null;
 		Granularity contextGranularity = null;
 		for (Granularity currentGranularity : calendar.getGranularities()) {
@@ -512,7 +513,7 @@ public class GregorianCalendarManager extends CalendarManager {
 	}
 
 	@Override
-	public void registerCalendar(int localIdentifier, Calendar calendar) throws TemporalDataException {
+	public void registerCalendar(int localIdentifier, timeBench.calendar.Calendar calendar) throws TemporalDataException {
 		if (calendarMap.containsKey(localIdentifier)) {
 			throw new TemporalDataException("Calendar: " + getClass().getSimpleName() + " already contains a calendar with identifier: " + localIdentifier);
 		}
@@ -520,7 +521,7 @@ public class GregorianCalendarManager extends CalendarManager {
 		associateGranularities(localIdentifier, calendar);
 	}
 
-	private void associateGranularities(Integer localIdentifier, Calendar calendar) throws TemporalDataException {
+	private void associateGranularities(Integer localIdentifier, timeBench.calendar.Calendar calendar) throws TemporalDataException {
 		GranularityAssociation<GregorianGranularity> association = new GranularityAssociation<>();
 		calendarAssociationMap.put(localIdentifier, association);
 

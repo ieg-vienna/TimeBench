@@ -7,10 +7,10 @@ import java.io.PrintStream;
 import prefuse.data.Tuple;
 import prefuse.data.tuple.TupleSet;
 
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.Instant;
 import timeBench.data.Interval;
@@ -213,9 +213,9 @@ public class DebugHelper {
         for (int i = 0; i < size; i++) {
             long inf = Math.round(Math.random() * 31536000000.0); // 1 year
             int gId = (int) Math.floor(Math.random() * 6) + 1;
-            gId += CalendarFactory.getInstance().getGranularityIdentifierSummandFromCalendarIdentifier(
+            gId += CalendarRegistry.getInstance().getGranularityIdentifierSummandFromCalendarIdentifier(
             		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getGlobalCalendarIdentifier());
-            Granularity granularity = CalendarFactory.getInstance().getGranularity(gId,
+            Granularity granularity = CalendarRegistry.getInstance().getGranularity(gId,
             		JavaDateCalendarManager.getSingleton().getDefaultCalendar().getTopGranularity().getGlobalGranularityIdentifier());
             Granule granule = new Granule(inf,inf,granularity);
             // Granule granule = granularity.parseDateToGranule(new Date());
@@ -300,7 +300,7 @@ public class DebugHelper {
 				TemporalObject to = (TemporalObject)node;
 				GenericTemporalElement te = to.getTemporalElement().asGeneric();
 				try {
-					Granularity granularity = CalendarFactory.getInstance().getGranularity(te.getGranularityId(),te.getGranularityContextId());
+					Granularity granularity = CalendarRegistry.getInstance().getGranularity(te.getGranularityId(),te.getGranularityContextId());
 					Granule granule = new Granule(te.getInf(),te.getSup(), granularity);
 					return String.format(" %2d %2d %5d %s/%s",te.getGranularityId(),te.getGranularityContextId(),granule.getIdentifier(),
 							JavaDateCalendarManager.formatDebugString(te.asGeneric().getInf()),JavaDateCalendarManager.formatDebugString(te.asGeneric().getSup()));

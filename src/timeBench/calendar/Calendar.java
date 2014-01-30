@@ -1,11 +1,11 @@
 package timeBench.calendar;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.util.GranularityIdentifier;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import java.util.*;
 
@@ -293,7 +293,7 @@ public class Calendar {
 		if (calendarManager != null){
 			return;
 		}
-		CalendarManager manager = CalendarFactory.getInstance().getCalendarManager(
+		CalendarManager manager = CalendarRegistry.getInstance().getCalendarManager(
 				IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(
 						localCalendarManagerIdentifier,
 						localCalendarManagerVersionIdentifier == null ? 0 : localCalendarManagerVersionIdentifier),
@@ -304,6 +304,11 @@ public class Calendar {
 					"Could not find CalendarManager with identifier: " + localCalendarManagerIdentifier);
 		}
 		setCalendarManager(manager);
+		setGlobalCalendarIdentifier(
+				IdentifierConverter.getInstance().buildCalendarIdentifier(
+						manager.getLocalCalendarManagerIdentifier(),
+						manager.getLocalCalendarManagerVersionIdentifier(),
+						localCalendarIdentifier));
 	}
 
 	/**

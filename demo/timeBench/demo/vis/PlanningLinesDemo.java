@@ -42,10 +42,10 @@ import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.action.layout.timescale.TimeScale;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.Interval;
 import timeBench.data.TemporalDataException;
@@ -84,7 +84,7 @@ public class PlanningLinesDemo {
     private static final String GROUP_DATA_MINDURATION = "data_minduration";
     private static final String GROUP_DATA_MAXDURATION = "data_maxduration";
     
-    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
+    private static final Granularity GRANULARITY = CalendarRegistry.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Week","Top");
 
     @SuppressWarnings("unused")

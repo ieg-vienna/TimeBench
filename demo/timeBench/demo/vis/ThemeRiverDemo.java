@@ -24,9 +24,9 @@ import prefuse.visual.sort.ItemSorter;
 import timeBench.action.layout.ThemeRiverLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.io.TextTableTemporalDatasetReader;
@@ -49,7 +49,7 @@ import timeBench.util.DemoEnvironmentFactory;
 public class ThemeRiverDemo {
 
     private static final String FILE_DATA = "data/nmmaps-resp-3-12monthly-matrix.csv";
-    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
+    private static final Granularity GRANULARITY = CalendarRegistry.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Month","Top");
 
     private static final String COL_LABEL = "label";

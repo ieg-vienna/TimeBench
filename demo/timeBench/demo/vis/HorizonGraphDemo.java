@@ -44,9 +44,9 @@ import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.action.layout.timescale.TimeScale;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -79,7 +79,7 @@ public class HorizonGraphDemo {
 
 //    private static final String FILE_DATA = "data/nmmaps-resp-2short-matrix.csv";
     private static final String FILE_DATA = "data/nmmaps-resp-20monthly-matrix.csv";
-    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
+    private static final Granularity GRANULARITY = CalendarRegistry.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Month","Top");
 
     private static final String COL_DATA = "value";

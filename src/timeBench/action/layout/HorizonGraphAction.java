@@ -19,8 +19,8 @@ import prefuse.visual.AggregateTable;
 import prefuse.visual.VisualItem;
 import timeBench.action.analytical.InterpolationIndexingAction;
 import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarFactory;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.util.CalendarRegistry;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.GenericTemporalElement;
 import timeBench.data.Instant;
@@ -103,13 +103,13 @@ public class HorizonGraphAction extends Action {
                 .temporalElements(
                         new NotPredicate(
                                 new GranularityPredicate(
-                                		CalendarFactory.getInstance().getGranularity(calendar,"Millisecond","Top"))
+                                		CalendarRegistry.getInstance().getGranularity(calendar,"Millisecond","Top"))
                                                 ))) {
             // translate time primitives to instant in center
             long midTime = (el.getInf() + el.getSup()) / 2;
             Instant newEl = el.getTemporalElementStore().addInstant(midTime,
                     midTime,
-                    CalendarFactory.getInstance().getGranularity(calendar,"Millisecond","Top"));
+                    CalendarRegistry.getInstance().getGranularity(calendar,"Millisecond","Top"));
             for (TemporalObject obj : el.temporalObjects(tmpds)) {
                 TemporalObject cp = ctrlPts.addTemporalObject(newEl);
                 // copy raw data
@@ -276,7 +276,7 @@ public class HorizonGraphAction extends Action {
         if (el == null) {
         	Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
             el = ctrlPts.addInstant(time, time,
-            		CalendarFactory.getInstance().getGranularity(calendar, "Millisecond", "Top"));
+            		CalendarRegistry.getInstance().getGranularity(calendar, "Millisecond", "Top"));
         }
 
         TemporalObject node = ctrlPts.addTemporalObject(el);

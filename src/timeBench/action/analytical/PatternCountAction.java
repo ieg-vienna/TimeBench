@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import timeBench.calendar.Calendar;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;

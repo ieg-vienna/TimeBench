@@ -45,9 +45,9 @@ import prefuse.visual.sort.ItemSorter;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.AnchoredTemporalElement;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
@@ -85,7 +85,7 @@ public class MultipleLinePlotDemo {
     private static final String GROUP_AXIS_LABELS = "ylab";
     private static final String GROUP_LINES = "lines";
 
-    private static final Granularity GRANULARITY = CalendarFactory.getInstance().getGranularity(
+    private static final Granularity GRANULARITY = CalendarRegistry.getInstance().getGranularity(
     		JavaDateCalendarManager.getSingleton().getDefaultCalendar(),"Week","Top");
     
     /**

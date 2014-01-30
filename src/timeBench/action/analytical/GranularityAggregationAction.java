@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
 import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTree;
@@ -58,8 +58,8 @@ public class GranularityAggregationAction extends prefuse.action.Action implemen
 		this.granularities = new Granularity[granularities.length];
 		aggFct = new GranularityAggregationFunction[granularities.length];
 		if(granularities.length > 0)
-			this.calendar = CalendarFactory.getInstance().getCalendar(
-					CalendarFactory.getInstance().getCalendarIdentifierFromGranularityIdentifier(
+			this.calendar = CalendarRegistry.getInstance().getCalendar(
+					CalendarRegistry.getInstance().getCalendarIdentifierFromGranularityIdentifier(
 					granularities[0].getGlobalGranularityIdentifier()));
 		this.granularities = granularities;
 		if (aggFct == null) {

@@ -34,9 +34,9 @@ import timeBench.action.layout.GranularityTreeLabelLayout;
 import timeBench.action.layout.GranularityTreeLayout;
 import timeBench.action.layout.GranularityTreeLayoutSettings;
 import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.io.TextTableTemporalDatasetReader;
@@ -89,10 +89,10 @@ public class GROOVEDemo {
 		Calendar calendar = JavaDateCalendarManager.getSingleton().getDefaultCalendar();
 		GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
 				new Granularity[] {
-				    CalendarFactory.getInstance().getGranularity(calendar,"Top","Top"),
-				    CalendarFactory.getInstance().getGranularity(calendar,"Year","Top"),
-				    CalendarFactory.getInstance().getGranularity(calendar,"Week","Year"),
-				    CalendarFactory.getInstance().getGranularity(calendar,"Day","Week") },
+				    CalendarRegistry.getInstance().getGranularity(calendar,"Top","Top"),
+				    CalendarRegistry.getInstance().getGranularity(calendar,"Year","Top"),
+				    CalendarRegistry.getInstance().getGranularity(calendar,"Week","Year"),
+				    CalendarRegistry.getInstance().getGranularity(calendar,"Day","Week") },
 				-1.0);				
 		/*GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
 				CalendarManagers.JavaDate,

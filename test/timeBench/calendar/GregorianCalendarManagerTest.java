@@ -1,12 +1,10 @@
 package timeBench.calendar;
 
 import junit.framework.TestCase;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.util.IdentifierConverter;
 import timeBench.data.TemporalDataException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.*;
 
@@ -43,8 +41,8 @@ public class GregorianCalendarManagerTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		if (gregorianCalendarManager == null){
-			CalendarFactory.getInstance().loadCalendar(CALENDAR_XML_FILE);
-			gregorianCalendarManager = CalendarFactory.getInstance().getCalendarManager(
+			CalendarRegistry.getInstance().loadCalendar(CALENDAR_XML_FILE);
+			gregorianCalendarManager = CalendarRegistry.getInstance().getCalendarManager(
 												IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(2, 1), true);
 		}
 	}

@@ -26,9 +26,9 @@ import net.fortuna.ical4j.model.property.ExRule;
 import net.fortuna.ical4j.model.property.RDate;
 import net.fortuna.ical4j.model.property.RRule;
 import prefuse.data.io.DataIOException;
-import timeBench.calendar.CalendarFactory;
+import timeBench.calendar.util.CalendarRegistry;
 import timeBench.calendar.Granularity;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalElement;
@@ -59,9 +59,9 @@ public class ICalenderTemporalDatasetReader extends
 
 	private Granularity granularity = null;
 	
-	private Granularity minuteGranularity = CalendarFactory.getInstance().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+	private Granularity minuteGranularity = CalendarRegistry.getInstance().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
 			"Minute","Top");
-	private Granularity secondGranularity = CalendarFactory.getInstance().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
+	private Granularity secondGranularity = CalendarRegistry.getInstance().getGranularity(JavaDateCalendarManager.getSingleton().getDefaultCalendar(),
 			"Second","Top");
 	
 	public ICalenderTemporalDatasetReader() {

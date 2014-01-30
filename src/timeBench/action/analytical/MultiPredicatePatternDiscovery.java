@@ -11,7 +11,6 @@ import prefuse.data.expression.CompositePredicate;
 import prefuse.data.expression.Expression;
 import prefuse.data.expression.NotPredicate;
 import prefuse.data.expression.Predicate;
-import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.TemporalDatasetProvider;

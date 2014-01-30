@@ -1,34 +1,20 @@
 package timeBench.action.layout;
 
-import ieg.prefuse.data.DataHelper;
 import ieg.util.color.HCL;
 
-import java.awt.Color;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.TreeMap;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import prefuse.Display;
-import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
-import prefuse.data.Tree;
-import prefuse.data.Tuple;
 import prefuse.util.ColorLib;
 import prefuse.util.PrefuseLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
-import prefuse.visual.VisualTable;
 import prefuse.visual.VisualTree;
-import timeBench.calendar.Calendar;
-import timeBench.calendar.CalendarFactory;
-import timeBench.calendar.CalendarManager;
 import timeBench.calendar.Granule;
 import timeBench.data.GranularityAggregationTreeProvider;
 import timeBench.data.TemporalDataException;

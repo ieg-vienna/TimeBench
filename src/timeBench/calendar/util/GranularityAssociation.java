@@ -22,20 +22,14 @@ public class GranularityAssociation<T extends Enum<T>> {
 	}
 
 	public T getAssociation(Granularity granularity){
-		if (granularityEnumMap == null)
-			return null;
 		return granularityEnumMap.get(granularity);
 	}
 
 	public Granularity getAssociation(T granularity){
-		if (enumGranularityMap == null)
-			return null;
 		return enumGranularityMap.get(granularity);
 	}
 
 	public int getAssociationCount(){
-		if (enumGranularityMap == null)
-			return 0;
 		return enumGranularityMap.size();
 	}
 }
