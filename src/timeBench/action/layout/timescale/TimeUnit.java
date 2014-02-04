@@ -112,38 +112,41 @@ public abstract class TimeUnit implements Comparable<TimeUnit> {
 
 	/**
 	 * <p>
-	 * Returns the {@link DateFormat} intended to be used, when there is not
+	 * Formats a date, when there is not
 	 * much space available.
 	 * </p>
 	 * 
-	 * @return the short {@link DateFormat}
+     * @param date the {@link Date} to be formatted
+     * @return formatted date
 	 */
-	public DateFormat getShortFormat() {
-		return shortFormat;
+	public String formatShort(Date date) {
+	    return shortFormat.format(date);
 	}
 
 	/**
 	 * <p>
-	 * Returns the {@link DateFormat} intended to be used, when there is enough
+	 * Formats a date when there is enough
 	 * space available to display a date in a long format.
 	 * </p>
 	 * 
-	 * @return the long {@link DateFormat}
+     * @param date the {@link Date} to be formatted
+     * @return formatted date
 	 */
-	public DateFormat getLongFormat() {
-		return longFormat;
-	}
+    public String formatLong(Date date) {
+        return longFormat.format(date);
+    }
 
 	/**
 	 * <p>
-	 * Returns the {@link DateFormat} intended to be used, when there is plenty
+	 * Formats a date, when there is plenty
 	 * of space available and the Date should be displayed in great detail.
 	 * </p>
 	 * 
-	 * @return the long {@link DateFormat}
+     * @param date the {@link Date} to be formatted
+     * @return formatted date
 	 */
-	public DateFormat getFullFormat() {
-		return fullFormat;
+    public String formatFull(Date date) {
+        return fullFormat.format(date);
 	}
 
 	/**

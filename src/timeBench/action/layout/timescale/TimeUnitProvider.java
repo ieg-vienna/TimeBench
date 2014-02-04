@@ -1,7 +1,5 @@
 package timeBench.action.layout.timescale;
 
-import ieg.util.QuarterDateFormat;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -92,11 +90,11 @@ public class TimeUnitProvider {
 		SimpleDateFormat monthFormatFull = new SimpleDateFormat(dataformat);
 		tup.add(new GregorianTimeUnit("Months", Calendar.MONTH, monthFormatShort, monthFormatLong, monthFormatFull));
 
-		String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
-		DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
-		DateFormat quarterFormatLong = new QuarterDateFormat(true, quarterPrefix, false);
-		DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
-		tup.add(new GregorianTimeUnit("Quarters", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
+//		String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
+//		DateFormat quarterFormatShort = new org.jfree.chart.axis.QuarterDateFormat(false, "Q", false);
+//		DateFormat quarterFormatLong = new org.jfree.chart.axis.QuarterDateFormat(true, quarterPrefix, false);
+//		DateFormat quarterFormatFull = new org.jfree.chart.axis.QuarterDateFormat(true, quarterPrefix, false);
+//		tup.add(new GregorianTimeUnit("Quarters", Calendar.MONTH, 3, quarterFormatShort, quarterFormatLong, quarterFormatFull));
 
 		SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
 		SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");
@@ -169,11 +167,7 @@ public class TimeUnitProvider {
         SimpleDateFormat monthFormatFull = new SimpleDateFormat(dataformat);
         tup.add(new GranularityTimeUnit("Months", month, monthFormatShort, monthFormatLong, monthFormatFull));
 
-        String quarterPrefix = (Locale.getDefault().getLanguage().equals("de")) ? "Quartal " : "Quarter ";
-        DateFormat quarterFormatShort = new QuarterDateFormat(false, "Q", false);
-        DateFormat quarterFormatLong = new QuarterDateFormat(true, "Q ", false);
-        DateFormat quarterFormatFull = new QuarterDateFormat(true, quarterPrefix, false);
-        tup.add(new GranularityTimeUnit("Quarters", quarter, 1, quarterFormatShort, quarterFormatLong, quarterFormatFull));
+        tup.add(new QuarterTimeUnit("Quarters", quarter));
         
         SimpleDateFormat yearFormatShort = new SimpleDateFormat("yy");
         SimpleDateFormat yearFormatLong = new SimpleDateFormat("yyyy");

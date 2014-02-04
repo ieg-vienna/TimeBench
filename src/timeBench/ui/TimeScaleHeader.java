@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.text.DateFormat;
 import java.util.Date;
 
 import javax.swing.JComponent;
@@ -124,9 +123,9 @@ public class TimeScaleHeader extends JPanel {
 			}
 			g.drawLine(x, y, x, getComponent().getHeight());
 
-			DateFormat format = (smallUnit ? timeUnit.getShortFormat() : timeUnit.getLongFormat());
+			Date lastDateObj = new Date(lastDate);
 			
-			String dateString = format.format(new Date(lastDate));
+			String dateString = (smallUnit ? timeUnit.formatShort(lastDateObj) : timeUnit.formatLong(lastDateObj));
 			int stringWidth = g.getFontMetrics().stringWidth(dateString);
 			
 			if(lastX + stringWidth <= x){
