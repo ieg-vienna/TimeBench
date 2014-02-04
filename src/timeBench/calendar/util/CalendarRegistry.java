@@ -163,32 +163,22 @@ public class CalendarRegistry {
 		return calendar.getGranularity(granularityName, contextGranularityName);
 	}
 
-//	/**
-//	 * This method registers an instance of a calendar manager with this factory.
-//	 *
-//	 * @param globalIdentifier The identifier for the calendar manager, and its version (MMMMM VVVVVVVV xxxxxxx xxxxx xxxxxxx)
-//	 * @param manager          The manager to be registered
-//	 * @throws TemporalDataException Thrown if a specific manager identifier - version identifier combination has already been registered.
-//	 */
-//	public void registerCalendarManager(int globalIdentifier, CalendarManager manager) throws TemporalDataException {
-//		int calendarManagerIdentifier = IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier);
-//		int calendarManagerVersionIdentifier = IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier);
-//
-//		TreeMap<Integer, CalendarManager> existingManagerVersions = calendarManagerMap.get(calendarManagerIdentifier);
-//		if (existingManagerVersions == null) {
-//			TreeMap<Integer, CalendarManager> newCalendarManagerMap = new TreeMap<>();
-//			newCalendarManagerMap.put(calendarManagerVersionIdentifier, manager);
-//			calendarManagerMap.put(calendarManagerIdentifier, newCalendarManagerMap);
-//			return;
-//		}
-//
-//		if (existingManagerVersions.get(calendarManagerVersionIdentifier) != null) {
-//			throw new TemporalDataException("Attempting to register new calendarManager: " + manager.getClass().getSimpleName() + " with already registered version: " + calendarManagerVersionIdentifier);
-//		}
-//
-//		existingManagerVersions.put(calendarManagerVersionIdentifier, manager);
-//	}
-
+	/**
+	 * This method serves to initialize the registry data structure with instances of calendar managers. The structure
+	 * is built in a two-tier hashtable:
+	 *
+	 * <CalendarManager identifier: <CalendarManager Version identifier, CalendarManager>>
+	 *
+	 * In practice, this would look something like this:
+	 *
+	 * 1 (JavaDateCalendarManager)
+	 * 		| version 1 --> object instance
+	 * 2 (GregorianCalendarManager)
+	 * 		| version 1 --> object instance
+	 * 		| version 2 --> object instance
+	 * 3 (SolarHijriCalendarManager)
+	 * 		| version 1 --> object instance
+	 */
 	private void initialize(){
 		calendarManagerMap = new TreeMap<>();
 
