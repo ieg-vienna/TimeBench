@@ -272,7 +272,8 @@ public class Calendar {
 				topGranularityCount++;
 			}
 		}
-		if (bottomGranularityCount != 1 && topGranularityCount != 1) {
+
+		if (!(bottomGranularityCount == 1 && topGranularityCount == 1)) {
 			throw new TemporalDataException(
 					"Top and/or bottom granularity not set.");
 		}

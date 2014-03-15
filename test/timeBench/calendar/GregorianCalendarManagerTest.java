@@ -127,16 +127,4 @@ public class GregorianCalendarManagerTest extends TestCase {
 		assertEquals(gregorianCalendarManager.createGranuleLabel(quarterDecadeGranule), QUARTER_OF_DECADE);
 		assertEquals(gregorianCalendarManager.createGranuleLabel(yearTopGranule), YEAR_OF_TOP);
 	}
-
-//	public void testRofl() throws TemporalDataException{
-//		System.out.println(IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(0,0));
-//		System.out.println(IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(31, 127));
-//		System.out.println(IdentifierConverter.getInstance().buildGlobalIdentifier(
-//				IdentifierConverter.MANAGER_MAX,
-//				IdentifierConverter.VERSION_MAX,
-//				IdentifierConverter.CALENDAR_MAX,
-//				IdentifierConverter.TYPE_GRANULARITY_MAX,
-//				IdentifierConverter.GRANULARITY_MAX));
-//		System.out.println(0b1111111111110000000000000000000);
-//	}
 }

@@ -51,7 +51,7 @@ import timeBench.action.layout.IntervalAxisLayout;
 import timeBench.action.layout.TimeAxisLayout;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.controls.BranchHighlightControl;
 import timeBench.controls.RangePanControl;
 import timeBench.controls.RangeZoomControl;

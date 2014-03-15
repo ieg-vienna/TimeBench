@@ -1,6 +1,8 @@
 package timeBench.calendar.util;
 
-import timeBench.calendar.*;
+import timeBench.calendar.Calendar;
+import timeBench.calendar.CalendarManager;
+import timeBench.calendar.Granularity;
 import timeBench.calendar.manager.GregorianCalendarManager;
 import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
@@ -107,11 +109,19 @@ public class CalendarRegistry {
 	 * @return the calendar manager if possible, null otherwise
 	 */
 	public Calendar getCalendar(int globalIdentifier, boolean enforceVersion) {
-		CalendarManager calendarManager = getCalendarManager(IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier), enforceVersion);
-		if (calendarManager == null)
+		try {
+			int calendarManagerIdentifier = IdentifierConverter.getInstance().buildCalendarManagerVersionIdentifier(
+					IdentifierConverter.getInstance().getManagerIdentifier(globalIdentifier),
+					IdentifierConverter.getInstance().getVersionIdentifier(globalIdentifier));
+			CalendarManager calendarManager = getCalendarManager(calendarManagerIdentifier, enforceVersion);
+			if (calendarManager == null)
+				return null;
+			else {
+				return calendarManager.getCalendar(IdentifierConverter.getInstance().getCalendarIdentifier(globalIdentifier));
+			}
+		}
+		catch (TemporalDataException e) {
 			return null;
-		else {
-			return calendarManager.getCalendar(globalIdentifier);
 		}
 	}
 
@@ -142,7 +152,7 @@ public class CalendarRegistry {
 	 */
 	public Granularity getGranularity(int globalGranularityIdentifier, int globalContextGranularityIdentifier, boolean enforceVersion) {
 		if (IdentifierConverter.getInstance().getManagerIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getManagerIdentifier(globalContextGranularityIdentifier) ||
-			IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)) {
+				IdentifierConverter.getInstance().getCalendarIdentifier(globalGranularityIdentifier) != IdentifierConverter.getInstance().getCalendarIdentifier(globalContextGranularityIdentifier)) {
 			return null;
 		}
 
@@ -166,20 +176,20 @@ public class CalendarRegistry {
 	/**
 	 * This method serves to initialize the registry data structure with instances of calendar managers. The structure
 	 * is built in a two-tier hashtable:
-	 *
+	 * <p/>
 	 * <CalendarManager identifier: <CalendarManager Version identifier, CalendarManager>>
-	 *
+	 * <p/>
 	 * In practice, this would look something like this:
-	 *
+	 * <p/>
 	 * 1 (JavaDateCalendarManager)
-	 * 		| version 1 --> object instance
+	 * | version 1 --> object instance
 	 * 2 (GregorianCalendarManager)
-	 * 		| version 1 --> object instance
-	 * 		| version 2 --> object instance
+	 * | version 1 --> object instance
+	 * | version 2 --> object instance
 	 * 3 (SolarHijriCalendarManager)
-	 * 		| version 1 --> object instance
+	 * | version 1 --> object instance
 	 */
-	private void initialize(){
+	private void initialize() {
 		calendarManagerMap = new TreeMap<>();
 
 		//register versions of JavaDateCalendarManager
@@ -204,10 +214,10 @@ public class CalendarRegistry {
 	public void loadCalendar(File file) throws TemporalDataException {
 		Calendar calendar = null;
 		try {
-			if (jaxbContext == null){
+			if (jaxbContext == null) {
 				jaxbContext = JAXBContext.newInstance(Calendar.class);
 			}
-			if (unmarshaller == null){
+			if (unmarshaller == null) {
 				unmarshaller = jaxbContext.createUnmarshaller();
 			}
 
@@ -215,8 +225,7 @@ public class CalendarRegistry {
 
 			if (unmarshalledObject != null && unmarshalledObject instanceof Calendar) {
 				calendar = (Calendar) unmarshalledObject;
-			}
-			else{
+			} else {
 				throw new TemporalDataException("Failed to unmarshal XML file from: " + file);
 			}
 		}

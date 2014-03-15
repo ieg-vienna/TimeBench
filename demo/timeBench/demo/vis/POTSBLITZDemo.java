@@ -70,7 +70,7 @@ import timeBench.action.layout.TimeAxisLayout.Placement;
 import timeBench.action.layout.timescale.AdvancedTimeScale;
 import timeBench.action.layout.timescale.RangeAdapter;
 import timeBench.calendar.CalendarManager;
-import timeBench.calendar.JavaDateCalendarManager;
+import timeBench.calendar.manager.JavaDateCalendarManager;
 import timeBench.controls.BranchHighlightControl;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
