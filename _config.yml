@@ -1,0 +1,10 @@
+markdown: kramdown
+baseurl: /TimeBench
+exclude:
+- README.md
+
+# GitHub set these settings anyway
+safe: true
+lsi: false
+pygments: true
+
