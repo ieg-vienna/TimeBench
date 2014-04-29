@@ -1,6 +1,7 @@
 package timeBench.demo.vis;
 
 import ieg.prefuse.RangeModelTransformationDisplay;
+import ieg.util.xml.JaxbMarshaller;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -40,6 +41,7 @@ import timeBench.calendar.JavaDateCalendarManager;
 import timeBench.data.TemporalDataException;
 import timeBench.data.TemporalDataset;
 import timeBench.data.io.TextTableTemporalDatasetReader;
+import timeBench.data.io.schema.TemporalDataColumnSpecification;
 import timeBench.util.DemoEnvironmentFactory;
 import visual.sort.TreeItemSorter;
 
@@ -55,7 +57,8 @@ public class GROOVEDemo {
     private static final String GROUP_X_LABELS = "xlab";
     private static final String GROUP_Y_LABELS = "ylab";
     
-	private static final String DATASET_FILE_NAME = "data/cardiovascular_mb.csv";
+    private static final String DATASET_FILE_NAME = "data/cardiovascular_mb.csv";
+	//private static final String DATASET_FILE_NAME = "data/Dodgers-de-noOctober.csv";
 
     
     /**
@@ -69,6 +72,10 @@ public class GROOVEDemo {
 
 		TemporalDataset tmpds = null;
 		try {
+	        /*TemporalDataColumnSpecification spec2 = (TemporalDataColumnSpecification) JaxbMarshaller
+	                .load("data/spec-dodgers.xml", TemporalDataColumnSpecification.class);
+	        TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader(
+	                spec2);*/
 			TextTableTemporalDatasetReader reader = new TextTableTemporalDatasetReader();
 			tmpds = reader.readData(DATASET_FILE_NAME);
 		} catch(TemporalDataException e) {
@@ -94,15 +101,12 @@ public class GROOVEDemo {
 				    CalendarFactory.getSingleton().getGranularity(calendar,"Week","Year"),
 				    CalendarFactory.getSingleton().getGranularity(calendar,"Day","Week") },
 				-1.0);				
-		/*GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
-				CalendarManagers.JavaDate,
-				new GranularityAggregationSettings[] {
-				new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Top.toInt(),JavaDateCalendarManager.Granularities.Top.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Quarter.toInt(),JavaDateCalendarManager.Granularities.Year.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Month.toInt(),JavaDateCalendarManager.Granularities.Quarter.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Week.toInt(),JavaDateCalendarManager.Granularities.Month.toInt()),
-					new GranularityAggregationSettings(JavaDateCalendarManager.Granularities.Day.toInt(),JavaDateCalendarManager.Granularities.Week.toInt())},
-				-1.0);*/
+//		GranularityAggregationAction timeAggregationAction = new GranularityAggregationAction(tmpds,
+//				new Granularity[] {
+//				    CalendarFactory.getSingleton().getGranularity(calendar,"Top","Top"),
+//				    CalendarFactory.getSingleton().getGranularity(calendar,"Week","Year"),
+//				    CalendarFactory.getSingleton().getGranularity(calendar,"Day","Week") },
+//				-1.0);				
 		timeAggregationAction.run(0);
 		
 		/*DebugHelper.printTemporalDatasetGraph(
@@ -123,17 +127,21 @@ public class GROOVEDemo {
         // --------------------------------------------------------------------
         // STEP 3: create actions to process the visual data
 
+//		GranularityTreeLayout granularityTreeLayout = new GranularityTreeLayout(GROUP_DATA, new GranularityTreeLayoutSettings[]{
+//				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.X_AXIS, 0),
+//				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 0)}
+//			,4);
 		GranularityTreeLayout granularityTreeLayout = new GranularityTreeLayout(GROUP_DATA, new GranularityTreeLayoutSettings[]{
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.Y_AXIS, 0),
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.X_AXIS, 0),
 				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 0.5)}
 			,4);
-		/*GranularityTreeLayout granularityTreeLayout = new GranularityTreeLayout(GROUP_DATA, new GranularityTreeLayoutSettings[]{
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.Y_AXIS, 0),
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.X_AXIS, 0),
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 1),
-				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.X_AXIS, 0)},
-			4);*/
+//		GranularityTreeLayout granularityTreeLayout = new GranularityTreeLayout(GROUP_DATA, new GranularityTreeLayoutSettings[]{
+//				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.Y_AXIS, 0),
+//				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.X_AXIS, 0),
+//				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_DEPENDING_ON_POSSIBLE_VALUES, Constants.Y_AXIS, 1),
+//				new GranularityTreeLayoutSettings(false, GranularityTreeLayout.FITTING_FULL_AVAILABLE_SPACE, Constants.X_AXIS, 0)},
+//			4);
 		
 		GranularityTreeLabelLayout xLabelLayout = new GranularityTreeLabelLayout(GROUP_X_LABELS, granularityTreeLayout, Constants.X_AXIS,
 				new Rectangle2D.Double(120,0,1380,20));
@@ -144,8 +152,8 @@ public class GROOVEDemo {
 		GranularityTreeLabelLayout yLabelLayout = new GranularityTreeLabelLayout(GROUP_Y_LABELS, granularityTreeLayout, Constants.Y_AXIS,
 				new Rectangle2D.Double(0,20,60,880));*/
 		
+//		OverlayDataColorAction colorAction = new OverlayDataColorAction(GROUP_DATA,"value",Constants.NUMERICAL,VisualItem.FILLCOLOR,true,2);
 		OverlayDataColorAction colorAction = new OverlayDataColorAction(GROUP_DATA,"value",Constants.NUMERICAL,VisualItem.FILLCOLOR,true,3);
-		/*OverlayDataColorAction colorAction = new OverlayDataColorAction(GROUP_DATA,"value",Constants.NUMERICAL,VisualItem.FILLCOLOR,true,3);*/
 
         // runs on layout updates (e.g., window resize, pan)
         ActionList update = new ActionList();
