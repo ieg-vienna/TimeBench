@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.TreeMap;
 
 /**
- * A factory class for all classes in the calendar package.
+ * A registry that holds Granularity instances and CalendarManager instances 
  * <p/>
  * The buildup of the granularity identifier is like this:
  * 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 00
@@ -27,16 +27,17 @@ import java.util.TreeMap;
  * <p/>
  * <p>
  * Added:         2013-07-23 / TL<br>
- * Modifications:
+ * Modifications: 2014-03-15 / FU / changed from factory to registry<br>
+ * Modifications: 2014-05-28 / TL / portation to new TimeBench calendar implementation<br>
  * </p>
  *
- * @author Tim Lammarsch
+ * @author Tim Lammarsch, Frieder Ulm
  */
 
 public class CalendarRegistry {
 	private static CalendarRegistry instance = null;
 
-	private TreeMap<Integer, TreeMap<Integer, CalendarManager>> calendarManagerMap;
+	//private TreeMap<Integer, TreeMap<Integer, CalendarManager>> calendarManagerMap;
 	private JAXBContext jaxbContext = null;
 	private Unmarshaller unmarshaller = null;
 
