@@ -53,7 +53,7 @@ public class CalendarFactory {
 	public CalendarManager getCalendarManager(int identifier,boolean enforceVersion) {
 		if ((enforceVersion && identifier == JavaDateCalendarManager.getIdentifier()) || 
 				(identifier & 0x00) == (JavaDateCalendarManager.getIdentifier() & 0x00))
-			return JavaDateCalendarManager.getSingleton();
+			return new JavaDateCalendarManager();
 		else
 			return null;
 	}

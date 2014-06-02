@@ -101,19 +101,7 @@ public class JavaDateCalendarManager implements CalendarManager {
 	 */
 	private static final int GRANULARITY_TOP = 31 << 7 + 127;	// 1111111111
 
-	
-	/**
-	 * Provides access to a singleton instance of the class. This is not a generic factory method. It
-	 * does only create one instance and provides that one with every call.
-	 * @return The JavaDateCalendarManager instance.
-	 */
-	public static CalendarManager getSingleton() {
-		if (singleton == null)
-			singleton = new JavaDateCalendarManager();
-		return singleton;
-	}	
-	
-	
+
 	/**
 	 * Generates an instance of a calendar, the only one currently provided by this class.
 	 * @return The calendar.
