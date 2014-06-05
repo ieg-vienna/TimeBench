@@ -31,10 +31,8 @@ public class Granularity {
 	private String granularityLabel;
 
 	@XmlElement(required = true)
-	private Hashtable<Locale,String> granularityLabel
+	private Hashtable<Locale,String> granularityLabels;
 	
-	Locale.
-
 	@XmlAttribute
 	private Boolean isBottomGranularity = false;
 
