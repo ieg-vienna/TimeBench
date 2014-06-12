@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: tactile
 title: Welcome
 ---
 
