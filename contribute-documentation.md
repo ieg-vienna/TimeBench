@@ -1,6 +1,11 @@
+---
+layout: initializr
+title: Documentation Guidelines
+---
 
+# {{ page.title }}
 
-git clone -b gh-pages --single-branch git@github.com:alex-rind/TimeBench.git TimeBench-Docs.git
+`git clone -b gh-pages --single-branch git@github.com:alex-rind/TimeBench.git TimeBench-Docs.git`
 
 Kate provides Syntax highlighting.
 
