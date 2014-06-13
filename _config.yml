@@ -2,9 +2,9 @@
 markdown: redcarpet
 # markdown: rdiscount
 
-kramdown:
-  entity_output: symbolic
-  input: GFM
+# kramdown:
+#   entity_output: symbolic
+#   input: GFM
 
 redcarpet:
   extensions: [smart, autolink, strikethrough, no_intra_emphasis, tables]

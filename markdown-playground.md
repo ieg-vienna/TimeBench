@@ -1,5 +1,6 @@
 ---
-layout: tactile
+# layout: tactile
+layout: initializr
 title: Playground with Markdown
 ---
 
@@ -57,40 +58,42 @@ ignoring underscore_in_name (RedCarpet extension `no_intra_emphasis`; by default
 
 URL autolinking http://example.com  (RedCarpet extension `autolink`; not in Kramdown)
 
-GitHub flavored fenced code blocks (triple backticks)
+GitHub flavored fenced code blocks (triple tilde, RedCarpet or Kramdown)
+
+~~~ java
+timeScale.setAdjustDateRangeOnResize(true);
+timeScale.addChangeListener(new ChangeListener() {
+    public void stateChanged(ChangeEvent e) {
+	vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
+    }
+});
+~~~
+
+GitHub flavored fenced code blocks (triple backticks -- not in Kramdown)
 
 ```java
-        timeScale.setAdjustDateRangeOnResize(true);
-        timeScale.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
-            }
-        });
+timeScale.setAdjustDateRangeOnResize(true);
+timeScale.addChangeListener(new ChangeListener() {
+    public void stateChanged(ChangeEvent e) {
+	vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
+    }
+});
 ```
 
 | Left-Aligned  | Center Aligned  | Right Aligned |
 | :------------ |:---------------:| -----:|
 | col 2 is      | centered        | $1600 |
 | zebra stripes | are neat        |    $1 |
-|===== |===== |===== |
-| Foot 1 | F2 | F3 |
 
 ## RedCarpet extensions to Markdown
+
+[Extensions](https://github.com/vmg/redcarpet/blob/v2.3.0/README.markdown#and-its-like-really-simple-to-use ) available in v. 2.3.0
 
 _underlined_ text (RedCarpet extension `underline` -- collides with italics)
 
 ## Kramdown extensions to Markdown
 
 [Quick Syntax](http://kramdown.gettalong.org/quickref.html) or [Long Syntax](http://kramdown.gettalong.org/syntax.html)
-
-~~~ java
-        timeScale.setAdjustDateRangeOnResize(true);
-        timeScale.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                vis.run(DemoEnvironmentFactory.ACTION_UPDATE);
-            }
-        });
-~~~
 
 definition term
 : definition
