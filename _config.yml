@@ -7,7 +7,7 @@ markdown: redcarpet
 #   input: GFM
 
 redcarpet:
-  extensions: [smart, autolink, strikethrough, no_intra_emphasis, tables]
+  extensions: [smart, autolink, strikethrough, no_intra_emphasis, tables, with_toc_data]
 
 encoding: utf-8
 

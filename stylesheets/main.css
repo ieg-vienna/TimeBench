@@ -170,7 +170,7 @@ code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
   color: #222;
   margin-bottom: 30px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 code {
@@ -181,14 +181,14 @@ code {
 
 pre {
   padding: 20px;
-  background: #f7f7d7;
+  background: #f7e7d7;
   color: #1d1d1d;
   text-shadow: none;
   overflow: auto;
 }
 pre code {
   color: #1d1d1d;
-  background-color: #f7f7d7;
+  background-color: #f7e7d7;
   border: none;
   padding: 0;
 }
