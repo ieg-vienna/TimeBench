@@ -307,21 +307,18 @@ body {
     #header-border {
 	width: 100%;
 	margin: 0 0;
+	background: #e44d26;
     }
 
     nav#level2 {
-	width: 100%;
-	background: #e44d26;
-/*	clear: both; */
 	display: block;
 	padding-top: 5px;
 /*	padding-bottom: 0px; */
+	text-align: right;
     }
 
-
     nav#level2 ul {
-	margin: 0 5%;
-/*	float: right; */
+	display: inline-block;
     }
 
     nav#level2 a {
@@ -367,7 +364,7 @@ body {
         float: left;
     }
 
-    nav {
+    nav#level1 {
         float: right;
         width: 38%;
     }
@@ -395,7 +392,6 @@ body {
     Maximal Width
    =============== */
 
-    nav#level2 ul,
     .wrapper {
         width: 1026px; /* 1140px - 10% for margins */
         margin: 0 auto;
