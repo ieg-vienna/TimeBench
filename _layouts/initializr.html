@@ -12,7 +12,9 @@
 
         <link rel="stylesheet" href="stylesheets/normalize.min.css">
         <link rel="stylesheet" href="stylesheets/main.css">
-        <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="shortcut icon" type="image/svg+xml" href="images/timebench-favicon.svg">
 
         <script src="javascripts/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
@@ -22,18 +24,29 @@
         <![endif]-->
 
         <div class="header-container">
-            <header class="wrapper clearfix">
-                <h1 class="title"><a href="#">Logo</a></h1>
-                <nav>
+            <header class="clearfix">
+		<div class="wrapper clearfix">
+                <h1 class="title"><a href="#"><img src="images/timebench-logo-60.png" alt="TimeBench.org" width="321" height="60"></a></h1>
+                <nav id="level1">
                     <ul>
-                        <li><a href="#">Gallery</a></li>
-                        <li><a href="#">Help</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="start.html">Help</a></li>
                         <li><a href="#">Project</a></li>
                     </ul>
                 </nav>
+                </div>
+		<div id="header-border" class="wrapper">
+                <nav id="level2">
+                    <ul>
+                        <li><a href="start.html">Start</a></li>
+                        <li><a href="#">Background</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </nav>
+                </div>
             </header>
         </div>
-
         <div class="main-container">
             <div class="main wrapper clearfix">
 
@@ -42,10 +55,11 @@
                 </article>
 
                 <aside>
-                    <h3>aside</h3>
-                    <p>one-sentence summary</p>
-                    <p>download buttons</p>
-                    <p>link to GitHub project</p>
+                    <!-- <h3>aside</h3> -->
+                    <p>TimeBench is a flexible, easy-to-use, and reusable software library written in Java that provides foundational data structures and algorithms for time- oriented data in Visual Analytics.</p>
+                    <a href="https://github.com/ieg-vienna/TimeBench/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+                    <a href="https://github.com/ieg-vienna/TimeBench/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+                    <a href="https://github.com/ieg-vienna/TimeBench" id="view-on-github" class="button"><span>View on GitHub</span></a>
                 </aside>
 
             </div> <!-- #main -->
@@ -53,7 +67,10 @@
 
         <div class="footer-container">
             <footer class="wrapper">
-                <h3>footer</h3>
+                <p>TimeBench is licensed under the terms of a <a href="">BSD 2-clause license</a>.
+                It is maintained by researchers from
+                <a href="http://www.cvast.tuwien.ac.at/">Vienna University of Technology</a> and
+                <a href="http://www.fhstp.ac.at/">St. P&ouml;lten University of Applied Sciences</a>.</p>
             </footer>
         </div>
 <!--
