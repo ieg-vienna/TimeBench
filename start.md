@@ -95,7 +95,17 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
 
 3. External dependencies
 
-    bla <http://www.ifs.tuwien.ac.at/~rind/timebench/external_2013-07-27.zip>
+    We provide external dependencies as a ready to use Eclipse project.
+    If you are using TimeBench with Eclipse you can follow these steps:
+
+    1. Download the [ZIP archive](http://www.ifs.tuwien.ac.at/~rind/timebench/external_2013-07-27.zip).
+    2. in Eclipse select `File` -> `Import`
+    3. then `General` -> `Existing Projects into Workspace`
+    4. Choose `Select archive file` and `Browse...` for the downloaded ZIP file.
+
+    _DISCLAIMER:_ We provide these packages solely as a convenience for developers interested in TimeBench.
+        They is by no means guaranteed to be complete, up-to-date, or secure.
+
 
 ## Why Not Simply Pack It All Together?
 
