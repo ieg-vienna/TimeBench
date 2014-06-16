@@ -1,7 +1,7 @@
 ---
 # layout: tactile
 layout: initializr
-title: Quick Start Guide
+title: Getting Started
 ---
 
 # {{ page.title }}
@@ -46,6 +46,8 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
     1. Register at [GitHub](https://github.com/)
         and [setup SSH keys](https://help.github.com/articles/generating-ssh-keys) _(optional)_
 
+        Otherwise you can use the `HTTPS clone URL` as URI.
+
     2. Clone TimeBench to your computer and add it to Eclipse
         1. in Eclipse select `File` -> `Import`
         2. then `Git` -> `Projects from Git`
@@ -53,14 +55,14 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
         4. Source Git Repository: set `URI` to `git@github.com:ieg-vienna/TimeBench.git`<br>
             Do not change anything else! Leave user `git` and password ` `!
         5. Branch Selection: you only need `master` and can add others later
-        6. Select a directory where Git should store local repositories (only at first use of Eclipse Git Team Provider).
+        6. Select a directory where git should store local repositories (only at first use of Eclipse Git Team Provider).
             This should be outside your Eclipse workspace directory!
             I use `/home/rind/scm`.
         7. Local Destination: accept default values
         8. Select a wizard to use for importing projects: `Import as general project`
         9. Import projects: accept default -- we will overwrite that in a minute
 
-        Alternatively, you can use your favorite Git client and then import as `Existing Projects into Workspace`.
+        Alternatively, you can use your favorite git client and then import as `Existing Projects into Workspace`.
 
     3. Convert TimeBench to a Java project
 
@@ -97,4 +99,13 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
 
 ## Why Not Simply Pack It All Together?
 
-bla
+Here are some of our motivations why we split it up that way:
+
+- We often use the same external packages in multiple projects.
+- Adding JAR files to a Git repository permanently increases the storage footprint
+    of each clone -- even after the file is replaced with a newer version.
+- While all of us work with Eclipse, there are many other great IDEs out there.
+- Sometimes one has to adapt the project properties or the classpath in one's local workspace
+    and, typically, these changes are not intended for anybody else.
+    If the project files were under version control, such adaptions might be committed accidentally.
+    Furthermore, some git operations are not possible with uncommitted changes in the working directory.
