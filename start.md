@@ -41,12 +41,14 @@ Furthermore TimeBench depends on the following packages maintained by us:
 We assume you use a current version of the [**Eclipse IDE**](http://www.eclipse.org/downloads/)
 including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Team Provider_.
 
+__Attention:__ Most steps are trivial or simply accepting defaults, but a few require special attention.
+Better follow the guideline carefully.
+
+1. Register at [GitHub](https://github.com/)
+    and _(optional)_ [setup SSH keys](https://help.github.com/articles/generating-ssh-keys).
+    Otherwise you can use the `HTTPS clone URL` as URI.
+
 1. TimeBench
-
-    1. Register at [GitHub](https://github.com/)
-        and [setup SSH keys](https://help.github.com/articles/generating-ssh-keys) _(optional)_
-
-        Otherwise you can use the `HTTPS clone URL` as URI.
 
     2. Clone TimeBench to your computer and add it to Eclipse
         1. in Eclipse select `File` -> `Import`
@@ -55,11 +57,11 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
         4. Source Git Repository: set `URI` to `git@github.com:ieg-vienna/TimeBench.git`<br>
             Do not change anything else! Leave user `git` and password ` `!
         5. Branch Selection: you only need `master` and can add others later
-        6. Select a directory where git should store local repositories (only at first use of Eclipse Git Team Provider).
-            This should be outside your Eclipse workspace directory!
-            I use `/home/rind/scm`.
+        6. (only at first use of Eclipse Git Team Provider) Select a directory where git should store local repositories.
+            This should be outside your Eclipse workspace directory!<br>
+            For example, I use `/home/rind/scm`.
         7. Local Destination: accept default values
-        8. Select a wizard to use for importing projects: `Import as general project`
+        8. __Attention!__ Select a wizard to use for importing projects: `Import as general project`
         9. Import projects: accept default -- we will overwrite that in a minute
 
         Alternatively, you can use your favorite git client and then import as `Existing Projects into Workspace`.
@@ -69,9 +71,14 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
         The repository contains templates of Eclipse project files `.project` and `.classpath`
         but the actual project files should not be added to git.
 
-        1. Manually copy `eclipse.project` to `.project` and `eclipse.classpath` to `.classpath`.
+        1. __Attention!__ Outside of Eclipse, copy `eclipse.project` to `.project` replacing the existing file
+            and copy `eclipse.classpath` to `.classpath`
 
             Windows users can copy this [BATCH file](downloads/make-eclipse-project.bat) into the project folder and run it there.
+
+            Users of other operating systems can use their favorite file browser or shell.
+
+            _Warning:_ Do not delete or rename the template files `eclipse.project` and `eclipse.classpath`.
 
         2. Afterwards select `Refresh` on the project in Eclipse.
 
@@ -85,13 +92,12 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
     it makes sense to clone them as well as Eclipse projects.
     In that case, follow the same steps as above for:
 
-    1. [prefuse-vienna](https://github.com/ieg-vienna/Prefuse): `git@github.com:ieg-vienna/Prefuse.git`
     2. [ieg-util](https://github.com/ieg-vienna/ieg-util): `git@github.com:ieg-vienna/ieg-util.git`
     3. [ieg-prefuse](https://github.com/ieg-vienna/ieg-prefuse):`git@github.com:ieg-vienna/ieg-prefuse.git`
+    1. [prefuse-vienna](https://github.com/ieg-vienna/Prefuse): `git@github.com:ieg-vienna/Prefuse.git`<br>
+        __Attention!__ For *prefuse-vienna* use the `Import existing project` wizard and skip the step "Convert to a Java project".
 
     Otherwise, you can download them together with the external dependencies (see next step).
-
-    _Warning:_ For **prefuse-vienna** use the `Import existing project` wizard and skip the step "Convert to a Java project".
 
 3. External dependencies
 
@@ -103,7 +109,7 @@ including at least the _Eclipse Java Development Tools_ and the _Eclipse Git Tea
     3. then `General` -> `Existing Projects into Workspace`
     4. Choose `Select archive file` and `Browse...` for the downloaded ZIP file.
 
-    _DISCLAIMER:_ We provide these packages solely as a convenience for developers interested in TimeBench.
+    ___DISCLAIMER:___ We provide these packages solely as a convenience for developers interested in TimeBench.
         They is by no means guaranteed to be complete, up-to-date, or secure.
 
 
