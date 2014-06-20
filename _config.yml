@@ -15,6 +15,7 @@ baseurl: /TimeBench
 
 exclude:
 - README.md
+- main.scss
 - Gemfile
 - Gemfile.lock
 
