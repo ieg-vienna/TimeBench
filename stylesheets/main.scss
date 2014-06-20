@@ -1,3 +1,36 @@
+/* ==================
+   COLOR THEME
+   ================== */
+
+/*
+$headerBack: #f16529;
+$headerSeparator: #e44d26;
+$headerInactive: #e44d26;
+
+$codeBackground: #f7e7d7;
+
+$text: #4d4d4d;
+$link: #d5000d;
+$linkHover: #c5000c;
+
+/* orange
+$headerBack: #ff9b3b;
+$headerSeparator: #a65100;
+$headerInactive: #fb7b00;
+*/
+
+$headerBack: #FFC995;
+$headerSeparator: #EF8928;
+$headerInactive: #FFAB5C;
+
+$codeBackground: #FFF4DB;
+
+$text: #4d4d4d;
+$link: #1C8093;
+$linkVisited: #086374;
+$linkHover: #3D93A3;
+
+
 /*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
 
 html,
@@ -76,19 +109,21 @@ body {
 
 
 .header-container {
-    border-bottom: 7px solid #e44d26;
+    border-bottom: 4px solid $headerSeparator;
 }
 
 
 .footer-container,
 .main aside {
-    border-top: 10px solid #e44d26;
+    border-top: 10px solid $headerSeparator;
 }
 
-.header-container,
+.header-container {
+    background: $headerBack;
+}
 .footer-container,
 .main aside {
-    background: #f16529;
+    background: $headerInactive;
 }
 
 .title {
@@ -112,14 +147,18 @@ nav a {
 
     text-align: center;
     text-decoration: none;
-    font-weight: bold;
 
     color: white;
-    background: #e44d26;
+    background: $headerSeparator;
 }
 
-nav#level2 a {
-    font-weight: normal;
+nav#level1 a {
+    font-size: 110%;
+    font-weight: bold;
+}
+
+nav a.inactive {
+    background: $headerInactive;
 }
 
 nav a:hover,
@@ -167,10 +206,13 @@ nav a:hover {
 
 
 a {
-  color: #d5000d;
+    color: $link;
+}
+a:visited {
+    color: $linkVisited;
 }
 a:hover {
-  color: #c5000c;
+    color: $linkHover;
 }
 
 code, pre {
@@ -181,23 +223,23 @@ code, pre {
 }
 
 code {
-  background-color: #f2f2f2;
-  border: solid 1px #ddd;
-  padding: 0 3px;
+    background-color: $codeBackground;
+    border: solid 1px #ddd;
+    padding: 0 3px;
 }
 
 pre {
-  padding: 20px;
-  background: #f7e7d7;
-  color: #1d1d1d;
-  text-shadow: none;
-  overflow: auto;
+    padding: 20px;
+    background: $codeBackground;
+    color: #1d1d1d;
+    text-shadow: none;
+    overflow: auto;
 }
 pre code {
-  color: #1d1d1d;
-  background-color: #f7e7d7;
-  border: none;
-  padding: 0;
+    color: #1d1d1d;
+    background-color: $codeBackground;
+    border: none;
+    padding: 0;
 }
 
 a.button {
@@ -278,14 +320,14 @@ a.button span {
 
 body {
     background: #e7e7e7 url(../images/body-bg.png) 0 0 repeat;
-    color: #4d4d4d;
+    color: $text;
 }
 
     nav#level1 a {
         float: left;
         width: 27%;
-        margin: 10px 1.7%;
-        padding: 18px 2%;
+        margin: 20px 1.7%;
+        padding: 13px 2%;
         margin-bottom: 0;
 
 	-webkit-border-top-left-radius: 20px;
@@ -307,12 +349,12 @@ body {
     #header-border {
 	width: 100%;
 	margin: 0 0;
-	background: #e44d26;
+	background: $headerSeparator;
     }
 
     nav#level2 {
 	display: block;
-	padding-top: 5px;
+	padding-top: 2px;
 /*	padding-bottom: 0px; */
 	text-align: right;
     }
