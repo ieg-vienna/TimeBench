@@ -3,8 +3,7 @@ layout: initializr
 title: ToDos
 ---
 
-- Colors
-- HowTo
+- Colors ?
 - Menu
 - Homepage
 - README.md

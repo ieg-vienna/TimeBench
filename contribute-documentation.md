@@ -66,7 +66,8 @@ Thus, you can find and edit markdown source of the website in the
 
 ### Stylesheets
 
-The main stylesheet is the `main.scss`.
+The stylesheet is the `main.scss`.
+Do not change `main.css` directly.
 SASS support is not in the Jekyll version currently deployed at GitHub pages.
 Therefore we pre-compile it locally:
 
