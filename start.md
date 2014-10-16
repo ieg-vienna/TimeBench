@@ -2,6 +2,9 @@
 # layout: tactile
 layout: initializr
 title: Getting Started
+short_title: Start
+category: help
+weight: 10
 ---
 
 # {{ page.title }}

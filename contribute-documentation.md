@@ -1,6 +1,8 @@
 ---
 layout: initializr
 title: Documentation How To
+category: help
+weight: -1
 ---
 
 # {{ page.title }}

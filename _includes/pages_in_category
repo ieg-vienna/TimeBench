@@ -1,0 +1,21 @@
+{% comment %} based on
+http://stackoverflow.com/questions/8340170/jekyll-automatically-highlight-current-tab-in-menu-bar
+http://stackoverflow.com/questions/9053066/sorted-navigation-menu-with-jekyll-and-liquid
+{% endcomment %}
+
+{% assign pages_list = site.pages | sort:"weight"  %}
+{% for node in pages_list %}
+  {% if page.category == node.category and node.weight > 0 %}
+    {% assign tmp_label = node.short_title %}
+    {% if node.short_title == null %}
+      {% assign tmp_label = node.title %}
+    {% endif %}
+
+    {% if page.url == node.url %}
+      <li class="active"><span class="active">{{tmp_label}}</span></li>
+    {% else %}
+      <li><a href="{{ site.baseurl }}{{ node.url }}">{{tmp_label}}</a></li>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% assign pages_list = nil %}
