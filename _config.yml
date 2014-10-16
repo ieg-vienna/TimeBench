@@ -20,7 +20,6 @@ exclude:
 - Gemfile.lock
 
 # GitHub set these settings anyway
+highlighter: pygments
 safe: true
 lsi: false
-pygments: true
-

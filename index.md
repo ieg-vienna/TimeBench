@@ -1,5 +1,5 @@
 ---
-layout: tactile
+layout: initializr
 title: Welcome
 ---
 

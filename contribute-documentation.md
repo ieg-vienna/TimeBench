@@ -24,7 +24,7 @@ Thus, you can find and edit markdown source of the website in the
 
 
 2. Check that you have [Ruby](https://www.ruby-lang.org/en/) installed 
-    or install it using your system's software package management (e.g., `aptitude`).
+    or install it using your system's software package management (e.g., `aptitude install ruby`).
 
 3. Install Jekyll and other dependencies.
 
@@ -32,14 +32,17 @@ Thus, you can find and edit markdown source of the website in the
 
     Change to the working directory and run: `bundle install` 
 
+    The current version also [depends on node.js or some other Javascript package](https://github.com/jekyll/jekyll/issues/2327).
+    You need to install it via your system's software package management (e.g., `aptitude install nodejs`).
+
 4. Test the website locally.
 
-    Run in the working directory: `jekyll serve --watch`
+    Run in the working directory: `jekyll serve`
 
     Now the website will be generate in the subdirectory `_site` 
     and you can test it under <http://127.0.0.1:4000/TimeBench/>.
 
-    As long as `jekyll serve --watch` runs, it will react on changes and update the website.
+    As long as `jekyll serve` runs, it will react on changes and update the website.
 
 5. Edit page content.
     
@@ -53,7 +56,7 @@ Thus, you can find and edit markdown source of the website in the
     __Important:__ Write the markdown files as UTF-8 without BOM. 
     Best set a fixed indent with of 4 spaces, do not mix tabs and space. 
 
-    You can preview and test your changes using `jekyll serve --watch` and <http://127.0.0.1:4000/TimeBench/>.
+    You can preview and test your changes using `jekyll serve` and <http://127.0.0.1:4000/TimeBench/>.
 
 6. Commit and push changes.
 
@@ -67,9 +70,10 @@ Thus, you can find and edit markdown source of the website in the
 ### Stylesheets
 
 The stylesheet is the `main.scss`.
-Do not change `main.css` directly.
-SASS support is not in the Jekyll version currently deployed at GitHub pages.
-Therefore we pre-compile it locally:
+`main.css` is [generated on the server](http://jekyllrb.com/docs/assets/).
+Jekyll at GitHub pages now supports SASS directly.
+
+Otherwise you can pre-compile it locally:
 
 ~~~ bash
 sass main.scss  > main.css
