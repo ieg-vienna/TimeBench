@@ -1,6 +1,6 @@
 package timeBench.util;
 
-import ieg.util.color.HCL;
+import org.timebench.util.color.HCL;
 
 /**
  * 

@@ -4,9 +4,9 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import ieg.prefuse.data.ParentChildNode;
-import ieg.util.lang.CustomIterable;
 
 import org.apache.log4j.Logger;
+import org.timebench.util.lang.CustomIterable;
 
 /**
  * Relational view of the temporal object. Following the <em>proxy tuple</em>

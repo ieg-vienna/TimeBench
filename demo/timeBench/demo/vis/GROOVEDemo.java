@@ -1,7 +1,6 @@
 package timeBench.demo.vis;
 
 import ieg.prefuse.RangeModelTransformationDisplay;
-import ieg.util.xml.JaxbMarshaller;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -14,6 +13,8 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+
+import org.timebench.util.xml.JaxbMarshaller;
 
 import prefuse.Constants;
 import prefuse.Visualization;

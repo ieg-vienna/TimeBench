@@ -1,7 +1,6 @@
 package timeBench.demo.analytical;
 
 import ieg.prefuse.renderer.IntervalBarRenderer;
-import ieg.util.xml.JaxbMarshaller;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics2D;
@@ -22,6 +21,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.timebench.util.xml.JaxbMarshaller;
 
 import prefuse.Constants;
 import prefuse.Display;

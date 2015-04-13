@@ -1,7 +1,8 @@
 package timeBench.data;
 
+import org.timebench.util.lang.CustomIterable;
+
 import ieg.prefuse.data.ParentChildNode;
-import ieg.util.lang.CustomIterable;
 import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.data.tuple.TableNode;

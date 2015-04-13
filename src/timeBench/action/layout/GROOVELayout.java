@@ -1,7 +1,6 @@
 package timeBench.action.layout;
 
 import ieg.prefuse.data.DataHelper;
-import ieg.util.color.HCL;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -12,6 +11,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.timebench.util.color.HCL;
 
 import prefuse.Display;
 import prefuse.data.Graph;

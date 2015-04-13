@@ -1,13 +1,14 @@
 package timeBench.data;
 
 import ieg.prefuse.data.ParentChildGraph;
-import ieg.util.lang.CustomIterable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.timebench.util.lang.CustomIterable;
 
 import prefuse.data.Graph;
 import prefuse.data.Schema;

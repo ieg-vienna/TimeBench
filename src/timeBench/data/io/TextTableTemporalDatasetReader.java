@@ -1,7 +1,6 @@
 package timeBench.data.io;
 
 import ieg.prefuse.data.DataHelper;
-import ieg.util.xml.JaxbMarshaller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +11,7 @@ import java.util.TreeMap;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
+import org.timebench.util.xml.JaxbMarshaller;
 
 import prefuse.data.Table;
 import prefuse.data.Tuple;

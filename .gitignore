@@ -17,3 +17,6 @@ local.properties
 .settings/
 .loadpath
 
+# Maven Files #
+target/
+_site/
