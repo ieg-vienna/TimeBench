@@ -1,9 +1,5 @@
 package timeBench.demo.vis;
 
-import ieg.prefuse.action.LinePlotAction;
-import ieg.prefuse.action.layout.LinePlotLayout;
-import ieg.prefuse.renderer.LineRenderer;
-
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,6 +17,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBException;
 
+import ieg.prefuse.action.layout.LinePlotAction;
+import ieg.prefuse.action.layout.LinePlotLayout;
+import ieg.prefuse.renderer.LineRenderer;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;

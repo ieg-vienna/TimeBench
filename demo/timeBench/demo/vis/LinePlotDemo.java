@@ -1,11 +1,5 @@
 package timeBench.demo.vis;
 
-import ieg.prefuse.action.LinePlotAction;
-import ieg.prefuse.action.layout.LinePlotLayout;
-import ieg.prefuse.action.layout.TickAxisLabelLayout;
-import ieg.prefuse.data.DataHelper;
-import ieg.prefuse.renderer.LineRenderer;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.GregorianCalendar;
@@ -14,6 +8,11 @@ import javax.swing.BorderFactory;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import ieg.prefuse.action.layout.LinePlotAction;
+import ieg.prefuse.action.layout.LinePlotLayout;
+import ieg.prefuse.action.layout.TickAxisLabelLayout;
+import ieg.prefuse.data.DataHelper;
+import ieg.prefuse.renderer.LineRenderer;
 import prefuse.Constants;
 import prefuse.Visualization;
 import prefuse.action.Action;

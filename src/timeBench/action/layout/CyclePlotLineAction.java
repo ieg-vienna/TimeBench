@@ -2,15 +2,14 @@ package timeBench.action.layout;
 
 import java.util.Iterator;
 
+import ieg.prefuse.action.layout.LinePlotAction;
+import ieg.prefuse.data.ParentChildNode;
 import prefuse.data.expression.ColumnExpression;
 import prefuse.data.expression.ComparisonPredicate;
 import prefuse.data.expression.NumericLiteral;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualTable;
-import timeBench.data.GranularityAggregationTree;
-import ieg.prefuse.action.LinePlotAction;
-import ieg.prefuse.data.ParentChildNode;
 
 /**
  * Creates a group with line segments that connect the nodes at a given level
