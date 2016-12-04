@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<temporal-data-column-specifaction>
+    <calendar>0</calendar>
+    <fail-on-illegal-rows>true</fail-on-illegal-rows>
+    <encodings>
+        <date-instant key="begin">
+            <granularity-id>4</granularity-id>
+            <granularity-context-id>1111111111</granularity-context-id>
+            <temporal-column>begin</temporal-column>
+            <date-time-pattern>yyyy-MM-dd</date-time-pattern>
+        </date-instant>
+        <date-instant key="end">
+            <granularity-id>4</granularity-id>
+            <granularity-context-id>1111111111</granularity-context-id>
+            <temporal-column>end</temporal-column>
+        </date-instant>
+        <interval key="date">
+            <data-element>
+                <column>event</column>
+                <column>location</column>
+            </data-element>
+            <begin>begin</begin>
+            <end>end</end>
+        </interval>
+    </encodings>
+    <text-table>
+        <method>csv</method>
+        <has-header>true</has-header>
+        <parse-dates>true</parse-dates>
+    </text-table>
+</temporal-data-column-specifaction>
