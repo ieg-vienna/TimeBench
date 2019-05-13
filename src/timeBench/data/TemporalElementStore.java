@@ -588,7 +588,7 @@ public class TemporalElementStore extends ParentChildGraph implements Lifespan, 
         el.setInf(granule.getInf());
         el.setSup(granule.getSup());
         el.setGranularityId(granule.getGranularity().getIdentifier());
-        el.setGranularityId(granule.getGranularity()
+        el.setGranularityContextId(granule.getGranularity()
                 .getGranularityContextIdentifier());
         granuleCache.addGranule(instant.getRow(), granule);
     }
